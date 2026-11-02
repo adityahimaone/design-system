@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Riso Co.">
+  <title>Riso Co. — the pinned sheet, torn from the pin</title>
+  <!--
+    Two drums, one sheet. The tear is the seam the second drum prints:
+    drum A holds the left flap, drum B the right one slid 4,3 out of
+    register, and the pin is the only element that crosses the tear.
+  -->
+  <path d="M8 9H30L35 20L27 27L36 36L30 44L38 55H17L8 47Z" fill="var(--rs-drum-a, #f2542d)"/>
+  <path d="M34 12L39 23L31 30L40 39L34 47L42 58H47L55 50V16L50 12Z" fill="var(--rs-drum-b, #1d63ff)"/>
+  <path d="M32.5 6L38 11L32.5 16L27 11Z" fill="var(--rs-pin, #1b1712)"/>
+</svg>

@@ -1,0 +1,2861 @@
+/* Jakarta — case page styles, v1.0.
+   Everything reads the token layer in `jakarta-tokens.css`. No raw hex except
+   the three places where the drawing needs a specific ink: the reverse mark on
+   a photograph, the code block's ground, and the scrim. Those are noted where
+   they appear. */
+
+.root {
+  --jk-shell: 1180px;
+  --jk-gap: clamp(20px, 4vw, 56px);
+  background: var(--jk-surface);
+  color: var(--jk-text);
+  font-family: var(--jk-font-reading);
+  font-size: var(--jk-size-body);
+  line-height: var(--jk-lh-body);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  overflow-x: clip;
+}
+
+.root ::selection {
+  background: var(--jk-accent-quiet);
+  color: var(--jk-text);
+}
+
+.root :focus-visible {
+  outline: 3px solid var(--jk-focus);
+  outline-offset: 3px;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 80;
+  padding: 12px 18px;
+  background: var(--jk-text);
+  color: var(--jk-surface);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.skip:focus-visible {
+  left: 12px;
+  top: 12px;
+}
+
+.shell {
+  width: min(100% - 40px, var(--jk-shell));
+  margin-inline: auto;
+}
+
+/* ── topbar ─────────────────────────────────────────────────────────────── */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--jk-surface);
+  border-bottom: 1.5px solid var(--jk-text);
+}
+
+.topbarInner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 64px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--jk-text);
+  text-decoration: none;
+}
+
+.brandName {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.topnav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-left: auto;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.topnav a {
+  color: var(--jk-text-muted);
+  text-decoration: none;
+  padding-block: 4px;
+  border-bottom: 1.5px solid transparent;
+  transition: color var(--jk-dur-fast) var(--jk-ease),
+    border-color var(--jk-dur-fast) var(--jk-ease);
+}
+
+.topnav a:hover {
+  color: var(--jk-text);
+  border-bottom-color: var(--jk-accent);
+}
+
+.topnav a:last-child {
+  color: var(--jk-text);
+  border-bottom-color: var(--jk-rule);
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.themeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1.5px solid var(--jk-text);
+  border-radius: var(--jk-radius-1);
+  background: transparent;
+  color: var(--jk-text);
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--jk-dur-fast) var(--jk-ease),
+    color var(--jk-dur-fast) var(--jk-ease);
+}
+
+.themeBtn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.themeBtn:hover {
+  background: var(--jk-text);
+  color: var(--jk-surface);
+}
+
+/* ── hero ───────────────────────────────────────────────────────────────── */
+
+/* The hero is the identity at the scale of a hoarding: a full-bleed field of
+   ten flat district bands, a city plate screened onto it by luminance, the
+   mark's own stroke at architecture scale, and one paper caption block. The
+   field supplies hue, the plate supplies light, the paper supplies the type.
+   Nothing is set directly on the colours. */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: clamp(620px, 88svh, 920px);
+  padding-block: clamp(96px, 14vh, 168px) 0;
+  overflow: clip;
+  background: #2830d0;
+  color: #fff;
+  /* The tear lives on the hero, not on a block under it: the field is cut off
+     mid-colour and the page's paper is what you see through the teeth. Unequal
+     widths and depths, because an even amplitude reads as a sawtooth border and
+     a printed sheet never tears evenly. */
+  clip-path: polygon(
+    0 0, 100% 0, 100% 100%, 95.5% calc(100% - 44px), 91% calc(100% - 9px),
+    86.5% calc(100% - 34px), 82% calc(100% - 6px), 77% calc(100% - 49px),
+    72.5% calc(100% - 18px), 68% calc(100% - 38px), 63.5% calc(100% - 4px),
+    59% calc(100% - 30px), 54% calc(100% - 52px), 49.5% calc(100% - 12px),
+    45% calc(100% - 36px), 40% calc(100% - 7px), 35.5% calc(100% - 46px),
+    31% calc(100% - 20px), 26% calc(100% - 40px), 21.5% calc(100% - 5px),
+    17% calc(100% - 33px), 12% calc(100% - 15px), 7% calc(100% - 47px),
+    3% calc(100% - 10px), 0% calc(100% - 28px)
+  );
+}
+
+.heroMedia {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: #2830d0;
+}
+
+/* Hard stops, not a blur: ten bands you can count. A gradient is a mood; a
+   band is a map you can name out loud — which is the palette's own argument. */
+.heroField {
+  position: absolute;
+  inset: -2%;
+  background-size: cover;
+  filter: saturate(1.18) contrast(1.02);
+}
+
+/* The city plate takes the field's hue and keeps its own luminance. It is
+   masked from the reading edge so the left half stays pure colour and the type
+   sits on field, not on a photograph. */
+.heroDay,
+.heroNight {
+  object-fit: cover;
+  mix-blend-mode: luminosity;
+  transition: opacity var(--jk-dur-slow) var(--jk-ease);
+  /* Two directions: the plate steps back from the reading edge, and it is gone
+     by the floor so the field can be flat colour where it tears. */
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent 4%, #000 46%),
+    linear-gradient(180deg, #000 0 62%, transparent 94%);
+  mask-image:
+    linear-gradient(90deg, transparent 4%, #000 46%),
+    linear-gradient(180deg, #000 0 62%, transparent 94%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+.heroDay {
+  object-position: 58% 48%;
+  filter: saturate(0) contrast(1.04) brightness(1.08);
+  opacity: calc(0.78 * (1 - var(--jk-hero-night, 0)));
+}
+
+.heroNight {
+  object-position: 62% 54%;
+  filter: saturate(0) contrast(0.98) brightness(1.34);
+  opacity: calc(0.62 * var(--jk-hero-night, 0));
+}
+
+/* A halftone, because the identity is printed on enamel and vinyl. */
+.heroGrain {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(rgb(255 255 255 / 0.46) 0.5px, rgb(255 255 255 / 0) 0.6px),
+    repeating-linear-gradient(112deg, rgb(8 12 16 / 0.05) 0 1px, transparent 1px 7px);
+  background-size: 3px 3px, auto;
+  mix-blend-mode: overlay;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.heroScrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgb(8 12 16 / 0.2) 0%,
+      rgb(8 12 16 / 0) 32%,
+      rgb(8 12 16 / 0.16) 66%,
+      rgb(8 12 16 / 0.34) 100%
+    ),
+    linear-gradient(90deg, rgb(8 12 16 / 0.26) 0%, rgb(8 12 16 / 0) 52%);
+  /* The scrim is there for the copy. It gets out of the way of the floor, so
+     the colours that get torn are the colours in the palette, not the colours
+     in shadow. */
+  -webkit-mask-image: linear-gradient(180deg, #000 0 84%, rgb(0 0 0 / 0) 100%);
+  mask-image: linear-gradient(180deg, #000 0 84%, rgb(0 0 0 / 0) 100%);
+}
+
+/* The mark at page scale — geometry, not a logo tile. */
+.heroMark {
+  position: absolute;
+  z-index: 1;
+  right: -3vw;
+  bottom: 14%;
+  width: min(48vw, 720px);
+  height: auto;
+  color: rgb(247 244 238 / 0.17);
+  pointer-events: none;
+}
+
+.heroInner {
+  position: relative;
+  z-index: 2;
+  max-width: 980px;
+  padding-bottom: clamp(26px, 3.4vw, 44px);
+}
+
+/* ── the sign ────────────────────────────────────────────────────────────── */
+
+/* Minimal, and in the field's own tone: a tinted plate that lets the bands
+   through, one type colour, no cap, no offset. The field is the colour; the
+   plate is only what the words need to stay legible. */
+.heroPanel {
+  position: relative;
+  width: min(100%, 620px);
+  padding: clamp(22px, 2.2vw, 30px) clamp(22px, 2.3vw, 32px)
+    clamp(18px, 1.9vw, 24px);
+  background: rgb(8 12 16 / 0.72);
+  color: var(--jk-kertas);
+  border: 1px solid rgb(247 244 238 / 0.14);
+}
+
+/* The tint can thin when the browser can blur the field behind it: the worst
+   band (Kebayoran yellow) still measures 5,64:1 for cream at 0.58. */
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .heroPanel {
+    background: rgb(8 12 16 / 0.58);
+    -webkit-backdrop-filter: blur(12px) saturate(1.08);
+    backdrop-filter: blur(12px) saturate(1.08);
+  }
+}
+
+/* The headline is a caption now, not a hoarding. One weight, one size, one
+   colour: 600 at 40px with a normal leading. Everything the display used to
+   shout is carried by the eyebrow above it and by the field behind it. */
+.heroEyebrow {
+  margin: 0 0 clamp(10px, 1vw, 14px);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgb(247 244 238 / 0.66);
+}
+
+.heroTitle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0;
+  font-family: var(--jk-font-display);
+  font-size: clamp(26px, 2.9vw, 40px);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.028em;
+  color: var(--jk-kertas);
+  text-wrap: balance;
+}
+
+.heroTitle span {
+  display: block;
+}
+
+.heroTitle span + span {
+  margin-top: 0.04em;
+}
+
+.heroPanelFoot {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: clamp(14px, 1.5vw, 18px);
+  padding-top: clamp(12px, 1.3vw, 16px);
+  border-top: 1px solid rgb(247 244 238 / 0.16);
+}
+
+.heroSub {
+  margin: 0;
+  font-size: clamp(13.5px, 1.05vw, 15px);
+  font-weight: 500;
+  letter-spacing: -0.004em;
+  color: rgb(247 244 238 / 0.88);
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+}
+
+.heroCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: var(--jk-radius-1);
+  background: var(--jk-accent);
+  color: var(--jk-accent-ink);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background var(--jk-dur-fast) var(--jk-ease);
+}
+
+.heroCta:hover {
+  background: var(--jk-accent-hover);
+}
+
+.heroCta span {
+  transition: transform var(--jk-dur-fast) var(--jk-ease);
+}
+
+.heroCta:hover span {
+  transform: translateY(2px);
+}
+
+.heroLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 2px;
+  border-bottom: 1.5px solid rgb(247 244 238 / 0.55);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--jk-kertas);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color var(--jk-dur-fast) var(--jk-ease);
+}
+
+.heroLink span {
+  transition: transform var(--jk-dur-fast) var(--jk-ease);
+}
+
+.heroLink:hover span {
+  transform: translateX(3px);
+}
+
+/* The field is torn off, not stopped.
+   The old floor was a second, separate object: ten chips on an ink slab, skewed,
+   with a paper tear across the bottom — three devices arguing at once, none of
+   them the field's own angle. Now there is no object at all. The photograph
+   dissolves to nothing as the field reaches the floor, the last stretch of hero
+   is flat palette, and the hero's own bottom edge is cut with the tooth line
+   declared on .hero — so the page's paper is what shows through the tears. One
+   surface, one edge, one idea: nothing under the field to line up with. */
+
+/* Floor room: the panel must not be the thing that gets torn, so the field keeps
+   a strip of itself below the copy — empty, no background, just height. */
+.heroFloor {
+  height: clamp(64px, 6.4vw, 104px);
+  flex: 0 0 auto;
+}
+
+/* Four numbers on one band, each with the district colour it spends printed as
+   the column's own top rule. The ink rule that used to run the whole width is
+   gone: the four colours are the rule now, and they are the only thing on the
+   band that is not type. */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: clamp(36px, 5vw, 64px) 0 0;
+  border-top: 1.5px solid var(--jk-text);
+}
+
+.stat {
+  position: relative;
+  min-width: 0;
+  padding: clamp(18px, 2vw, 26px) clamp(14px, 1.8vw, 24px)
+    clamp(10px, 1.2vw, 14px) 0;
+}
+
+.stat::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px clamp(14px, 1.8vw, 24px) auto 0;
+  height: 3px;
+  background: var(--jk-sec, var(--jk-accent));
+}
+
+.stat + .stat {
+  padding-left: clamp(14px, 1.8vw, 24px);
+  border-left: 1px solid var(--jk-rule);
+}
+
+/* Each stat keeps one district colour as a tick above the label — the same
+   device the section labels use, at the same 7px. Decoration only: no colour
+   here ever sets the number. */
+.stat dt {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--jk-text-muted);
+}
+
+.stat dt::before {
+  content: '';
+  flex: none;
+  width: 7px;
+  height: 7px;
+  background: var(--jk-sec, var(--jk-accent));
+}
+
+.stat dd {
+  margin: 7px 0 0;
+  font-size: clamp(22px, 2.4vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  font-variant-numeric: tabular-nums;
+  /* the number is allowed to wrap inside its column: a stat that runs past the
+     band's last line is a bug, not a display size */
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+/* ── section frame ──────────────────────────────────────────────────────── */
+
+.sec {
+  --jk-sec: var(--jk-accent);
+  --jk-sec-ink: var(--jk-accent-ink);
+  padding-block: clamp(52px, 7vw, 104px);
+  border-top: 1px solid var(--jk-rule);
+}
+
+.secHead {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 24px;
+  margin-bottom: clamp(28px, 4vw, 52px);
+}
+
+/* The registration rule: 88 units of the section's district colour printed
+   above the head, the way a printer marks a sheet. One per section, always the
+   same width, so eight colours read as one system rather than eight moods. */
+.secHead::before {
+  content: '';
+  grid-column: 1 / -1;
+  grid-row: 1;
+  width: 88px;
+  height: 3px;
+  margin-bottom: 2px;
+  background: var(--jk-sec);
+}
+
+.secNum {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--jk-text-muted);
+}
+
+.secNum span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 30px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: var(--jk-radius-full);
+  background: var(--jk-sec);
+  color: var(--jk-sec-ink);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+.secMeta {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: center;
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--jk-text-muted);
+}
+
+.secTitle {
+  grid-column: 1 / -1;
+  margin: 6px 0 0;
+  font-size: clamp(30px, 4vw, 52px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.038em;
+  text-wrap: balance;
+}
+
+.prose {
+  max-width: 66ch;
+  margin: 0 0 clamp(24px, 3vw, 40px);
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--jk-text-muted);
+}
+
+/* Every block label carries the section's district colour as a 7px tick — the
+   smallest unit of the same decoration, repeated down the page, which is what
+   turns eight hues into one drumbeat instead of eight moods. */
+.blockLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--jk-text-muted);
+}
+
+.blockLabel::before {
+  content: '';
+  flex: none;
+  width: 7px;
+  height: 7px;
+  background: var(--jk-sec, var(--jk-accent));
+}
+
+.blockLabel[data-tight='true'] {
+  margin-top: 28px;
+}
+
+/* ── ink band ────────────────────────────────────────────────────────────── */
+
+.secInk {
+  --jk-text: var(--jk-kertas);
+  --jk-text-muted: #b9c0c7;
+  --jk-text-faint: #8995a3;
+  --jk-rule: #2c343b;
+  --jk-rule-strong: #515b67;
+  --jk-surface: var(--jk-tinta);
+  --jk-surface-raised: #242b31;
+  background: var(--jk-tinta);
+  color: var(--jk-kertas);
+}
+
+/* The applications section starts on the palette itself: a full-bleed rule of
+   the ten colours, then paper. The colour is punctuation, not a second field. */
+.secApps {
+  padding-top: 0;
+}
+
+.sectionRule {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  height: 8px;
+  margin-bottom: clamp(40px, 6vw, 72px);
+}
+
+.sectionRule i {
+  display: block;
+}
+
+/* ── 01 · beats, principles, voice ──────────────────────────────────────── */
+
+.beats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(20px, 2.4vw, 32px);
+  margin-bottom: clamp(40px, 5vw, 72px);
+}
+
+.beat {
+  padding-top: 16px;
+  border-top: 1.5px solid var(--jk-text);
+}
+
+.beatKicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--jk-text);
+}
+
+/* The accent is a mark here, never a word: 3,24:1 cannot carry 11px type. */
+.beatKicker::before {
+  content: '';
+  flex: none;
+  width: 14px;
+  height: 3px;
+  background: var(--jk-accent);
+}
+
+.beat h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.026em;
+  line-height: 1.15;
+}
+
+.beat p {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--jk-text-muted);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+
+.principles {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--jk-rule);
+}
+
+.principle {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--jk-rule);
+}
+
+.principle h4 {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.principle h4 span {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--jk-text-muted);
+}
+
+.principle p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--jk-text-muted);
+}
+
+.veto {
+  margin-top: 8px !important;
+  font-size: 13px !important;
+  color: var(--jk-text-muted) !important;
+}
+
+.veto b {
+  display: inline-block;
+  color: var(--jk-text);
+  border-left: 3px solid var(--jk-accent);
+  padding-left: 7px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.voice {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--jk-rule);
+}
+
+.voiceRow {
+  display: grid;
+  gap: 4px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--jk-rule);
+}
+
+.voiceName {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.voiceName b {
+  font-size: 15px;
+  letter-spacing: -0.015em;
+}
+
+.voiceName span {
+  font-size: 12.5px;
+  color: var(--jk-text-muted);
+}
+
+.voiceSay {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--jk-text);
+}
+
+.voiceNot {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--jk-text-muted);
+  text-decoration: line-through;
+  text-decoration-color: rgb(110 120 132 / 0.5);
+  text-decoration-thickness: 1px;
+}
+
+/* ── 02 · mark ──────────────────────────────────────────────────────────── */
+
+.specimens {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  margin-bottom: clamp(32px, 4vw, 52px);
+  background: var(--jk-rule);
+}
+
+.specimen {
+  display: grid;
+  place-items: center;
+  gap: 20px;
+  margin: 0;
+  padding: clamp(28px, 5vw, 56px) 16px clamp(16px, 2vw, 22px);
+  background: var(--jk-kertas);
+  color: var(--jk-tinta);
+}
+
+.specimen[data-ground='senja'] {
+  background: var(--jk-senja-100);
+  color: var(--jk-kapur);
+}
+
+.specimen[data-ground='ink'] {
+  background: var(--jk-tinta);
+  color: var(--jk-kertas);
+  /* an ink tile on an ink band needs its own edge, or it is not a tile */
+  box-shadow: inset 0 0 0 1px #3a444d;
+}
+
+.specimen figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.specimen figcaption b {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.specimen figcaption span {
+  opacity: 0.62;
+}
+
+.sizes {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(28px, 4vw, 56px);
+  margin-bottom: clamp(36px, 4vw, 56px);
+}
+
+.sizeRow {
+  display: flex;
+  /* a size ladder sits on one baseline: the numbers line up, the marks grow up */
+  align-items: flex-end;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 20px 0;
+  border-top: 1px solid var(--jk-rule);
+  border-bottom: 1px solid var(--jk-rule);
+}
+
+.sizeCell {
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  min-width: 44px;
+  color: inherit;
+}
+
+.sizeCell i {
+  font-style: normal;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: var(--jk-text-muted);
+}
+
+.sizeCell[data-divider='true'] {
+  width: 1px;
+  min-width: 1px;
+  height: 44px;
+  background: var(--jk-rule);
+}
+
+.sizeNote {
+  max-width: 52ch;
+  margin: 14px 0 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--jk-text-muted);
+}
+
+.lockupPlate {
+  display: grid;
+  place-items: center;
+  padding: 30px 20px;
+  border: 1px solid var(--jk-rule);
+  background: var(--jk-kertas);
+  color: var(--jk-tinta);
+}
+
+.specTable {
+  border-top: 1.5px solid var(--jk-text);
+  margin-bottom: clamp(36px, 4vw, 56px);
+}
+
+.specRow {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(20px, 3vw, 48px);
+  padding: 20px 0 22px;
+  border-bottom: 1px solid var(--jk-rule);
+}
+
+.specRow h4 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.022em;
+}
+
+.specRow p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--jk-text-muted);
+}
+
+.specMin {
+  margin-top: 10px !important;
+  color: var(--jk-text) !important;
+  font-size: 13px !important;
+}
+
+.specMin b {
+  display: inline-block;
+  color: var(--jk-text);
+  border-left: 3px solid var(--jk-accent);
+  padding-left: 7px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 11px;
+  margin-right: 6px;
+}
+
+.specUse {
+  margin-top: 6px !important;
+  font-size: 13px !important;
+  color: var(--jk-text-muted) !important;
+}
+
+.specRow dl {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.specRow dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 7px 0;
+  border-bottom: 1px dotted var(--jk-rule);
+  font-size: 12.5px;
+}
+
+.specRow dt {
+  color: var(--jk-text-muted);
+}
+
+.specRow dd {
+  margin: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.rules ol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 clamp(24px, 3vw, 48px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--jk-rule);
+}
+
+.rules li {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--jk-rule);
+}
+
+.rules li > span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: var(--jk-radius-full);
+  background: var(--jk-accent);
+  color: var(--jk-accent-ink);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.rules b {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+
+.rules p {
+  margin: 3px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--jk-text-muted);
+}
+
+/* ── 03 · palette ───────────────────────────────────────────────────────── */
+
+.ramps {
+  border-top: 1.5px solid var(--jk-text);
+  margin-bottom: clamp(36px, 4vw, 56px);
+}
+
+.ramp {
+  display: grid;
+  grid-template-columns: 230px 1fr 116px;
+  gap: clamp(16px, 2.4vw, 32px);
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--jk-rule);
+}
+
+.rampName b {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.018em;
+}
+
+.rampName span {
+  display: block;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--jk-text-muted);
+}
+
+.rampName em {
+  display: block;
+  margin-top: 4px;
+  font-style: normal;
+  font-size: 12.5px;
+  color: var(--jk-text-muted);
+}
+
+.rampSteps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.step {
+  display: grid;
+  gap: 5px;
+}
+
+.stepChip {
+  display: block;
+  height: 44px;
+  border-radius: var(--jk-radius-1);
+  box-shadow: inset 0 0 0 1px rgb(27 33 38 / 0.08);
+}
+
+.stepHex {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--jk-text-muted);
+}
+
+.step code {
+  font-family: var(--jk-font-code);
+  font-size: 10.5px;
+  color: var(--jk-text-muted);
+}
+
+.rampVerdict {
+  display: grid;
+  gap: 2px;
+  justify-items: end;
+  text-align: right;
+  padding-left: 12px;
+  border-left: 1px solid var(--jk-rule);
+}
+
+.rampVerdict b {
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  color: var(--jk-text);
+}
+
+.rampVerdict span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--jk-text-muted);
+}
+
+.rampVerdict span::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--jk-rule-strong);
+}
+
+.rampVerdict[data-verdict='body'] span::before {
+  background: var(--jk-daun-100);
+}
+
+.rampVerdict[data-verdict='large'] span::before {
+  background: var(--jk-accent);
+}
+
+.rampVerdict[data-verdict='ground'] span::before {
+  background: var(--jk-aspal-400);
+}
+
+.tableWrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.table th {
+  padding: 0 12px 9px 0;
+  border-bottom: 1px solid var(--jk-text);
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--jk-text-muted);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 9px 12px 9px 0;
+  border-bottom: 1px solid var(--jk-rule);
+  vertical-align: top;
+}
+
+.table td:last-child,
+.table th:last-child {
+  padding-right: 0;
+}
+
+.table code {
+  font-family: var(--jk-font-code);
+  font-size: 12px;
+  color: var(--jk-text);
+}
+
+.cellMuted {
+  color: var(--jk-text-muted);
+}
+
+.failures {
+  border-top: 1px solid var(--jk-rule);
+}
+
+.failure {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--jk-rule);
+}
+
+.failure div {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.failure b {
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.failure div span {
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--jk-text);
+  border-bottom: 2px solid var(--jk-accent);
+}
+
+.failure p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--jk-text-muted);
+}
+
+.callout {
+  margin-top: 26px;
+  padding: 20px 22px;
+  border-left: 3px solid var(--jk-accent);
+  background: var(--jk-surface-raised);
+}
+
+.callout p {
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--jk-text-muted);
+}
+
+.callout p:last-of-type {
+  margin-bottom: 0;
+}
+
+.callout b {
+  color: var(--jk-text);
+}
+
+.callout code {
+  font-family: var(--jk-font-code);
+  font-size: 0.92em;
+  color: var(--jk-text);
+}
+
+.buttonRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.btnPrimary,
+.btnQuiet {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: var(--jk-radius-2);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.btnPrimary {
+  background: var(--jk-accent);
+  color: var(--jk-accent-ink);
+}
+
+.btnQuiet {
+  border: 1.5px solid var(--jk-text);
+  color: var(--jk-text);
+}
+
+/* ── 04 · type ──────────────────────────────────────────────────────────── */
+
+.typeSpec {
+  margin-bottom: clamp(30px, 4vw, 48px);
+  padding-bottom: clamp(24px, 3vw, 36px);
+  border-bottom: 1px solid var(--jk-rule);
+}
+
+.typeBig {
+  margin: 0;
+  font-size: clamp(38px, 6.4vw, 88px);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+}
+
+.typeMid {
+  margin: 10px 0 0;
+  font-size: clamp(20px, 2.4vw, 30px);
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  color: var(--jk-text-muted);
+}
+
+.typeBody {
+  max-width: 62ch;
+  margin: 20px 0 0;
+  font-size: 16.5px;
+  line-height: 1.62;
+}
+
+.numerals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 26px;
+  margin-top: 22px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--jk-text-muted);
+}
+
+/* The ladder: eleven roles, each set at the size the token names. The specimen
+   is the token, not a picture of it — so it is set from `--s`, `--lh`, `--ls`
+   and `--w`, and the whole ladder scales by one factor on a narrow screen
+   rather than each row clamping on its own (which would collapse 104 and 72
+   into the same number and stop being a ladder). */
+.typeScale {
+  --jk-type-scale: 1;
+  margin-top: 10px;
+  border-top: 1.5px solid var(--jk-text);
+}
+
+.typeRow {
+  padding-block: 18px 20px;
+  border-bottom: 1px solid var(--jk-rule);
+}
+
+.typeMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+  margin-bottom: 10px;
+}
+
+.typeMeta code {
+  font-family: var(--jk-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  color: var(--jk-text);
+}
+
+.typeMeta span {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--jk-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.typeMeta em {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--jk-text-muted);
+}
+
+/* Flush left, at the size the token names — the specimen is the measurement. */
+.typeSample {
+  display: block;
+  margin: 0;
+  font-family: var(--jk-font-display);
+  font-size: calc(var(--s) * 1px * var(--jk-type-scale));
+  line-height: var(--lh);
+  letter-spacing: var(--ls);
+  font-weight: var(--w);
+  white-space: nowrap;
+}
+
+.foundations {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(24px, 4vw, 56px);
+  margin-top: clamp(30px, 4vw, 52px);
+}
+
+.foundation {
+  min-width: 0;
+}
+
+/* ── radius · the shape is the specimen ─────────────────────────────────── */
+
+.radiusRow {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.radiusItem {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.radiusItem > span {
+  display: block;
+  height: 64px;
+  border: 1.5px solid var(--jk-text);
+  background: var(--jk-surface-raised);
+}
+
+.radiusItem b {
+  margin-top: 5px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.radiusItem code {
+  font-family: var(--jk-font-mono);
+  font-size: 11.5px;
+  color: var(--jk-text-muted);
+}
+
+.radiusItem em {
+  font-style: normal;
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--jk-text-muted);
+}
+
+/* ── space · twelve steps, drawn at half scale ──────────────────────────── */
+
+.spaceRows {
+  margin-top: 14px;
+}
+
+.spaceRow {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) 44px;
+  gap: 10px;
+  align-items: center;
+  padding-block: 3px;
+}
+
+.spaceRow > span:first-child {
+  font-size: 10.5px;
+  color: var(--jk-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.spaceBar {
+  display: block;
+  height: 9px;
+  border-radius: 1px;
+  background: var(--jk-accent);
+}
+
+.spaceRow code {
+  font-family: var(--jk-font-mono);
+  font-size: 11px;
+  text-align: right;
+  color: var(--jk-text-muted);
+}
+
+/* ── shadow · three elevations, on the real surface ─────────────────────── */
+
+.shadowRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.shadowItem {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.shadowItem > span {
+  display: block;
+  height: 84px;
+  border-radius: var(--jk-radius-2);
+  background: var(--jk-surface-raised);
+  box-shadow: inset 0 0 0 1px var(--jk-rule);
+}
+
+.shadowItem b {
+  margin-top: 5px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.shadowItem em {
+  font-style: normal;
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--jk-text-muted);
+}
+
+/* ── motion · hover a row and it runs at that duration ──────────────────── */
+
+.motionRows {
+  margin-top: 14px;
+}
+
+.motionRow {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr) auto;
+  grid-template-areas:
+    'track step ms'
+    'track use use';
+  column-gap: 14px;
+  row-gap: 2px;
+  align-items: center;
+  padding-block: 11px;
+  border-bottom: 1px solid var(--jk-rule);
+}
+
+.motionTrack {
+  grid-area: track;
+  position: relative;
+  height: 6px;
+  border-radius: var(--jk-radius-full);
+  background: var(--jk-rule);
+}
+
+.motionTrack i {
+  position: absolute;
+  top: -4px;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--jk-accent);
+  transition: transform var(--dur, 220ms) var(--jk-ease);
+}
+
+.motionRow:hover .motionTrack i {
+  transform: translateX(118px);
+}
+
+.motionRow b {
+  grid-area: step;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.motionRow code {
+  grid-area: ms;
+  font-family: var(--jk-font-mono);
+  font-size: 11px;
+  color: var(--jk-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.motionRow em {
+  grid-area: use;
+  font-style: normal;
+  font-size: 11.5px;
+  color: var(--jk-text-muted);
+}
+
+.motionEase {
+  margin: 14px 0 0;
+  font-size: 12px;
+  color: var(--jk-text-muted);
+}
+
+.motionEase code {
+  font-family: var(--jk-font-mono);
+  font-size: 11.5px;
+  color: var(--jk-text);
+}
+
+/* ── 05 · applications ──────────────────────────────────────────────────── */
+
+/* The wall is a bento: a tall phone stage, the wide card plate beside it, a
+   panel and a livery sharing the floor. Every cell is a plate with a caption,
+   so the section reads as a specification sheet rather than a gallery. */
+.apps {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(12px, 1.6vw, 20px);
+  align-items: stretch;
+}
+
+.appCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  overflow: clip;
+  border: 1.5px solid var(--jk-text);
+  border-radius: var(--jk-radius-1);
+  background: var(--jk-surface-raised);
+  box-shadow: var(--jk-shadow-1);
+  transition:
+    transform var(--jk-dur-base) var(--jk-ease),
+    box-shadow var(--jk-dur-base) var(--jk-ease);
+}
+
+@media (hover: hover) {
+  .appCard:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--jk-shadow-3);
+  }
+}
+
+.appPhone {
+  grid-column: span 4;
+}
+
+.appWide {
+  grid-column: span 8;
+}
+
+.appSign {
+  grid-column: span 4;
+}
+
+.appLivery {
+  grid-column: span 8;
+}
+
+/* The stage is where the artifact is printed. A faint 28px grid is the
+   wayfinding drawing underneath it, not a texture. */
+.appPlate {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 1;
+  padding: clamp(18px, 2.6vw, 34px);
+  overflow: clip;
+  background-color: var(--jk-kabut);
+  background-image:
+    linear-gradient(to right, rgb(27 33 38 / 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(27 33 38 / 0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.appPlate[data-stage='ink'] {
+  background-color: var(--jk-tinta);
+  background-image:
+    linear-gradient(to right, rgb(247 244 238 / 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(247 244 238 / 0.07) 1px, transparent 1px);
+}
+
+.appPlate[data-stage='paper'] {
+  background-color: var(--jk-kertas);
+}
+
+.appPlate[data-stage='sunken'] {
+  background-color: var(--jk-kabut);
+}
+
+.stageMark {
+  position: absolute;
+  right: -12%;
+  bottom: -8%;
+  width: min(78%, 340px);
+  color: rgb(247 244 238 / 0.09);
+  pointer-events: none;
+}
+
+.stageMark svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.appCap {
+  padding: 14px 16px 16px;
+  border-top: 1.5px solid var(--jk-text);
+  background: var(--jk-surface-raised);
+}
+
+.appCapTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-bottom: 8px;
+}
+
+.appIndex {
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  height: 19px;
+  padding: 0 5px;
+  border-radius: var(--jk-radius-full);
+  background: var(--jk-accent);
+  color: var(--jk-accent-ink);
+  font-family: var(--jk-font-code);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.appCapTop b {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.appKicker {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--jk-text-muted);
+}
+
+.appCap p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--jk-text-muted);
+}
+
+.appCap code {
+  font-family: var(--jk-font-code);
+  font-size: 11.5px;
+  color: var(--jk-text);
+}
+
+.appTokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 11px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.appTokens li {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px 2px 5px;
+  border: 1px solid var(--jk-rule);
+  border-radius: var(--jk-radius-full);
+  background: var(--jk-surface);
+}
+
+.appTokens i {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgb(27 33 38 / 0.14);
+}
+
+.appTokens code {
+  font-family: var(--jk-font-code);
+  font-size: 9.5px;
+  color: var(--jk-text-muted);
+}
+
+/* ── the phone ──────────────────────────────────────────────────────────── */
+
+.phone {
+  position: relative;
+  width: min(100%, 270px);
+  aspect-ratio: 9 / 18.6;
+  padding: 9px;
+  border-radius: 34px;
+  background: var(--jk-tinta);
+  box-shadow: 0 30px 60px -24px rgb(8 12 16 / 0.7), inset 0 0 0 1px rgb(247 244 238 / 0.14);
+}
+
+.phoneScreen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 26px;
+  background: var(--jk-kabut);
+  color: var(--jk-tinta);
+}
+
+.phoneStatus {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.phoneSignal {
+  letter-spacing: 0.06em;
+  color: var(--jk-daun-100);
+}
+
+.phoneHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px 12px;
+}
+
+.phoneHead b {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.phoneHead span {
+  display: block;
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  color: var(--jk-aspal-300);
+}
+
+.phoneBody {
+  display: grid;
+  gap: 8px;
+  padding: 0 12px;
+  flex: 1;
+}
+
+.pcard {
+  padding: 11px 12px;
+  border-radius: 12px;
+  background: var(--jk-kapur);
+  box-shadow: inset 0 0 0 1px rgb(27 33 38 / 0.08);
+}
+
+.pcardInk {
+  background: var(--jk-tinta);
+  color: var(--jk-kertas);
+  box-shadow: none;
+}
+
+.pcardAccent {
+  background: var(--jk-senja-100);
+  color: var(--jk-tinta);
+  box-shadow: none;
+}
+
+.pcardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--jk-daun-300);
+  box-shadow: 0 0 0 3px rgb(107 203 122 / 0.18);
+}
+
+.pcard h5 {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.pcardBig {
+  margin: 2px 0 6px;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.pcardBig span {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin-left: 3px;
+}
+
+/* A route is a line with stops: the smallest possible drawing of the identity. */
+.proute {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 4px 0 8px;
+  color: var(--jk-kertas);
+}
+
+.proute i {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.proute span {
+  height: 2px;
+  flex: 1;
+  background: currentColor;
+  opacity: 0.42;
+}
+
+.proute .prouteEnd {
+  background: var(--jk-senja-300);
+  border-color: var(--jk-senja-300);
+}
+
+.pcardLine {
+  margin: 4px 0 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.prow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 10.5px;
+}
+
+.prow + .prow {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid currentColor;
+  border-top-color: rgb(127 127 127 / 0.18);
+}
+
+.prow span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.8;
+}
+
+.prow b {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 30px;
+  height: 15px;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: var(--jk-tinta);
+  color: var(--jk-kertas);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.badge[data-ink='transit'] {
+  background: var(--jk-laut-100);
+}
+
+.badge[data-ink='park'] {
+  background: var(--jk-daun-100);
+}
+
+.badge[data-ink='night'] {
+  background: var(--jk-langit-100);
+}
+
+.phoneTabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  padding: 10px 12px 12px;
+  border-top: 1px solid rgb(27 33 38 / 0.1);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: var(--jk-aspal-300);
+}
+
+.phoneTabs span[data-on='true'] {
+  color: var(--jk-tinta);
+  text-decoration: underline;
+  text-decoration-color: var(--jk-senja-100);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+/* ── the card ───────────────────────────────────────────────────────────── */
+
+.cardPlate {
+  display: grid;
+  place-items: center;
+  width: 100%;
+}
+
+.cardSvg {
+  display: block;
+  width: min(100%, 660px);
+  height: auto;
+  filter: drop-shadow(0 26px 40px rgb(8 12 16 / 0.5));
+}
+
+/* SVG text cannot take a `var()` in a presentation attribute, so the card's
+   type is set here, in the same tokens as the page. Every size is read off a
+   real card: 9,5 units of a 1000-unit card is 0,8mm, which is what a label
+   prints at — the old card set its label at poster size and that is why it read
+   as a diagram. */
+.cardLabel {
+  font-family: var(--jk-font-display);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  fill: var(--jk-aspal-200);
+}
+
+.cardMeta {
+  font-family: var(--jk-font-display);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 1.7px;
+  fill: var(--jk-aspal-200);
+}
+
+.cardMicro {
+  font-family: var(--jk-font-display);
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  fill: var(--jk-aspal-200);
+}
+
+.cardNumber {
+  font-family: var(--jk-font-code);
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  fill: var(--jk-tinta);
+  font-variant-numeric: tabular-nums;
+}
+
+.cardOperator {
+  font-family: var(--jk-font-display);
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 3.6px;
+  fill: var(--jk-kertas);
+}
+
+
+/* ── the panel ──────────────────────────────────────────────────────────── */
+
+.sign {
+  width: 100%;
+  max-width: 340px;
+  padding: 16px 16px 14px;
+  border: 1.5px solid var(--jk-tinta);
+  border-radius: var(--jk-radius-1);
+  background: var(--jk-kapur);
+  color: var(--jk-tinta);
+  box-shadow: 0 18px 34px -18px rgb(8 12 16 / 0.4);
+}
+
+.signHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--jk-tinta);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.signRow {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 11px 0;
+  border-bottom: 1px solid rgb(27 33 38 / 0.14);
+}
+
+.signArrow {
+  font-size: 19px;
+  line-height: 1;
+  color: var(--jk-senja-100);
+}
+
+.signArrow[data-quiet='true'] {
+  color: var(--jk-tinta);
+}
+
+.signRow b {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.signRow span {
+  display: block;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--jk-aspal-300);
+}
+
+.signFoot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 12px;
+}
+
+.signTime {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+/* ── the livery ─────────────────────────────────────────────────────────── */
+
+.livery {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  max-width: 640px;
+}
+
+/* The supplied bus, cropped to its own horizon: the source square is mostly
+   empty, so the plate takes the middle band and `cover` throws the rest away.
+   A square would push the sign and the card off the fold for no information. */
+.busPlate {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 900 / 340;
+  overflow: clip;
+  border-radius: var(--jk-radius-1);
+}
+
+.busPlate img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 50%;
+}
+
+/* One piece of vinyl on the white panel, beside the operator's wordmark. The
+   coordinates are the plate's, because `cover` fills the width exactly — and
+   they are measured, not guessed: at 62% the white panel runs from 60,6% to
+   76,5% of the plate's height, so the mark is centred at 68,5% and set at 13,2%
+   of the height. At the first attempt it was 2% too high and clipped the
+   window sill, which is the sort of thing a livery never survives. */
+.busMark {
+  position: absolute;
+  left: 62%;
+  top: 68.5%;
+  height: 13.2%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.busMark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* A ticket strip under the bus: the route is the proof that the vinyl sits on
+   a real object, not on a white rectangle. */
+.liveryRibbon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1.5px solid var(--jk-tinta);
+  border-radius: var(--jk-radius-1);
+  background: var(--jk-kertas);
+  color: var(--jk-tinta);
+}
+
+.liveryRibbon span {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.liveryRibbon b {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.liveryRibbon i {
+  flex: 1;
+  height: 4px;
+  margin-left: auto;
+  background: linear-gradient(
+    90deg,
+    var(--jk-laut-100) 0 33%,
+    var(--jk-kebayoran-100) 33% 66%,
+    var(--jk-daun-100) 66% 100%
+  );
+}
+
+/* On a narrow screen the bento folds to two columns, then to one. The phone
+   stops spanning rows at 700px, or it would push the card below the fold. */
+@media (max-width: 1000px) {
+  .apps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* a true 2 × 2: a wide card spanning both columns leaves a hole beside the
+     phone, and the hole is always in the middle of the wall */
+  .appPhone,
+  .appWide,
+  .appSign,
+  .appLivery {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 700px) {
+  .apps {
+    grid-template-columns: 1fr;
+  }
+
+  .appPhone,
+  .appWide,
+  .appSign,
+  .appLivery {
+    grid-column: span 1;
+    grid-row: auto;
+  }
+
+  .appCapTop b {
+    font-size: 14px;
+  }
+}
+
+/* ── 07 · tokens ────────────────────────────────────────────────────────── */
+
+.codeHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.codeHead > span {
+  font-family: var(--jk-font-code);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: var(--jk-text-muted);
+}
+
+.copyBtn {
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid var(--jk-rule-strong);
+  border-radius: var(--jk-radius-1);
+  background: transparent;
+  color: var(--jk-text);
+  font: inherit;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--jk-dur-fast) var(--jk-ease),
+    color var(--jk-dur-fast) var(--jk-ease);
+}
+
+.copyBtn:hover {
+  background: var(--jk-text);
+  color: var(--jk-surface);
+}
+
+.code {
+  max-width: 100%;
+  margin: 0;
+  padding: 16px 18px;
+  overflow-x: auto;
+  border-radius: var(--jk-radius-2);
+  background: #14181c;
+  color: #e8e3d9;
+  font-family: var(--jk-font-code);
+  font-size: 12px;
+  line-height: 1.62;
+  tab-size: 2;
+}
+
+.code code {
+  font-family: inherit;
+}
+
+.contract {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--jk-rule);
+}
+
+.contract li {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--jk-rule);
+  font-size: 12.5px;
+}
+
+.contract code {
+  font-family: var(--jk-font-code);
+  font-size: 12px;
+}
+
+.contract span {
+  color: var(--jk-text-muted);
+}
+
+.decisions {
+  margin-top: clamp(36px, 4vw, 56px);
+}
+
+.decisionGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--jk-rule);
+}
+
+.decision {
+  padding: 18px;
+  background: var(--jk-surface);
+}
+
+.decision h4 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.decision p {
+  margin: 0 0 8px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--jk-text-muted);
+}
+
+.decision p:last-child {
+  margin-bottom: 0;
+}
+
+.decision b {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--jk-text-muted);
+  margin-bottom: 2px;
+}
+
+/* ── 08 · audit ─────────────────────────────────────────────────────────── */
+
+.audit td {
+  font-size: 12.5px;
+}
+
+.auditCheck {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.res {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.res::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--jk-rule-strong);
+}
+
+.res[data-res='pass']::before {
+  background: var(--jk-daun-100);
+}
+
+.res[data-res='partial']::before {
+  background: var(--jk-accent);
+}
+
+.res[data-res='open']::before {
+  background: var(--jk-aspal-400);
+}
+
+.gapList {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--jk-text-muted);
+}
+
+.gapList li + li {
+  margin-top: 8px;
+}
+
+.gapList li::marker {
+  color: var(--jk-accent);
+}
+
+.shipList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1.5px solid var(--jk-text);
+}
+
+.shipList li {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 14px;
+  padding: 14px 0 15px;
+  border-bottom: 1px solid var(--jk-rule);
+}
+
+.shipList li > span {
+  font-family: var(--jk-font-code);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding-top: 2px;
+}
+
+.shipList b {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.shipList p {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--jk-text-muted);
+}
+
+.shipEnd {
+  max-width: 46ch;
+  margin: 16px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--jk-text-muted);
+}
+
+/* ── footer ─────────────────────────────────────────────────────────────── */
+
+/* The colophon sits on a city plate — the last place a photograph belongs, and
+   the only place a landmark is allowed: the brief said Monas is used small, at
+   the bottom of a page, never as the whole identity.
+
+   It is built the same way as the hero, because the page should not change its
+   grammar at the last section. The plate is screened onto the ink rather than
+   laid over it, so the footer stays dark and the city arrives as light; the
+   palette sweep is blended `color` on top, so the light is Jakarta's ten
+   colours rather than a grey photograph with a brown filter on it. The veil is
+   then only what legibility needs, not what the picture needs. */
+.foot {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding-block: clamp(56px, 7vw, 96px) 28px;
+  background: var(--jk-tinta);
+  color: var(--jk-kertas);
+}
+
+.footPlate {
+  object-fit: cover;
+  object-position: center 46%;
+  filter: grayscale(1) contrast(1.16) brightness(1.05);
+  mix-blend-mode: screen;
+  opacity: 0.4;
+  z-index: 0;
+}
+
+/* The same ten-stop sweep as the hero, at a lower opacity: at the bottom of a
+   page the colour is a memory of the hero, not a second performance. */
+.footField {
+  position: absolute;
+  inset: -8%;
+  z-index: 1;
+  background-size: cover;
+  mix-blend-mode: color;
+  filter: blur(30px) saturate(1.1);
+  opacity: 0.62;
+}
+
+.footVeil {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    180deg,
+    rgb(12 16 20 / 0.6) 0%,
+    rgb(12 16 20 / 0.4) 24%,
+    rgb(12 16 20 / 0.58) 56%,
+    rgb(12 16 20 / 0.86) 88%,
+    rgb(12 16 20 / 0.94) 100%
+  );
+}
+
+.foot > .shell {
+  position: relative;
+  z-index: 3;
+}
+
+.footGrid {
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr 1fr;
+  gap: clamp(24px, 4vw, 56px);
+  padding-bottom: clamp(32px, 4vw, 48px);
+  border-bottom: 1px solid #2c343b;
+}
+
+.footClaim {
+  max-width: 34ch;
+  margin: 16px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #b9c0c7;
+}
+
+/* the campaign line, quoted in the colophon — upright, because nothing in this
+   system is italic except the headline's second line, which is not italic either */
+.footClaim em {
+  font-style: normal;
+  color: var(--jk-kertas);
+}
+
+.foot h4 {
+  margin: 0 0 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8995a3;
+}
+
+.foot ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.foot a {
+  color: var(--jk-kertas);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.foot a:hover {
+  border-bottom-color: var(--jk-senja-100);
+}
+
+.colophon {
+  font-size: 12px !important;
+  line-height: 1.7 !important;
+  color: #b9c0c7;
+}
+
+.footMark {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 22px;
+  color: var(--jk-senja-100);
+}
+
+.footBase {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8995a3;
+}
+
+/* ── responsive ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 1080px) {
+  .topnav {
+    display: none;
+  }
+
+  .tools {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .split,
+  .sizes,
+  .foundations {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    min-height: clamp(560px, 84svh, 760px);
+    padding-block: clamp(88px, 13vh, 138px) 0;
+  }
+
+  .beats,
+  .decisionGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .specimens {
+    grid-template-columns: 1fr;
+  }
+
+  .specimen {
+    padding-block: 32px 18px;
+  }
+
+  .ramp {
+    grid-template-columns: 1fr 116px;
+    row-gap: 10px;
+  }
+
+  .rampName {
+    grid-column: 1 / -1;
+  }
+
+  .rules ol {
+    grid-template-columns: 1fr;
+  }
+
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stat:nth-child(3) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .stat:nth-child(n + 3) {
+    padding-top: 14px;
+  }
+
+  .footGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  /* on one column the meta would sit above the section number: give the head
+     three explicit rows instead of a two-column grid */
+  .secHead {
+    grid-template-columns: 1fr;
+  }
+
+  .secHead::before {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .secNum {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .secTitle {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .secMeta {
+    grid-column: 1;
+    grid-row: 4;
+    margin-top: 8px;
+  }
+
+  .hero {
+    min-height: 86svh;
+    padding-block: 84px 0;
+    /* shallower teeth on a narrow sheet: 6–28px, still uneven */
+    clip-path: polygon(
+      0 0, 100% 0, 100% 100%, 94% calc(100% - 24px), 88% calc(100% - 8px),
+      82% calc(100% - 20px), 76% calc(100% - 6px), 70% calc(100% - 26px),
+      64% calc(100% - 12px), 58% calc(100% - 22px), 52% calc(100% - 5px),
+      46% calc(100% - 18px), 40% calc(100% - 28px), 34% calc(100% - 9px),
+      28% calc(100% - 21px), 22% calc(100% - 6px), 16% calc(100% - 25px),
+      10% calc(100% - 14px), 4% calc(100% - 8px), 0% calc(100% - 19px)
+    );
+  }
+
+  .heroFloor {
+    height: 56px;
+  }
+
+  /* the plate dissolves higher up on a short hero, or it would reach the tear */
+  .heroDay,
+  .heroNight {
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 4%, #000 46%),
+      linear-gradient(180deg, #000 0 48%, transparent 86%);
+    mask-image:
+      linear-gradient(90deg, transparent 4%, #000 46%),
+      linear-gradient(180deg, #000 0 48%, transparent 86%);
+  }
+
+  .heroScrim {
+    background:
+      linear-gradient(
+        180deg,
+        rgb(8 12 16 / 0.12) 0%,
+        rgb(8 12 16 / 0) 30%,
+        rgb(8 12 16 / 0.42) 100%
+      ),
+      linear-gradient(90deg, rgb(8 12 16 / 0.18) 0%, rgb(8 12 16 / 0) 70%);
+  }
+
+  .heroInner {
+    padding-bottom: 18px;
+  }
+
+  .heroTitle {
+    font-size: clamp(24px, 6.6vw, 32px);
+    letter-spacing: -0.024em;
+  }
+
+  .heroEyebrow {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+  }
+
+  .heroPanel {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .heroMark {
+    right: -30vw;
+    bottom: 20%;
+    width: 96vw;
+    color: rgb(247 244 238 / 0.13);
+  }
+
+
+
+  /* one factor for the whole ladder, so the roles keep their order and their
+     gaps instead of each row clamping to the same width */
+  .typeScale {
+    --jk-type-scale: 0.56;
+  }
+
+  .radiusRow {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .shadowRow {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .beats,
+  .decisionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .table {
+    min-width: 540px;
+  }
+
+  .auditCheck {
+    white-space: normal;
+  }
+
+  .specRow {
+    grid-template-columns: 1fr;
+  }
+
+  .failure {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .contract li {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .footGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .footMark {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root *,
+  .root *::before,
+  .root *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .motionRow:hover .motionTrack i {
+    transform: none;
+  }
+
+  .appCard:hover {
+    transform: none;
+    box-shadow: var(--jk-shadow-1);
+  }
+
+  .heroCta:hover span,
+  .heroLink:hover span {
+    transform: none;
+  }
+}

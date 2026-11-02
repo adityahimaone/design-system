@@ -1,0 +1,40 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import { DESIGN_CASES } from '@/data/cases'
+import { CaseRenderer } from '@/components/case-renderer'
+
+export function getStaticPaths() {
+  const slugs = [
+    'bluewater',
+    'clearing',
+    'cove',
+    'hachure',
+    'huginn',
+    'jakarta',
+    'ledger',
+    'porphyry',
+    'riso',
+    'strand',
+    'vesper',
+    'vitrine',
+    'wildflower-wind',
+  ]
+  return slugs.map((slug) => {
+    const caseData = DESIGN_CASES.find((c) => c.slug === slug)
+    return {
+      params: { slug },
+      props: { caseData },
+    }
+  })
+}
+
+const { slug } = Astro.params
+const { caseData } = Astro.props
+
+const title = caseData ? `${caseData.name} — Case ${caseData.number} | Design System` : 'Design System'
+const description = caseData?.description || ''
+---
+
+<Layout title={title} description={description} canonical={`/${slug}`}>
+  <CaseRenderer slug={slug as string} client:load />
+</Layout>

@@ -1,0 +1,169 @@
+/* Porphyry — token source, v1.0. Three layers: primitive → semantic →
+   component. Namespaced --po-* so it never touches the host site's tokens.
+   The stage is the default surface; the vellum is the proof surface, scoped to
+   html[data-po='vellum'] so a theme flip never renames a primitive. */
+
+@font-face {
+  font-family: 'Cinzel';
+  src: url('/brand/porphyry/fonts/Cinzel.woff2') format('woff2');
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Jost';
+  src: url('/brand/porphyry/fonts/Jost.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pinyon Script';
+  src: url('/brand/porphyry/fonts/PinyonScript-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+.po-scope {
+  /* Theme DNA: the mark, the engraved rule and the fields all read this object */
+  --po-dna-family: architectural block;
+  --po-dna-material: porphyry + marble + gold leaf + one dark stage;
+  --po-dna-edge: 0 radius, 1px engraved rule;
+  --po-dna-offset: none — depth comes from light, never misregistration;
+  --po-dna-stroke: 0 (fill only);
+  --po-dna-tile: none;
+  --po-dna-radius: 0;
+  --po-dna-ring: 2px gold + 2px offset;
+  --po-dna-density: airy;
+  --po-dna-label: caps 0.22em Jost 500;
+  --po-dna-field-recipe: inscribed slab;
+  --po-dna-mark-form: stone block, gold threshold;
+
+  /* 1 · primitive — the stone, the light, the paper */
+  --po-stage: #160a0f;
+  --po-stage-plate: #1f1017;
+  --po-stage-sunken: #0f070a;
+  --po-porphyry: #7a1f3d;
+  --po-porphyry-deep: #4a1226;
+  --po-porphyry-ink: #a6395c;
+  --po-gold: #c9a45c;
+  --po-gold-bright: #e3c98e;
+  --po-gold-ink: #7a561f;
+  --po-marble: #f2ead9;
+  --po-marble-dim: #b7a99b;
+  --po-ink: #241017;
+  --po-vellum: #f4ecdd;
+  --po-vellum-deep: #e8ddc6;
+  --po-vellum-muted: #6f5f57;
+  --po-rule-dark: #4a3238;
+  --po-rule-light: #cdbda4;
+  --po-ember: #e08a78;
+
+  /* 2 · semantic — the stage (default) */
+  --po-surface: var(--po-stage);
+  --po-surface-raised: var(--po-stage-plate);
+  --po-surface-sunken: var(--po-stage-sunken);
+  --po-surface-loud: var(--po-porphyry);
+  --po-surface-stage: var(--po-stage);
+  --po-text: var(--po-marble);
+  --po-text-muted: var(--po-marble-dim);
+  --po-text-on-loud: var(--po-marble);
+  --po-rule: var(--po-rule-dark);
+  --po-rule-strong: var(--po-marble);
+  --po-accent: var(--po-gold);
+  --po-accent-bright: var(--po-gold-bright);
+  --po-accent-ink: var(--po-gold);
+  --po-ornament: var(--po-porphyry-ink);
+  --po-focus: var(--po-gold);
+  --po-error: var(--po-ember);
+  --po-selection: rgb(201 164 92 / 0.26);
+  --po-mark-accent: var(--po-gold);
+
+  /* 3 · component */
+  --po-button-bg: var(--po-gold);
+  --po-button-ink: var(--po-ink);
+  --po-button-quiet-bg: transparent;
+  --po-button-quiet-ink: var(--po-text);
+  --po-field-bg: var(--po-stage-sunken);
+  --po-field-edge: var(--po-rule-dark);
+  --po-field-ink: var(--po-text);
+  --po-field-invalid: var(--po-ember);
+  --po-card-bg: var(--po-stage-plate);
+  --po-card-edge: var(--po-rule-dark);
+
+  /* type */
+  --po-font-display: 'Cinzel', 'Trajan Pro', 'Times New Roman', serif;
+  --po-font-reading: 'Jost', 'Futura', 'Helvetica Neue', Arial, sans-serif;
+  --po-font-script: 'Pinyon Script', 'Snell Roundhand', cursive;
+  --po-font-mono: var(--font-geist-mono), 'Geist Mono', ui-monospace, monospace;
+  --po-scale-display: clamp(2.6rem, 1.2rem + 4.6vw, 5rem);
+  --po-scale-h2: clamp(1.8rem, 1.35rem + 1.6vw, 2.7rem);
+  --po-scale-h3: 1.25rem;
+  --po-scale-body: 1.0625rem;
+  --po-scale-small: 0.9375rem;
+  --po-scale-micro: 0.6875rem;
+  --po-label-tracking: 0.22em;
+
+  /* space, edge, motion */
+  --po-shell: min(1180px, 100% - 40px);
+  --po-gutter: clamp(20px, 4vw, 56px);
+  --po-space-1: 4px;
+  --po-space-2: 8px;
+  --po-space-3: 12px;
+  --po-space-4: 16px;
+  --po-space-5: 24px;
+  --po-space-6: 32px;
+  --po-space-7: 48px;
+  --po-space-8: 72px;
+  --po-space-9: 112px;
+  --po-radius: 0;
+  --po-rule-width: 1px;
+  --po-fast: 120ms;
+  --po-ui: 200ms;
+  --po-slow: 320ms;
+  --po-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --po-ease-in: cubic-bezier(0.7, 0, 0.18, 1);
+
+  /* the stage's light, shared with the preloader's palette */
+  --po-glow: #ffd9a0;
+  --po-vignette: rgb(9 4 6 / 0.9);
+}
+
+html[data-po='vellum'] .po-scope {
+  --po-surface: var(--po-vellum);
+  --po-surface-raised: var(--po-vellum);
+  --po-surface-sunken: var(--po-vellum-deep);
+  --po-surface-loud: var(--po-porphyry);
+  --po-surface-stage: var(--po-stage);
+  --po-text: var(--po-ink);
+  --po-text-muted: var(--po-vellum-muted);
+  --po-text-on-loud: var(--po-marble);
+  --po-rule: var(--po-rule-light);
+  --po-rule-strong: var(--po-ink);
+  --po-accent: var(--po-porphyry);
+  --po-accent-bright: var(--po-gold-ink);
+  --po-accent-ink: var(--po-gold-ink);
+  --po-ornament: var(--po-porphyry);
+  --po-focus: var(--po-porphyry);
+  --po-error: #a3362b;
+  --po-selection: rgb(122 31 61 / 0.18);
+  --po-mark-accent: var(--po-gold-ink);
+  --po-button-bg: var(--po-ink);
+  --po-button-ink: var(--po-vellum);
+  --po-button-quiet-bg: transparent;
+  --po-button-quiet-ink: var(--po-text);
+  --po-field-bg: var(--po-vellum);
+  --po-field-edge: #8c7a63;
+  --po-field-ink: var(--po-ink);
+  --po-field-invalid: #a3362b;
+  --po-card-bg: var(--po-vellum);
+  --po-card-edge: var(--po-rule-light);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .po-scope {
+    --po-fast: 1ms;
+    --po-ui: 1ms;
+    --po-slow: 1ms;
+  }
+}

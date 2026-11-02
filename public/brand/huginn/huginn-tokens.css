@@ -1,0 +1,136 @@
+/* Huginn — token source, v3.0. Three layers: primitive → semantic →
+   component. Namespaced --hg-* so it never touches the host site's tokens.
+   The night surface is scoped to html[data-huginn='night'].
+   Every name describes the cell, the field or the grid; there is no generic
+   "accent-1" to drift. */
+
+.hg-scope {
+  /* Theme DNA: the mark, the field band and the fields all read this object */
+  --hg-dna-family: constructed-track;
+  --hg-dna-material: vermilion-field + ordered-cells;
+  --hg-dna-edge: 1px ink rule, 0 radius;
+  --hg-dna-offset: 1 cell (14 units) when a cell leaves;
+  --hg-dna-stroke: 0 (fill only);
+  --hg-dna-tile: none;
+  --hg-dna-radius: 0;
+  --hg-dna-ring: 2px cobalt + 2px paper;
+  --hg-dna-density: airy;
+  --hg-dna-label: mono-caps;
+  --hg-dna-field-recipe: printed-slip;
+  --hg-dna-mark-form: cells-with-one-leaving;
+  --hg-dna-mark-grid: 64 units / 14 unit cell;
+  --hg-dna-mark-gap: 3 units;
+  --hg-dna-mark-escape: 6 units off the grid;
+
+  /* 1 · primitive — the field, the ink, the paper, the cold note */
+  --hg-field: #e2281b;
+  --hg-field-deep: #c11d12;
+  --hg-field-lift: #ff5b4a;
+  --hg-ink: #100f0e;
+  --hg-ink-deep: #080706;
+  --hg-ink-raised: #1b1815;
+  --hg-bone: #fffdf9;
+  --hg-chalk: #f4efe5;
+  --hg-sheet: #ebe5d8;
+  --hg-bone-deep: #dfd6c3;
+  --hg-bone-mute: #c9bfa9;
+  --hg-cobalt: #1b2db0;
+  --hg-cobalt-lift: #93a4ff;
+
+  /* 2 · semantic — light */
+  --hg-surface: var(--hg-chalk);
+  --hg-surface-raised: var(--hg-bone);
+  --hg-surface-sunken: var(--hg-sheet);
+  --hg-surface-field: var(--hg-field);
+  --hg-surface-stage: var(--hg-ink);
+  --hg-text: var(--hg-ink);
+  --hg-text-muted: #5c5449;
+  --hg-text-on-field: var(--hg-bone);
+  --hg-text-on-stage: var(--hg-chalk);
+  --hg-rule: var(--hg-bone-deep);
+  --hg-rule-strong: var(--hg-ink);
+  --hg-accent: #a31810;
+  --hg-accent-cold: var(--hg-cobalt);
+  --hg-escape: var(--hg-field);
+  --hg-focus: var(--hg-cobalt);
+  --hg-selection: rgb(226 40 27 / 0.2);
+
+  /* 3 · component */
+  --hg-button-bg: var(--hg-ink);
+  --hg-button-ink: var(--hg-chalk);
+  --hg-button-field-bg: var(--hg-field);
+  --hg-button-field-ink: var(--hg-bone);
+  --hg-field-bg: var(--hg-bone);
+  --hg-field-edge: #8d8271;
+  --hg-field-ink: var(--hg-ink);
+  --hg-field-invalid: #a31810;
+  --hg-card-bg: var(--hg-bone);
+  --hg-card-edge: var(--hg-bone-deep);
+
+  /* type — a Didone sets the argument, a grotesque reads, a mono counts */
+  --hg-font-display: var(--font-bodoni), 'Bodoni Moda', 'Bodoni MT', Didot,
+    'Times New Roman', serif;
+  --hg-font-reading: var(--font-geist), 'Geist', ui-sans-serif, -apple-system,
+    'Segoe UI', system-ui, sans-serif;
+  --hg-font-mono: var(--font-geist-mono), 'Geist Mono', ui-monospace, 'SF Mono',
+    Menlo, monospace;
+  --hg-scale-display: clamp(2.75rem, 1.5rem + 4.8vw, 5.25rem);
+  --hg-scale-h2: clamp(1.75rem, 1.3rem + 1.7vw, 2.6rem);
+  --hg-scale-h3: 1.25rem;
+  --hg-scale-body: 1.0625rem;
+  --hg-scale-small: 0.9375rem;
+  --hg-scale-caption: 0.8125rem;
+  --hg-scale-label: 0.6875rem;
+  --hg-leading-display: 1;
+  --hg-leading-heading: 1.1;
+  --hg-leading-body: 1.6;
+  --hg-tracking-display: -0.015em;
+  --hg-tracking-label: 0.2em;
+
+  /* space · radius · motion — the sheet has no rounded corners */
+  --hg-space-1: 4px;
+  --hg-space-2: 8px;
+  --hg-space-3: 12px;
+  --hg-space-4: 16px;
+  --hg-space-5: 24px;
+  --hg-space-6: 32px;
+  --hg-space-7: 48px;
+  --hg-space-8: 64px;
+  --hg-space-9: 96px;
+  --hg-space-10: 128px;
+  --hg-radius: 0;
+  --hg-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --hg-dur-1: 140ms;
+  --hg-dur-2: 220ms;
+  --hg-dur-3: 420ms;
+  --hg-topbar-h: 64px;
+  --hg-cell: 14px;
+}
+
+/* Night — the field is the only colour that survives */
+html[data-huginn='night'] .hg-scope,
+.hg-scope[data-huginn='night'] {
+  --hg-surface: var(--hg-ink);
+  --hg-surface-raised: var(--hg-ink-raised);
+  --hg-surface-sunken: var(--hg-ink-deep);
+  --hg-surface-stage: var(--hg-ink-deep);
+  --hg-text: var(--hg-chalk);
+  --hg-text-muted: #a89c8a;
+  --hg-text-on-field: var(--hg-bone);
+  --hg-rule: #2e2a24;
+  --hg-rule-strong: var(--hg-chalk);
+  --hg-accent: var(--hg-field-lift);
+  --hg-accent-cold: var(--hg-cobalt-lift);
+  --hg-focus: var(--hg-cobalt-lift);
+  --hg-selection: rgb(255 91 74 / 0.24);
+  --hg-button-bg: var(--hg-chalk);
+  --hg-button-ink: var(--hg-ink);
+  --hg-button-field-bg: var(--hg-field);
+  --hg-button-field-ink: var(--hg-bone);
+  --hg-field-bg: var(--hg-ink-raised);
+  --hg-field-edge: #5d5548;
+  --hg-field-ink: var(--hg-chalk);
+  --hg-field-invalid: var(--hg-field-lift);
+  --hg-card-bg: var(--hg-ink-raised);
+  --hg-card-edge: #2e2a24;
+}

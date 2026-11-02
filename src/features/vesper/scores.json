@@ -1,0 +1,213 @@
+[
+  {
+    "id": "horn",
+    "name": "Horn",
+    "round": 1,
+    "score": 100,
+    "primitives": 3,
+    "cover16": 0.1328,
+    "parts16": 1,
+    "stroke16": 0,
+    "retention": 1.063,
+    "collapse": 0,
+    "balance16": 0.0447,
+    "grid128": 0.8438,
+    "iouWorst": 0.327,
+    "iouAgainst": "post",
+    "failed": []
+  },
+  {
+    "id": "post",
+    "name": "Post",
+    "round": 2,
+    "score": 100,
+    "primitives": 1,
+    "cover16": 0.1875,
+    "parts16": 1,
+    "stroke16": 1,
+    "retention": 1,
+    "collapse": 0,
+    "balance16": 0.0313,
+    "grid128": 0.8438,
+    "iouWorst": 0.547,
+    "iouAgainst": "rung",
+    "failed": []
+  },
+  {
+    "id": "horizon",
+    "name": "Horizon",
+    "round": 1,
+    "score": 88,
+    "primitives": 4,
+    "cover16": 0.2578,
+    "parts16": 2,
+    "stroke16": 1,
+    "retention": 1.001,
+    "collapse": 0,
+    "balance16": 0.0199,
+    "grid128": 0.7344,
+    "iouWorst": 0.439,
+    "iouAgainst": "lantern",
+    "failed": [
+      "few parts (4 primitives)"
+    ]
+  },
+  {
+    "id": "horizon-star",
+    "name": "Horizon Star",
+    "round": 2,
+    "score": 88,
+    "primitives": 3,
+    "cover16": 0.1563,
+    "parts16": 2,
+    "stroke16": 0,
+    "retention": 1.202,
+    "collapse": -1,
+    "balance16": 0.0844,
+    "grid128": 0.8594,
+    "iouWorst": 0.386,
+    "iouAgainst": "rung",
+    "failed": [
+      "balanced (offset 8.4%)"
+    ]
+  },
+  {
+    "id": "lodestar",
+    "name": "Lodestar",
+    "round": 1,
+    "score": 88,
+    "primitives": 3,
+    "cover16": 0.1289,
+    "parts16": 2,
+    "stroke16": 1,
+    "retention": 1.052,
+    "collapse": -1,
+    "balance16": 0.0145,
+    "grid128": 0.8594,
+    "iouWorst": 0.678,
+    "iouAgainst": "horizon-star",
+    "failed": [
+      "distinct (IoU 0.68 vs horizon-star)"
+    ]
+  },
+  {
+    "id": "moonline",
+    "name": "Moonline",
+    "round": 2,
+    "score": 88,
+    "primitives": 2,
+    "cover16": 0.2539,
+    "parts16": 2,
+    "stroke16": 1,
+    "retention": 1.095,
+    "collapse": -1,
+    "balance16": 0.1043,
+    "grid128": 0.75,
+    "iouWorst": 0.256,
+    "iouAgainst": "horn",
+    "failed": [
+      "balanced (offset 10.4%)"
+    ]
+  },
+  {
+    "id": "way",
+    "name": "Way",
+    "round": 2,
+    "score": 88,
+    "primitives": 5,
+    "cover16": 0.2109,
+    "parts16": 1,
+    "stroke16": 1,
+    "retention": 1.133,
+    "collapse": 1,
+    "balance16": 0.059,
+    "grid128": 0.8359,
+    "iouWorst": 0.406,
+    "iouAgainst": "lantern",
+    "failed": [
+      "few parts (5 primitives)"
+    ]
+  },
+  {
+    "id": "halo",
+    "name": "Halo",
+    "round": 2,
+    "score": 75,
+    "primitives": 3,
+    "cover16": 0.1602,
+    "parts16": 7,
+    "stroke16": 1,
+    "retention": 1.244,
+    "collapse": 0,
+    "balance16": 0.0834,
+    "grid128": 0.8203,
+    "iouWorst": 0.362,
+    "iouAgainst": "ray",
+    "failed": [
+      "one piece (7 parts)",
+      "balanced (offset 8.3%)"
+    ]
+  },
+  {
+    "id": "rung",
+    "name": "Rung",
+    "round": 1,
+    "score": 75,
+    "primitives": 6,
+    "cover16": 0.1641,
+    "parts16": 1,
+    "stroke16": 1,
+    "retention": 1.067,
+    "collapse": 0,
+    "balance16": 0.0729,
+    "grid128": 0.8438,
+    "iouWorst": 0.547,
+    "iouAgainst": "post",
+    "failed": [
+      "balanced (offset 7.3%)",
+      "few parts (6 primitives)"
+    ]
+  },
+  {
+    "id": "lantern",
+    "name": "Lantern",
+    "round": 1,
+    "score": 63,
+    "primitives": 5,
+    "cover16": 0.1719,
+    "parts16": 2,
+    "stroke16": 1,
+    "retention": 1.058,
+    "collapse": 0,
+    "balance16": 0.0625,
+    "grid128": 0.6563,
+    "iouWorst": 0.439,
+    "iouAgainst": "horizon",
+    "failed": [
+      "balanced (offset 6.3%)",
+      "fills its grid (grid 66%)",
+      "few parts (5 primitives)"
+    ]
+  },
+  {
+    "id": "ray",
+    "name": "Ray",
+    "round": 1,
+    "score": 63,
+    "primitives": 7,
+    "cover16": 0.1836,
+    "parts16": 4,
+    "stroke16": 1,
+    "retention": 1.143,
+    "collapse": -3,
+    "balance16": 0.0809,
+    "grid128": 0.8906,
+    "iouWorst": 0.423,
+    "iouAgainst": "rung",
+    "failed": [
+      "one piece (4 parts)",
+      "balanced (offset 8.1%)",
+      "few parts (7 primitives)"
+    ]
+  }
+]

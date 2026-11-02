@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+  <!-- Ledger · Indigo Harbor. The plate is the water: signal at the top-left,
+       the deep pole at 58%, harbor-950 at the far corner. The lifted tile is
+       indigo-300 so it survives at 16px against the white cells. -->
+  <defs>
+    <linearGradient id="harbor" x1="0" y1="0" x2="0.53" y2="0.848" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#19398d"/>
+      <stop offset="0.58" stop-color="#001b3c"/>
+      <stop offset="1" stop-color="#050a14"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="url(#harbor)"/>
+  <g transform="translate(4 4)">
+    <rect x="1" y="1" width="8" height="8" rx="2" fill="#ffffff"/>
+    <rect x="15" y="1" width="8" height="8" rx="2" fill="#ffffff"/>
+    <rect x="1" y="15" width="8" height="8" rx="2" fill="#ffffff"/>
+    <rect x="16" y="16" width="7" height="7" rx="1.75" fill="#93aee6"/>
+  </g>
+</svg>

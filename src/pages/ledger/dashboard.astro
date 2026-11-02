@@ -1,0 +1,8 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import LedgerDashboardRoute from '@/cases/ledger/dashboard/page'
+---
+
+<Layout title="Ledger — Commerce overview" description="The live Ledger dashboard: four glass KPIs, one revenue chart, a category mix, an orders table and a returns card.">
+  <LedgerDashboardRoute client:load />
+</Layout>

@@ -1,0 +1,138 @@
+/* Bluewater Freight — three-layer tokens.
+   primitives → semantic → component. Namespaced --bw- so the case never touches
+   the host's tokens.
+
+   Deep (the night ground) is the page default. Fog is a *scope*, not a second
+   palette: `html[data-bluewater='light']` re-points the same semantic names at
+   the daylight primitives, so no component knows which ramp it is on.
+
+   Regenerate the page's swatches from features/bluewater/tokens.json; the two
+   files must never disagree. */
+
+.bw-scope {
+  /* ── DNA — the mark, the plate and the fields all read this object ────── */
+  --bw-dna-family: hull-and-waterline;
+  --bw-dna-material: deep-water-and-wake;
+  --bw-dna-edge: rule;
+  --bw-dna-offset: 2px;
+  --bw-dna-stroke: 1px;
+  --bw-dna-tile: none;
+  --bw-dna-radius: 0px;
+  --bw-dna-ring: offset-ring;
+  --bw-dna-density: measured;
+  --bw-dna-label: mono-tabular;
+
+  /* ── 1 · primitive — deep ─────────────────────────────────────────────── */
+  --bw-abyss: #040B14;
+  --bw-deep: #08141F;
+  --bw-raise: #0D1D2C;
+  --bw-ink: #E9F1F8;
+  --bw-haze: #7C93A7;
+  --bw-wake: #8FB6D6;
+  --bw-wake-ink: #04121B;
+  --bw-foam: #F4F9FD;
+
+  /* ── 1 · primitive — fog ──────────────────────────────────────────────── */
+  --bw-mist: #EDF3F8;
+  --bw-quartz: #FFFFFF;
+  --bw-slate: #07131F;
+  --bw-slate-mute: #46586A;
+  --bw-wake-deep: #17608C;
+
+  /* ── 2 · semantic — deep is the default ───────────────────────────────── */
+  --bw-surface-page: var(--bw-abyss);
+  --bw-surface-plate: var(--bw-deep);
+  --bw-surface-raise: var(--bw-raise);
+  --bw-text-primary: var(--bw-ink);
+  --bw-text-secondary: var(--bw-haze);
+  --bw-text-bright: var(--bw-foam);
+  --bw-accent: var(--bw-wake);
+  --bw-accent-ink: var(--bw-wake-ink);
+  --bw-on-photo: var(--bw-foam);
+  --bw-on-photo-muted: #A9BECD;
+  --bw-line: rgb(233 241 248 / 0.13);
+  --bw-line-strong: rgb(233 241 248 / 0.28);
+  --bw-field: rgb(143 182 214 / 0.12);
+  --bw-grid: rgb(233 241 248 / 0.07);
+  --bw-scrim: rgb(4 11 20 / 0.62);
+  --bw-focus-ring: var(--bw-wake);
+
+  /* ── type ─────────────────────────────────────────────────────────────── */
+  --bw-font-display: var(--font-archivo), 'Archivo', -apple-system, sans-serif;
+  --bw-font-reading: var(--font-inter), 'Inter', -apple-system, sans-serif;
+  --bw-font-mono: var(--font-geist-mono), 'Geist Mono', ui-monospace, monospace;
+
+  --bw-display: clamp(2.8rem, 6.2vw, 4.6rem);
+  --bw-h2: clamp(1.7rem, 2.9vw, 2.3rem);
+  --bw-h3: 1.0625rem;
+  --bw-body: 1.0625rem;
+  --bw-small: 0.9375rem;
+  --bw-caption: 0.8125rem;
+  --bw-label: 0.6875rem;
+  --bw-reading: 1.375rem;
+  --bw-track-display: -0.03em;
+  --bw-track-label: 0.16em;
+  --bw-leading-body: 1.6;
+  --bw-leading-heading: 1.06;
+
+  /* ── space · radius · motion ──────────────────────────────────────────── */
+  --bw-s1: 0.25rem;
+  --bw-s2: 0.5rem;
+  --bw-s3: 0.75rem;
+  --bw-s4: 1rem;
+  --bw-s5: 1.5rem;
+  --bw-s6: 2rem;
+  --bw-s7: 3rem;
+  --bw-s8: 4rem;
+  --bw-s9: 6rem;
+
+  --bw-r-none: 0px;
+  --bw-r-sm: 2px;
+  --bw-r-line: 1px;
+  --bw-r-pill: 9999px;
+
+  --bw-t-fast: 110ms;
+  --bw-t-base: 190ms;
+  --bw-t-slow: 340ms;
+  --bw-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --bw-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* ── 3 · component ────────────────────────────────────────────────────── */
+  --bw-btn-bg: var(--bw-accent);
+  --bw-btn-fg: var(--bw-accent-ink);
+  --bw-btn-quiet-bg: rgb(233 241 248 / 0.05);
+  --bw-btn-quiet-fg: var(--bw-text-primary);
+  --bw-field-bg: rgb(4 11 20 / 0.7);
+  --bw-field-edge: var(--bw-line-strong);
+  --bw-panel-edge: var(--bw-line);
+  --bw-row-hover: var(--bw-surface-raise);
+  --bw-rule: var(--bw-line-strong);
+  --bw-chart-line: var(--bw-accent);
+  --bw-topbar-bg: rgb(4 11 20 / 0.84);
+}
+
+/* ── fog: same names, different values. Nothing else in the case changes. ── */
+
+html[data-bluewater='light'] .bw-scope {
+  --bw-surface-page: var(--bw-mist);
+  --bw-surface-plate: var(--bw-quartz);
+  --bw-surface-raise: #F6FAFD;
+  --bw-text-primary: var(--bw-slate);
+  --bw-text-secondary: var(--bw-slate-mute);
+  --bw-text-bright: var(--bw-quartz);
+  --bw-accent: var(--bw-wake-deep);
+  --bw-accent-ink: var(--bw-quartz);
+  --bw-on-photo: var(--bw-foam);
+  /* stays cold-light in both ramps: the footer photograph is dark in fog too */
+  --bw-on-photo-muted: #A9BECD;
+  --bw-line: rgb(7 19 31 / 0.14);
+  --bw-line-strong: rgb(7 19 31 / 0.3);
+  --bw-field: rgb(23 96 140 / 0.1);
+  --bw-grid: rgb(7 19 31 / 0.08);
+  --bw-scrim: rgb(4 11 20 / 0.5);
+  --bw-focus-ring: var(--bw-wake-deep);
+
+  --bw-btn-quiet-bg: rgb(7 19 31 / 0.04);
+  --bw-field-bg: var(--bw-quartz);
+  --bw-topbar-bg: rgb(237 243 248 / 0.86);
+}

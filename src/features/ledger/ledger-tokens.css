@@ -1,0 +1,417 @@
+/* ─────────────────────────────────────────────────────────────
+   Ledger — Tactile Glass & Crisp Grid · Indigo Harbor
+   ─────────────────────────────────────────────────────────────
+
+   Every value here is scoped to `[data-ledger]`. The site's own shadcn role
+   tokens (`--background`, `--card`, `--border`…) stay untouched at :root; this
+   file swaps them for the duration of one subtree, which is the same move the
+   Sunnyside method calls a "night surface as a scope, never a second palette".
+
+   Three layers, in order: primitive → semantic → the surface recipes.
+   A theme flip only ever rewrites the semantic layer.
+
+   The material is harbor water, not zinc: every neutral carries chroma toward
+   hue 267 at the same lightness a zinc step would have had. That is what makes
+   the paper read cool rather than grey, and it is why the indigo signal does
+   not look pasted on. The deep pole (#001b3c) is the one colour that is not on
+   the lightness ramp — it is the water itself, used for the mark plate and for
+   every float shadow.
+   ───────────────────────────────────────────────────────────── */
+
+[data-ledger] {
+  /* Layer 1 — primitive. The material, named once. */
+  --lg-harbor-000: oklch(1 0 0); /* #ffffff */
+  --lg-harbor-025: oklch(0.988 0.004 271.4); /* #fafbfe */
+  --lg-harbor-050: oklch(0.97 0.008 271.3); /* #f3f5fb · the canvas */
+  --lg-harbor-100: oklch(0.955 0.011 269.5); /* #edf0f8 */
+  --lg-harbor-150: oklch(0.94 0.015 270); /* #e7ebf6 */
+  --lg-harbor-200: oklch(0.912 0.02 267.3); /* #dce2f0 · the hairline */
+  --lg-harbor-300: oklch(0.844 0.03 266.3); /* #c3cce0 */
+  --lg-harbor-400: oklch(0.716 0.044 267.5); /* #97a3c0 */
+  --lg-harbor-500: oklch(0.527 0.06 267.9); /* #5c6a8e · second ink */
+  --lg-harbor-600: oklch(0.451 0.065 269.2); /* #47547a */
+  --lg-harbor-700: oklch(0.382 0.074 270.5); /* #34406a */
+  --lg-harbor-800: oklch(0.295 0.067 269.2); /* #1f2a4e */
+  --lg-harbor-900: oklch(0.18 0.042 269.3); /* #0a1024 · the ink */
+  --lg-harbor-950: oklch(0.144 0.024 260.2); /* #050a14 */
+
+  /* The water. Off-ramp on purpose: it is bluer than its lightness allows. */
+  --lg-harbor-deep: oklch(0.224 0.072 254.3); /* #001b3c */
+
+  /* One signal, five steps. The 600 is the harbor indigo the brief named. */
+  --lg-indigo-100: oklch(0.934 0.026 268.8); /* #e2e9fb */
+  --lg-indigo-200: oklch(0.834 0.056 268.2); /* #b9c8ee */
+  --lg-indigo-300: oklch(0.751 0.087 264.5); /* #93aee6 */
+  --lg-indigo-400: oklch(0.65 0.119 264.3); /* #6a8dd8 */
+  --lg-indigo-500: oklch(0.508 0.146 265.7); /* #3d5fb8 */
+  --lg-indigo-600: oklch(0.378 0.145 264.5); /* #19398d · the harbor */
+  --lg-indigo-700: oklch(0.329 0.123 264.7); /* #142e73 */
+  --lg-indigo-ring: oklch(0.447 0.127 265.6); /* #324f9a */
+
+  /* The one second hue, and it is not a category: see the chart note below. */
+  --lg-teal-500: oklch(0.621 0.107 184.3); /* #119b8e */
+  --lg-teal-400: oklch(0.695 0.111 185.1); /* #2fb3a6 */
+
+  /* Error only. Never used for "down" — the sign carries the direction. */
+  --lg-crimson-600: oklch(0.439 0.175 14.2); /* #9b0033 */
+
+  /* Layer 2 — semantic. The job, never the material. */
+  --radius: 0.75rem;
+
+  --background: var(--lg-harbor-050);
+  --foreground: var(--lg-harbor-900);
+
+  --card: var(--lg-harbor-000);
+  --card-foreground: var(--lg-harbor-900);
+  --popover: var(--lg-harbor-025);
+  --popover-foreground: var(--lg-harbor-900);
+
+  /* The brand action. It is the one place indigo is allowed to fill a shape. */
+  --primary: var(--lg-indigo-600);
+  --primary-foreground: var(--lg-harbor-050);
+  --secondary: var(--lg-harbor-150);
+  --secondary-foreground: var(--lg-harbor-800);
+
+  --muted: var(--lg-harbor-150);
+  --muted-foreground: var(--lg-harbor-500);
+  --accent: var(--lg-harbor-150);
+  --accent-foreground: var(--lg-harbor-800);
+
+  --destructive: var(--lg-crimson-600);
+  --destructive-foreground: var(--lg-harbor-000);
+
+  --border: var(--lg-harbor-200);
+  --input: var(--lg-harbor-200);
+  --ring: var(--lg-indigo-ring);
+
+  /* One signal colour. Reserved for state, never for decoration. */
+  --signal: var(--lg-indigo-600);
+  --signal-ink: var(--lg-indigo-700);
+
+  /* The water, as a token: the mark plate and every float shadow. */
+  --deep: var(--lg-harbor-deep);
+
+  /* Data ramp — four indigo steps, then the one teal. The teal is the
+     remainder slice ("Others"), because a remainder is not a category and
+     should not compete for the same hue as one. */
+  --chart-1: var(--lg-indigo-700);
+  --chart-2: var(--lg-indigo-500);
+  --chart-3: var(--lg-indigo-400);
+  --chart-4: var(--lg-indigo-200);
+  --chart-5: var(--lg-teal-500);
+
+  --sidebar: var(--lg-harbor-100);
+  --sidebar-foreground: var(--lg-harbor-900);
+  --sidebar-primary: var(--lg-indigo-600);
+  --sidebar-primary-foreground: var(--lg-harbor-050);
+  --sidebar-accent: var(--lg-harbor-150);
+  --sidebar-accent-foreground: var(--lg-harbor-800);
+  --sidebar-border: var(--lg-harbor-200);
+  --sidebar-ring: var(--lg-indigo-ring);
+
+  /* Ambient light, not a colour. */
+  --ambient: oklch(0.62 0.09 265 / 0.16);
+
+  /* Type: the site already loads both faces, so the scope only aliases them. */
+  --font-mono: var(--font-geist-mono);
+
+  color-scheme: light;
+}
+
+/* The canvas is a surface, not a scope.
+   `[data-ledger]` carries tokens and nothing else, because Radix portals every
+   dropdown, select, tooltip and sheet to <body> — outside the subtree. A portal
+   needs the tokens; it must not inherit the page ground, or a menu would paint
+   itself the colour of the dashboard behind it. */
+[data-ledger].ledger-canvas {
+  font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* Night: next-themes puts `.dark` on <html>, so the scope has to answer to both
+   an ancestor class and its own class (for a standalone render).
+
+   The night ground is the harbor after dark, not a second palette: the same
+   hue, the same five-step indigo ramp read from the other end. */
+.dark [data-ledger],
+[data-ledger].dark {
+  --background: oklch(0.15 0.026 263.1); /* #060b16 */
+  --foreground: oklch(0.955 0.011 269.5); /* #edf0f8 */
+
+  --card: oklch(0.186 0.038 266.6); /* #0b1224 */
+  --card-foreground: oklch(0.955 0.011 269.5);
+  --popover: oklch(0.222 0.045 266); /* #111a30 */
+  --popover-foreground: oklch(0.955 0.011 269.5);
+
+  --primary: var(--lg-indigo-400);
+  --primary-foreground: oklch(0.15 0.026 263.1);
+  --secondary: oklch(0.269 0.053 266.2); /* #1a2540 */
+  --secondary-foreground: oklch(0.955 0.011 269.5);
+
+  --muted: oklch(0.269 0.053 266.2);
+  --muted-foreground: oklch(0.746 0.043 264.3); /* #9fadc9 */
+  --accent: oklch(0.31 0.059 265.8); /* #222f4e */
+  --accent-foreground: oklch(0.955 0.011 269.5);
+
+  --destructive: oklch(0.65 0.12 12.3); /* #cd6e7b */
+  --destructive-foreground: oklch(0.15 0.026 263.1);
+
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: var(--lg-indigo-400);
+
+  --signal: var(--lg-indigo-400);
+  --signal-ink: var(--lg-indigo-300);
+
+  --chart-1: var(--lg-indigo-200);
+  --chart-2: var(--lg-indigo-300);
+  --chart-3: var(--lg-indigo-400);
+  --chart-4: var(--lg-indigo-500);
+  --chart-5: var(--lg-teal-400);
+
+  --sidebar: oklch(0.186 0.038 266.6);
+  --sidebar-foreground: oklch(0.955 0.011 269.5);
+  --sidebar-primary: var(--lg-indigo-400);
+  --sidebar-primary-foreground: oklch(0.15 0.026 263.1);
+  --sidebar-accent: oklch(0.269 0.053 266.2);
+  --sidebar-accent-foreground: oklch(0.955 0.011 269.5);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: var(--lg-indigo-400);
+
+  --ambient: oklch(0.62 0.13 265 / 0.3);
+
+  color-scheme: dark;
+}
+
+@layer base {
+  /* Tailwind v4 defaults `border` to currentColor; inside the scope it should
+     mean the hairline token, the same way the standalone app did. */
+  [data-ledger] *,
+  [data-ledger] *::before,
+  [data-ledger] *::after {
+    border-color: var(--border);
+  }
+
+  [data-ledger] ::selection {
+    background-color: color-mix(in oklab, var(--signal) 18%, transparent);
+  }
+}
+
+@layer components {
+  /*
+   * .glass-panel  ≡  bg-card/65 backdrop-blur-xl
+   *                  border-black/[0.06] dark:border-white/[0.08]
+   *                  shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15)]
+   *
+   * color-mix so the panel tracks --card through a theme flip instead of
+   * pinning a literal white.
+   */
+  [data-ledger] .glass-panel {
+    background-color: color-mix(in oklab, var(--card) 65%, transparent);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    backdrop-filter: blur(24px) saturate(140%);
+    border: 1px solid rgb(0 0 0 / 0.06);
+    box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.15);
+  }
+
+  .dark [data-ledger] .glass-panel,
+  [data-ledger].dark .glass-panel {
+    border-color: rgb(255 255 255 / 0.08);
+    box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.06);
+  }
+
+  /* Panels that float above other glass — popovers, menus, tooltips.
+     The drop is tinted with the water, so a float sits on a harbor shadow
+     rather than on neutral grey. */
+  [data-ledger] .glass-float {
+    background-color: color-mix(in oklab, var(--popover) 82%, transparent);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    backdrop-filter: blur(24px) saturate(140%);
+    border: 1px solid rgb(0 0 0 / 0.07);
+    box-shadow:
+      inset 0 1px 0 0 rgb(255 255 255 / 0.18),
+      0 18px 40px -24px color-mix(in oklab, var(--deep) 55%, transparent);
+  }
+
+  .dark [data-ledger] .glass-float,
+  [data-ledger].dark .glass-float {
+    border-color: rgb(255 255 255 / 0.1);
+    box-shadow:
+      inset 0 1px 0 0 rgb(255 255 255 / 0.07),
+      0 18px 40px -24px rgb(0 0 0 / 0.7);
+  }
+
+  /* The ambient field: one static radial wash, top-right of the canvas. */
+  [data-ledger] .ambient-field::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        52rem 34rem at 100% 0%,
+        var(--ambient) 0%,
+        transparent 68%
+      ),
+      radial-gradient(
+        34rem 26rem at 88% 8%,
+        color-mix(in oklab, var(--signal) 12%, transparent) 0%,
+        transparent 72%
+      );
+  }
+
+  /* The crisp grid: 1px rules at 96px, barely there. */
+  [data-ledger] .grid-field {
+    background-image:
+      linear-gradient(to right, var(--border) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+    background-size: 96px 96px;
+    opacity: 0.28;
+    mask-image: radial-gradient(70% 60% at 100% 0%, #000 0%, transparent 78%);
+  }
+
+  /* Menus are solid, not glass. A float is glass because it sits over a panel;
+     a menu is a list someone reads, so it gets the popover colour, one hairline
+     and a harbor shadow. The drop is tinted with the water, never neutral grey.
+
+     The second selector in each pair matters: Radix portals menus to <body>, so
+     the element carries `data-ledger` on itself and has no scoped ancestor. A
+     descendant-only selector matches the tokens but not the recipe, which is the
+     same silent failure as an undefined var() — the box simply draws nothing. */
+  [data-ledger] .menu-surface,
+  [data-ledger].menu-surface {
+    background-color: var(--popover);
+    border: 1px solid color-mix(in oklab, var(--border) 78%, transparent);
+    border-radius: var(--radius);
+    box-shadow:
+      inset 0 1px 0 0 rgb(255 255 255 / 0.7),
+      0 18px 40px -24px color-mix(in oklab, var(--deep) 55%, transparent);
+  }
+
+  .dark [data-ledger] .menu-surface,
+  [data-ledger].dark .menu-surface,
+  .dark [data-ledger].menu-surface,
+  [data-ledger].dark.menu-surface {
+    border-color: rgb(255 255 255 / 0.1);
+    box-shadow:
+      inset 0 1px 0 0 rgb(255 255 255 / 0.05),
+      0 18px 40px -24px rgb(0 0 0 / 0.75);
+  }
+
+  /* Hover on a glass panel: a 2% ink veil, never a background swap. */
+  [data-ledger] .panel-hover {
+    position: relative;
+    isolation: isolate;
+  }
+
+  /* The plate the mark sits on. Deep water, not a flat navy fill: the gradient
+     runs from the signal toward the harbor so the tile has a light source at
+     the top-left, the same direction as the ambient wash on the canvas. */
+  [data-ledger] .ledger-tile,
+  [data-ledger].ledger-tile {
+    background-image: linear-gradient(
+      148deg,
+      var(--lg-indigo-600) 0%,
+      var(--lg-harbor-deep) 58%,
+      var(--lg-harbor-950) 100%
+    );
+    color: #fff;
+    box-shadow:
+      inset 0 1px 0 0 rgb(255 255 255 / 0.22),
+      inset 0 0 0 1px rgb(255 255 255 / 0.06),
+      0 1px 2px 0 color-mix(in oklab, var(--lg-harbor-deep) 45%, transparent);
+  }
+
+  /* The hero field: the one loud surface on the page, and the only place the
+     signal is allowed to fill more than a button. Two stops of the same hue, no
+     image, and it always sits behind a plate — never behind type. */
+  [data-ledger] .hero-field,
+  [data-ledger].hero-field {
+    background-color: var(--lg-indigo-200);
+    background-image:
+      radial-gradient(
+        120% 90% at 50% -20%,
+        color-mix(in oklab, var(--lg-harbor-000) 85%, transparent) 0%,
+        transparent 62%
+      ),
+      radial-gradient(
+        80% 70% at 100% 100%,
+        color-mix(in oklab, var(--lg-indigo-500) 30%, transparent) 0%,
+        transparent 70%
+      ),
+      linear-gradient(
+        180deg,
+        var(--lg-indigo-100) 0%,
+        var(--lg-indigo-200) 100%
+      );
+  }
+
+  .dark [data-ledger] .hero-field,
+  [data-ledger].dark .hero-field,
+  .dark [data-ledger].hero-field,
+  [data-ledger].dark.hero-field {
+    background-color: var(--lg-harbor-950);
+    background-image:
+      radial-gradient(
+        120% 90% at 50% -20%,
+        color-mix(in oklab, var(--lg-indigo-500) 34%, transparent) 0%,
+        transparent 62%
+      ),
+      radial-gradient(
+        80% 70% at 100% 100%,
+        color-mix(in oklab, var(--lg-indigo-700) 45%, transparent) 0%,
+        transparent 72%
+      ),
+      linear-gradient(
+        180deg,
+        var(--lg-harbor-950) 0%,
+        var(--lg-harbor-deep) 100%
+      );
+  }
+  [data-ledger] .panel-hover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background-color: transparent;
+    transition: background-color 200ms ease;
+    pointer-events: none;
+  }
+
+  [data-ledger] .panel-hover:hover::after {
+    background-color: color-mix(in oklab, var(--foreground) 2%, transparent);
+  }
+
+  .dark [data-ledger] .panel-hover:hover::after,
+  [data-ledger].dark .panel-hover:hover::after {
+    background-color: rgb(255 255 255 / 0.03);
+  }
+}
+
+@layer utilities {
+  /* Figures. Every number in the system uses these two properties. */
+  [data-ledger] .fig {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  [data-ledger] .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  [data-ledger] .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-ledger] *,
+  [data-ledger] *::before,
+  [data-ledger] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Strand Form Kit</title>
+    <link rel="stylesheet" href="strand-tokens.css" />
+    <link rel="stylesheet" href="strand-forms.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 3rem 1.5rem;
+        background: var(--st-bg, #FAF7F2);
+        color: var(--st-fg, #152026);
+        display: grid;
+        place-items: center;
+      }
+      .card {
+        max-width: 32rem;
+        width: 100%;
+        padding: 2.5rem;
+        background: var(--st-plate, #FFFFFF);
+        border: 1px solid var(--st-line, rgba(21, 32, 38, 0.08));
+        border-radius: var(--st-radius-lg, 12px);
+        box-shadow: 0 4px 20px -4px rgba(21, 32, 38, 0.06);
+      }
+      h1 {
+        margin: 0 0 0.5rem;
+        font: 700 1.75rem/1.1 var(--st-font-display);
+        letter-spacing: -0.03em;
+      }
+      p {
+        margin: 0 0 2rem;
+        color: var(--st-muted);
+        font: 400 0.9375rem/1.5 var(--st-font-reading);
+      }
+    </style>
+  </head>
+  <body class="st-scope">
+    <div class="card">
+      <h1>The Coastal Dispatch</h1>
+      <p>A quiet subscriber interface cut from the Strand design system.</p>
+      <form class="st-form" onsubmit="event.preventDefault()">
+        <div class="st-field">
+          <label class="st-label" for="email">
+            <span>Email Address</span>
+            <span>Required</span>
+          </label>
+          <input class="st-input" id="email" type="email" placeholder="aditya@example.space" required />
+        </div>
+        <div class="st-field">
+          <label class="st-label" for="notes">
+            <span>Special Requests</span>
+            <span>Optional</span>
+          </label>
+          <textarea class="st-textarea" id="notes" rows="3" placeholder="Notes on tide, salt air, or installation details…"></textarea>
+        </div>
+        <div style="display:flex;gap:0.75rem;margin-top:0.5rem">
+          <button type="submit" class="st-btn-primary">Subscribe</button>
+          <button type="button" class="st-btn-secondary">Dismiss</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

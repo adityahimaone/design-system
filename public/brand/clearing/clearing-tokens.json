@@ -1,0 +1,110 @@
+{
+  "name": "Clearing",
+  "version": "1.0",
+  "date": "2026-10-28",
+  "track": "drawn",
+  "material": "painted glass",
+  "meta": {
+    "name": "Clearing",
+    "version": "1.0.0",
+    "case": "Case 08",
+    "namespace": "--cl-",
+    "track": "drawn",
+    "family": "drawn-stag",
+    "material": "painted glass",
+    "oneSentence": "A sighting, not a sticker: painted emerald light seen through one pane of glass, a drawn stag on a tapered horizon, and an outlined wordmark."
+  },
+  "theme": {
+    "family": "drawn-stag",
+    "material": "painted glass",
+    "edge": "1px glass rim",
+    "offset": "0",
+    "stroke": "2.7px antler cut",
+    "tile": "none",
+    "radius": "16px",
+    "ring": "2px emerald",
+    "density": "editorial-clearing",
+    "label": "mono-caps",
+    "field-recipe": "emerald-painted-glass",
+    "mark-form": "drawn stag on tapered horizon"
+  },
+  "sections": [
+    "foundation",
+    "material",
+    "marks",
+    "colour",
+    "type",
+    "parts",
+    "motion",
+    "voice",
+    "applications",
+    "tokens",
+    "audit"
+  ],
+  "color": {
+    "bark": "#0E211C",
+    "emerald": "#0F4A3C",
+    "moss": "#2F7A5E",
+    "glow": "#CBDD82",
+    "cream": "#F3EDDE",
+    "hart": "#A9713F"
+  },
+  "semantic": {
+    "surfacePage": "var(--surface-page)",
+    "surfaceRaised": "var(--surface-raised)",
+    "surfaceLoud": "var(--surface-loud)",
+    "surfaceStage": "var(--surface-stage)",
+    "textPrimary": "var(--text-primary)",
+    "textSecondary": "var(--text-secondary)",
+    "accentMark": "var(--accent-mark)",
+    "accentGlint": "var(--accent-glint)",
+    "accentRare": "var(--accent-rare)"
+  },
+  "contrast": [
+    { "pair": "bark on cream", "fg": "#0E211C", "bg": "#F3EDDE", "ratio": 14.35 },
+    { "pair": "cream on emerald", "fg": "#F3EDDE", "bg": "#0F4A3C", "ratio": 8.71 },
+    { "pair": "glow on emerald", "fg": "#CBDD82", "bg": "#0F4A3C", "ratio": 6.88 },
+    { "pair": "bark on glow", "fg": "#0E211C", "bg": "#CBDD82", "ratio": 11.34 },
+    { "pair": "secondary on cream", "fg": "#4A5A50", "bg": "#F3EDDE", "ratio": 6.27 },
+    { "pair": "hart on cream (large / graphic only)", "fg": "#A9713F", "bg": "#F3EDDE", "ratio": 3.51 },
+    { "pair": "cream on dark page", "fg": "#F0EAD9", "bg": "#07130F", "ratio": 15.76 },
+    { "pair": "glow on dark raised", "fg": "#CBDD82", "bg": "#0D201A", "ratio": 11.47 }
+  ],
+  "type": {
+    "display": "Iowan Old Style",
+    "reading": "system-ui",
+    "label": "SF Mono",
+    "scale": {
+      "display": "clamp(2.5rem, 1.55rem + 3.6vw, 4.25rem)",
+      "h2": "clamp(1.75rem, 1.35rem + 1.3vw, 2.4rem)",
+      "h3": "1.1875rem",
+      "body": "1.0625rem",
+      "small": "0.9375rem",
+      "caption": "0.8125rem",
+      "label": "0.6875rem"
+    }
+  },
+  "radius": { "xs": 6, "sm": 10, "md": 16, "lg": 24, "pill": 999 },
+  "space": [4, 8, 12, 16, 24, 32, 48, 64, 96, 128],
+  "motion": {
+    "fast": 120,
+    "ui": 200,
+    "slow": 320,
+    "ease": "cubic-bezier(0.2, 0.8, 0.2, 1)"
+  },
+  "glass": {
+    "fillLight": "rgb(251 247 236 / 0.55)",
+    "fillDark": "rgb(12 29 23 / 0.58)",
+    "blur": 18,
+    "saturate": 1.35,
+    "edge": "1px solid rgb(255 255 255 / 0.5)"
+  },
+  "mark": {
+    "grid": 64,
+    "ground": 52,
+    "scale": 0.72,
+    "antlerCut": 2.7,
+    "horizonTaper": [4.2, 2.4],
+    "sizes": { "header": 34, "minimum": 24, "compact": 16, "stage": 130 }
+  }
+}

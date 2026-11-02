@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" color="#100f0e" fill="currentColor" role="img" aria-label="Huginn">
+  <title>Huginn — glyph: two cells, one leaving</title>
+  <rect x="4" y="17" width="11" height="11"/>
+  <rect x="19" y="4" width="9" height="9" fill="var(--hg-escape, #e2281b)"/>
+</svg>

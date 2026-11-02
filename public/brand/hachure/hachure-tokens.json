@@ -1,0 +1,758 @@
+{
+  "name": "Hachure",
+  "version": "1.1.0",
+  "slug": "hachure",
+  "idea": "Relief drawn by density, never by shadow.",
+  "primitives": [
+    {
+      "name": "stock",
+      "value": "#F2F4EE",
+      "role": "Cold survey paper, faintly green — the only ground"
+    },
+    {
+      "name": "stock-deep",
+      "value": "#E5E9DF",
+      "role": "The same stock, one band under"
+    },
+    {
+      "name": "ink",
+      "value": "#16211B",
+      "role": "Pine black, the printed line"
+    },
+    {
+      "name": "pine",
+      "value": "#1E3B2C",
+      "role": "Deep forest, the far ridge"
+    },
+    {
+      "name": "lichen",
+      "value": "#C9D94E",
+      "role": "Chartreuse lichen — the one loud field, fills only"
+    },
+    {
+      "name": "moss",
+      "value": "#4A6B33",
+      "role": "Lichen as type: a darker green that can carry a sentence"
+    },
+    {
+      "name": "mist",
+      "value": "#A9BBB0",
+      "role": "Valley fog, and the quiet accent under night"
+    },
+    {
+      "name": "night",
+      "value": "#0A110D",
+      "role": "A range at night, no moon"
+    },
+    {
+      "name": "alert",
+      "value": "#A82A1C",
+      "role": "Survey red — errors only, never identity"
+    }
+  ],
+  "tones": {
+    "light": [
+      "#F2F4EE",
+      "#DCE4D4",
+      "#B7C9AE",
+      "#8AA47F",
+      "#557347",
+      "#36543A",
+      "#1B2E22"
+    ],
+    "dark": [
+      "#0A110D",
+      "#13241A",
+      "#1C3626",
+      "#2A4B35",
+      "#5A8F67",
+      "#79AC87",
+      "#A6D2B0"
+    ]
+  },
+  "semantic": {
+    "light": [
+      {
+        "name": "surface",
+        "value": "#F2F4EE",
+        "role": "Page ground, band 0 m"
+      },
+      {
+        "name": "surface-alt",
+        "value": "#E5E9DF",
+        "role": "Bench panels and inset stages, 40 m"
+      },
+      {
+        "name": "sheet",
+        "value": "#C9D94E",
+        "role": "Lichen field: the one loud surface per view"
+      },
+      {
+        "name": "sheet-alt",
+        "value": "#1E3B2C",
+        "role": "Pine field, for a second quiet block"
+      },
+      {
+        "name": "on-sheet",
+        "value": "#16211B",
+        "role": "Type printed over the lichen field (10.6:1)"
+      },
+      {
+        "name": "ink",
+        "value": "#16211B",
+        "role": "Body copy, headings, structural rules"
+      },
+      {
+        "name": "ink-muted",
+        "value": "#586759",
+        "role": "Captions, bearings, spot heights"
+      },
+      {
+        "name": "rule",
+        "value": "#CBD3C6",
+        "role": "Hairline dividers and contour guides"
+      },
+      {
+        "name": "rule-strong",
+        "value": "#16211B",
+        "role": "Section rules and map margins"
+      },
+      {
+        "name": "accent",
+        "value": "#4A6B33",
+        "role": "Moss: the type-safe green for links and numerals"
+      },
+      {
+        "name": "accent-alt",
+        "value": "#3F5C4B",
+        "role": "A colder green, for secondary emphasis"
+      },
+      {
+        "name": "range-accent",
+        "value": "#557347",
+        "role": "Tone 5: the footer’s link, badge and focus colour"
+      },
+      {
+        "name": "display-a",
+        "value": "#C9D94E",
+        "role": "Lichen fill, never a paragraph"
+      },
+      {
+        "name": "display-b",
+        "value": "#1E3B2C",
+        "role": "Pine fill and the far ridge"
+      },
+      {
+        "name": "mist",
+        "value": "#A9BBB0",
+        "role": "Valley fog: disabled states and obscured ridges"
+      },
+      {
+        "name": "field",
+        "value": "#FBFCF8",
+        "role": "Input ground, a lighter sheet"
+      },
+      {
+        "name": "field-border",
+        "value": "#7E8C82",
+        "role": "Field perimeter (3.2:1)"
+      },
+      {
+        "name": "focus",
+        "value": "#16211B",
+        "role": "Keyboard focus, on paper and on the field"
+      },
+      {
+        "name": "button-bg",
+        "value": "#16211B",
+        "role": "Primary action fill"
+      },
+      {
+        "name": "button-fg",
+        "value": "#F2F4EE",
+        "role": "Primary action label"
+      },
+      {
+        "name": "button-quiet-bg",
+        "value": "#E5E9DF",
+        "role": "Secondary action fill"
+      },
+      {
+        "name": "button-quiet-fg",
+        "value": "#16211B",
+        "role": "Secondary action label"
+      },
+      {
+        "name": "alert",
+        "value": "#A82A1C",
+        "role": "Error text and the invalid field rule"
+      }
+    ],
+    "dark": [
+      {
+        "name": "surface",
+        "value": "#0A110D",
+        "role": "Night ground, band 0 m"
+      },
+      {
+        "name": "surface-alt",
+        "value": "#111B15",
+        "role": "Bench panels under night"
+      },
+      {
+        "name": "sheet",
+        "value": "#C9D94E",
+        "role": "Lichen field, unchanged at night"
+      },
+      {
+        "name": "sheet-alt",
+        "value": "#6B9A6B",
+        "role": "Pine field, read against dark stock"
+      },
+      {
+        "name": "on-sheet",
+        "value": "#16211B",
+        "role": "Type printed over the lichen field"
+      },
+      {
+        "name": "ink",
+        "value": "#E8EEE7",
+        "role": "Body copy and headings at night"
+      },
+      {
+        "name": "ink-muted",
+        "value": "#93A398",
+        "role": "Captions and bearings at night"
+      },
+      {
+        "name": "rule",
+        "value": "#1E2A22",
+        "role": "Hairlines under night"
+      },
+      {
+        "name": "rule-strong",
+        "value": "#E8EEE7",
+        "role": "Section rules and map margins"
+      },
+      {
+        "name": "accent",
+        "value": "#C9D94E",
+        "role": "Lichen is type-safe at night (12.3:1)"
+      },
+      {
+        "name": "accent-alt",
+        "value": "#A9BBB0",
+        "role": "Mist as secondary emphasis"
+      },
+      {
+        "name": "range-accent",
+        "value": "#5A8F67",
+        "role": "Tone 5 at night: the same job, moonlit"
+      },
+      {
+        "name": "display-a",
+        "value": "#C9D94E",
+        "role": "Lichen fill, never a paragraph"
+      },
+      {
+        "name": "display-b",
+        "value": "#6B9A6B",
+        "role": "The far ridge at night"
+      },
+      {
+        "name": "mist",
+        "value": "#3A4A40",
+        "role": "Valley fog under night"
+      },
+      {
+        "name": "field",
+        "value": "#111B15",
+        "role": "Input ground at night"
+      },
+      {
+        "name": "field-border",
+        "value": "#55645A",
+        "role": "Field perimeter (3.1:1)"
+      },
+      {
+        "name": "focus",
+        "value": "#E8EEE7",
+        "role": "Keyboard focus under night"
+      },
+      {
+        "name": "button-bg",
+        "value": "#E8EEE7",
+        "role": "Primary action fill"
+      },
+      {
+        "name": "button-fg",
+        "value": "#0A110D",
+        "role": "Primary action label"
+      },
+      {
+        "name": "button-quiet-bg",
+        "value": "#1B2720",
+        "role": "Secondary action fill"
+      },
+      {
+        "name": "button-quiet-fg",
+        "value": "#E8EEE7",
+        "role": "Secondary action label"
+      },
+      {
+        "name": "alert",
+        "value": "#F0917F",
+        "role": "Error text, read against dark stock"
+      }
+    ]
+  },
+  "pairs": [
+    {
+      "a": "ink",
+      "b": "surface",
+      "theme": "light",
+      "label": "Pine black on stock",
+      "use": "Body copy, headings, all reading text"
+    },
+    {
+      "a": "ink-muted",
+      "b": "surface",
+      "theme": "light",
+      "label": "Bearing on stock",
+      "use": "Captions, coordinates, spot heights"
+    },
+    {
+      "a": "on-sheet",
+      "b": "sheet",
+      "theme": "light",
+      "label": "Ink on the lichen field",
+      "use": "Every word printed on the loud field"
+    },
+    {
+      "a": "accent",
+      "b": "surface",
+      "theme": "light",
+      "label": "Moss as type",
+      "use": "Links, eyebrows, numerals"
+    },
+    {
+      "a": "display-a",
+      "b": "surface",
+      "theme": "light",
+      "label": "Lichen as type",
+      "use": "Fails 3:1. Fills only, never letters"
+    },
+    {
+      "a": "ink",
+      "b": "surface-alt",
+      "theme": "light",
+      "label": "Ink on the bench panel",
+      "use": "Panels, tables, stages"
+    },
+    {
+      "a": "button-fg",
+      "b": "button-bg",
+      "theme": "light",
+      "label": "Primary button label",
+      "use": "Actions"
+    },
+    {
+      "a": "ink",
+      "b": "field",
+      "theme": "light",
+      "label": "Text in a field",
+      "use": "Inputs and value text"
+    },
+    {
+      "a": "field-border",
+      "b": "field",
+      "theme": "light",
+      "label": "Field perimeter",
+      "use": "Non-text UI, 3:1 target"
+    },
+    {
+      "a": "alert",
+      "b": "surface",
+      "theme": "light",
+      "label": "Survey red on stock",
+      "use": "Error text, never identity"
+    },
+    {
+      "a": "ink",
+      "b": "surface",
+      "theme": "dark",
+      "label": "Stock on night",
+      "use": "Body copy and headings at night"
+    },
+    {
+      "a": "ink-muted",
+      "b": "surface",
+      "theme": "dark",
+      "label": "Bearing on night",
+      "use": "Captions and metadata"
+    },
+    {
+      "a": "accent",
+      "b": "surface",
+      "theme": "dark",
+      "label": "Lichen as type, night",
+      "use": "Links and numerals at night"
+    },
+    {
+      "a": "accent-alt",
+      "b": "surface",
+      "theme": "dark",
+      "label": "Mist as secondary type",
+      "use": "Secondary emphasis at night"
+    },
+    {
+      "a": "on-sheet",
+      "b": "sheet",
+      "theme": "dark",
+      "label": "Ink on the lichen field",
+      "use": "The field is unchanged at night"
+    },
+    {
+      "a": "button-fg",
+      "b": "button-bg",
+      "theme": "dark",
+      "label": "Primary button label",
+      "use": "Actions"
+    },
+    {
+      "a": "range-accent",
+      "b": "surface",
+      "theme": "light",
+      "label": "Range accent as type",
+      "use": "The footer’s links and badges; tone 5 of the ramp"
+    },
+    {
+      "a": "range-accent",
+      "b": "surface",
+      "theme": "dark",
+      "label": "Range accent as type, night",
+      "use": "The same role under night paper"
+    }
+  ],
+  "contrast": [
+    {
+      "label": "Pine black on stock",
+      "theme": "light",
+      "a": "#16211B",
+      "b": "#F2F4EE",
+      "ratio": 14.95,
+      "level": "AAA",
+      "use": "Body copy, headings, all reading text"
+    },
+    {
+      "label": "Bearing on stock",
+      "theme": "light",
+      "a": "#586759",
+      "b": "#F2F4EE",
+      "ratio": 5.42,
+      "level": "AA",
+      "use": "Captions, coordinates, spot heights"
+    },
+    {
+      "label": "Ink on the lichen field",
+      "theme": "light",
+      "a": "#16211B",
+      "b": "#C9D94E",
+      "ratio": 10.67,
+      "level": "AAA",
+      "use": "Every word printed on the loud field"
+    },
+    {
+      "label": "Moss as type",
+      "theme": "light",
+      "a": "#4A6B33",
+      "b": "#F2F4EE",
+      "ratio": 5.51,
+      "level": "AA",
+      "use": "Links, eyebrows, numerals"
+    },
+    {
+      "label": "Lichen as type",
+      "theme": "light",
+      "a": "#C9D94E",
+      "b": "#F2F4EE",
+      "ratio": 1.4,
+      "level": "Fail",
+      "use": "Fails 3:1. Fills only, never letters"
+    },
+    {
+      "label": "Ink on the bench panel",
+      "theme": "light",
+      "a": "#16211B",
+      "b": "#E5E9DF",
+      "ratio": 13.45,
+      "level": "AAA",
+      "use": "Panels, tables, stages"
+    },
+    {
+      "label": "Primary button label",
+      "theme": "light",
+      "a": "#F2F4EE",
+      "b": "#16211B",
+      "ratio": 14.95,
+      "level": "AAA",
+      "use": "Actions"
+    },
+    {
+      "label": "Text in a field",
+      "theme": "light",
+      "a": "#16211B",
+      "b": "#FBFCF8",
+      "ratio": 16.08,
+      "level": "AAA",
+      "use": "Inputs and value text"
+    },
+    {
+      "label": "Field perimeter",
+      "theme": "light",
+      "a": "#7E8C82",
+      "b": "#FBFCF8",
+      "ratio": 3.42,
+      "level": "AA large",
+      "use": "Non-text UI, 3:1 target"
+    },
+    {
+      "label": "Survey red on stock",
+      "theme": "light",
+      "a": "#A82A1C",
+      "b": "#F2F4EE",
+      "ratio": 6.29,
+      "level": "AA",
+      "use": "Error text, never identity"
+    },
+    {
+      "label": "Stock on night",
+      "theme": "dark",
+      "a": "#E8EEE7",
+      "b": "#0A110D",
+      "ratio": 16.21,
+      "level": "AAA",
+      "use": "Body copy and headings at night"
+    },
+    {
+      "label": "Bearing on night",
+      "theme": "dark",
+      "a": "#93A398",
+      "b": "#0A110D",
+      "ratio": 7.22,
+      "level": "AAA",
+      "use": "Captions and metadata"
+    },
+    {
+      "label": "Lichen as type, night",
+      "theme": "dark",
+      "a": "#C9D94E",
+      "b": "#0A110D",
+      "ratio": 12.3,
+      "level": "AAA",
+      "use": "Links and numerals at night"
+    },
+    {
+      "label": "Mist as secondary type",
+      "theme": "dark",
+      "a": "#A9BBB0",
+      "b": "#0A110D",
+      "ratio": 9.48,
+      "level": "AAA",
+      "use": "Secondary emphasis at night"
+    },
+    {
+      "label": "Ink on the lichen field",
+      "theme": "dark",
+      "a": "#16211B",
+      "b": "#C9D94E",
+      "ratio": 10.67,
+      "level": "AAA",
+      "use": "The field is unchanged at night"
+    },
+    {
+      "label": "Primary button label",
+      "theme": "dark",
+      "a": "#0A110D",
+      "b": "#E8EEE7",
+      "ratio": 16.21,
+      "level": "AAA",
+      "use": "Actions"
+    },
+    {
+      "label": "Range accent as type",
+      "theme": "light",
+      "a": "#557347",
+      "b": "#F2F4EE",
+      "ratio": 4.82,
+      "level": "AA",
+      "use": "The footer’s links and badges; tone 5 of the ramp"
+    },
+    {
+      "label": "Range accent as type, night",
+      "theme": "dark",
+      "a": "#5A8F67",
+      "b": "#0A110D",
+      "ratio": 5.06,
+      "level": "AA",
+      "use": "The same role under night paper"
+    }
+  ],
+  "type": [
+    {
+      "role": "display",
+      "face": "mono",
+      "weight": "700",
+      "size": "clamp(2.5rem, 7.2vw, 6.25rem)",
+      "leading": "0.92",
+      "tracking": "-0.03em",
+      "use": "Case title. One statement, never a paragraph"
+    },
+    {
+      "role": "headline",
+      "face": "mono",
+      "weight": "700",
+      "size": "clamp(1.6rem, 3.5vw, 2.75rem)",
+      "leading": "1.02",
+      "tracking": "-0.02em",
+      "use": "Section titles"
+    },
+    {
+      "role": "subhead",
+      "face": "mono",
+      "weight": "500",
+      "size": "1.0625rem",
+      "leading": "1.3",
+      "tracking": "-0.01em",
+      "use": "Panel titles and figure captions"
+    },
+    {
+      "role": "body",
+      "face": "sans",
+      "weight": "400",
+      "size": "1.0625rem",
+      "leading": "1.6",
+      "tracking": "0em",
+      "use": "Reading copy, 60–72 characters"
+    },
+    {
+      "role": "caption",
+      "face": "sans",
+      "weight": "400",
+      "size": "0.8125rem",
+      "leading": "1.5",
+      "tracking": "0em",
+      "use": "Notes, roles, image captions"
+    },
+    {
+      "role": "label",
+      "face": "mono",
+      "weight": "500",
+      "size": "0.6875rem",
+      "leading": "1.2",
+      "tracking": "0.14em",
+      "use": "Eyebrows, coordinates, table headers"
+    }
+  ],
+  "space": [
+    {
+      "name": "1",
+      "value": "4px",
+      "use": "Icon gap, tick offset"
+    },
+    {
+      "name": "2",
+      "value": "8px",
+      "use": "Bayer cell, chip padding"
+    },
+    {
+      "name": "3",
+      "value": "12px",
+      "use": "Label to value"
+    },
+    {
+      "name": "4",
+      "value": "16px",
+      "use": "Control gap"
+    },
+    {
+      "name": "5",
+      "value": "24px",
+      "use": "Panel padding, stacks"
+    },
+    {
+      "name": "6",
+      "value": "32px",
+      "use": "Grid gap"
+    },
+    {
+      "name": "7",
+      "value": "48px",
+      "use": "Block rhythm"
+    },
+    {
+      "name": "8",
+      "value": "72px",
+      "use": "Section padding, narrow"
+    },
+    {
+      "name": "9",
+      "value": "104px",
+      "use": "Section padding, wide"
+    }
+  ],
+  "motion": [
+    {
+      "name": "fast",
+      "value": "180ms",
+      "use": "Hover, focus, press"
+    },
+    {
+      "name": "base",
+      "value": "320ms",
+      "use": "Control and panel changes"
+    },
+    {
+      "name": "slow",
+      "value": "700ms",
+      "use": "Entrances and the pointer clearing"
+    },
+    {
+      "name": "reveal",
+      "value": "1400ms",
+      "use": "The range developing back to front"
+    }
+  ],
+  "component": [
+    {
+      "name": "radius",
+      "value": "0px",
+      "use": "There are no rounded corners in the system"
+    },
+    {
+      "name": "hairline",
+      "value": "1px",
+      "use": "Every rule, border and guide"
+    },
+    {
+      "name": "field-height",
+      "value": "46px",
+      "use": "Input and select height"
+    },
+    {
+      "name": "focus-width",
+      "value": "2px",
+      "use": "Keyboard focus ring"
+    },
+    {
+      "name": "focus-offset",
+      "value": "3px",
+      "use": "Keyboard focus ring offset"
+    },
+    {
+      "name": "pixel",
+      "value": "2px",
+      "use": "One dither cell on screen"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" color="#1b1712" fill="currentColor" role="img" aria-label="Riso Co.">
+  <title>Riso Co. — one-colour stamp: the pin is punched through both flaps</title>
+  <!-- fill-rule evenodd turns the pin diamond into a hole in each flap, so the
+       stamp needs one ink and no background colour. -->
+  <path fill-rule="evenodd" d="M8 9H30L35 20L27 27L36 36L30 44L38 55H17L8 47ZM32.5 6L38 11L32.5 16L27 11Z"/>
+  <path fill-rule="evenodd" d="M34 12L39 23L31 30L40 39L34 47L42 58H47L55 50V16L50 12ZM32.5 6L38 11L32.5 16L27 11Z"/>
+</svg>

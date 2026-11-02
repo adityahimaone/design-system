@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en" data-cove="night">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cove — form kit</title>
+    <link rel="stylesheet" href="./cove-tokens.css" />
+    <link rel="stylesheet" href="./cove-forms.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 48px 24px;
+        background: var(--cv-bg);
+        color: var(--cv-fg);
+        font-family: var(--cv-font-reading);
+        color-scheme: dark;
+      }
+      main {
+        width: min(520px, 100%);
+        margin-inline: auto;
+      }
+      h1 {
+        font-family: var(--cv-font-display);
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        margin: 0 0 6px;
+      }
+      .lede {
+        margin: 0 0 32px;
+        color: var(--cv-muted);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .cv-form {
+        padding: 22px;
+        border: 1px solid var(--cv-line);
+        border-radius: var(--cv-radius-md);
+        background: var(--cv-plate);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Log a reading</h1>
+      <p class="lede">
+        The portable kit: one stylesheet, the token sheet, no JavaScript and no
+        raw colour. Every control is at least 40px tall.
+      </p>
+
+      <form class="cv-form" novalidate>
+        <fieldset>
+          <legend>Station</legend>
+
+          <div class="cv-field">
+            <label class="cv-label" for="cv-station">
+              Station id <span>required</span>
+            </label>
+            <input
+              class="cv-input"
+              id="cv-station"
+              name="station"
+              value="Cove 04 · north arm"
+              autocomplete="off"
+            />
+            <p class="cv-hint">The id printed on the post, not the beach name.</p>
+          </div>
+
+          <div class="cv-field" data-invalid="true">
+            <label class="cv-label" for="cv-level">Water level</label>
+            <input
+              class="cv-input"
+              id="cv-level"
+              name="level"
+              value="1.4x"
+              inputmode="decimal"
+              aria-invalid="true"
+              aria-describedby="cv-level-error"
+            />
+            <p class="cv-error" id="cv-level-error">
+              A value has to be a number. Try 1.42.
+            </p>
+          </div>
+
+          <div class="cv-field">
+            <label class="cv-label" for="cv-unit">Unit</label>
+            <select class="cv-select" id="cv-unit" name="unit">
+              <option>metres</option>
+              <option>feet</option>
+            </select>
+          </div>
+
+          <div class="cv-field">
+            <label class="cv-label" for="cv-note">Note</label>
+            <textarea
+              class="cv-textarea"
+              id="cv-note"
+              name="note"
+              placeholder="What the water was doing."
+            ></textarea>
+          </div>
+
+          <label class="cv-check">
+            <input type="checkbox" name="threshold" checked />
+            <span>Mark this reading if it crossed 1.20 m.</span>
+          </label>
+        </fieldset>
+
+        <div class="cv-actions">
+          <button class="cv-button" data-variant="primary" type="submit">
+            Log this reading
+          </button>
+          <button class="cv-button" data-variant="secondary" type="button">
+            Export
+          </button>
+          <button class="cv-button" data-variant="ghost" type="button">
+            Discard
+          </button>
+        </div>
+      </form>
+    </main>
+  </body>
+</html>

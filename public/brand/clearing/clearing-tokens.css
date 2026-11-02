@@ -1,0 +1,125 @@
+/* Clearing — token source. Three layers: primitive → semantic → component.
+   Namespaced --cl-* so it never touches the host site's tokens.
+   Dark surface is scoped to html[data-clearing='night'] .cl-scope. */
+
+.cl-scope {
+  /* Theme DNA: the mark, the pane and the fields all read this object */
+  --cl-dna-family: drawn-track;
+  --cl-dna-material: painted-glass;
+  --cl-dna-edge: 1px hairline;
+  --cl-dna-offset: 0;
+  --cl-dna-stroke: 2.7;
+  --cl-dna-tile: none;
+  --cl-dna-radius: 16px;
+  --cl-dna-ring: 3px hart;
+  --cl-dna-density: airy;
+  --cl-dna-label: mono-caps;
+  --cl-dna-field-recipe: none (no form kit in v1.0);
+  --cl-dna-mark-form: stag-on-horizon;
+  --cl-dna-mark-grid: 64 units;
+  --cl-dna-mark-ground: 51.8–55.4;
+  --cl-dna-mark-scale: 0.72;
+
+  /* 1 · primitive */
+  --cl-bark: #0e211c;
+  --cl-emerald: #0f4a3c;
+  --cl-moss: #2f7a5e;
+  --cl-glow: #cbdd82;
+  --cl-cream: #f3edde;
+  --cl-hart: #a9713f;
+
+  /* 2 · semantic — light */
+  --cl-surface-page: var(--cl-cream);
+  --cl-surface-raised: #fbf7ec;
+  --cl-surface-sunken: #e8e0cc;
+  --cl-surface-loud: var(--cl-emerald);
+  --cl-surface-stage: #0b1f19;
+  --cl-text-primary: var(--cl-bark);
+  --cl-text-secondary: #4a5a50;
+  --cl-text-on-loud: var(--cl-cream);
+  --cl-border-subtle: rgb(14 33 28 / 0.14);
+  --cl-border-strong: rgb(14 33 28 / 0.3);
+  --cl-accent-mark: var(--cl-emerald);
+  --cl-accent-glint: var(--cl-glow);
+  --cl-accent-rare: var(--cl-hart);
+  --cl-accent-rare-ink: #8a5527;
+  --cl-glass-fill: rgb(251 247 236 / 0.55);
+  --cl-glass-dark: rgb(11 31 25 / 0.46);
+  --cl-glass-edge: rgb(255 255 255 / 0.52);
+  --cl-glass-blur: 18px;
+  --cl-focus-ring: var(--cl-hart);
+
+  /* 3 · component */
+  --cl-button-bg: var(--cl-surface-loud);
+  --cl-button-ink: var(--cl-cream);
+  --cl-card-bg: var(--cl-surface-raised);
+  --cl-shadow-pane: 0 24px 60px rgb(8 20 16 / 0.18), 0 2px 6px rgb(8 20 16 / 0.06);
+  --cl-shadow-card: inset 0 1px 0 rgb(255 255 255 / 0.6), 0 10px 30px rgb(8 20 16 / 0.06);
+
+  /* type */
+  --cl-font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino,
+    'Book Antiqua', Georgia, serif;
+  --cl-font-reading: var(--font-geist), 'Geist', ui-sans-serif, -apple-system,
+    'Segoe UI', system-ui, sans-serif;
+  --cl-font-mono: var(--font-geist-mono), 'Geist Mono', ui-monospace, 'SF Mono',
+    Menlo, monospace;
+  --cl-scale-display: clamp(2.5rem, 1.55rem + 3.6vw, 4.25rem);
+  --cl-scale-h2: clamp(1.75rem, 1.35rem + 1.3vw, 2.4rem);
+  --cl-scale-h3: 1.1875rem;
+  --cl-scale-body: 1.0625rem;
+  --cl-scale-small: 0.9375rem;
+  --cl-scale-caption: 0.8125rem;
+  --cl-scale-label: 0.6875rem;
+  --cl-leading-display: 1.05;
+  --cl-leading-heading: 1.1;
+  --cl-leading-body: 1.6;
+  --cl-tracking-display: -0.014em;
+  --cl-tracking-label: 0.16em;
+
+  /* space · radius · motion */
+  --cl-space-1: 4px;
+  --cl-space-2: 8px;
+  --cl-space-3: 12px;
+  --cl-space-4: 16px;
+  --cl-space-5: 24px;
+  --cl-space-6: 32px;
+  --cl-space-7: 48px;
+  --cl-space-8: 64px;
+  --cl-space-9: 96px;
+  --cl-space-10: 128px;
+  --cl-radius-xs: 6px;
+  --cl-radius-sm: 10px;
+  --cl-radius-md: 16px;
+  --cl-radius-lg: 24px;
+  --cl-radius-pill: 999px;
+  --cl-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --cl-dur-1: 120ms;
+  --cl-dur-2: 200ms;
+  --cl-dur-3: 320ms;
+  --cl-topbar-h: 64px;
+}
+
+/* Night forest — the same six inks, read in the dark */
+html[data-clearing='night'] .cl-scope,
+.cl-scope[data-clearing='night'] {
+  --cl-surface-page: #07130f;
+  --cl-surface-raised: #0c1d17;
+  --cl-surface-sunken: #040c09;
+  --cl-surface-loud: var(--cl-glow);
+  --cl-surface-stage: #04100c;
+  --cl-text-primary: #f0ead9;
+  --cl-text-secondary: #9db3a8;
+  --cl-text-on-loud: #0e211c;
+  --cl-border-subtle: rgb(240 234 217 / 0.14);
+  --cl-border-strong: rgb(240 234 217 / 0.3);
+  --cl-accent-mark: var(--cl-glow);
+  --cl-accent-rare-ink: #d89b63;
+  --cl-glass-fill: rgb(12 29 23 / 0.58);
+  --cl-glass-dark: rgb(4 16 12 / 0.55);
+  --cl-glass-edge: rgb(255 255 255 / 0.16);
+  --cl-focus-ring: var(--cl-glow);
+  --cl-button-bg: var(--cl-glow);
+  --cl-button-ink: #0e211c;
+  --cl-shadow-pane: 0 24px 60px rgb(0 0 0 / 0.5);
+  --cl-shadow-card: inset 0 1px 0 rgb(255 255 255 / 0.05), 0 10px 30px rgb(0 0 0 / 0.3);
+}

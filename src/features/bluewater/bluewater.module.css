@@ -1,0 +1,1408 @@
+/* Bluewater Freight — the case stylesheet.
+   Every value comes from bluewater-tokens.css. Nothing here invents a colour,
+   a radius or a duration: if a number is needed and the token file does not
+   have it, the token file is wrong. */
+
+.page {
+  --page-pad: clamp(1.25rem, 4vw, 4rem);
+  --measure: 1180px;
+
+  background: var(--bw-surface-page);
+  color: var(--bw-text-primary);
+  font-family: var(--bw-font-reading);
+  font-size: var(--bw-body);
+  line-height: var(--bw-leading-body);
+  overflow-x: clip;
+  position: relative;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+}
+
+.skip:focus-visible {
+  left: var(--bw-s4);
+  top: var(--bw-s4);
+  z-index: 60;
+  background: var(--bw-accent);
+  color: var(--bw-accent-ink);
+  padding: var(--bw-s2) var(--bw-s4);
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-caption);
+}
+
+/* ── shared furniture ────────────────────────────────────────────────────── */
+
+.wrap {
+  width: 100%;
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding-inline: var(--page-pad);
+}
+
+.section {
+  padding-block: clamp(3.5rem, 8vw, 6.5rem);
+  border-top: 1px solid var(--bw-line);
+}
+
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--bw-s4);
+  max-width: 62ch;
+}
+
+.eyebrow {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: var(--bw-track-label);
+  text-transform: uppercase;
+  color: var(--bw-text-secondary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--bw-s3);
+}
+
+.eyebrow::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--bw-accent);
+}
+
+.h2 {
+  font-family: var(--bw-font-display);
+  font-size: var(--bw-h2);
+  line-height: var(--bw-leading-heading);
+  letter-spacing: var(--bw-track-display);
+  font-weight: 620;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.h3 {
+  font-family: var(--bw-font-display);
+  font-size: var(--bw-h3);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  font-weight: 620;
+  margin: 0;
+}
+
+.lede {
+  margin: 0;
+  font-size: 1.0625rem;
+  color: var(--bw-text-secondary);
+  max-width: 58ch;
+  text-wrap: pretty;
+}
+
+.prose {
+  margin: 0 0 var(--bw-s4);
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+.prose:last-child {
+  margin-bottom: 0;
+}
+
+.mono {
+  font-family: var(--bw-font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+/* ── topbar ──────────────────────────────────────────────────────────────── */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bw-s4);
+  padding: var(--bw-s3) var(--page-pad);
+  background: var(--bw-topbar-bg);
+  backdrop-filter: blur(14px) saturate(120%);
+  border-bottom: 1px solid var(--bw-line);
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: var(--bw-s4);
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bw-text-secondary);
+}
+
+.navLinks a {
+  color: inherit;
+  text-decoration: none;
+  padding-block: var(--bw-s1);
+  border-bottom: 1px solid transparent;
+  transition: color var(--bw-t-fast) var(--bw-ease-out), border-color var(--bw-t-fast) var(--bw-ease-out);
+}
+
+.navLinks a:hover {
+  color: var(--bw-text-primary);
+  border-bottom-color: var(--bw-accent);
+}
+
+.navLinks a:focus-visible {
+  outline: 2px solid var(--bw-focus-ring);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .navLinks {
+    display: none;
+  }
+}
+
+/* ── brand ───────────────────────────────────────────────────────────────── */
+
+.lockup {
+  display: inline-block;
+  position: relative;
+  flex: none;
+  line-height: 0;
+}
+
+.mark {
+  display: inline-block;
+  position: relative;
+  flex: none;
+  line-height: 0;
+}
+
+.lockup img,
+.mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.lockup img:last-child,
+.mark img:last-child {
+  display: none;
+}
+
+:global(html[data-bluewater='light']) .lockup img:first-child,
+:global(html[data-bluewater='light']) .mark img:first-child {
+  display: none;
+}
+
+:global(html[data-bluewater='light']) .lockup img:last-child,
+:global(html[data-bluewater='light']) .mark img:last-child {
+  display: block;
+}
+
+/* "onlyDeep / onlyFog" exist for the places that stack both inks outside the
+   swap (the board and the mark tiles), where both must be visible at once. */
+.onlyDeep {
+  display: block;
+}
+
+.onlyFog {
+  display: none;
+}
+
+/* ── ramp toggle ─────────────────────────────────────────────────────────── */
+
+.rampToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  padding: 2px;
+  border: 1px solid var(--bw-line-strong);
+  border-radius: var(--bw-r-sm);
+  background: var(--bw-btn-quiet-bg);
+}
+
+.rampButton {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--bw-text-secondary);
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.7rem;
+  border-radius: 1px;
+  cursor: pointer;
+  transition: background var(--bw-t-fast) var(--bw-ease-out), color var(--bw-t-fast) var(--bw-ease-out);
+}
+
+.rampButton:hover {
+  color: var(--bw-text-primary);
+}
+
+.rampButtonOn {
+  background: var(--bw-accent);
+  color: var(--bw-accent-ink);
+}
+
+.rampButton:focus-visible {
+  outline: 2px solid var(--bw-focus-ring);
+  outline-offset: 2px;
+}
+
+/* ── crossing: the fullwidth hero ────────────────────────────────────────── */
+/* 100vw, not a padded container. Nothing insets the photograph — that is the
+   whole point of the section. */
+
+.crossing {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  min-height: min(92svh, 900px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.crossingMedia {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+.crossingMedia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 62%;
+}
+
+.crossingScrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(
+      to top,
+      var(--bw-abyss) 0%,
+      rgb(4 11 20 / 0.86) 28%,
+      rgb(4 11 20 / 0.44) 58%,
+      rgb(4 11 20 / 0.08) 100%
+    );
+}
+
+.crossingBody {
+  width: 100%;
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding: 0 var(--page-pad) clamp(2rem, 5vw, 3.5rem);
+  display: grid;
+  gap: var(--bw-s5);
+}
+
+.crossingLine {
+  font-family: var(--bw-font-display);
+  font-size: var(--bw-display);
+  line-height: 1.02;
+  letter-spacing: var(--bw-track-display);
+  font-weight: 640;
+  margin: 0;
+  max-width: 22ch;
+  color: var(--bw-foam);
+  text-wrap: balance;
+}
+
+.crossingLine em {
+  font-style: normal;
+  color: var(--bw-accent);
+}
+
+.crossingLede {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 1.0625rem;
+  color: rgb(233 241 248 / 0.78);
+  text-wrap: pretty;
+}
+
+.voyage {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border-top: 1px solid rgb(233 241 248 / 0.2);
+  padding-top: var(--bw-s3);
+}
+
+.voyageItem {
+  display: grid;
+  gap: 2px;
+  padding-right: clamp(1.25rem, 4vw, 2.75rem);
+  margin-right: clamp(1.25rem, 4vw, 2.75rem);
+  border-right: 1px solid rgb(233 241 248 / 0.14);
+}
+
+.voyageItem:last-child {
+  border-right: 0;
+  margin-right: 0;
+  padding-right: 0;
+}
+
+.voyageKey {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(233 241 248 / 0.6);
+}
+
+.voyageValue {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--bw-foam);
+}
+
+.crossingStats {
+  width: 100%;
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding: 0 var(--page-pad);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid rgb(233 241 248 / 0.16);
+  padding-bottom: var(--bw-s3);
+}
+
+.stat {
+  padding: var(--bw-s4) 0 var(--bw-s3);
+}
+
+.stat + .stat {
+  padding-left: var(--bw-s4);
+  border-left: 1px solid rgb(233 241 248 / 0.12);
+}
+
+.statValue {
+  display: block;
+  font-family: var(--bw-font-display);
+  font-size: 1.5rem;
+  font-weight: 620;
+  letter-spacing: -0.02em;
+  color: var(--bw-foam);
+  font-variant-numeric: tabular-nums;
+}
+
+.statLabel {
+  display: block;
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(233 241 248 / 0.58);
+  margin-top: 2px;
+}
+
+@media (max-width: 720px) {
+  .crossingStats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .stat:nth-child(3) {
+    border-left: 0;
+    padding-left: 0;
+  }
+}
+
+/* ── charter ─────────────────────────────────────────────────────────────── */
+
+.charterGrid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.15fr) minmax(0, 0.8fr)
+    minmax(0, 15rem);
+  gap: clamp(2rem, 5vw, 3.5rem);
+  align-items: start;
+  margin-top: var(--bw-s6);
+}
+
+@media (max-width: 860px) {
+  .charterGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.essenceList {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--bw-line);
+}
+
+.essenceRow {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: var(--bw-s4);
+  padding: var(--bw-s3) 0;
+  border-bottom: 1px solid var(--bw-line);
+  align-items: baseline;
+}
+
+.essenceKey {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bw-text-secondary);
+}
+
+.essenceValue {
+  font-size: var(--bw-small);
+}
+
+/* ── grain ───────────────────────────────────────────────────────────────── */
+
+.grainGrid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: var(--bw-s4);
+  margin-top: var(--bw-s6);
+}
+
+.grainWide {
+  grid-row: span 2;
+}
+
+.figure {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  background: var(--bw-surface-plate);
+  border: 1px solid var(--bw-line);
+  aspect-ratio: 16 / 10;
+}
+
+.grainWide .figure,
+.grainWide figure {
+  aspect-ratio: auto;
+  height: 100%;
+}
+
+.figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.figure figcaption {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding: var(--bw-s3) var(--bw-s4);
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bw-foam);
+  background: linear-gradient(to top, rgb(4 11 20 / 0.88), transparent);
+}
+
+@media (max-width: 760px) {
+  .grainGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .grainWide {
+    grid-row: auto;
+  }
+  .grainWide figure {
+    aspect-ratio: 16 / 10;
+    height: auto;
+  }
+}
+
+/* ── keel: the mark ──────────────────────────────────────────────────────── */
+
+.markGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1px;
+  background: var(--bw-line);
+  border: 1px solid var(--bw-line);
+  margin-top: var(--bw-s6);
+}
+
+.markTile {
+  display: grid;
+  place-items: center;
+  gap: var(--bw-s3);
+  background: var(--bw-surface-plate);
+  padding: var(--bw-s6) var(--bw-s3) var(--bw-s4);
+}
+
+.markTileCaption {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bw-text-secondary);
+  text-align: center;
+}
+
+.markTileNote {
+  font-size: var(--bw-caption);
+  color: var(--bw-text-secondary);
+  text-align: center;
+  max-width: 18ch;
+  line-height: 1.4;
+}
+
+.ruleList {
+  display: grid;
+  gap: 1px;
+  background: var(--bw-line);
+  border: 1px solid var(--bw-line);
+  margin-top: var(--bw-s6);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.rule {
+  background: var(--bw-surface-page);
+  padding: var(--bw-s5);
+}
+
+.ruleTitle {
+  font-family: var(--bw-font-display);
+  font-size: 0.9375rem;
+  font-weight: 620;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--bw-s2);
+}
+
+.ruleBody {
+  margin: 0;
+  font-size: var(--bw-caption);
+  color: var(--bw-text-secondary);
+  line-height: 1.55;
+}
+
+/* ── signal: palette + contrast ──────────────────────────────────────────── */
+
+.paletteGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1px;
+  background: var(--bw-line);
+  border: 1px solid var(--bw-line);
+  margin-top: var(--bw-s5);
+}
+
+.swatch {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: var(--bw-s3);
+  align-items: start;
+  background: var(--bw-surface-page);
+  padding: var(--bw-s3) var(--bw-s4);
+}
+
+.swatchChip {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--bw-line-strong);
+  border-radius: var(--bw-r-none);
+}
+
+.swatchName {
+  display: block;
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-caption);
+  color: var(--bw-text-primary);
+}
+
+.swatchHex {
+  display: block;
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  color: var(--bw-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 1px;
+}
+
+.swatchRole {
+  font-size: var(--bw-caption);
+  color: var(--bw-text-secondary);
+  line-height: 1.45;
+  margin-top: var(--bw-s1);
+}
+
+.subhead {
+  margin: var(--bw-s7) 0 var(--bw-s4);
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: var(--bw-track-label);
+  text-transform: uppercase;
+  color: var(--bw-text-secondary);
+}
+
+.tableWrap {
+  border: 1px solid var(--bw-line);
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--bw-small);
+}
+
+.table th {
+  text-align: left;
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bw-text-secondary);
+  font-weight: 400;
+  padding: var(--bw-s3) var(--bw-s4);
+  border-bottom: 1px solid var(--bw-line-strong);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: var(--bw-s3) var(--bw-s4);
+  border-bottom: 1px solid var(--bw-line);
+  vertical-align: top;
+}
+
+.table tr:last-child td {
+  border-bottom: 0;
+}
+
+.table tbody tr:hover {
+  background: var(--bw-row-hover);
+}
+
+.num {
+  font-family: var(--bw-font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.pass,
+.fail {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pass {
+  color: var(--bw-accent);
+}
+
+.fail {
+  color: var(--bw-text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--bw-accent);
+  text-underline-offset: 3px;
+}
+
+/* ── manifest: type + the table it types ─────────────────────────────────── */
+
+.typeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1px;
+  background: var(--bw-line);
+  border: 1px solid var(--bw-line);
+  margin-top: var(--bw-s6);
+}
+
+.typeCard {
+  background: var(--bw-surface-page);
+  padding: var(--bw-s5);
+  display: grid;
+  gap: var(--bw-s3);
+  align-content: start;
+}
+
+.typeVoice {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bw-accent);
+}
+
+.typeSample {
+  font-size: 1.5rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.typeSampleDisplay {
+  font-family: var(--bw-font-display);
+  font-weight: 620;
+  letter-spacing: var(--bw-track-display);
+  font-size: 1.75rem;
+}
+
+.typeSampleMono {
+  font-family: var(--bw-font-mono);
+  font-size: 1.0625rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+.typeMeta {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  color: var(--bw-text-secondary);
+  letter-spacing: 0.06em;
+}
+
+.manifestTable {
+  margin-top: var(--bw-s6);
+}
+
+.state {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bw-text-secondary);
+}
+
+.stateLive {
+  color: var(--bw-accent);
+}
+
+/* The status rail: a 2px bar in the signal, on the row that is moving. An
+   inset shadow on the first cell rather than an absolutely positioned bar on
+   the <tr> — `position: relative` on a table row is still not reliable, and the
+   bar has to sit on the cell edge, not on the row's paint box. */
+.railCell {
+  box-shadow: inset 2px 0 0 var(--bw-accent);
+}
+
+/* ── wake: the parts ─────────────────────────────────────────────────────── */
+
+.partsGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 5vw, 3.5rem);
+  margin-top: var(--bw-s6);
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .partsGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.partList {
+  display: grid;
+  gap: var(--bw-s4);
+}
+
+.partItem {
+  border-top: 1px solid var(--bw-line);
+  padding-top: var(--bw-s3);
+}
+
+.partName {
+  font-family: var(--bw-font-display);
+  font-weight: 620;
+  font-size: 0.9375rem;
+  margin: 0 0 var(--bw-s1);
+}
+
+.partDetail {
+  margin: 0;
+  font-size: var(--bw-caption);
+  color: var(--bw-text-secondary);
+  line-height: 1.55;
+}
+
+.kit {
+  border: 1px solid var(--bw-line);
+  background: var(--bw-surface-plate);
+  padding: var(--bw-s5);
+  display: grid;
+  gap: var(--bw-s4);
+}
+
+.kitRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bw-s3);
+  align-items: center;
+}
+
+.field {
+  display: grid;
+  gap: var(--bw-s2);
+}
+
+.fieldLabel {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bw-text-secondary);
+}
+
+.input {
+  appearance: none;
+  width: 100%;
+  background: var(--bw-field-bg);
+  border: 1px solid var(--bw-field-edge);
+  border-radius: var(--bw-r-sm);
+  color: var(--bw-text-primary);
+  font-family: var(--bw-font-mono);
+  /* 16px, not 15: anything under 16 makes iOS Safari zoom the viewport on
+     focus, which is a layout bug disguised as a typography choice. */
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+  padding: 0.7rem var(--bw-s3);
+  min-height: 44px;
+  transition: border-color var(--bw-t-fast) var(--bw-ease-out);
+}
+
+.input::placeholder {
+  color: var(--bw-text-secondary);
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--bw-focus-ring);
+  outline-offset: 2px;
+  border-color: var(--bw-accent);
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid var(--bw-btn-bg);
+  background: var(--bw-btn-bg);
+  color: var(--bw-btn-fg);
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-caption);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0 1.1rem;
+  min-height: 44px;
+  border-radius: var(--bw-r-none);
+  cursor: pointer;
+  transition: filter var(--bw-t-fast) var(--bw-ease-out), transform var(--bw-t-fast) var(--bw-ease-out);
+}
+
+.btn:hover {
+  filter: brightness(1.06);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--bw-focus-ring);
+  outline-offset: 2px;
+}
+
+.btnQuiet {
+  background: var(--bw-btn-quiet-bg);
+  color: var(--bw-btn-quiet-fg);
+  border-color: var(--bw-line-strong);
+}
+
+/* ── chart ───────────────────────────────────────────────────────────────── */
+
+.chartPlate {
+  margin-top: var(--bw-s6);
+  border: 1px solid var(--bw-line);
+  background: var(--bw-surface-plate);
+  padding: var(--bw-s5);
+}
+
+.chartHead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--bw-s3);
+  align-items: baseline;
+  margin-bottom: var(--bw-s4);
+}
+
+.chartLegend {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bw-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--bw-s2);
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--bw-r-pill);
+  background: var(--bw-accent);
+}
+
+.chartSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.chartAxis {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  color: var(--bw-text-secondary);
+  letter-spacing: 0.08em;
+  margin-top: var(--bw-s2);
+}
+
+.route {
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  animation: draw var(--bw-t-slow) var(--bw-ease-out) forwards;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .btn,
+  .navLinks a,
+  .rampButton,
+  .input {
+    transition: none;
+  }
+}
+
+/* ── survey: audit, gaps, decisions ──────────────────────────────────────── */
+
+.auditBlock {
+  margin-top: var(--bw-s6);
+}
+
+.gaps {
+  display: grid;
+  gap: var(--bw-s3);
+  margin: var(--bw-s4) 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: gap;
+}
+
+.gaps li {
+  counter-increment: gap;
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: var(--bw-s3);
+  padding-top: var(--bw-s3);
+  border-top: 1px solid var(--bw-line);
+  font-size: var(--bw-small);
+  color: var(--bw-text-secondary);
+  text-wrap: pretty;
+}
+
+.gaps li::before {
+  content: 'G' counter(gap);
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.1em;
+  color: var(--bw-accent);
+  padding-top: 2px;
+}
+
+.decisions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1px;
+  background: var(--bw-line);
+  border: 1px solid var(--bw-line);
+  margin-top: var(--bw-s5);
+}
+
+.decision {
+  background: var(--bw-surface-page);
+  padding: var(--bw-s5);
+}
+
+.decisionTook {
+  font-family: var(--bw-font-display);
+  font-weight: 620;
+  font-size: 0.9375rem;
+  margin: 0 0 var(--bw-s1);
+}
+
+.decisionOver {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bw-text-secondary);
+  margin: 0 0 var(--bw-s2);
+}
+
+.decisionWhy {
+  margin: 0;
+  font-size: var(--bw-caption);
+  color: var(--bw-text-secondary);
+  line-height: 1.55;
+}
+
+/* ── footer ──────────────────────────────────────────────────────────────── */
+
+/* footer rules live at the end of this file, over the plate */
+
+/* ── side figures ───────────────────────────────────────────────────────────
+   One portrait plate per section, keyed to the same abyss as the page. They
+   are cropped from the three supplied photographs rather than new art: the
+   brief gave three plates, so the system reuses them instead of inventing a
+   fourth look. */
+
+.withSide {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 17rem);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: start;
+  margin-top: var(--bw-s5);
+}
+
+.sideFig {
+  margin: 0;
+  display: grid;
+  gap: var(--bw-s2);
+  position: sticky;
+  top: var(--bw-s6);
+}
+
+.sideFigImg {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+  border: 1px solid var(--bw-line);
+}
+
+.sideFigCap {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bw-text-secondary);
+  line-height: 1.7;
+}
+
+.sideFigCap::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 1px;
+  background: var(--bw-accent);
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .withSide {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sideFig {
+    position: static;
+    max-width: 22rem;
+  }
+}
+
+/* ── typography ─────────────────────────────────────────────────────────────
+   The specimen is set at the sizes the system actually ships, not at a
+   showcase size. Each voice gets a rail of measured facts beside it so the
+   section argues from numbers rather than adjectives. */
+
+.typeSpec {
+  margin-top: var(--bw-s6);
+  border-top: 1px solid var(--bw-line);
+}
+
+.typeRow {
+  display: grid;
+  grid-template-columns: 13rem minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  padding-block: clamp(1.75rem, 3.5vw, 2.75rem);
+  border-bottom: 1px solid var(--bw-line);
+  align-items: start;
+}
+
+.typeRail {
+  display: grid;
+  gap: var(--bw-s2);
+  margin: 0;
+}
+
+.typeRailKey {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bw-accent);
+}
+
+.typeRailFamily {
+  font-family: var(--bw-font-display);
+  font-size: 1.25rem;
+  font-weight: 620;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.typeRailVal {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-caption);
+  color: var(--bw-text-secondary);
+  margin: 0;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  word-break: break-word;
+}
+
+.typeStage {
+  display: grid;
+  gap: var(--bw-s4);
+  min-width: 0;
+}
+
+.typeSampleXL {
+  margin: 0;
+  font-family: var(--bw-font-display);
+  font-weight: 620;
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  line-height: var(--bw-leading-heading);
+  letter-spacing: var(--bw-track-display);
+  text-wrap: balance;
+}
+
+.typeSampleL {
+  margin: 0;
+  font-size: 1.375rem;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  max-width: 34ch;
+}
+
+.typeSampleM {
+  margin: 0;
+  font-family: var(--bw-font-mono);
+  font-size: 1.0625rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+.typeNote {
+  margin: 0;
+  font-size: var(--bw-small);
+  line-height: 1.65;
+  color: var(--bw-text-secondary);
+  max-width: 56ch;
+  text-wrap: pretty;
+}
+
+.typeFoot {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1px;
+  background: var(--bw-line);
+  border: 1px solid var(--bw-line);
+  margin-top: var(--bw-s6);
+}
+
+.typeFootCell {
+  background: var(--bw-surface-plate);
+  padding: var(--bw-s4);
+  display: grid;
+  gap: 0.4rem;
+  align-content: start;
+}
+
+.typeFootKey {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bw-text-secondary);
+}
+
+.typeFootVal {
+  font-size: var(--bw-small);
+  line-height: 1.55;
+}
+
+@media (max-width: 760px) {
+  .typeRow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--bw-s4);
+  }
+}
+
+/* ── footer over the last plate ─────────────────────────────────────────── */
+
+.footer {
+  position: relative;
+  border-top: 1px solid var(--bw-line);
+  background: var(--bw-abyss);
+  padding-top: clamp(4.5rem, 10vw, 7.5rem);
+  padding-bottom: 0;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: url('/brand/bluewater/footer.webp') center bottom / cover no-repeat;
+}
+
+.footer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    var(--bw-abyss) 0%,
+    rgb(4 11 20 / 0.9) 30%,
+    rgb(4 11 20 / 0.52) 58%,
+    rgb(4 11 20 / 0.66) 100%
+  );
+}
+
+.footerInner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--bw-s5);
+  align-items: flex-end;
+  position: relative;
+}
+
+.footerColophon {
+  display: grid;
+  gap: 0.35rem;
+  padding-bottom: var(--bw-s5);
+}
+
+.footerNote {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bw-on-photo-muted);
+  max-width: 78ch;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.typeFootCode {
+  font-family: var(--bw-font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--bw-text-secondary);
+  word-break: break-word;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* The footer sits on the last photograph in both ramps, so it always takes the
+   luminous ink. The reverse files are slate for light grounds, which would
+   disappear into this plate — so the rule pins the first child on, not off. */
+:global(html) .footer .lockup img:first-child,
+:global(html) .footer .mark img:first-child {
+  display: block;
+}
+
+:global(html) .footer .lockup img:last-child,
+:global(html) .footer .mark img:last-child {
+  display: none;
+}
+
+.footerBrand {
+  display: grid;
+  gap: var(--bw-s4);
+  justify-items: start;
+}
+
+.footerLine {
+  margin: 0;
+  font-family: var(--bw-font-display);
+  font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+  font-weight: 620;
+  letter-spacing: -0.02em;
+  color: var(--bw-on-photo);
+  max-width: 26ch;
+  text-wrap: balance;
+}
+
+/* the waybill, restated at the end of the passage — mono, tabular, last thing.
+   It sits on solid abyss, not on the plate: mono caps at 11px cannot be asked to
+   clear AA over whatever the photograph happens to be doing at that row. */
+.footerRailWrap {
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+  background: var(--bw-abyss);
+  border-top: 1px solid rgb(233 241 248 / 0.16);
+}
+
+.footerRail {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--bw-s4);
+  padding-block: var(--bw-s5);
+}
+
+.footerRailCell {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.footerRailKey {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bw-on-photo-muted);
+}
+
+.footerRailVal {
+  font-family: var(--bw-font-mono);
+  font-size: var(--bw-caption);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: var(--bw-on-photo);
+}

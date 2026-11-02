@@ -1,0 +1,279 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Vesper — bake-off</title>
+<style>
+@font-face{font-family:'Fraunces';src:url('../../../../assets/fonts/Fraunces-Variable.woff2') format('woff2');font-weight:300 700;font-display:block}
+@font-face{font-family:'Archivo';src:url('../../../../assets/fonts/Archivo-Variable.woff2') format('woff2');font-weight:100 900;font-display:block}
+@font-face{font-family:'DM Mono';src:url('../../../../assets/fonts/DMMono-Regular.woff2') format('woff2');font-weight:400;font-display:block}
+:root{--chalk:#f6efe1;--ink:#0d1526;--cobalt:#1b3fa2;--line:rgba(13,21,38,.16)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--chalk);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;padding:56px 48px 80px}
+h1{font-family:'Fraunces',serif;font-weight:300;font-size:56px;line-height:.95;letter-spacing:-.035em;margin:0 0 6px}
+.sub{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.6;margin-bottom:40px}
+.row{display:grid;grid-template-columns:40px 180px 180px 150px minmax(0,1fr) 168px;gap:24px;align-items:center;padding:24px 0;border-top:1px solid var(--line)}
+.row.ship{background:linear-gradient(90deg,transparent,rgba(27,63,162,.05) 12%,rgba(27,63,162,.05) 88%,transparent)}
+.idx{font-size:11px;line-height:1.3;opacity:.55}
+.plate{height:180px;display:grid;place-items:center;border:1px solid var(--line)}
+.plate.night{background:var(--cobalt);border-color:var(--cobalt)}
+.plate svg{width:128px;height:128px}
+.sizes{display:flex;align-items:center;gap:18px}
+.s40 svg{width:40px;height:40px}
+.s16 svg{width:16px;height:16px}
+.nightchip{background:var(--cobalt);padding:8px;display:grid;place-items:center}
+h2{font-family:'Fraunces',serif;font-weight:400;font-size:26px;letter-spacing:-.02em;margin:0 0 2px}
+.tag{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--cobalt);
+  border:1px solid currentColor;padding:2px 5px;vertical-align:3px;margin-left:6px}
+.line{font-family:'Fraunces',serif;font-style:italic;font-size:17px;margin:0 0 10px;opacity:.85}
+.txt p{font-size:13.5px;line-height:1.55;margin:0 0 8px;max-width:52ch;opacity:.8}
+.risk b{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.55;margin-right:6px}
+.meta{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;opacity:.45;margin:0}
+.score{border-left:1px solid var(--line);padding-left:18px}
+.score b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:34px;line-height:1;letter-spacing:-.02em}
+.score.ship b{color:var(--cobalt)}
+.score span{display:block;font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;opacity:.45;margin:2px 0 8px}
+.score em{display:block;font-style:normal;font-family:'DM Mono',monospace;font-size:10px;line-height:1.5;opacity:.55}
+</style></head><body>
+<h1>Eleven ways to draw a lamp</h1>
+<div class="sub">Vesper · bake-off · two rounds · 64-unit grid · same primitives budget · scored by score-bakeoff.mjs</div>
+
+  <article class="row ">
+    <div class="idx mono">01<br><span style="opacity:.5">R1</span></div>
+    <div class="plate big"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M32 3 L35.6 22.4 L55 26 L35.6 29.6 L32 49 L28.4 29.6 L9 26 L28.4 22.4 Z"/><path d="M29 47 H35 V55 H29 Z"/><path d="M22 55 H42 V59 H22 Z"/></g></svg></div>
+    <div class="plate night"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M32 3 L35.6 22.4 L55 26 L35.6 29.6 L32 49 L28.4 29.6 L9 26 L28.4 22.4 Z"/><path d="M29 47 H35 V55 H29 Z"/><path d="M22 55 H42 V59 H22 Z"/></g></svg></div>
+    <div class="sizes">
+      <div class="s40"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M32 3 L35.6 22.4 L55 26 L35.6 29.6 L32 49 L28.4 29.6 L9 26 L28.4 22.4 Z"/><path d="M29 47 H35 V55 H29 Z"/><path d="M22 55 H42 V59 H22 Z"/></g></svg></div>
+      <div class="s16"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M32 3 L35.6 22.4 L55 26 L35.6 29.6 L32 49 L28.4 29.6 L9 26 L28.4 22.4 Z"/><path d="M29 47 H35 V55 H29 Z"/><path d="M22 55 H42 V59 H22 Z"/></g></svg></div>
+      <div class="s16 nightchip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M32 3 L35.6 22.4 L55 26 L35.6 29.6 L32 49 L28.4 29.6 L9 26 L28.4 22.4 Z"/><path d="M29 47 H35 V55 H29 Z"/><path d="M22 55 H42 V59 H22 Z"/></g></svg></div>
+    </div>
+    <div class="txt">
+      <h2>Lodestar</h2>
+      <p class="line">The star that stayed.</p>
+      <p>One object, two readings: a four-point star at speed, a lamppost at rest. The lower point is the post — nothing is added to the star, something is taken from it.</p>
+      <p class="risk"><b>Risk</b> A four-point star is the most-used mark shape of the decade; only the post separates it from the sparkle.</p>
+      <p class="mono meta">3 primitives · 3 subpaths</p>
+    </div>
+    <div class="score ">
+        <b>88</b><span>score</span>
+        <em>12.9% ink @ 16px</em>
+        <em>loses distinct</em>
+      </div>
+  </article>
+  <article class="row ">
+    <div class="idx mono">02<br><span style="opacity:.5">R1</span></div>
+    <div class="plate big"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M40 5 A21 21 0 1 0 40 47 L40 41 A15 15 0 1 1 40 11 Z"/><path d="M37 44 H43 V55 H37 Z"/><path d="M24 55 H44 V59 H24 Z"/></g></svg></div>
+    <div class="plate night"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M40 5 A21 21 0 1 0 40 47 L40 41 A15 15 0 1 1 40 11 Z"/><path d="M37 44 H43 V55 H37 Z"/><path d="M24 55 H44 V59 H24 Z"/></g></svg></div>
+    <div class="sizes">
+      <div class="s40"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M40 5 A21 21 0 1 0 40 47 L40 41 A15 15 0 1 1 40 11 Z"/><path d="M37 44 H43 V55 H37 Z"/><path d="M24 55 H44 V59 H24 Z"/></g></svg></div>
+      <div class="s16"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M40 5 A21 21 0 1 0 40 47 L40 41 A15 15 0 1 1 40 11 Z"/><path d="M37 44 H43 V55 H37 Z"/><path d="M24 55 H44 V59 H24 Z"/></g></svg></div>
+      <div class="s16 nightchip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M40 5 A21 21 0 1 0 40 47 L40 41 A15 15 0 1 1 40 11 Z"/><path d="M37 44 H43 V55 H37 Z"/><path d="M24 55 H44 V59 H24 Z"/></g></svg></div>
+    </div>
+    <div class="txt">
+      <h2>Horn</h2>
+      <p class="line">The moon, standing.</p>
+      <p>The crescent and the post are the two silhouettes already in the artwork. The gap between horn and post is the light, not a colour.</p>
+      <p class="risk"><b>Risk</b> At 16px the crescent closes up and reads as a hook or a digit.</p>
+      <p class="mono meta">3 primitives · 3 subpaths</p>
+    </div>
+    <div class="score ">
+        <b>100</b><span>score</span>
+        <em>13.3% ink @ 16px</em>
+        <em>loses nothing</em>
+      </div>
+  </article>
+  <article class="row ">
+    <div class="idx mono">03<br><span style="opacity:.5">R1</span></div>
+    <div class="plate big"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M30 3 H34 V8 H30 Z"/><path d="M24 11 H40 L44 33 H20 Z"/><path d="M27 16 H37 L39 29 H25 Z"/><path d="M22 33 H27 V40 H22 Z M37 33 H42 V40 H37 Z"/><path d="M18 40 H46 V45 H18 Z"/></g></svg></div>
+    <div class="plate night"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M30 3 H34 V8 H30 Z"/><path d="M24 11 H40 L44 33 H20 Z"/><path d="M27 16 H37 L39 29 H25 Z"/><path d="M22 33 H27 V40 H22 Z M37 33 H42 V40 H37 Z"/><path d="M18 40 H46 V45 H18 Z"/></g></svg></div>
+    <div class="sizes">
+      <div class="s40"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M30 3 H34 V8 H30 Z"/><path d="M24 11 H40 L44 33 H20 Z"/><path d="M27 16 H37 L39 29 H25 Z"/><path d="M22 33 H27 V40 H22 Z M37 33 H42 V40 H37 Z"/><path d="M18 40 H46 V45 H18 Z"/></g></svg></div>
+      <div class="s16"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M30 3 H34 V8 H30 Z"/><path d="M24 11 H40 L44 33 H20 Z"/><path d="M27 16 H37 L39 29 H25 Z"/><path d="M22 33 H27 V40 H22 Z M37 33 H42 V40 H37 Z"/><path d="M18 40 H46 V45 H18 Z"/></g></svg></div>
+      <div class="s16 nightchip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M30 3 H34 V8 H30 Z"/><path d="M24 11 H40 L44 33 H20 Z"/><path d="M27 16 H37 L39 29 H25 Z"/><path d="M22 33 H27 V40 H22 Z M37 33 H42 V40 H37 Z"/><path d="M18 40 H46 V45 H18 Z"/></g></svg></div>
+    </div>
+    <div class="txt">
+      <h2>Lantern</h2>
+      <p class="line">The head, not the light.</p>
+      <p>The only concept that draws the lamp itself. The window is a counter-form, so the mark works in one ink on any stock.</p>
+      <p class="risk"><b>Risk</b> Five primitives is one more than the track allows; the feet vanish below 24px.</p>
+      <p class="mono meta">5 primitives · 5 subpaths</p>
+    </div>
+    <div class="score ">
+        <b>63</b><span>score</span>
+        <em>17.2% ink @ 16px</em>
+        <em>loses balanced, fills its grid, few parts</em>
+      </div>
+  </article>
+  <article class="row ">
+    <div class="idx mono">04<br><span style="opacity:.5">R1</span></div>
+    <div class="plate big"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M12 32 A20 20 0 0 1 52 32 Z"/><path d="M10 40 H54 V44 H10 Z"/><path d="M27 44 H37 V55 H27 Z"/><path d="M20 55 H44 V59 H20 Z"/></g></svg></div>
+    <div class="plate night"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M12 32 A20 20 0 0 1 52 32 Z"/><path d="M10 40 H54 V44 H10 Z"/><path d="M27 44 H37 V55 H27 Z"/><path d="M20 55 H44 V59 H20 Z"/></g></svg></div>
+    <div class="sizes">
+      <div class="s40"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M12 32 A20 20 0 0 1 52 32 Z"/><path d="M10 40 H54 V44 H10 Z"/><path d="M27 44 H37 V55 H27 Z"/><path d="M20 55 H44 V59 H20 Z"/></g></svg></div>
+      <div class="s16"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M12 32 A20 20 0 0 1 52 32 Z"/><path d="M10 40 H54 V44 H10 Z"/><path d="M27 44 H37 V55 H27 Z"/><path d="M20 55 H44 V59 H20 Z"/></g></svg></div>
+      <div class="s16 nightchip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M12 32 A20 20 0 0 1 52 32 Z"/><path d="M10 40 H54 V44 H10 Z"/><path d="M27 44 H37 V55 H27 Z"/><path d="M20 55 H44 V59 H20 Z"/></g></svg></div>
+    </div>
+    <div class="txt">
+      <h2>Horizon</h2>
+      <p class="line">The line that is left.</p>
+      <p>The strongest horizontal in the artwork, reduced to a half disc on a rule. Reads as a setting sun and as an underline.</p>
+      <p class="risk"><b>Risk</b> Says evening, not lamp. It could belong to any sunset brand.</p>
+      <p class="mono meta">4 primitives · 4 subpaths</p>
+    </div>
+    <div class="score ">
+        <b>88</b><span>score</span>
+        <em>25.8% ink @ 16px</em>
+        <em>loses few parts</em>
+      </div>
+  </article>
+  <article class="row ">
+    <div class="idx mono">05<br><span style="opacity:.5">R1</span></div>
+    <div class="plate big"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M30 30 L12 10 L16 8 L32 28 Z"/><path d="M32 28 L26 6 L30 5 L33 27 Z"/><path d="M32 28 L32 2 L36 2 L34 28 Z"/><path d="M33 27 L38 5 L42 6 L35 28 Z"/><path d="M32 28 L48 8 L52 10 L34 30 Z"/><path d="M29 30 H35 V55 H29 Z"/><path d="M22 55 H42 V59 H22 Z"/></g></svg></div>
+    <div class="plate night"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M30 30 L12 10 L16 8 L32 28 Z"/><path d="M32 28 L26 6 L30 5 L33 27 Z"/><path d="M32 28 L32 2 L36 2 L34 28 Z"/><path d="M33 27 L38 5 L42 6 L35 28 Z"/><path d="M32 28 L48 8 L52 10 L34 30 Z"/><path d="M29 30 H35 V55 H29 Z"/><path d="M22 55 H42 V59 H22 Z"/></g></svg></div>
+    <div class="sizes">
+      <div class="s40"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M30 30 L12 10 L16 8 L32 28 Z"/><path d="M32 28 L26 6 L30 5 L33 27 Z"/><path d="M32 28 L32 2 L36 2 L34 28 Z"/><path d="M33 27 L38 5 L42 6 L35 28 Z"/><path d="M32 28 L48 8 L52 10 L34 30 Z"/><path d="M29 30 H35 V55 H29 Z"/><path d="M22 55 H42 V59 H22 Z"/></g></svg></div>
+      <div class="s16"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M30 30 L12 10 L16 8 L32 28 Z"/><path d="M32 28 L26 6 L30 5 L33 27 Z"/><path d="M32 28 L32 2 L36 2 L34 28 Z"/><path d="M33 27 L38 5 L42 6 L35 28 Z"/><path d="M32 28 L48 8 L52 10 L34 30 Z"/><path d="M29 30 H35 V55 H29 Z"/><path d="M22 55 H42 V59 H22 Z"/></g></svg></div>
+      <div class="s16 nightchip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M30 30 L12 10 L16 8 L32 28 Z"/><path d="M32 28 L26 6 L30 5 L33 27 Z"/><path d="M32 28 L32 2 L36 2 L34 28 Z"/><path d="M33 27 L38 5 L42 6 L35 28 Z"/><path d="M32 28 L48 8 L52 10 L34 30 Z"/><path d="M29 30 H35 V55 H29 Z"/><path d="M22 55 H42 V59 H22 Z"/></g></svg></div>
+    </div>
+    <div class="txt">
+      <h2>Ray</h2>
+      <p class="line">Light, before the object.</p>
+      <p>The stipple fan in the sky, drawn as five tapered rays. It is the only concept that keeps the artwork’s direction of travel.</p>
+      <p class="risk"><b>Risk</b> Seven primitives; at 16px the outer rays merge into a wedge.</p>
+      <p class="mono meta">7 primitives · 7 subpaths</p>
+    </div>
+    <div class="score ">
+        <b>63</b><span>score</span>
+        <em>18.4% ink @ 16px</em>
+        <em>loses one piece, balanced, few parts</em>
+      </div>
+  </article>
+  <article class="row ">
+    <div class="idx mono">06<br><span style="opacity:.5">R1</span></div>
+    <div class="plate big"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M29 4 H35 L40 58 H24 Z"/><path d="M30 12 H34 V15 H30 Z"/><path d="M29.4 22 H36.6 V25 H29.4 Z"/><path d="M28.6 33 H37.4 V36 H28.6 Z"/><path d="M27.6 44 H38.4 V47 H27.6 Z"/><path d="M26.4 55 H39.6 V58 H26.4 Z"/></g></svg></div>
+    <div class="plate night"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M29 4 H35 L40 58 H24 Z"/><path d="M30 12 H34 V15 H30 Z"/><path d="M29.4 22 H36.6 V25 H29.4 Z"/><path d="M28.6 33 H37.4 V36 H28.6 Z"/><path d="M27.6 44 H38.4 V47 H27.6 Z"/><path d="M26.4 55 H39.6 V58 H26.4 Z"/></g></svg></div>
+    <div class="sizes">
+      <div class="s40"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M29 4 H35 L40 58 H24 Z"/><path d="M30 12 H34 V15 H30 Z"/><path d="M29.4 22 H36.6 V25 H29.4 Z"/><path d="M28.6 33 H37.4 V36 H28.6 Z"/><path d="M27.6 44 H38.4 V47 H27.6 Z"/><path d="M26.4 55 H39.6 V58 H26.4 Z"/></g></svg></div>
+      <div class="s16"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M29 4 H35 L40 58 H24 Z"/><path d="M30 12 H34 V15 H30 Z"/><path d="M29.4 22 H36.6 V25 H29.4 Z"/><path d="M28.6 33 H37.4 V36 H28.6 Z"/><path d="M27.6 44 H38.4 V47 H27.6 Z"/><path d="M26.4 55 H39.6 V58 H26.4 Z"/></g></svg></div>
+      <div class="s16 nightchip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M29 4 H35 L40 58 H24 Z"/><path d="M30 12 H34 V15 H30 Z"/><path d="M29.4 22 H36.6 V25 H29.4 Z"/><path d="M28.6 33 H37.4 V36 H28.6 Z"/><path d="M27.6 44 H38.4 V47 H27.6 Z"/><path d="M26.4 55 H39.6 V58 H26.4 Z"/></g></svg></div>
+    </div>
+    <div class="txt">
+      <h2>Rung</h2>
+      <p class="line">The way there.</p>
+      <p>The ladder is the one object in the artwork that implies a next step, which is what a design system is for.</p>
+      <p class="risk"><b>Risk</b> Six rungs is a diagram, not a mark; it disappears at 24px and cannot be reversed on cream.</p>
+      <p class="mono meta">6 primitives · 6 subpaths</p>
+    </div>
+    <div class="score ">
+        <b>75</b><span>score</span>
+        <em>16.4% ink @ 16px</em>
+        <em>loses balanced, few parts</em>
+      </div>
+  </article>
+  <article class="row ship">
+    <div class="idx mono">07<br><span style="opacity:.5">R2</span></div>
+    <div class="plate big"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M32 2 L35.4 21.6 L55 25 L35.4 28.4 L32 48 L28.6 28.4 L9 25 L28.6 21.6 Z"/><path d="M29.5 44 H34.5 V55 H29.5 Z"/><path d="M12 55 H52 V58 H12 Z"/></g></svg></div>
+    <div class="plate night"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M32 2 L35.4 21.6 L55 25 L35.4 28.4 L32 48 L28.6 28.4 L9 25 L28.6 21.6 Z"/><path d="M29.5 44 H34.5 V55 H29.5 Z"/><path d="M12 55 H52 V58 H12 Z"/></g></svg></div>
+    <div class="sizes">
+      <div class="s40"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M32 2 L35.4 21.6 L55 25 L35.4 28.4 L32 48 L28.6 28.4 L9 25 L28.6 21.6 Z"/><path d="M29.5 44 H34.5 V55 H29.5 Z"/><path d="M12 55 H52 V58 H12 Z"/></g></svg></div>
+      <div class="s16"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M32 2 L35.4 21.6 L55 25 L35.4 28.4 L32 48 L28.6 28.4 L9 25 L28.6 21.6 Z"/><path d="M29.5 44 H34.5 V55 H29.5 Z"/><path d="M12 55 H52 V58 H12 Z"/></g></svg></div>
+      <div class="s16 nightchip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M32 2 L35.4 21.6 L55 25 L35.4 28.4 L32 48 L28.6 28.4 L9 25 L28.6 21.6 Z"/><path d="M29.5 44 H34.5 V55 H29.5 Z"/><path d="M12 55 H52 V58 H12 Z"/></g></svg></div>
+    </div>
+    <div class="txt">
+      <h2>Horizon Star <span class="tag">shipped</span></h2>
+      <p class="line">The star that stayed.</p>
+      <p>Round one’s star, with the plinth replaced by a 40-unit horizon. It reads as a lamp standing on a line rather than an award on a base.</p>
+      <p class="risk"><b>Risk</b> The star is still a star; the horizon has to do all the differentiating.</p>
+      <p class="mono meta">3 primitives · 3 subpaths</p>
+    </div>
+    <div class="score ship">
+        <b>88</b><span>score</span>
+        <em>15.6% ink @ 16px</em>
+        <em>loses balanced</em>
+      </div>
+  </article>
+  <article class="row ">
+    <div class="idx mono">08<br><span style="opacity:.5">R2</span></div>
+    <div class="plate big"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M13 58 L27 16 H33 L19 58 Z"/><path d="M51 58 L37 16 H31 L45 58 Z"/><path d="M24 44 H40 V49 H24 Z"/><path d="M27 33 H37 V38 H27 Z"/><path d="M29 22 H35 V27 H29 Z"/><path d="M32 4 L34.4 10 L40 11.6 L34.4 13.2 L32 19 L29.6 13.2 L24 11.6 L29.6 10 Z"/></g></svg></div>
+    <div class="plate night"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M13 58 L27 16 H33 L19 58 Z"/><path d="M51 58 L37 16 H31 L45 58 Z"/><path d="M24 44 H40 V49 H24 Z"/><path d="M27 33 H37 V38 H27 Z"/><path d="M29 22 H35 V27 H29 Z"/><path d="M32 4 L34.4 10 L40 11.6 L34.4 13.2 L32 19 L29.6 13.2 L24 11.6 L29.6 10 Z"/></g></svg></div>
+    <div class="sizes">
+      <div class="s40"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M13 58 L27 16 H33 L19 58 Z"/><path d="M51 58 L37 16 H31 L45 58 Z"/><path d="M24 44 H40 V49 H24 Z"/><path d="M27 33 H37 V38 H27 Z"/><path d="M29 22 H35 V27 H29 Z"/><path d="M32 4 L34.4 10 L40 11.6 L34.4 13.2 L32 19 L29.6 13.2 L24 11.6 L29.6 10 Z"/></g></svg></div>
+      <div class="s16"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M13 58 L27 16 H33 L19 58 Z"/><path d="M51 58 L37 16 H31 L45 58 Z"/><path d="M24 44 H40 V49 H24 Z"/><path d="M27 33 H37 V38 H27 Z"/><path d="M29 22 H35 V27 H29 Z"/><path d="M32 4 L34.4 10 L40 11.6 L34.4 13.2 L32 19 L29.6 13.2 L24 11.6 L29.6 10 Z"/></g></svg></div>
+      <div class="s16 nightchip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M13 58 L27 16 H33 L19 58 Z"/><path d="M51 58 L37 16 H31 L45 58 Z"/><path d="M24 44 H40 V49 H24 Z"/><path d="M27 33 H37 V38 H27 Z"/><path d="M29 22 H35 V27 H29 Z"/><path d="M32 4 L34.4 10 L40 11.6 L34.4 13.2 L32 19 L29.6 13.2 L24 11.6 L29.6 10 Z"/></g></svg></div>
+    </div>
+    <div class="txt">
+      <h2>Way</h2>
+      <p class="line">A road to a light.</p>
+      <p>The ladder in the artwork, in perspective: two rails converging on a vanishing point with three ties. It is a V for Vesper and a path at the same time.</p>
+      <p class="risk"><b>Risk</b> Three ties plus two rails is five thin elements; below 24px the ties blur into a wedge.</p>
+      <p class="mono meta">5 primitives · 6 subpaths</p>
+    </div>
+    <div class="score ">
+        <b>88</b><span>score</span>
+        <em>21.1% ink @ 16px</em>
+        <em>loses few parts</em>
+      </div>
+  </article>
+  <article class="row ">
+    <div class="idx mono">09<br><span style="opacity:.5">R2</span></div>
+    <div class="plate big"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M30 5 H34 V10 H30 Z"/><path d="M25 10 H39 L41 27 H23 Z"/><path d="M30 27 H34 V56 H30 Z"/><path d="M15 18 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M49 18 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M19 6 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M45 6 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M14 33 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M50 33 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/></g></svg></div>
+    <div class="plate night"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M30 5 H34 V10 H30 Z"/><path d="M25 10 H39 L41 27 H23 Z"/><path d="M30 27 H34 V56 H30 Z"/><path d="M15 18 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M49 18 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M19 6 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M45 6 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M14 33 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M50 33 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/></g></svg></div>
+    <div class="sizes">
+      <div class="s40"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M30 5 H34 V10 H30 Z"/><path d="M25 10 H39 L41 27 H23 Z"/><path d="M30 27 H34 V56 H30 Z"/><path d="M15 18 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M49 18 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M19 6 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M45 6 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M14 33 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M50 33 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/></g></svg></div>
+      <div class="s16"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M30 5 H34 V10 H30 Z"/><path d="M25 10 H39 L41 27 H23 Z"/><path d="M30 27 H34 V56 H30 Z"/><path d="M15 18 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M49 18 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M19 6 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M45 6 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M14 33 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M50 33 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/></g></svg></div>
+      <div class="s16 nightchip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M30 5 H34 V10 H30 Z"/><path d="M25 10 H39 L41 27 H23 Z"/><path d="M30 27 H34 V56 H30 Z"/><path d="M15 18 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M49 18 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M19 6 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M45 6 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M14 33 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/><path d="M50 33 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0"/></g></svg></div>
+    </div>
+    <div class="txt">
+      <h2>Halo</h2>
+      <p class="line">The light, not the lamp.</p>
+      <p>A lantern head with six marks of light around it, on a thin post. The only concept where the light is drawn as separate objects, which is what the artwork does with stipple.</p>
+      <p class="risk"><b>Risk</b> Six floating dots are six detached specks at 16px; they will merge or vanish.</p>
+      <p class="mono meta">3 primitives · 9 subpaths</p>
+    </div>
+    <div class="score ">
+        <b>75</b><span>score</span>
+        <em>16.0% ink @ 16px</em>
+        <em>loses one piece, balanced</em>
+      </div>
+  </article>
+  <article class="row ">
+    <div class="idx mono">10<br><span style="opacity:.5">R2</span></div>
+    <div class="plate big"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M52.76 35.27 A22 22 0 1 1 36.79 6.53 A17 17 0 1 0 52.76 35.27 Z"/><path d="M8 46 H56 V51 H8 Z"/></g></svg></div>
+    <div class="plate night"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M52.76 35.27 A22 22 0 1 1 36.79 6.53 A17 17 0 1 0 52.76 35.27 Z"/><path d="M8 46 H56 V51 H8 Z"/></g></svg></div>
+    <div class="sizes">
+      <div class="s40"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M52.76 35.27 A22 22 0 1 1 36.79 6.53 A17 17 0 1 0 52.76 35.27 Z"/><path d="M8 46 H56 V51 H8 Z"/></g></svg></div>
+      <div class="s16"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M52.76 35.27 A22 22 0 1 1 36.79 6.53 A17 17 0 1 0 52.76 35.27 Z"/><path d="M8 46 H56 V51 H8 Z"/></g></svg></div>
+      <div class="s16 nightchip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M52.76 35.27 A22 22 0 1 1 36.79 6.53 A17 17 0 1 0 52.76 35.27 Z"/><path d="M8 46 H56 V51 H8 Z"/></g></svg></div>
+    </div>
+    <div class="txt">
+      <h2>Moonline</h2>
+      <p class="line">Evening, on the line.</p>
+      <p>The crescent from the artwork resting on the horizon. Two primitives, no post, no base — the simplest object in the set and the only one that is pure silhouette.</p>
+      <p class="risk"><b>Risk</b> Says night, not lamp; and a crescent is a widely used shape.</p>
+      <p class="mono meta">2 primitives · 2 subpaths</p>
+    </div>
+    <div class="score ">
+        <b>88</b><span>score</span>
+        <em>25.4% ink @ 16px</em>
+        <em>loses balanced</em>
+      </div>
+  </article>
+  <article class="row ">
+    <div class="idx mono">11<br><span style="opacity:.5">R2</span></div>
+    <div class="plate big"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M24 4 H40 V58 H24 Z M28 11 H36 V27 H28 Z"/></g></svg></div>
+    <div class="plate night"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M24 4 H40 V58 H24 Z M28 11 H36 V27 H28 Z"/></g></svg></div>
+    <div class="sizes">
+      <div class="s40"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M24 4 H40 V58 H24 Z M28 11 H36 V27 H28 Z"/></g></svg></div>
+      <div class="s16"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#0d1526" fill-rule="evenodd"><path d="M24 4 H40 V58 H24 Z M28 11 H36 V27 H28 Z"/></g></svg></div>
+      <div class="s16 nightchip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><g fill="#f4ebda" fill-rule="evenodd"><path d="M24 4 H40 V58 H24 Z M28 11 H36 V27 H28 Z"/></g></svg></div>
+    </div>
+    <div class="txt">
+      <h2>Post</h2>
+      <p class="line">One column, cut twice.</p>
+      <p>A single column with the light cut out of it: two notches on the upper third read as a lantern window. One primitive, one counter-form, no floating parts.</p>
+      <p class="risk"><b>Risk</b> Reads as a door or a keyhole until the notches are noticed.</p>
+      <p class="mono meta">1 primitives · 1 subpaths</p>
+    </div>
+    <div class="score ">
+        <b>100</b><span>score</span>
+        <em>18.8% ink @ 16px</em>
+        <em>loses nothing</em>
+      </div>
+  </article>
+</body></html>

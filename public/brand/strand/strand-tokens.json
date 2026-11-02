@@ -1,0 +1,712 @@
+{
+  "meta": {
+    "name": "Strand",
+    "version": "2.0.0",
+    "year": 2026,
+    "author": "Aditya Himawan",
+    "case": "Case 07",
+    "namespace": "--st-",
+    "essence": "Two planes, and the strand between them.",
+    "promise": "Quiet glass over dune light, one sun-warm signal.",
+    "family": "Offset geometric planes",
+    "track": "constructed",
+    "gate": "v3.0 constructed",
+    "oneSentence": "Strand is a coastal interface system for reading in daylight: every surface is a pane of sea-glass over dune light, the ink is the colour of deep water, and one sun-warm signal marks the place where something happens.",
+    "fieldImage": "/brand/strand/dune-quiet-divider.webp",
+    "sections": [
+      "foundation",
+      "glass",
+      "marks",
+      "horizon",
+      "palette",
+      "type",
+      "parts",
+      "motion",
+      "voice",
+      "tokens",
+      "audit"
+    ],
+    "detach": "Measured against Cove, Clearing, Hachure, Riso and Vitrine; the weakest pair decides.",
+    "material": "sea-glass",
+    "glass": "One pane per view: 24px blur, 158deg white gradient, a 1px specular top edge, a long low shadow. Copy sits on a solid plate inside it."
+  },
+  "theme": {
+    "family": "offset-planes",
+    "material": "sea-glass",
+    "edge": "specular-hairline",
+    "offset": "0",
+    "stroke": "1px",
+    "tile": "none",
+    "radius": "22px",
+    "ring": "gap",
+    "density": "airy",
+    "label": "mono-caps",
+    "field-recipe": "glass-pane",
+    "mark-form": "two-planes",
+    "mark-frame": "6 units",
+    "mark-opening": "6-unit strand",
+    "mark-shear": "18.4°",
+    "mark-accent": "lower plane is ink, upper is sun",
+    "plate-rule": "pane-with-plate"
+  },
+  "primitives": [
+    {
+      "name": "dune",
+      "value": "#F3F0E8",
+      "role": "Dune-light ground, sampled from the dry sand"
+    },
+    {
+      "name": "quartz",
+      "value": "#FFFFFF",
+      "role": "Glass fill — the pane is always this white"
+    },
+    {
+      "name": "marine",
+      "value": "#13232A",
+      "role": "Marine ink: deep water at the horizon"
+    },
+    {
+      "name": "haze",
+      "value": "#57696E",
+      "role": "Haze — secondary text and labels"
+    },
+    {
+      "name": "sun",
+      "value": "#A85A22",
+      "role": "Sun — the one signal, low light on sand"
+    },
+    {
+      "name": "sun-ink",
+      "value": "#8A4A1C",
+      "role": "Sun ink for text, where the fill is too light"
+    },
+    {
+      "name": "sun-wash",
+      "value": "#F6E6D8",
+      "role": "Sun wash — tags and quiet emphasis"
+    },
+    {
+      "name": "depth",
+      "value": "#2F5F6B",
+      "role": "Depth — the rare cool ink"
+    },
+    {
+      "name": "night-ground",
+      "value": "#0A1114",
+      "role": "Night ground, after the light goes"
+    },
+    {
+      "name": "night-plate",
+      "value": "#162023",
+      "role": "Night pane over the ground"
+    },
+    {
+      "name": "night-ink",
+      "value": "#EFEDE6",
+      "role": "Night ink, foam on dark water"
+    },
+    {
+      "name": "night-haze",
+      "value": "#9AA8AB",
+      "role": "Night haze — secondary text"
+    },
+    {
+      "name": "night-sun",
+      "value": "#E9A469",
+      "role": "Night sun — the signal after dusk"
+    }
+  ],
+  "semantic": {
+    "light": [
+      {
+        "name": "bg",
+        "value": "#F3F0E8",
+        "role": "Ground canvas"
+      },
+      {
+        "name": "bg-deep",
+        "value": "#EAE4D7",
+        "role": "Sunken ground behind a pane"
+      },
+      {
+        "name": "plate",
+        "value": "#FFFFFF",
+        "role": "Solid reading plate inside a pane"
+      },
+      {
+        "name": "plate-muted",
+        "value": "#F7F4EC",
+        "role": "Quiet fill for rows and inputs"
+      },
+      {
+        "name": "fg",
+        "value": "#13232A",
+        "role": "Primary ink"
+      },
+      {
+        "name": "muted",
+        "value": "#57696E",
+        "role": "Secondary ink"
+      },
+      {
+        "name": "line",
+        "value": "rgba(19, 35, 42, 0.10)",
+        "role": "Hairline between planes"
+      },
+      {
+        "name": "line-strong",
+        "value": "rgba(19, 35, 42, 0.20)",
+        "role": "Edge that must be seen"
+      },
+      {
+        "name": "signal",
+        "value": "#A85A22",
+        "role": "Primary action and focus"
+      },
+      {
+        "name": "signal-fg",
+        "value": "#FFFFFF",
+        "role": "Text on the signal"
+      },
+      {
+        "name": "signal-ink",
+        "value": "#8A4A1C",
+        "role": "Signal as text on light"
+      },
+      {
+        "name": "signal-wash",
+        "value": "#F6E6D8",
+        "role": "Tag fill"
+      },
+      {
+        "name": "rare",
+        "value": "#2F5F6B",
+        "role": "The one cool ink"
+      },
+      {
+        "name": "focus",
+        "value": "#A85A22",
+        "role": "Focus ring"
+      },
+      {
+        "name": "danger",
+        "value": "#B23A3A",
+        "role": "Error"
+      },
+      {
+        "name": "success",
+        "value": "#2C7355",
+        "role": "Pass"
+      }
+    ],
+    "dark": [
+      {
+        "name": "bg",
+        "value": "#0A1114",
+        "role": "Ground canvas"
+      },
+      {
+        "name": "bg-deep",
+        "value": "#060C0E",
+        "role": "Sunken ground behind a pane"
+      },
+      {
+        "name": "plate",
+        "value": "#162023",
+        "role": "Solid reading plate inside a pane"
+      },
+      {
+        "name": "plate-muted",
+        "value": "#101A1D",
+        "role": "Quiet fill for rows and inputs"
+      },
+      {
+        "name": "fg",
+        "value": "#EFEDE6",
+        "role": "Primary ink"
+      },
+      {
+        "name": "muted",
+        "value": "#9AA8AB",
+        "role": "Secondary ink"
+      },
+      {
+        "name": "line",
+        "value": "rgba(239, 237, 230, 0.10)",
+        "role": "Hairline between planes"
+      },
+      {
+        "name": "line-strong",
+        "value": "rgba(239, 237, 230, 0.22)",
+        "role": "Edge that must be seen"
+      },
+      {
+        "name": "signal",
+        "value": "#E9A469",
+        "role": "Primary action and focus"
+      },
+      {
+        "name": "signal-fg",
+        "value": "#0A1114",
+        "role": "Text on the signal"
+      },
+      {
+        "name": "signal-ink",
+        "value": "#E9A469",
+        "role": "Signal as text on dark"
+      },
+      {
+        "name": "signal-wash",
+        "value": "rgba(233, 164, 105, 0.14)",
+        "role": "Tag fill"
+      },
+      {
+        "name": "rare",
+        "value": "#8FBFC6",
+        "role": "The one cool ink"
+      },
+      {
+        "name": "focus",
+        "value": "#E9A469",
+        "role": "Focus ring"
+      },
+      {
+        "name": "danger",
+        "value": "#E88B8B",
+        "role": "Error"
+      },
+      {
+        "name": "success",
+        "value": "#5FBF95",
+        "role": "Pass"
+      }
+    ]
+  },
+  "components": {
+    "light": [
+      {
+        "name": "btn-primary-bg",
+        "value": "var(--st-signal)",
+        "role": "Primary button fill"
+      },
+      {
+        "name": "btn-primary-fg",
+        "value": "var(--st-signal-fg)",
+        "role": "Primary button label"
+      },
+      {
+        "name": "btn-secondary-bg",
+        "value": "rgb(255 255 255 / 0.55)",
+        "role": "Secondary button: glass, not a box"
+      },
+      {
+        "name": "btn-secondary-border",
+        "value": "var(--st-line-strong)",
+        "role": "Secondary button edge"
+      },
+      {
+        "name": "field-bg",
+        "value": "rgb(255 255 255 / 0.62)",
+        "role": "Field fill, glass over the pane"
+      },
+      {
+        "name": "field-border",
+        "value": "var(--st-line-strong)",
+        "role": "Field edge"
+      },
+      {
+        "name": "card-bg",
+        "value": "var(--st-glass-fill)",
+        "role": "Card fill"
+      },
+      {
+        "name": "card-border",
+        "value": "var(--st-glass-edge)",
+        "role": "Card edge"
+      },
+      {
+        "name": "glass-fill",
+        "value": "linear-gradient(158deg, rgb(255 255 255 / 0.84), rgb(255 255 255 / 0.58))",
+        "role": "The pane: one gradient, one blur"
+      },
+      {
+        "name": "glass-edge",
+        "value": "rgb(255 255 255 / 0.78)",
+        "role": "Pane edge, brighter than the ground"
+      },
+      {
+        "name": "glass-blur",
+        "value": "24px",
+        "role": "Blur radius — the only effect"
+      },
+      {
+        "name": "glass-sheen",
+        "value": "rgb(255 255 255 / 0.92)",
+        "role": "Top specular line inside the pane"
+      },
+      {
+        "name": "shadow-pane",
+        "value": "0 28px 64px -34px rgb(19 35 42 / 0.45), 0 2px 6px -3px rgb(19 35 42 / 0.14)",
+        "role": "Pane shadow: long, low, never a halo"
+      },
+      {
+        "name": "tag-bg",
+        "value": "var(--st-signal-wash)",
+        "role": "Tag fill"
+      },
+      {
+        "name": "tag-fg",
+        "value": "var(--st-signal-ink)",
+        "role": "Tag label"
+      }
+    ],
+    "dark": [
+      {
+        "name": "btn-primary-bg",
+        "value": "var(--st-signal)",
+        "role": "Primary button fill"
+      },
+      {
+        "name": "btn-primary-fg",
+        "value": "var(--st-signal-fg)",
+        "role": "Primary button label"
+      },
+      {
+        "name": "btn-secondary-bg",
+        "value": "rgb(255 255 255 / 0.07)",
+        "role": "Secondary button: glass, not a box"
+      },
+      {
+        "name": "btn-secondary-border",
+        "value": "var(--st-line-strong)",
+        "role": "Secondary button edge"
+      },
+      {
+        "name": "field-bg",
+        "value": "rgb(255 255 255 / 0.06)",
+        "role": "Field fill, glass over the pane"
+      },
+      {
+        "name": "field-border",
+        "value": "var(--st-line-strong)",
+        "role": "Field edge"
+      },
+      {
+        "name": "card-bg",
+        "value": "var(--st-glass-fill)",
+        "role": "Card fill"
+      },
+      {
+        "name": "card-border",
+        "value": "var(--st-glass-edge)",
+        "role": "Card edge"
+      },
+      {
+        "name": "glass-fill",
+        "value": "linear-gradient(158deg, rgb(255 255 255 / 0.11), rgb(255 255 255 / 0.045))",
+        "role": "The pane: one gradient, one blur"
+      },
+      {
+        "name": "glass-edge",
+        "value": "rgb(255 255 255 / 0.16)",
+        "role": "Pane edge, brighter than the ground"
+      },
+      {
+        "name": "glass-blur",
+        "value": "24px",
+        "role": "Blur radius — the only effect"
+      },
+      {
+        "name": "glass-sheen",
+        "value": "rgb(255 255 255 / 0.24)",
+        "role": "Top specular line inside the pane"
+      },
+      {
+        "name": "shadow-pane",
+        "value": "0 32px 72px -30px rgb(0 0 0 / 0.72), 0 2px 8px -4px rgb(0 0 0 / 0.5)",
+        "role": "Pane shadow: long, low, never a halo"
+      },
+      {
+        "name": "tag-bg",
+        "value": "var(--st-signal-wash)",
+        "role": "Tag fill"
+      },
+      {
+        "name": "tag-fg",
+        "value": "var(--st-signal-ink)",
+        "role": "Tag label"
+      }
+    ]
+  },
+  "type": [
+    {
+      "name": "font-display",
+      "value": "var(--font-instrument), 'Instrument Sans', -apple-system, sans-serif",
+      "role": "Names, headings, the promise"
+    },
+    {
+      "name": "font-reading",
+      "value": "var(--font-geist), 'Geist', -apple-system, sans-serif",
+      "role": "Body and interface"
+    },
+    {
+      "name": "font-mono",
+      "value": "var(--font-geist-mono), 'Geist Mono', monospace",
+      "role": "Labels, numbers, token names"
+    },
+    {
+      "name": "scale-display",
+      "value": "clamp(2.5rem, 6vw, 4.4rem)",
+      "role": "Hero"
+    },
+    {
+      "name": "scale-h1",
+      "value": "clamp(2rem, 4vw, 3.1rem)",
+      "role": "Page title"
+    },
+    {
+      "name": "scale-h2",
+      "value": "clamp(1.55rem, 2.8vw, 2.3rem)",
+      "role": "Section title"
+    },
+    {
+      "name": "scale-h3",
+      "value": "clamp(1.15rem, 1.6vw, 1.35rem)",
+      "role": "Block title"
+    },
+    {
+      "name": "scale-body",
+      "value": "1.0625rem",
+      "role": "Reading"
+    },
+    {
+      "name": "scale-caption",
+      "value": "0.875rem",
+      "role": "Captions"
+    },
+    {
+      "name": "scale-label",
+      "value": "0.6875rem",
+      "role": "Mono labels"
+    },
+    {
+      "name": "leading-display",
+      "value": "0.98",
+      "role": "Display"
+    },
+    {
+      "name": "leading-heading",
+      "value": "1.12",
+      "role": "Headings"
+    },
+    {
+      "name": "leading-body",
+      "value": "1.62",
+      "role": "Reading"
+    },
+    {
+      "name": "tracking-display",
+      "value": "-0.035em",
+      "role": "Display"
+    },
+    {
+      "name": "tracking-label",
+      "value": "0.14em",
+      "role": "Mono labels"
+    }
+  ],
+  "space": [
+    {
+      "name": "space-1",
+      "value": "0.25rem",
+      "role": "4"
+    },
+    {
+      "name": "space-2",
+      "value": "0.5rem",
+      "role": "8"
+    },
+    {
+      "name": "space-3",
+      "value": "0.75rem",
+      "role": "12"
+    },
+    {
+      "name": "space-4",
+      "value": "1rem",
+      "role": "16"
+    },
+    {
+      "name": "space-6",
+      "value": "1.5rem",
+      "role": "24"
+    },
+    {
+      "name": "space-8",
+      "value": "2rem",
+      "role": "32"
+    },
+    {
+      "name": "space-12",
+      "value": "3rem",
+      "role": "48"
+    },
+    {
+      "name": "space-16",
+      "value": "4rem",
+      "role": "64"
+    },
+    {
+      "name": "space-24",
+      "value": "6rem",
+      "role": "96"
+    },
+    {
+      "name": "space-32",
+      "value": "8rem",
+      "role": "128"
+    }
+  ],
+  "radius": [
+    {
+      "name": "radius-xs",
+      "value": "6px",
+      "role": "Chips, small tags"
+    },
+    {
+      "name": "radius-sm",
+      "value": "10px",
+      "role": "Plates inside a pane"
+    },
+    {
+      "name": "radius-md",
+      "value": "14px",
+      "role": "Inputs, rows, tiles"
+    },
+    {
+      "name": "radius-lg",
+      "value": "22px",
+      "role": "Panes"
+    },
+    {
+      "name": "radius-pill",
+      "value": "9999px",
+      "role": "Pills and toggles"
+    }
+  ],
+  "motion": [
+    {
+      "name": "duration-fast",
+      "value": "160ms",
+      "role": "Press, colour, toggle"
+    },
+    {
+      "name": "duration-base",
+      "value": "260ms",
+      "role": "Pane sheen, hover, theme cross-fade"
+    },
+    {
+      "name": "duration-slow",
+      "value": "420ms",
+      "role": "Sheet and page change"
+    },
+    {
+      "name": "ease-out",
+      "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "role": "One curve out"
+    },
+    {
+      "name": "ease-in-out",
+      "value": "cubic-bezier(0.65, 0, 0.35, 1)",
+      "role": "One curve in-out"
+    }
+  ],
+  "contrast": [
+    {
+      "label": "Marine on quartz",
+      "fg": "#13232A",
+      "bg": "#FFFFFF",
+      "use": "Body copy on the solid plate inside a pane",
+      "ratio": 16.13
+    },
+    {
+      "label": "Marine on dune",
+      "fg": "#13232A",
+      "bg": "#F3F0E8",
+      "use": "Headings directly on the ground",
+      "ratio": 14.17
+    },
+    {
+      "label": "Marine on glass",
+      "fg": "#13232A",
+      "bg": "#FCFCFA",
+      "use": "Copy on the pane composite (measured, not guessed)",
+      "ratio": 15.71
+    },
+    {
+      "label": "Haze on quartz",
+      "fg": "#57696E",
+      "bg": "#FFFFFF",
+      "use": "Secondary copy, captions, rail labels",
+      "ratio": 5.75
+    },
+    {
+      "label": "White on sun",
+      "fg": "#FFFFFF",
+      "bg": "#A85A22",
+      "use": "Primary button label, 14px and up",
+      "ratio": 5.06
+    },
+    {
+      "label": "Sun ink on quartz",
+      "fg": "#8A4A1C",
+      "bg": "#FFFFFF",
+      "use": "Signal as text — links, tag labels",
+      "ratio": 6.82
+    },
+    {
+      "label": "Depth on quartz",
+      "fg": "#2F5F6B",
+      "bg": "#FFFFFF",
+      "use": "The rare cool ink, used once per section",
+      "ratio": 7.07
+    },
+    {
+      "label": "Night ink on night ground",
+      "fg": "#EFEDE6",
+      "bg": "#0A1114",
+      "use": "Body copy after dusk",
+      "ratio": 16.25
+    },
+    {
+      "label": "Night ink on night glass",
+      "fg": "#EFEDE6",
+      "bg": "#22292C",
+      "use": "Copy on the night pane composite",
+      "ratio": 12.61
+    },
+    {
+      "label": "Night haze on night ground",
+      "fg": "#9AA8AB",
+      "bg": "#0A1114",
+      "use": "Secondary copy after dusk",
+      "ratio": 7.76
+    },
+    {
+      "label": "Night ground on night sun",
+      "fg": "#0A1114",
+      "bg": "#E9A469",
+      "use": "Primary button label in the night surface",
+      "ratio": 9.05
+    }
+  ],
+  "mark": {
+    "grid": 64,
+    "dune": "M26 9H58L52 27H20Z",
+    "sea": "M12 33H52L46 55H6Z",
+    "gap": 6,
+    "shear": "18.4°",
+    "bounding": "52 × 46",
+    "note": "Two solid planes, one 6-unit strand. The upper plane is the dune, the lower is the sea; the shear is the ebb."
+  }
+}

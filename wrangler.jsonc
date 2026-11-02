@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "design-system",
+  "compatibility_date": "2026-11-02",
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  // Astro `output: "static"` → dist/ served as static-assets Worker, no script.
+  // Route, deliberately NOT `custom_domain: true`: the zone keeps a proxied
+  // dummy AAAA for the hostname, and custom-domain API rejects externally
+  // managed DNS. Same pattern as habit.adityahimaone.space.
+  "routes": [
+    {
+      "pattern": "design-system.adityahimaone.space/*",
+      "zone_name": "adityahimaone.space"
+    }
+  ],
+  "workers_dev": true,
+  "observability": {
+    "enabled": true
+  }
+}

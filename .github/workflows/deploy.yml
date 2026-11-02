@@ -1,0 +1,79 @@
+name: CI/CD - Design System
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CUSTOM_DOMAIN: design-system.adityahimaone.space
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: static-export
+          path: dist
+          retention-days: 3
+
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: static-export
+          path: dist
+
+      - name: Normalize DNS to proxied dummy AAAA
+        run: |
+          # Worker route intercepts the request, so origin target is irrelevant.
+          # Proxied AAAA 100:: avoids the 1014 cross-user CNAME ban.
+          api="https://api.cloudflare.com/client/v4"
+          auth=(-H "Authorization: Bearer $CLOUDFLARE_API_TOKEN")
+          zone_id=$(curl -sS "${auth[@]}" "$api/zones?name=adityahimaone.space" | jq -r '.result[0].id // empty')
+          [ -n "$zone_id" ] || { echo "zone not found"; exit 1; }
+
+          ids=$(curl -sS "${auth[@]}" "$api/zones/$zone_id/dns_records?name=$CUSTOM_DOMAIN" | jq -r '.result[]?.id')
+          for id in $ids; do
+            curl -sS -X DELETE "${auth[@]}" "$api/zones/$zone_id/dns_records/$id" | jq -r '"dns delete: \(.success)"'
+          done
+
+          curl -sS -X POST "${auth[@]}" -H 'Content-Type: application/json' \
+            "$api/zones/$zone_id/dns_records" \
+            -d "{\"type\":\"AAAA\",\"name\":\"$CUSTOM_DOMAIN\",\"content\":\"100::\",\"proxied\":true}" \
+            | jq -r '"dns create: \(.success)"'
+
+      - name: Deploy Worker (static assets)
+        run: npx --yes wrangler@4 deploy
+
+      - name: Smoke test
+        run: |
+          ok=0
+          for i in $(seq 1 6); do
+            code=$(curl -sS -o /tmp/page.html -w '%{http_code}' "https://$CUSTOM_DOMAIN/")
+            echo "attempt $i: $CUSTOM_DOMAIN -> $code"
+            if [ "$code" = "200" ]; then ok=1; break; fi
+            sleep 15
+          done
+          [ "$ok" = "1" ] || { echo "custom domain not serving worker"; head -c 300 /tmp/page.html; exit 1; }

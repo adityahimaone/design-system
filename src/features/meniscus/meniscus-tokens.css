@@ -1,0 +1,143 @@
+/* Meniscus — token layer. Three layers: primitive → semantic → component.
+   Namespaced --me-. The primitive never flips; only the semantic layer swaps,
+   under [data-me]. */
+
+.me-scope {
+  /* ── 1 · primitive — the material, named once ─────────────────────── */
+  --me-ground: #0e1013;
+  --me-wash: #191c21;
+  --me-plate: #101317;
+  --me-ink: #f3f2ef;
+  --me-ash: #8d939c;
+  --me-graphite: #5a6169;
+  --me-signal: #ffa768;
+  --me-signal-ink: #8f4f12;
+  --me-paper: #f4f2ee;
+  --me-ink-solid: #12151a;
+  --me-alert: #f07a6b;
+  --me-alert-ink: #9c352a;
+
+  /* ── 2 · semantic — the job ───────────────────────────────────────── */
+  /* smoked scope (default) */
+  --me-surface-page: var(--me-ground);
+  --me-surface-raised: var(--me-wash);
+  --me-surface-plate: var(--me-plate);
+  --me-text-primary: var(--me-ink);
+  --me-text-secondary: var(--me-ash);
+  --me-text-on-plate: var(--me-ink);
+  --me-accent: var(--me-signal);
+  --me-accent-ink: var(--me-ground);
+  --me-rule: color-mix(in oklab, var(--me-ink) 11%, transparent);
+  --me-rule-strong: color-mix(in oklab, var(--me-ink) 24%, transparent);
+  --me-danger: var(--me-alert);
+  --me-focus: var(--me-signal);
+
+  /* ── the material: glass, as component tokens ─────────────────────── */
+  /* A pane is never a flat fill. It is a lift, an edge and a highlight. */
+  --me-pane: color-mix(in oklab, var(--me-ink) 5%, transparent);
+  --me-pane-hover: color-mix(in oklab, var(--me-ink) 8.5%, transparent);
+  --me-pane-sunk: color-mix(in oklab, var(--me-ground) 55%, transparent);
+  --me-pane-edge: color-mix(in oklab, var(--me-ink) 13%, transparent);
+  --me-pane-edge-hover: color-mix(in oklab, var(--me-ink) 26%, transparent);
+  --me-specular: color-mix(in oklab, var(--me-ink) 40%, transparent);
+  --me-blur: 22px;
+  --me-blur-sm: 12px;
+  --me-shadow: 0 24px 60px -32px rgb(0 0 0 / 0.85);
+  --me-shadow-sm: 0 8px 24px -14px rgb(0 0 0 / 0.7);
+
+  /* ── type ─────────────────────────────────────────────────────────── */
+  --me-font-display: 'Bricolage Grotesque', 'Archivo', sans-serif;
+  --me-font-reading: 'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --me-font-mono: 'Geist Mono', ui-monospace, monospace;
+
+  --me-t-display: clamp(2.5rem, 6.8vw, 6rem);
+  --me-t-h1: clamp(1.9rem, 3.4vw, 2.85rem);
+  --me-t-h2: clamp(1.35rem, 2vw, 1.8rem);
+  --me-t-h3: 1.0625rem;
+  --me-t-lead: clamp(1rem, 1.15vw, 1.1875rem);
+  --me-t-body: 0.9375rem;
+  --me-t-small: 0.8125rem;
+  --me-t-label: 0.6875rem;
+
+  --me-lh-display: 0.9;
+  --me-lh-h1: 1.04;
+  --me-lh-body: 1.66;
+  --me-lh-tight: 1.2;
+
+  --me-ls-display: -0.038em;
+  --me-ls-h1: -0.024em;
+  --me-ls-body: -0.008em;
+  --me-ls-label: 0.14em;
+
+  --me-w-display: 800;
+  --me-w-h: 700;
+  --me-w-body: 400;
+
+  --me-measure: 64ch;
+
+  /* ── space, radius, motion ────────────────────────────────────────── */
+  --me-s1: 4px;
+  --me-s2: 8px;
+  --me-s3: 12px;
+  --me-s4: 16px;
+  --me-s5: 24px;
+  --me-s6: 32px;
+  --me-s7: 48px;
+  --me-s8: 64px;
+  --me-s9: 96px;
+  --me-s10: 128px;
+
+  --me-r-xs: 3px;
+  --me-r-sm: 6px;
+  --me-r-md: 10px;
+  --me-r-lg: 16px;
+  --me-r-xl: 24px;
+  --me-r-pill: 999px;
+
+  --me-dur-1: 120ms;
+  --me-dur-2: 240ms;
+  --me-dur-3: 480ms;
+  --me-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --me-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --me-ease-linear: linear;
+
+  /* ── 3 · component — the only place a component knows its colour ──── */
+  --me-card-bg: var(--me-pane);
+  --me-card-edge: var(--me-pane-edge);
+  --me-button-bg: var(--me-accent);
+  --me-button-ink: var(--me-accent-ink);
+  --me-tab-bg: color-mix(in oklab, var(--me-ink) 7%, transparent);
+  --me-field-bg: color-mix(in oklab, var(--me-ground) 45%, transparent);
+  --me-field-grid: url('/brand/meniscus/field-glass.svg');
+}
+
+/* board scope — the same system read on a light plate. Same primitives,
+   swapped jobs. Never a mode-prefixed primitive. */
+.me-scope[data-me='paper'],
+[data-me='paper'] .me-scope {
+  --me-surface-page: var(--me-paper);
+  --me-surface-raised: color-mix(in oklab, var(--me-ink-solid) 5%, var(--me-paper));
+  --me-surface-plate: var(--me-ink-solid);
+  --me-text-primary: var(--me-ink-solid);
+  --me-text-secondary: var(--me-graphite);
+  --me-text-on-plate: var(--me-paper);
+  --me-accent: var(--me-signal-ink);
+  --me-accent-ink: var(--me-paper);
+  --me-rule: color-mix(in oklab, var(--me-ink-solid) 14%, transparent);
+  --me-rule-strong: color-mix(in oklab, var(--me-ink-solid) 30%, transparent);
+  --me-danger: var(--me-alert-ink);
+  --me-focus: var(--me-signal-ink);
+
+  --me-pane: color-mix(in oklab, var(--me-ink-solid) 4.5%, transparent);
+  --me-pane-hover: color-mix(in oklab, var(--me-ink-solid) 7%, transparent);
+  --me-pane-sunk: color-mix(in oklab, var(--me-ink-solid) 8%, transparent);
+  --me-pane-edge: color-mix(in oklab, var(--me-ink-solid) 14%, transparent);
+  --me-pane-edge-hover: color-mix(in oklab, var(--me-ink-solid) 26%, transparent);
+  --me-specular: color-mix(in oklab, var(--me-ink-solid) 22%, transparent);
+  --me-shadow: 0 24px 60px -36px color-mix(in oklab, var(--me-ink-solid) 40%, transparent);
+  --me-shadow-sm: 0 8px 24px -16px color-mix(in oklab, var(--me-ink-solid) 32%, transparent);
+
+  --me-tab-bg: color-mix(in oklab, var(--me-ink-solid) 6%, var(--me-paper));
+  --me-field-bg: color-mix(in oklab, var(--me-ink-solid) 4%, var(--me-paper));
+  --me-button-ink: var(--me-paper);
+}

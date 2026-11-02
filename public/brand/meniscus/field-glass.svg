@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Meniscus glass field">
+  <defs>
+    <linearGradient id="me-field-ground" x1="12%" y1="0%" x2="88%" y2="100%">
+      <stop offset="0%" stop-color="#12151a"/>
+      <stop offset="46%" stop-color="#0e1013"/>
+      <stop offset="100%" stop-color="#101318"/>
+    </linearGradient>
+    <radialGradient id="me-field-caustic" cx="78%" cy="88%" r="58%">
+      <stop offset="0%" stop-color="#ffa768" stop-opacity="0.24"/>
+      <stop offset="42%" stop-color="#ffa768" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#ffa768" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="me-field-bounce" cx="14%" cy="6%" r="62%">
+      <stop offset="0%" stop-color="#f3f2ef" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#f3f2ef" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="me-field-shelf" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f3f2ef" stop-opacity="0"/>
+      <stop offset="34%" stop-color="#f3f2ef" stop-opacity="0.14"/>
+      <stop offset="66%" stop-color="#f3f2ef" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#f3f2ef" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="me-field-soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="70"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#me-field-ground)"/>
+  <rect x="200" width="1" height="1000" fill="#f3f2ef" opacity="0.035"/><rect x="350" width="1" height="1000" fill="#f3f2ef" opacity="0.035"/><rect x="500" width="1" height="1000" fill="#f3f2ef" opacity="0.035"/><rect x="650" width="1" height="1000" fill="#f3f2ef" opacity="0.035"/><rect x="800" width="1" height="1000" fill="#f3f2ef" opacity="0.035"/><rect x="950" width="1" height="1000" fill="#f3f2ef" opacity="0.035"/><rect x="1100" width="1" height="1000" fill="#f3f2ef" opacity="0.035"/><rect x="1250" width="1" height="1000" fill="#f3f2ef" opacity="0.035"/><rect x="1400" width="1" height="1000" fill="#f3f2ef" opacity="0.035"/>
+  <rect width="1600" height="1000" fill="url(#me-field-bounce)"/>
+  <rect width="1600" height="1000" fill="url(#me-field-caustic)"/>
+
+  <!-- the meniscus: one liquid line, bowed the way the band bows -->
+  <path d="M-60 700 Q800 560 1660 690 L1660 706 Q800 578 -60 716 Z"
+        fill="url(#me-field-shelf)" filter="url(#me-field-soft)"/>
+  <path d="M-60 700 Q800 560 1660 690" fill="none"
+        stroke="#ffa768" stroke-opacity="0.2" stroke-width="1.5"/>
+</svg>

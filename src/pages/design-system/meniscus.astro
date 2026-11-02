@@ -1,0 +1,574 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import tokens from '@/features/meniscus/tokens.json'
+import { DESIGN_CASES } from '@/data/cases'
+import { COLLECTIONS } from '@/data/collections'
+import { Kit } from '@/features/meniscus/ui/kit'
+import Ink from '@/features/meniscus/Ink.astro'
+import '@/features/meniscus/meniscus-tokens.css'
+import '@/features/meniscus/meniscus-page.css'
+import '@/features/meniscus/meniscus-ui.css'
+
+const { meta, theme, primitives, contrast, semantic } = tokens
+
+const B = '/brand/meniscus'
+
+const SCALE = [
+  { role: 'Display', token: '--me-t-display', lh: '0.90', font: 'display', w: '800', sample: 'Fourteen systems' },
+  { role: 'H1', token: '--me-t-h1', lh: '1.04', font: 'display', w: '700', sample: 'The frame is glass' },
+  { role: 'H2', token: '--me-t-h2', lh: '1.15', font: 'display', w: '700', sample: 'One caustic, warm' },
+  { role: 'Lead', token: '--me-t-lead', lh: '1.55', font: 'reading', w: '400', sample: 'Every case states its own primitives.' },
+  { role: 'Body', token: '--me-t-body', lh: '1.66', font: 'reading', w: '400', sample: 'The shelf does not compete with the work it holds.' },
+  { role: 'Small', token: '--me-t-small', lh: '1.60', font: 'reading', w: '400', sample: 'The job a failing pair may not do.' },
+  { role: 'Label', token: '--me-t-label', lh: '1.40', font: 'mono', w: '400', sample: 'Case 00 · the shelf' },
+]
+
+const FACES = [
+  {
+    name: 'Display',
+    file: 'Bricolage Grotesque',
+    role: 'Headlines, the display, the numerals in the stats',
+    figures: [
+      ['Weight', '400 – 800'],
+      ['Optical', '12 – 96'],
+      ['Tracking', '-0.038em at display'],
+    ],
+    display: 'Glass',
+  },
+  {
+    name: 'Reading',
+    file: 'Schibsted Grotesk',
+    role: 'Body, lead paragraphs, every sentence longer than a label',
+    figures: [
+      ['Weight', '400 – 700'],
+      ['Measure', '64ch'],
+      ['Leading', '1.66'],
+    ],
+    display: 'Read',
+  },
+  {
+    name: 'Mono',
+    file: 'Geist Mono',
+    role: 'Labels, token names, ratios, section numerals',
+    figures: [
+      ['Weight', '400 – 500'],
+      ['Tracking', '0.14em uppercase'],
+      ['Case', 'Upper for labels only'],
+    ],
+    display: '00',
+  },
+]
+
+const groups = COLLECTIONS.map((col) => ({
+  ...col,
+  entries: col.cases
+    .map((slug) => DESIGN_CASES.find((c) => c.slug === slug))
+    .filter((c): c is (typeof DESIGN_CASES)[number] => Boolean(c)),
+}))
+
+const fails = contrast.filter((c) => !c.pass)
+
+const cssPrimitives = `/* 1 · primitive — the raw values. Nothing here knows a job. */
+:root {
+${primitives.map((p) => `  --me-${p.name}: ${p.value};`).join('\n')}
+}`
+
+const cssSmoked = `/* 2 · semantic — smoked scope. A job, pointed at a primitive. */
+.me-scope {
+${semantic.dark.map((s) => `  --me-${s.name}: ${s.value};`).join('\n')}
+}`
+
+const cssBoard = `/* 2 · semantic — board scope. Same primitives, swapped jobs. */
+[data-me='paper'] .me-scope {
+${semantic.paper.map((s) => `  --me-${s.name}: ${s.value};`).join('\n')}
+}`
+
+const cssGlass = `/* 3 · component — the material, stated once. */
+.me-glass {
+  background: var(--me-pane);
+  border: 1px solid var(--me-pane-edge);
+  border-radius: var(--me-r-lg);
+  backdrop-filter: blur(var(--me-blur)) saturate(1.15);
+  box-shadow: inset 0 1px 0 var(--me-specular);
+}
+/* a shadow says "card". an edge says "pane". */
+
+/* 4 · the failure, written down where it cannot be forgotten. */
+--me-graphite: #5a6169;   /* 3.04:1 on ground — hairlines only */
+--me-ink:      #f3f2ef;   /* 1.71:1 on signal — never, ever */`
+
+const title = `Meniscus — the brand system`
+const description =
+  'Meniscus: smoked graphite under glass, panes that lift by a specular edge instead of a shadow, one warm caustic where the light exits. Twelve primitives, fifteen measured pairs, three published failures.'
+---
+
+<Layout title={title} description={description} canonical="/design-system/meniscus">
+  <div class="me-scope me-page">
+    <nav class="me-nav">
+      <div class="me-wrap me-nav__in">
+        <a class="me-brand" href="/">
+          <Ink file="mark" />
+          <span class="me-brand__name">Meniscus</span>
+          <span class="me-brand__case">The brand system</span>
+        </a>
+        <div class="me-nav__links">
+          <a href="/">The shelf</a>
+          <a href="/api/cases.json" target="_blank" rel="noreferrer">API</a>
+          <a href="https://adityahimaone.space" target="_blank" rel="noreferrer">Studio</a>
+          <button class="me-toggle" id="me-scope-toggle" type="button">Scope: smoked</button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ── hero ─────────────────────────────────────────────────────── -->
+    <header class="me-ph">
+      <div class="me-ph__field" aria-hidden="true"></div>
+      <div class="me-wrap">
+        <p class="me-eyebrow"><i aria-hidden="true"></i>{meta.case} · brand system</p>
+        <h1 class="me-display">The frame is glass. The work is <em>colour</em>.</h1>
+
+        <div class="me-ph__grid">
+          <p class="me-ph__lead">
+            Meniscus is the identity of a design-system library. Smoked graphite under glass; panes
+            that lift by a <b>1px specular edge</b> instead of a shadow; one warm caustic where the
+            light exits; and a mark that is the hero band cut into a tile.
+          </p>
+          <dl class="me-ph__meta">
+            <div><dt>Version</dt><dd>{meta.version}</dd></div>
+            <div><dt>Family</dt><dd>{meta.family}</dd></div>
+            <div><dt>Track</dt><dd>{meta.track}</dd></div>
+            <div><dt>Archetype</dt><dd>{meta.archetype}</dd></div>
+            <div><dt>Namespace</dt><dd>{meta.namespace}</dd></div>
+            <div><dt>Gate</dt><dd>{meta.gate}</dd></div>
+          </dl>
+        </div>
+      </div>
+    </header>
+
+    <!-- ── 01 premise ───────────────────────────────────────────────── -->
+    <section class="me-sec me-wrap" id="premise">
+      <div class="me-sec__head">
+        <span class="me-sec__num">01</span>
+        <h2 class="me-sec__title">Premise</h2>
+        <span class="me-sec__rule" aria-hidden="true"></span>
+        <span class="me-sec__note">What the shelf is for</span>
+      </div>
+
+      <div class="me-premise">
+        <div>
+          <h3 class="me-belief">{meta.promise}</h3>
+          <p class="me-body">
+            The reader is a design lead with ninety seconds and twenty other tabs open. They are not
+            here to admire a mood; they are here to decide whether the work behind it is any good.
+            So the frame gives up everything that would compete — no gradient behind the type, no
+            neon, no hover lift that makes fourteen different covers look like one template.
+          </p>
+          <p class="me-body">
+            What is left is a smoked pane and a warm edge. <strong>The covers are the colour.</strong>
+            {' '}The system's job is to hold them still enough to be read.
+          </p>
+        </div>
+
+        <aside class="me-enemy">
+          <b>The enemy</b>
+          The dark portfolio grid: black page, neon accent, a gradient behind the headline, every
+          card the same 16:9 with a hover lift. It photographs well, and <i>the work disappears into
+          the mood</i>.
+        </aside>
+      </div>
+
+      <div class="me-decisions">
+        <article class="me-card">
+          <h3>The ground is smoked graphite, not black</h3>
+          <dl>
+            <div>
+              <dt>Because</dt>
+              <dd>
+                Pure black flattens a pane to nothing. #0e1013 leaves room for a 6% ink lift to read
+                as glass.
+              </dd>
+            </div>
+            <div>
+              <dt>Not when</dt>
+              <dd>A case's own cover is the ground — full-bleed imagery owns the page.</dd>
+            </div>
+            <div>
+              <dt>Breaks next</dt>
+              <dd>Someone "deepens" it to #000 for contrast, and every pane edge disappears.</dd>
+            </div>
+          </dl>
+        </article>
+
+        <article class="me-card">
+          <h3>One caustic, warm, and never a gradient</h3>
+          <dl>
+            <div>
+              <dt>Because</dt>
+              <dd>
+                The amber is the only place light exits the glass. A gradient would turn a material
+                into a mood.
+              </dd>
+            </div>
+            <div>
+              <dt>Not when</dt>
+              <dd>A case owns the accent — the shelf never recolours a case's own signal.</dd>
+            </div>
+            <div>
+              <dt>Breaks next</dt>
+              <dd>
+                Amber is used as a background wash "for warmth", and the covers stop being the
+                colour.
+              </dd>
+            </div>
+          </dl>
+        </article>
+
+        <article class="me-card">
+          <h3>Panes lift by a 1px specular edge, not a shadow</h3>
+          <dl>
+            <div>
+              <dt>Because</dt>
+              <dd>Glass has an edge, not a drop shadow. A shadow says "card"; an edge says "pane".</dd>
+            </div>
+            <div>
+              <dt>Not when</dt>
+              <dd>Dense tabular UI, where a hairline is not enough separation.</dd>
+            </div>
+            <div>
+              <dt>Breaks next</dt>
+              <dd>A <code>box-shadow: 0 18px 48px</code> gets added because it "needs depth".</dd>
+            </div>
+          </dl>
+        </article>
+
+        <article class="me-card">
+          <h3>The mark is the curve, scooped out of a tile</h3>
+          <dl>
+            <div>
+              <dt>Because</dt>
+              <dd>
+                The hero is a curve. The mark must be the same curve at 16px, or the identity is two
+                ideas.
+              </dd>
+            </div>
+            <div>
+              <dt>Not when</dt>
+              <dd>The context needs a pictogram. That is a different case.</dd>
+            </div>
+            <div>
+              <dt>Breaks next</dt>
+              <dd>Someone squares off the scoop to "clean it up" at 16px, and the family splits.</dd>
+            </div>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── 02 mark ──────────────────────────────────────────────────── -->
+    <section class="me-sec me-wrap" id="mark">
+      <div class="me-sec__head">
+        <span class="me-sec__num">02</span>
+        <h2 class="me-sec__title">Mark</h2>
+        <span class="me-sec__rule" aria-hidden="true"></span>
+        <span class="me-sec__note">{theme['mark-form']}</span>
+      </div>
+
+      <div class="me-markrow">
+        <div class="me-markcell">
+          <span class="me-markcell__lbl">Mark · 44 × 44 on a 64 grid</span>
+          <div class="me-markcell__stage"><Ink file="mark" width={96} height={96} /></div>
+          <p class="me-markcell__spec">
+            A tile with the liquid line scooped out of its top edge. <b>Fill only</b> — no strokes,
+            no circles, two primitives.
+          </p>
+        </div>
+
+        <div class="me-markcell">
+          <span class="me-markcell__lbl">Compact · under 32px</span>
+          <div class="me-markcell__stage"><Ink file="mark-compact" width={96} height={96} /></div>
+          <p class="me-markcell__spec">
+            The scoop drops 2 units so the gap survives a 16px render. <b>Same curve</b>, less air —
+            never a different shape.
+          </p>
+        </div>
+
+        <div class="me-markcell">
+          <span class="me-markcell__lbl">Glyph · 1:1 only</span>
+          <div class="me-markcell__stage"><Ink file="glyph" width={96} height={96} /></div>
+          <p class="me-markcell__spec">
+            The scoop alone, for favicons and avatar crops where a tile would read as a button.
+            <b>Never</b> used beside the wordmark.
+          </p>
+        </div>
+      </div>
+
+      <div class="me-markrow" style="margin-top: var(--me-s4)">
+        <div class="me-markcell">
+          <span class="me-markcell__lbl">Sizes · compact swaps in under 32px</span>
+          <div class="me-sizes">
+            <Ink file="mark-compact" width={16} height={16} />
+            <Ink file="mark-compact" width={24} height={24} />
+            <Ink file="mark" width={32} height={32} />
+            <Ink file="mark" width={48} height={48} />
+            <Ink file="mark" width={80} height={80} />
+          </div>
+        </div>
+      </div>
+
+      <div class="me-wordmarks">
+        <div class="me-wm">
+          <Ink file="wordmark" width={176} height={33} />
+          <span class="me-wm__cap">Wordmark · ink on smoked</span>
+        </div>
+        <div class="me-wm me-wm--plate">
+          <img src={`${B}/wordmark-reverse.svg`} width="176" height="33" alt="" />
+          <span class="me-wm__cap">Wordmark · ink-solid on board</span>
+        </div>
+        <div class="me-wm">
+          <Ink file="lockup" width={200} height={43} />
+          <span class="me-wm__cap">Lockup · mark left, cap height aligned</span>
+        </div>
+        <div class="me-wm me-wm--plate">
+          <img src={`${B}/lockup-stacked-reverse.svg`} width="120" height="72" alt="" />
+          <span class="me-wm__cap">Lockup stacked · board scope</span>
+        </div>
+      </div>
+
+      <p class="me-rule-note">
+        <b>The wordmark is outlined, not set.</b> It is cut from the Bricolage Grotesque file at weight
+        800 and tracking −0.03em, then baked to paths with the ink filled in — so it renders
+        identically in an <code>&lt;img&gt;</code>, a favicon, or a print PDF, and cannot drift when the
+        webfont fails. Re-cut it with <code>extract-wordmark.py</code>; never re-type it.
+      </p>
+    </section>
+
+    <!-- ── 03 caustic ───────────────────────────────────────────────── -->
+    <section class="me-sec me-wrap" id="caustic">
+      <div class="me-sec__head">
+        <span class="me-sec__num">03</span>
+        <h2 class="me-sec__title">Caustic</h2>
+        <span class="me-sec__rule" aria-hidden="true"></span>
+        <span class="me-sec__note">{primitives.length} primitives · {contrast.length} pairs measured</span>
+      </div>
+
+      <div class="me-core-grid">
+        {primitives.map((p) => (
+          <div class="me-swatch">
+            <span class="me-swatch__chip" style={`background:${p.value}`} aria-hidden="true"></span>
+            <span class="me-swatch__meta">
+              <b>{p.name}</b>
+              <span>{p.value}</span>
+              <em>{p.role}</em>
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <table class="me-contrast">
+        <caption class="sr-only">Contrast pairs, computed from hex</caption>
+        <thead>
+          <tr>
+            <th scope="col">Pair</th>
+            <th scope="col"></th>
+            <th scope="col" class="num">Ratio</th>
+            <th scope="col">Verdict</th>
+            <th scope="col">The job it may do</th>
+          </tr>
+        </thead>
+        <tbody>
+          {contrast.map((c) => (
+            <tr class={c.pass ? '' : 'me-failrow'}>
+              <td>{c.label}</td>
+              <td>
+                <span class="me-chip" style={`background:linear-gradient(135deg, ${c.fg} 0 50%, ${c.bg} 50% 100%)`}></span>
+              </td>
+              <td class="num">{c.ratio.toFixed(2)}:1</td>
+              <td>
+                <span class={`me-verdict${c.pass ? ' me-verdict--pass' : ''}`}>
+                  {c.pass ? 'Pass' : 'Fails'}
+                </span>
+              </td>
+              <td class="me-job">{c.job}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <p class="me-rule-note">
+        <b>Three pairs fail, and they are published.</b> A palette that reports fifteen passes is
+        either measuring wrong or not trying. Graphite is a hairline weight, not a text colour; ink on
+        the caustic is the mistake everyone makes once, so it is printed here with its 1.71:1 in red;
+        and ash on board is the reason the board scope has its own secondary ink.
+        {fails.map((f) => ` ${f.label} — ${f.ratio}:1.`)}
+      </p>
+    </section>
+
+    <!-- ── 04 voice ─────────────────────────────────────────────────── -->
+    <section class="me-sec me-wrap" id="voice">
+      <div class="me-sec__head">
+        <span class="me-sec__num">04</span>
+        <h2 class="me-sec__title">Voice</h2>
+        <span class="me-sec__rule" aria-hidden="true"></span>
+        <span class="me-sec__note">Three faces · seven steps</span>
+      </div>
+
+      <div class="me-type-grid">
+        {FACES.map((f) => (
+          <div class="me-spec">
+            <div class="me-spec__head">
+              <span>{f.name}</span>
+              <span>{f.file}</span>
+            </div>
+            <p
+              class="me-spec__display"
+              style={f.name === 'Reading' ? 'font-family:var(--me-font-reading);font-weight:500' : f.name === 'Mono' ? 'font-family:var(--me-font-mono);font-weight:500;letter-spacing:-0.02em' : ''}
+            >
+              {f.display}
+            </p>
+            <p class="me-spec__read">{f.role}</p>
+            <div class="me-figures">
+              {f.figures.map(([k, v]) => (
+                <div><span>{k}</span><b>{v}</b></div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="me-scale" style="margin-top: var(--me-s7)">
+        {SCALE.map((s) => (
+          <div class="me-scale__row">
+            <span class="me-scale__role">{s.role}</span>
+            <span
+              class="me-scale__sample"
+              style={`font-size:var(${s.token});line-height:${s.lh};font-family:var(--me-font-${s.font});font-weight:${s.w};${s.font === 'mono' ? 'text-transform:uppercase;letter-spacing:0.14em;' : ''}`}
+            >
+              {s.sample}
+            </span>
+            <span class="me-scale__tok">{s.token} · {s.lh}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ── 05 components ────────────────────────────────────────────── -->
+    <section class="me-sec me-wrap" id="components">
+      <div class="me-sec__head">
+        <span class="me-sec__num">05</span>
+        <h2 class="me-sec__title">Components</h2>
+        <span class="me-sec__rule" aria-hidden="true"></span>
+        <span class="me-sec__note">Fourteen parts · every state</span>
+      </div>
+      <Kit client:load />
+    </section>
+
+    <!-- ── 06 index ─────────────────────────────────────────────────── -->
+    <section class="me-sec me-wrap" id="index">
+      <div class="me-sec__head">
+        <span class="me-sec__num">06</span>
+        <h2 class="me-sec__title">Index</h2>
+        <span class="me-sec__rule" aria-hidden="true"></span>
+        <span class="me-sec__note">Five collections · fourteen cases</span>
+      </div>
+
+      <div class="me-index">
+        {groups.map((g) => (
+          <div class="me-collection">
+            <div class="me-collection__head">
+              <h3>{g.label}</h3>
+              <p>{String(g.entries.length).padStart(2, '0')} cases</p>
+            </div>
+            <div class="me-entries">
+              {g.entries.map((c) => (
+                <a class="me-entry" href={c.href}>
+                  <span class="me-entry__n">{c.number}</span>
+                  <span>
+                    <span class="me-entry__name">{c.name}</span>
+                    <span class="me-entry__mat">{c.material}</span>
+                  </span>
+                  <span class="me-entry__tag">{c.status}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ── 07 tokens ────────────────────────────────────────────────── -->
+    <section class="me-sec me-wrap" id="tokens">
+      <div class="me-sec__head">
+        <span class="me-sec__num">07</span>
+        <h2 class="me-sec__title">Tokens</h2>
+        <span class="me-sec__rule" aria-hidden="true"></span>
+        <span class="me-sec__note">Three layers · two scopes</span>
+      </div>
+
+      <div class="me-tokens">
+        <div class="me-code">
+          <h4>1 · primitives.css</h4>
+          <pre><code>{cssPrimitives}</code></pre>
+        </div>
+        <div class="me-code">
+          <h4>2 · semantic.smoked.css</h4>
+          <pre><code>{cssSmoked}</code></pre>
+        </div>
+        <div class="me-code">
+          <h4>2 · semantic.board.css</h4>
+          <pre><code>{cssBoard}</code></pre>
+        </div>
+        <div class="me-code">
+          <h4>3 · glass.css</h4>
+          <pre><code>{cssGlass}</code></pre>
+        </div>
+      </div>
+
+      <p class="me-rule-note">
+        <b>Two scopes, one palette.</b> Smoked and board are not themes and not modes: they are the
+        same twelve primitives pointed at different jobs. No primitive is ever named for a scope —
+        there is no <code>--me-ink-light</code>. A scope swaps what <code>--me-text-secondary</code>
+        means, and every component keeps reading the job.
+      </p>
+    </section>
+
+    <!-- ── close ────────────────────────────────────────────────────── -->
+    <section class="me-wrap me-close">
+      <blockquote>
+        A smoked-glass shelf whose only colour is the light bending through it and the fourteen
+        covers passing behind it — and which will not put a single gradient behind the type.
+      </blockquote>
+      <p class="me-close__src">The sentence this system can be rejected by</p>
+    </section>
+
+    <footer class="me-wrap me-foot">
+      <p>
+        Meniscus · {meta.case} · v{meta.version}
+        <br />
+        Smoked graphite #0e1013 · caustic #ffa768 · set in Bricolage Grotesque and Schibsted Grotesk
+      </p>
+      <a class="me-foot__link" href="/">Back to the shelf →</a>
+    </footer>
+  </div>
+</Layout>
+
+<script is:inline>
+  ;(() => {
+    const root = document.documentElement
+    const btn = document.getElementById('me-scope-toggle')
+    if (!btn) return
+    const paint = () => {
+      const paper = root.getAttribute('data-me') === 'paper'
+      btn.textContent = paper ? 'Scope: board' : 'Scope: smoked'
+      btn.setAttribute('aria-label', paper ? 'Switch to the smoked scope' : 'Switch to the board scope')
+    }
+    const saved = localStorage.getItem('me-scope')
+    if (saved === 'paper') root.setAttribute('data-me', 'paper')
+    paint()
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-me') === 'paper' ? 'smoked' : 'paper'
+      root.setAttribute('data-me', next)
+      localStorage.setItem('me-scope', next)
+      paint()
+    })
+  })()
+</script>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-label="Meniscus dispersion plate">
+  <defs>
+    <linearGradient id="g2" x1="0" y1="0" x2="0.85" y2="1">
+      <stop offset="0%" stop-color="#252a31"/>
+      <stop offset="46%" stop-color="#1a1e24"/>
+      <stop offset="100%" stop-color="#11141a"/>
+    </linearGradient>
+    <linearGradient id="sp2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f3f2ef" stop-opacity="0.13"/>
+      <stop offset="38%" stop-color="#f3f2ef" stop-opacity="0.035"/>
+      <stop offset="100%" stop-color="#f3f2ef" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#g2)"/>
+  <rect width="1200" height="675" fill="url(#sp2)"/>
+  <defs>
+    <radialGradient id="b2" cx="30%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#ffa768" stop-opacity="0.26"/>
+      <stop offset="100%" stop-color="#ffa768" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#b2)"/>
+  <path d="M-40 120 Q600 -30 1240 80" fill="none"
+      stroke="#ffa768" stroke-opacity="0.12" stroke-width="0.90"/>
+  <path d="M-40 163 Q600 19 1240 123" fill="none"
+      stroke="#f3f2ef" stroke-opacity="0.27" stroke-width="1.89"/>
+  <path d="M-40 206 Q600 68 1240 166" fill="none"
+      stroke="#f3f2ef" stroke-opacity="0.41" stroke-width="2.78"/>
+  <path d="M-40 249 Q600 117 1240 209" fill="none"
+      stroke="#ffa768" stroke-opacity="0.52" stroke-width="3.49"/>
+  <path d="M-40 292 Q600 166 1240 252" fill="none"
+      stroke="#f3f2ef" stroke-opacity="0.60" stroke-width="3.94"/>
+  <path d="M-40 335 Q600 215 1240 295" fill="none"
+      stroke="#f3f2ef" stroke-opacity="0.62" stroke-width="4.10"/>
+  <path d="M-40 378 Q600 264 1240 338" fill="none"
+      stroke="#ffa768" stroke-opacity="0.60" stroke-width="3.94"/>
+  <path d="M-40 421 Q600 313 1240 381" fill="none"
+      stroke="#f3f2ef" stroke-opacity="0.52" stroke-width="3.49"/>
+  <path d="M-40 464 Q600 362 1240 424" fill="none"
+      stroke="#f3f2ef" stroke-opacity="0.41" stroke-width="2.78"/>
+  <path d="M-40 507 Q600 411 1240 467" fill="none"
+      stroke="#ffa768" stroke-opacity="0.27" stroke-width="1.89"/>
+  <path d="M-40 550 Q600 460 1240 510" fill="none"
+      stroke="#f3f2ef" stroke-opacity="0.12" stroke-width="0.90"/>
+  
+  <rect width="1200" height="1.5" fill="#f3f2ef" opacity="0.22"/>
+  <rect y="673.5" width="1200" height="1.5" fill="#08090b" opacity="0.7"/>
+  <rect width="1.5" height="675" fill="#f3f2ef" opacity="0.1"/>
+  <rect x="1198.5" width="1.5" height="675" fill="#f3f2ef" opacity="0.06"/>
+</svg>

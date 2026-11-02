@@ -1,11 +1,15 @@
 ---
 import Layout from '@/layouts/Layout.astro'
+import '@/features/meniscus/meniscus-tokens.css'
+import '@/features/meniscus/meniscus-page.css'
+import '@/features/meniscus/meniscus-ui.css'
+import '@/features/meniscus/meniscus-gallery.css'
 import { CaseGallery } from '@/components/case-gallery'
 ---
 
 <Layout
-  title="Design Systems & Case Library — Aditya Himawan"
-  description="Fourteen design systems engineered from one rigorous method: tokens, mark families, computed contrast audits, and live proof pages."
+  title="Meniscus — design systems & case library · Aditya Himawan"
+  description="Fourteen design systems held in one glass frame. Each entry states its own primitives, mark family, and the contrast pair it fails."
   canonical="/"
 >
   <CaseGallery client:load />

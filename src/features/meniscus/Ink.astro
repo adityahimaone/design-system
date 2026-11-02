@@ -1,0 +1,39 @@
+---
+/**
+ * A mark, a wordmark or a lockup, in both inks.
+ *
+ * Every asset ships twice — `<file>.svg` in ink and `<file>-reverse.svg` in
+ * ink-solid — because a mark baked to a single colour cannot follow a scope
+ * swap. Both files are rendered and CSS picks one, so switching to the board
+ * scope never needs a re-render, a second request, or a JS branch.
+ *
+ * Decorative by default: every place this is used already has adjacent text
+ * naming the brand, so a duplicate `alt` would only make a screen reader say
+ * "Meniscus" twice.
+ */
+type Props = {
+  /** File stem in /brand/meniscus — e.g. `mark`, `wordmark`, `lockup-stacked`. */
+  file: string
+  width?: number
+  height?: number
+  class?: string
+}
+
+const { file, width, height, class: cls = '' } = Astro.props
+const B = '/brand/meniscus'
+---
+
+<img
+  class:list={['me-ink', 'me-ink--dark', cls]}
+  src={`${B}/${file}.svg`}
+  alt=""
+  width={width}
+  height={height}
+/>
+<img
+  class:list={['me-ink', 'me-ink--light', cls]}
+  src={`${B}/${file}-reverse.svg`}
+  alt=""
+  width={width}
+  height={height}
+/>

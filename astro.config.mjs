@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://design-system.adityahimaone.space',
   output: 'static',
   server: {
     port: 4321,

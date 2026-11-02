@@ -39,7 +39,7 @@ export function CaseGallery() {
               <span>GET /api/cases.json</span>
             </a>
             <a
-              href="https://sunnyside.adityahimawan.com"
+              href="https://adityahimaone.space"
               className="inline-flex items-center gap-1 text-[#a0abbd] hover:text-white transition-colors"
             >
               <span>Studio Portfolio</span>

@@ -32,7 +32,7 @@ export type DesignCase = {
 
 export const SUNNYSIDE_URL =
   (typeof process !== 'undefined' && process.env?.PUBLIC_SUNNYSIDE_URL) ||
-  'http://localhost:3000'
+  'https://adityahimaone.space'
 
 /**
  * The documented design-system cases. Sunnyside anchors the shelf at index 0;

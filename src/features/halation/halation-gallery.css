@@ -149,18 +149,41 @@
 .lg-hero {
   position: relative;
   isolation: isolate;
-  /* The hero is two rows: the copy, then a lane that belongs to the band alone.
-     The lane is a floor, not a share of the viewport — the copy can never be
-     asked to give the band its line, and the band can never climb into the
-     actions. The band sizes its tiles in cqh of that lane (see .tgh__band). */
+  /* Three rows: the copy, a lane that belongs to the band alone, then the
+     deck — the paragraph and the actions, which read under the band rather
+     than over it. The band's lane is a floor, not a share of the viewport:
+     the copy can never be asked to give the band its line, and the band can
+     never climb into the type. The band sizes its tiles in cqh of that lane
+     (see .lg-hero .tgh__band). */
   display: grid;
-  grid-template-rows: auto 1fr;
-  min-height: clamp(680px, 92svh, 860px);
+  /* one explicit column, and every row is placed in it by hand. Left to
+     auto-placement the ground overlay below takes column 1 of rows 2–3 and
+     pushes the band and the deck into an implicit second track, which halves
+     the frame. */
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  min-height: clamp(700px, 92svh, 880px);
   padding: var(--ha-s9) 0 0;
   overflow: clip;
   background-image: var(--ha-field-image);
   background-size: cover;
   background-position: 28% 44%;
+}
+
+/* The field gives way to paper under the band, so the deck is read on the page
+   and not on the photograph, and the hero meets .lg-figures on the colour it
+   ends on. The ground belongs to the deck's row and reaches 28px up into the
+   band's lane, so the change of ground lands exactly on the band's lower edge
+   whatever height the band resolves to — the tiles keep the photograph behind
+   them and are never washed out by their own backdrop. */
+.lg-hero::after {
+  content: '';
+  grid-row: 3;
+  grid-column: 1;
+  margin-top: -28px;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent 0, var(--ha-surface-page) 28px);
 }
 
 /* structural rules the band component needs — restated here because the
@@ -179,10 +202,11 @@
   position: relative;
   inset: auto;
   grid-row: 2;
+  grid-column: 1;
   align-self: end;
   height: 100%;
   min-height: 190px;
-  margin-top: clamp(36px, 4vw, 64px);
+  margin-top: clamp(28px, 3.4vw, 52px);
 }
 .tgh__tile {
   position: absolute;
@@ -229,37 +253,28 @@
   object-position: center top;
 }
 
-/* the field blooms open behind the copy and the band dissolves into the page.
-   The bloom is deliberately centred on the copy column: it is what keeps the
-   type, the actions and the near end of the band from ever sharing an edge. */
+/* the field blooms open behind the copy: it is what keeps the type and the
+   near end of the band from ever sharing an edge. The dissolve under the band
+   belongs to .lg-hero::after, which tracks the band itself. */
 .lg-hero__veil {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background:
-    /* the dissolve is measured from the bottom edge, so it lands on the band
-       whatever height the hero resolves to */
-    linear-gradient(
-      to bottom,
-      transparent calc(100% - 150px),
-      color-mix(in oklab, var(--ha-surface-page) 42%, transparent) calc(100% - 70px),
-      var(--ha-surface-page) 100%
-    ),
-    radial-gradient(
-      86% 72% at 10% 26%,
-      color-mix(in oklab, var(--ha-surface-page) 44%, transparent) 0%,
-      color-mix(in oklab, var(--ha-surface-page) 14%, transparent) 46%,
-      transparent 74%
-    );
+  background: radial-gradient(
+    86% 64% at 10% 22%,
+    color-mix(in oklab, var(--ha-surface-page) 46%, transparent) 0%,
+    color-mix(in oklab, var(--ha-surface-page) 15%, transparent) 46%,
+    transparent 74%
+  );
 }
 
 .lg-hero__in {
   position: relative;
   z-index: 2;
   grid-row: 1;
+  grid-column: 1;
   display: grid;
-  gap: var(--ha-s6);
 }
 
 .lg-hero__copy {
@@ -299,9 +314,26 @@
   text-shadow: 1.5px 0 0 color-mix(in oklab, var(--ha-accent) 55%, transparent);
 }
 
+/* ── the deck: paragraph and actions, under the band ──────────────────────── */
+
+/* The band is the widest thing on the page, so the deck takes the full measure
+   too and splits it: the reading line on the left, the actions on the right,
+   both sitting on the same baseline. Nothing here overlaps the band. */
+.lg-hero__deck {
+  position: relative;
+  z-index: 2;
+  grid-row: 3;
+  grid-column: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--ha-s6);
+  padding-block: var(--ha-s6);
+}
+
 .lg-hero__lead {
-  margin: var(--ha-s5) 0 0;
-  max-width: 46ch;
+  margin: 0;
+  max-width: 58ch;
   font-size: var(--ha-t-lead);
   line-height: var(--ha-t-lead-lh);
   color: color-mix(in oklab, var(--ha-text) 88%, transparent);
@@ -311,7 +343,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--ha-s3);
-  margin-top: var(--ha-s6);
+  justify-content: flex-end;
 }
 
 
@@ -778,6 +810,178 @@
   color: var(--ha-text-accent);
 }
 
+/* ── install ──────────────────────────────────────────────────────────────── */
+
+.lg-install {
+  padding: var(--ha-s8) 0 0;
+}
+
+.lg-install__panel {
+  margin-top: var(--ha-s5);
+  border: 1px solid var(--ha-rule-strong);
+  border-radius: var(--ha-r-sheet);
+  background: var(--ha-surface-plate);
+  overflow: hidden;
+}
+
+/* the command line is the one place on the page where the mono face is the
+   content rather than the label */
+.lg-install__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--ha-s4);
+  padding: 13px 13px 13px 18px;
+  border-bottom: 1px solid var(--ha-rule);
+  background: var(--ha-code-bg);
+}
+
+.lg-install__line {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.lg-install__shell {
+  flex: none;
+  font-family: var(--ha-font-mono);
+  font-size: 12px;
+  line-height: 1;
+  color: var(--ha-text-accent);
+  user-select: none;
+}
+
+.lg-install__cmd {
+  min-width: 0;
+  font-family: var(--ha-font-mono);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ha-code-ink);
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.lg-copy {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 13px;
+  border-radius: var(--ha-r-pill);
+  border: 1px solid var(--ha-rule-strong);
+  background: var(--ha-surface-page);
+  color: var(--ha-text);
+  font-family: var(--ha-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--ha-e-fast),
+    border-color var(--ha-e-fast),
+    color var(--ha-e-fast);
+}
+
+.lg-copy:hover {
+  border-color: var(--ha-text);
+}
+
+.lg-copy[data-copied='true'] {
+  background: var(--ha-text);
+  border-color: var(--ha-text);
+  color: var(--ha-surface-page);
+}
+
+.lg-copy:focus-visible {
+  outline: none;
+  border-color: var(--ha-focus);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ha-focus) 24%, transparent);
+}
+
+/* four cells, each one a <details>: the count is the fact, the paragraph is
+   the answer to "what is actually in there" */
+.lg-install__parts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--ha-rule);
+}
+
+.lg-part {
+  background: var(--ha-surface-page);
+  padding: var(--ha-s4);
+}
+
+.lg-part > summary {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  cursor: pointer;
+  list-style: none;
+}
+.lg-part > summary::-webkit-details-marker {
+  display: none;
+}
+
+.lg-part__name {
+  font-family: var(--ha-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ha-text);
+}
+
+.lg-part__n {
+  margin-left: auto;
+  font-family: var(--ha-font-display);
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ha-text-accent);
+}
+
+.lg-part > summary::after {
+  content: '+';
+  font-family: var(--ha-font-mono);
+  font-size: 12px;
+  line-height: 1;
+  color: var(--ha-text-mute);
+}
+
+.lg-part[open] > summary::after {
+  content: '−';
+}
+
+.lg-part > p {
+  margin: var(--ha-s3) 0 0;
+  font-size: 13px;
+  line-height: 1.62;
+  color: var(--ha-text-mute);
+}
+
+.lg-part:hover > summary .lg-part__name {
+  color: var(--ha-text-accent);
+}
+
+/* screen-reader only — the copy button's state has to be announced, not just
+   swapped in the label */
+.lg-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ── footer ───────────────────────────────────────────────────────────────── */
 
 .lg-foot {
@@ -830,9 +1034,22 @@
   .lg-shelf__note {
     grid-column: 2;
   }
+  .lg-install__parts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 860px) {
+  /* the deck loses the width it would need for two columns before the band
+     does — stack it and let the actions sit under the reading line */
+  .lg-hero__deck {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: var(--ha-s5);
+  }
+  .lg-hero__cta {
+    justify-content: flex-start;
+  }
   .lg-tools {
     grid-template-columns: minmax(0, 1fr) 180px;
   }
@@ -861,7 +1078,7 @@
   .lg-hero {
     /* the bar is a capsule now, so the copy starts below its rim, not below
        the old flat nav line */
-    min-height: clamp(560px, 74svh, 660px);
+    min-height: clamp(640px, 88svh, 760px);
     padding: 104px 0 0;
   }
   .lg-hero__title {
@@ -869,6 +1086,9 @@
   }
   .lg-hero__lead {
     font-size: 16px;
+  }
+  .lg-hero__deck {
+    padding-block: var(--ha-s5);
   }
   .lg-brand__sub {
     display: none;
@@ -896,5 +1116,22 @@
   }
   .lg-shelf__num {
     padding-top: 0;
+  }
+  .lg-install__parts {
+    grid-template-columns: 1fr;
+  }
+  .lg-install__bar {
+    flex-wrap: wrap;
+    padding: 13px 13px 13px 14px;
+  }
+  .lg-install__line {
+    flex-basis: 100%;
+  }
+  .lg-install__cmd {
+    white-space: normal;
+    word-break: break-word;
+  }
+  .lg-copy {
+    margin-left: auto;
   }
 }

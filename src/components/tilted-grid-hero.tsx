@@ -23,7 +23,24 @@ import { cn } from '@/lib/utils'
  * ─────────────────────────────────────────────────────────────── */
 
 const SLICES = 16
-const CAMERA = 1.6
+
+/**
+ * Camera distance, in cylinder radii.
+ *
+ * A tile sitting at angle θ projects to a width proportional to
+ *
+ *   C · [(C − 1 + cosθ)·cosθ + sin²θ] / (C − 1 + cosθ)²
+ *
+ * and that factor is what makes or breaks the row. At C = 1.6 a tile at the
+ * 64° bend projects 1.9× wider than the same tile at the centre: the ends
+ * balloon, their neighbours look shrunken beside them, and because the gap
+ * is an arc it swells with the tile — the band stops reading as one ribbon
+ * and starts reading as scattered cards that collide. Solving for the C at
+ * which a tile projects the same width at 0° as at the bend gives C ≈ 2.8;
+ * across the whole sweep the factor then varies by under 1%, so every tile
+ * keeps its size and every gap keeps its width, at any viewport.
+ */
+const CAMERA = 2.8
 
 /**
  * Cylinder radius, as a share of the hero's width, that puts the frame's
@@ -59,13 +76,18 @@ function measure(
   const b = narrow ? Math.min(bend, (50 * Math.PI) / 180) : bend
   const h = Math.min((t / 100) * height, ((MAX_WIDTH / 100) * width) / aspect)
   const radius = width * arc(b)
-  const flat = { columns: 2, sweep: 0, unit: 0, limit: 0, tile: t, bend: b, phone }
+  const flat = { columns: 4, sweep: 0, unit: 0, limit: 0, tile: t, bend: b, phone }
   if (!(h > 0) || !(radius > 0)) return flat
   const deg = (rad: number) => (rad * 180) / Math.PI
   const unit = deg(h / radius)
   const pitch = (aspect + gap / 100) * unit
   const limit = deg(b) + (aspect * unit) / 2
-  const columns = Math.min(60, Math.max(2, Math.ceil((2 * limit) / pitch)))
+  // Coverage, not span. Tiles run from −sweep to +sweep, so at either end of
+  // the cycle one side of the row is a whole pitch short of the frame — the
+  // hole then travels across the band as the row advances, which reads as a
+  // gap that opens and closes. Two reserve tiles, one per end, keep the
+  // frame filled at every phase.
+  const columns = Math.min(60, Math.max(4, Math.ceil((2 * deg(b)) / pitch) + 2))
   const round = (n: number) => +n.toFixed(4)
   const sweep = round((columns * pitch) / 2)
   return {
@@ -155,6 +177,16 @@ export function TiltedGridHero({
     for (const { src } of images) new Image().src = src
   }, [images])
 
+  // Every tile is placed by its own negative delay, so the row is only a row if
+  // every tile's animation started on the same frame. Mounting a provisional
+  // count and then adding the tiles the real measurement asks for breaks that:
+  // the late arrivals start a second or two behind, and their neighbours ride
+  // closer to them than the pitch allows — one gap pinched shut, and it moves
+  // as the row advances. So nothing is rendered until the band has been
+  // measured; the band is already faded out until then, and the whole row
+  // mounts in one commit, on one frame, at one start time.
+  const ready = layout !== null
+
   const { columns, sweep, unit, limit, tile: tileSize, bend: bent, phone } =
     layout ?? measure(1200, 560, tileHeight, aspectRatio, gap, bend)
 
@@ -168,18 +200,27 @@ export function TiltedGridHero({
     `translateZ(${radius}) rotateY(${+deg.toFixed(4)}deg) translateZ(-${radius})`
 
   const hide = +(((sweep - limit) / (2 * sweep || 1)) * 100).toFixed(4)
+  const duration = columns * speed
   const css =
     `@keyframes ${orbit}{` +
     `from{transform:${turn(-sweep)}}to{transform:${turn(sweep)}}` +
     `0%,${hide}%,${100 - hide}%,100%{visibility:hidden}` +
     `${hide + 0.001}%,${100 - hide - 0.001}%{visibility:visible}}` +
-    // Pausing rather than removing the motion keeps the band whole: every
-    // tile is already placed by its negative delay, so it freezes as a
-    // finished still.
-    `@media(prefers-reduced-motion:reduce){.${tile}{animation-play-state:paused}}`
+    // A page-level `prefers-reduced-motion` reset — the `animation-duration:
+    // 0.001ms !important` most systems ship — collapses every tile back to its
+    // untransformed box, which stacks the whole row on one spot: the band
+    // becomes a pile of covers rather than a curve. Give the tiles their own
+    // duration back and hold them still instead. Paused at its own delay each
+    // tile is already at its angle, so the band freezes as a finished still —
+    // the still frame is the design, not an accident. The duration travels in
+    // `--tgh-dur`, which the reset does not touch, and `.tgh__band .tile`
+    // outranks the reset's `.page *`.
+    `@media(prefers-reduced-motion:reduce){.tgh__band .${tile}{` +
+    `animation-duration:var(--tgh-dur)!important;` +
+    `animation-iteration-count:infinite!important;` +
+    `animation-play-state:paused!important}}`
 
   const share = aspectRatio / SLICES
-  const duration = columns * speed
   const mask = `linear-gradient(90deg,transparent,#000 ${fade}%,#000 ${100 - fade}%,transparent)`
 
   return (
@@ -204,62 +245,66 @@ export function TiltedGridHero({
           WebkitMaskImage: mask,
         }}
       >
-        {Array.from({ length: columns }, (_, t) => {
-          const first = columns - 1 - t
-          const img = images[(shown[t] ?? first) % Math.max(images.length, 1)]
-          return (
-            <div
-              key={t}
-              className={cn(tile, 'tgh__tile')}
-              style={{
-                left: `calc(50% - ${u(aspectRatio / 2)})`,
-                top: `calc(${axisAt}% - ${u(0.5)})`,
-                width: u(aspectRatio),
-                height: u(1),
-                transformStyle: 'preserve-3d',
-                animation: `${orbit} ${duration}s linear ${-t * speed}s infinite`,
-              }}
-              onAnimationIteration={(e) => {
-                const lap = Math.round(e.elapsedTime / duration)
-                setShown((prev) => {
-                  const next = lap * columns + first
-                  return prev[t] === next ? prev : { ...prev, [t]: next }
-                })
-              }}
-            >
-              {Array.from({ length: SLICES }, (_, k) => (
-                <div
-                  key={k}
-                  className={cn(
-                    'tgh__slice',
-                    k === 0 && 'tgh__slice--first',
-                    k === SLICES - 1 && 'tgh__slice--last'
-                  )}
-                  style={{
-                    left: u((aspectRatio - share) / 2),
-                    width: k === SLICES - 1 ? u(share) : `calc(${u(share)} + 1px)`,
+        {ready &&
+          Array.from({ length: columns }, (_, t) => {
+            const first = columns - 1 - t
+            const img = images[(shown[t] ?? first) % Math.max(images.length, 1)]
+            return (
+              <div
+                key={t}
+                className={cn(tile, 'tgh__tile')}
+                style={
+                  {
+                    '--tgh-dur': `${duration}s`,
+                    left: `calc(50% - ${u(aspectRatio / 2)})`,
+                    top: `calc(${axisAt}% - ${u(0.5)})`,
+                    width: u(aspectRatio),
                     height: u(1),
-                    transform: turn((aspectRatio / 2 - (k + 0.5) * share) * unit),
-                  }}
-                >
-                  {img ? (
-                    <img
-                      src={img.src}
-                      alt={k === 0 ? (img.alt ?? '') : ''}
-                      draggable={false}
-                      className="tgh__img"
-                      style={{
-                        left: u(-k * share),
-                        width: u(aspectRatio),
-                        height: u(1),
-                      }}
-                    />
-                  ) : null}
-                </div>
-              ))}
-            </div>
-          )
-        })}
+                    transformStyle: 'preserve-3d',
+                    animation: `${orbit} ${duration}s linear ${-t * speed}s infinite`,
+                  } as React.CSSProperties
+                }
+                onAnimationIteration={(e) => {
+                  const lap = Math.round(e.elapsedTime / duration)
+                  setShown((prev) => {
+                    const next = lap * columns + first
+                    return prev[t] === next ? prev : { ...prev, [t]: next }
+                  })
+                }}
+              >
+                {Array.from({ length: SLICES }, (_, k) => (
+                  <div
+                    key={k}
+                    className={cn(
+                      'tgh__slice',
+                      k === 0 && 'tgh__slice--first',
+                      k === SLICES - 1 && 'tgh__slice--last'
+                    )}
+                    style={{
+                      left: u((aspectRatio - share) / 2),
+                      width: k === SLICES - 1 ? u(share) : `calc(${u(share)} + 1px)`,
+                      height: u(1),
+                      transform: turn((aspectRatio / 2 - (k + 0.5) * share) * unit),
+                    }}
+                  >
+                    {img ? (
+                      <img
+                        src={img.src}
+                        alt={k === 0 ? (img.alt ?? '') : ''}
+                        draggable={false}
+                        className="tgh__img"
+                        style={{
+                          left: u(-k * share),
+                          width: u(aspectRatio),
+                          height: u(1),
+                        }}
+                      />
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            )
+          })}
       </div>
 
       {children}

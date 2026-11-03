@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { DESIGN_CASES, type DesignCase } from '../data/cases'
 import { COLLECTIONS, collectionOf } from '../data/collections'
-import { ArrowUpRight, ArrowRight, Search } from 'lucide-react'
+import { ArrowUpRight, ArrowRight, Check, Copy, Search } from 'lucide-react'
 import { TiltedGridHero } from './tilted-grid-hero'
 
 /* The band is the shelf itself: every cover in shelf order, so the hero never
@@ -19,6 +19,38 @@ const SORTS = [
   { id: 'collection', label: 'Collection' },
 ] as const
 
+/* The skill the whole shelf was built with. It is published, so the command is
+   the honest call to action: install it and the next case is made the same way. */
+const INSTALL_CMD =
+  'npx skills add adityahimaone/sunnyside --skill sunnyside-brand-system --full-depth'
+
+const SKILL_PARTS = [
+  {
+    name: 'references',
+    count: 9,
+    blurb:
+      'The rules the build is held to: the craft bar, the gates, the mark and cast system, the three-layer tokens, immersive surfaces, form theming, research, Figma export — and the case evidence every claim on this shelf is traced back to.',
+  },
+  {
+    name: 'templates',
+    count: 10,
+    blurb:
+      'The files that get written: the case page, the brandkit board, the design-system page, the single-page proof, the Figma plugin, the OpenPencil board and build, the guidelines, and the audit schema.',
+  },
+  {
+    name: 'scripts',
+    count: 25,
+    blurb:
+      'The forge — marks, casts, boards, fields, glyphs, outlined wordmarks, tokens, DESIGN.md, Figma export, the audit and the gates. Deterministic, no API calls, no placeholder output.',
+  },
+  {
+    name: 'examples',
+    count: 3,
+    blurb:
+      'Three worked briefs with their configs, so the intake reads as a shape you can copy rather than a paragraph you have to interpret.',
+  },
+]
+
 export interface SystemFacts {
   primitives: number
   pairs: number
@@ -32,6 +64,32 @@ export function CaseGallery({ facts }: { facts: SystemFacts }) {
   const [active, setActive] = useState<string>('all')
   const [query, setQuery] = useState('')
   const [sort, setSort] = useState<string>('shelf')
+  const [copied, setCopied] = useState(false)
+  const copyTimer = useRef<number | undefined>(undefined)
+
+  useEffect(() => () => window.clearTimeout(copyTimer.current), [])
+
+  const copyInstall = async () => {
+    try {
+      await navigator.clipboard.writeText(INSTALL_CMD)
+    } catch {
+      /* clipboard is gated behind a secure context; fall back to a selection
+         so the command is still one keystroke away */
+      const ta = document.createElement('textarea')
+      ta.value = INSTALL_CMD
+      ta.setAttribute('readonly', '')
+      ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0'
+      document.body.appendChild(ta)
+      ta.select()
+      try {
+        document.execCommand('copy')
+      } catch {}
+      ta.remove()
+    }
+    setCopied(true)
+    window.clearTimeout(copyTimer.current)
+    copyTimer.current = window.setTimeout(() => setCopied(false), 2000)
+  }
 
   useEffect(() => {
     try {
@@ -101,6 +159,7 @@ export function CaseGallery({ facts }: { facts: SystemFacts }) {
 
           <nav className="lg-nav__links">
             <a href="/design-system/halation">Brand system</a>
+            <a href="#install">Install</a>
             <a href="/api/cases.json" target="_blank" rel="noreferrer">
               API
             </a>
@@ -124,9 +183,9 @@ export function CaseGallery({ facts }: { facts: SystemFacts }) {
         className="lg-hero"
         images={BAND}
         speed={6}
-        tileHeight={58}
+        tileHeight={68}
         aspectRatio={4 / 3}
-        gap={3}
+        gap={5}
         axis={55}
         curve={64}
         fade={22}
@@ -143,21 +202,26 @@ export function CaseGallery({ facts }: { facts: SystemFacts }) {
             <h1 className="ha-display lg-hero__title">
               Eighteen systems, held in <em>glass</em>.
             </h1>
+          </div>
+        </div>
 
-            <p className="lg-hero__lead">
-              Every case states its own primitives, its mark family, and{' '}
-              <b>the contrast pair it fails</b>. The shelf does not compete with them — it only
-              frames them.
-            </p>
+        {/* The deck sits in the hero's third row, so it lands under the band and
+            above the shelf — the band is the widest object on the page and the
+            reading line goes with it, not over it. */}
+        <div className="ha-wrap lg-hero__deck">
+          <p className="lg-hero__lead">
+            Every case states its own primitives, its mark family, and{' '}
+            <b>the contrast pair it fails</b>. The shelf does not compete with them — it only
+            frames them.
+          </p>
 
-            <div className="lg-hero__cta">
-              <a className="ha-btn ha-btn--glass" href="#shelf">
-                Open the shelf
-              </a>
-              <a className="ha-btn ha-btn--glass-quiet" href="/design-system/halation">
-                Read the system
-              </a>
-            </div>
+          <div className="lg-hero__cta">
+            <a className="ha-btn ha-btn--glass" href="#shelf">
+              Open the shelf
+            </a>
+            <a className="ha-btn ha-btn--glass-quiet" href="/design-system/halation">
+              Read the system
+            </a>
           </div>
         </div>
       </TiltedGridHero>
@@ -340,6 +404,56 @@ export function CaseGallery({ facts }: { facts: SystemFacts }) {
                 Build the page with real copy and real states. Recompute every contrast pair from hex,
                 and print the one that fails with the job it may therefore not do.
               </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="lg-install" id="install" aria-labelledby="lg-install-title">
+          <div className="lg-shelf__head">
+            <span className="lg-shelf__num">03 · Install</span>
+            <h2 className="lg-shelf__title" id="lg-install-title">
+              The method ships as a skill.
+            </h2>
+            <p className="lg-shelf__note">
+              Every case on this shelf was made by the same skill. Install it and the next one is
+              made the same way — marks on one grid, tokens in three layers, and a contrast ledger
+              that names what it fails.
+            </p>
+          </div>
+
+          <div className="lg-install__panel">
+            <div className="lg-install__bar">
+              <div className="lg-install__line">
+                <span className="lg-install__shell" aria-hidden="true">
+                  $
+                </span>
+                <code className="lg-install__cmd">{INSTALL_CMD}</code>
+              </div>
+              <button
+                type="button"
+                className="lg-copy"
+                onClick={copyInstall}
+                data-copied={copied}
+                aria-label={copied ? 'Install command copied' : 'Copy the install command'}
+              >
+                {copied ? <Check size={13} aria-hidden="true" /> : <Copy size={13} aria-hidden="true" />}
+                {copied ? 'Copied' : 'Copy'}
+              </button>
+              <span className="lg-sr" role="status">
+                {copied ? 'Install command copied to the clipboard' : ''}
+              </span>
+            </div>
+
+            <div className="lg-install__parts">
+              {SKILL_PARTS.map((part, i) => (
+                <details className="lg-part" key={part.name} open={i === 0}>
+                  <summary>
+                    <span className="lg-part__name">{part.name}</span>
+                    <span className="lg-part__n">{String(part.count).padStart(2, '0')}</span>
+                  </summary>
+                  <p>{part.blurb}</p>
+                </details>
+              ))}
             </div>
           </div>
         </section>

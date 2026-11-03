@@ -32,7 +32,6 @@ export type DesignCase = {
     | 'tavola'
     | 'arete'
     | 'quieta'
-    | 'firstlight'
     | 'manifest'
 }
 
@@ -67,7 +66,7 @@ export const DESIGN_CASES: readonly DesignCase[] = [
   },
   {
     slug: 'manifest',
-    number: '20',
+    number: '19',
     name: 'Manifest',
     href: '/design-system/manifest',
     tagline: 'Every parcel leaves a paper trail.',
@@ -81,23 +80,6 @@ export const DESIGN_CASES: readonly DesignCase[] = [
       'The Manifest 6-panel brand board: a chambray-shirt parcel handoff against a red brick wall with the reverse lockup, the boolean carton mark and its MANIFEST wordmark, ten OKLCH primitives, three type voices, six companion cast marks, and the four laws.',
     tags: ['Logistics', 'Kraft', 'Brick', 'Counter-form'],
     tone: 'manifest',
-  },
-  {
-    slug: 'firstlight',
-    number: '19',
-    name: 'Firstlight',
-    href: '/design-system/firstlight',
-    tagline: 'A daylight-first system for people operations.',
-    description:
-      'Warm stock instead of white, a hairline instead of a shadow, one ember accent for anything that needs a decision, and a mark that is a horizon bar carrying a four-point star at every size. Ten primitives, fourteen measured pairs with three published fails, a Silk field behind the hero, and a roster, a leave queue and a pay run built from the five components the kit actually ships.',
-    status: 'Shipped · 2026',
-    role: 'Identity · design system · tokens · product surface',
-    material: 'Warm stock + ink + ember',
-    cover: '/brand/firstlight/firstlight-brandkit.png',
-    coverAlt:
-      'The Firstlight 6-panel brand board: a printed sunrise plate with the reverse lockup, the horizon-bar and resting-star mark on ink, eight OKLCH primitives with their ratio verdicts, three type voices, six companion marks, and the four surface laws.',
-    tags: ['Print', 'Daylight', 'HRIS', 'Tokens'],
-    tone: 'firstlight',
   },
   {
     slug: 'arete',

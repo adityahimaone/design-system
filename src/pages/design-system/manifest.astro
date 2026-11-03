@@ -20,6 +20,27 @@ const NAV = [
   ['tokens', 'Tokens'],
 ] as const
 
+const SOURCE = [
+  {
+    file: 'hero-parcel.jpg',
+    tag: 'Plate 01 · the handoff',
+    note: 'A carton held in both hands against a red brick wall. Kraft against oxide is the whole palette in one frame.',
+    alt: 'A person in a chambray shirt holding a corrugated carton against a red brick wall.',
+  },
+  {
+    file: 'signoff.jpg',
+    tag: 'Plate 02 · the receipt',
+    note: 'A box signed for on a tablet. The signature is the paper trail going digital, which is what the ledger rows are for.',
+    alt: 'Hands receiving a corrugated carton while signing for it on a tablet.',
+  },
+  {
+    file: 'pallet-run.jpg',
+    tag: 'Plate 03 · the run',
+    note: 'A hand truck stacked with cartons in front of the same brick. Volume is the reason the type scale is tabular.',
+    alt: 'A hand truck stacked with corrugated cartons in front of a red brick wall.',
+  },
+]
+
 const PREMISE = [
   {
     k: 'Belief',
@@ -73,7 +94,7 @@ const DECISIONS = [
       'Elevation is a 1px ink rule plus a 4px seam. No drop shadow, no blur, no radius above 3px anywhere in the system.',
     because:
       'Paper and carton have edges. Blur reads as glass, and glass is the surface we rejected in Section 04.',
-    notWhen: 'Overlays that genuinely float above the page (the theme switch popover) — those take an 8px offset shadow at 14% ink.',
+    notWhen: 'Overlays that genuinely float above the page — the one exception, an 8px offset shadow at 14% ink, and nothing else in the system uses it.',
     breaksNext: 'A card that adds a 20px soft shadow to look “modern” and now reads as a different brand.',
   },
 ]
@@ -108,11 +129,26 @@ const SURFACES = [
     demo: 'flute',
   },
   {
+    id: 'photo',
+    title: 'Photographic plate',
+    verdict: 'Shipped — hero + closing band',
+    note: 'A photograph inside an ink frame, never behind text. The three supplied plates are the only imagery the system allows.',
+    demo: 'photo',
+  },
+  {
     id: 'glass',
     title: 'Frosted glass pane',
     verdict: 'Rejected',
     note: 'Tried over the hero photo. Blur read as a SaaS dashboard sitting on a logistics photo, and it killed the kraft/brick material logic in one element.',
     demo: 'glass',
+    rejected: true,
+  },
+  {
+    id: 'track',
+    title: 'Animated progress track',
+    verdict: 'Rejected',
+    note: 'A smooth line drawn between two scan events. It invents certainty the network does not have — the parcel is only known at the moments it is scanned.',
+    demo: 'track',
     rejected: true,
   },
   {
@@ -136,10 +172,10 @@ const TYPE_SCALE = [
 
 const GAPS = [
   { k: 'Verified', v: '16 contrast pairs computed from hex, 3 published failures, 10 primitives, a 64-unit mark with a separate 16px drawing, and 6 cast marks on the same cut line.' },
-  { k: 'Verified', v: 'Both scopes: daylight kraft and the night depot. Every pair re-measured after the night scope remaps the semantic layer, not the primitives.' },
+  { k: 'Verified', v: 'One scope only: daylight kraft. There is no dark mode, because a waybill is a white document and a dark one would be a different product.' },
   { k: 'Not verified', v: 'No print proof of the kraft field. Carton tone on uncoated stock will shift warm and the 1px rules may fill in below 300dpi.' },
   { k: 'Known gap', v: 'No form validation library, no i18n for the waybill, and no motion spec beyond the 140ms state transition — the system stops at the component.' },
-  { k: 'Open', v: 'The mark has not been tested at 12px on a dark UI chrome. Below 24px it must swap to mark-compact, and that swap is a manual rule, not a token.' },
+  { k: 'Open', v: 'The mark has not been tested at 12px on a photograph. Below 24px it must swap to mark-compact, and that swap is a manual rule, not a token.' },
   { k: 'Open', v: 'Corrugated flute at 2× DPR moirés above 9px pitch. It is capped at 9px here and that ceiling is not enforced by code.' },
 ]
 
@@ -160,13 +196,6 @@ const TOKENS_DAY = `.mf-scope {
   --mf-signal: var(--mf-brick);
   --mf-line-strong: color-mix(in srgb, var(--mf-ink) 82%, transparent);
 }`
-const TOKENS_NIGHT = `.mf-scope[data-theme='night'] {
-  --mf-surface-page: var(--mf-indigo-deep);
-  --mf-surface-plate: color-mix(in srgb, var(--mf-indigo-deep) 84%, var(--mf-ink));
-  --mf-text-primary: var(--mf-stock);
-  --mf-text-secondary: var(--mf-kraft);
-  --mf-signal: #C9563F;
-}`
 const TOKENS_COMP = `.mf-btn {
   background: var(--mf-btn-bg);   /* ink */
   color: var(--mf-btn-text);      /* chalk */
@@ -174,6 +203,14 @@ const TOKENS_COMP = `.mf-btn {
   border-radius: 0;
 }
 .mf-chip { border: 1px solid var(--mf-chip-border); }`
+
+const TOKENS_PHYS = `/* 4 · physics — printed, not rounded */
+--mf-radius: 0px;    /* controls */
+--mf-radius-plate: 3px; /* only plates */
+--mf-rule: 1px;      /* every border */
+--mf-seam: 4px;      /* panel seam, the corrugation */
+--mf-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+--mf-dur: 140ms;     /* state change, nothing longer */`
 
 const title = 'Manifest — Case 19 | Shipping identity & design system'
 const description =
@@ -188,6 +225,8 @@ const ledgerRows = [
 ---
 
 <Layout title={title} description={description} canonical="/design-system/manifest" image={`${B}/manifest-brandkit.png`}>
+  <link rel="icon" type="image/svg+xml" href={`${B}/icon.svg`} />
+  <link rel="apple-touch-icon" href={`${B}/icon.svg`} />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -207,9 +246,6 @@ const ledgerRows = [
         <nav class="mf-top__nav" aria-label="Sections">
           {NAV.map(([id, label]) => <a href={`#${id}`}>{label}</a>)}
         </nav>
-        <button class="mf-toggle" type="button" id="mf-toggle" aria-pressed="false">
-          <i aria-hidden="true"></i> <span id="mf-toggle-label">Daylight</span>
-        </button>
       </div>
     </header>
 
@@ -224,7 +260,7 @@ const ledgerRows = [
               </div>
               <h1>Every parcel leaves a <em>paper trail.</em></h1>
               <p class="mf-hero__lede">
-                Manifest is a shipping identity built from three materials in the photographs above:
+                Manifest is a shipping identity built from three materials in the photographs that opened the brief:
                 corrugated kraft, brick oxide, and the chambray indigo of a work shirt. The mark is one
                 carton with the outbound arrow carved out of it. Everything else is a rule, a seam, or
                 a line of tabular figures.
@@ -253,7 +289,7 @@ const ledgerRows = [
             <div><dt class="mf-mono">Surface</dt><dd>Kraft + stock</dd></div>
             <div><dt class="mf-mono">Signal</dt><dd>Brick oxide</dd></div>
             <div><dt class="mf-mono">Physics</dt><dd>0px · 1px rule</dd></div>
-            <div><dt class="mf-mono">Scope</dt><dd>Day + depot</dd></div>
+            <div><dt class="mf-mono">Scope</dt><dd>Daylight only</dd></div>
           </dl>
         </div>
       </section>
@@ -301,6 +337,20 @@ const ledgerRows = [
                 )
               })}
             </div>
+
+            <div class="mf-source">
+              {SOURCE.map((ph) => (
+                <figure>
+                  <div class="mf-source__img">
+                    <img src={`${B}/${ph.file}`} alt={ph.alt} width="925" height="617" loading="lazy" />
+                  </div>
+                  <figcaption>
+                    <b>{ph.tag}</b>
+                    <span>{ph.note}</span>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
           </section>
 
           {/* 02 · Mark */}
@@ -321,24 +371,43 @@ const ledgerRows = [
                 <span>Reverse</span>
                 <img src={`${B}/mark-reverse.svg`} alt="Manifest reverse mark on lampblack" width="64" height="64" />
               </div>
+              <div class="mf-mark mf-mark--field">
+                <span>Mono</span>
+                <img src={`${B}/mark-mono.svg`} alt="Manifest one-colour mark" width="64" height="64" />
+              </div>
               <div class="mf-mark">
-                <span>Compact · 16–24px</span>
+                <span>Compact</span>
                 <img src={`${B}/mark-compact.svg`} alt="Manifest compact mark, a separate 16px drawing" width="64" height="64" />
               </div>
-              <div class="mf-mark mf-mark--field">
+              <div class="mf-mark mf-mark--loud">
+                <span>Compact rev.</span>
+                <img src={`${B}/mark-compact-reverse.svg`} alt="Manifest compact reverse mark" width="64" height="64" />
+              </div>
+              <div class="mf-mark mf-mark--kraft">
                 <span>Glyph</span>
                 <img src={`${B}/glyph.svg`} alt="Manifest glyph without the arrow" width="64" height="64" />
+              </div>
+            </div>
+
+            <div class="mf-wordmark">
+              <div class="mf-wordmark__row">
+                <img src={`${B}/wordmark.svg`} alt="Manifest wordmark, Archivo 700 outlined" width="508" height="75" />
+                <span>Outlined Archivo 700 · no live type</span>
+              </div>
+              <div class="mf-wordmark__row mf-wordmark__row--rev">
+                <img src={`${B}/wordmark-reverse.svg`} alt="Manifest reverse wordmark on ink" width="508" height="75" />
+                <span>Reverse · ink or brick only</span>
               </div>
             </div>
 
             <div class="mf-lock">
               <div class="mf-lock__row">
                 <img src={`${B}/lockup.svg`} alt="Manifest horizontal lockup" width="288" height="64" />
-                <span>Horizontal · 64-unit cap height</span>
+                <span>Horizontal · 64u cap</span>
               </div>
               <div class="mf-lock__row mf-lock__row--rev">
                 <img src={`${B}/lockup-reverse.svg`} alt="Manifest reverse lockup on ink" width="288" height="64" />
-                <span>Reverse · kraft on ink</span>
+                <span>Reverse</span>
               </div>
               <div class="mf-lock__row mf-lock__row--stack">
                 <img src={`${B}/lockup-stacked.svg`} alt="Manifest stacked lockup" width="240" height="168" />
@@ -371,7 +440,7 @@ const ledgerRows = [
             <div class="mf-sec__h"><span class="n">03</span><h2>Ink</h2></div>
             <p class="big">
               Ten primitives sampled from the three photographs. Primitives never flip between scopes;
-              the semantic layer is what changes at night. Click any chip to copy its token.
+              and there is deliberately no night scope. Click any chip to copy its token.
             </p>
 
             <div class="mf-swatch-grid">
@@ -415,7 +484,7 @@ const ledgerRows = [
           {/* 04 · Surfaces */}
           <section class="mf-sec" id="surfaces">
             <div class="mf-sec__h"><span class="n">04</span><h2>Surfaces</h2></div>
-            <p class="big">Six surfaces were tried. Four survived.</p>
+            <p class="big">Eight surfaces were tried. Five survived.</p>
             <div class="mf-surf">
               {SURFACES.map((s) => (
                 <article class:list={['mf-sc', s.rejected && 'mf-sc--rej']}>
@@ -431,6 +500,19 @@ const ledgerRows = [
                       </>
                     )}
                     {s.demo === 'flute' && <span>Flute 9px</span>}
+                    {s.demo === 'photo' && (
+                      <>
+                        <img src={`${B}/signoff.jpg`} alt="Hands receiving a carton and signing on a tablet." loading="lazy" width="925" height="617" />
+                        <span>Plate 02</span>
+                      </>
+                    )}
+                    {s.demo === 'track' && (
+                      <>
+                        <i class="mf-demo-track__line"></i>
+                        <i class="mf-demo-track__dot"></i>
+                        <b>On the way</b>
+                      </>
+                    )}
                     {(s.demo === 'glass' || s.demo === 'shadow') && <div></div>}
                   </div>
                   <div class="mf-sc__txt">
@@ -560,16 +642,17 @@ const ledgerRows = [
           <section class="mf-sec" id="tokens">
             <div class="mf-sec__h"><span class="n">07</span><h2>Tokens</h2></div>
             <p class="big">
-              Three layers: primitives named for the material, a semantic scope that flips at night,
-              and component recipes that are the only place a control knows its own colours.
+              Four layers: primitives named for the material, one daylight semantic scope, component
+              recipes that are the only place a control knows its own colours, and the physics —
+              zero radius, 1px rule, 4px seam, 140ms.
             </p>
 
             <div class="mf-sheets">
               {[
                 ['1 · Primitives', TOKENS_CSS],
                 ['2 · Day scope', TOKENS_DAY],
-                ['2 · Night scope', TOKENS_NIGHT],
                 ['3 · Component tokens', TOKENS_COMP],
+                ['4 · Physics', TOKENS_PHYS],
               ].map(([label, code]) => (
                 <div class="mf-sheet">
                   <div class="mf-sheet__h">
@@ -596,6 +679,13 @@ const ledgerRows = [
 
     {/* ── Closing cast band ──────────────────────────────────────────────── */}
     <section class="mf-cast" aria-labelledby="mf-cast-h">
+      <div class="mf-cast__band">
+        <img src={`${B}/pallet-run.jpg`} alt="A hand truck stacked with corrugated cartons in front of a red brick wall." loading="lazy" width="925" height="617" />
+        <div class="mf-cast__bandin">
+          <img src={`${B}/lockup-reverse.svg`} alt="Manifest reverse lockup" width="288" height="64" />
+          <span>Plate 03 · the run<br />Every parcel leaves a paper trail.</span>
+        </div>
+      </div>
       <div class="mf-shell">
         <div class="mf-cast__head">
           <b id="mf-cast-h" class="mf-mono" style="font-weight:500;letter-spacing:0.14em">Companion cast · 6 marks · one cut line</b>
@@ -621,16 +711,6 @@ const ledgerRows = [
 
   <script>
     const root = document.querySelector('.mf-root') as HTMLElement | null
-    const toggle = document.getElementById('mf-toggle')
-    const label = document.getElementById('mf-toggle-label')
-
-    toggle?.addEventListener('click', () => {
-      const night = root?.dataset.theme !== 'night'
-      if (root) root.dataset.theme = night ? 'night' : 'day'
-      toggle.setAttribute('aria-pressed', String(night))
-      if (label) label.textContent = night ? 'Depot' : 'Daylight'
-    })
-
     document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((el) => {
       el.addEventListener('click', async () => {
         const text = el.dataset.copy || ''

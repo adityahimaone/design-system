@@ -174,7 +174,7 @@ const tokens = {
     essence: 'Every parcel leaves a paper trail.',
     promise:
       'A logistics identity built from corrugated kraft, brick oxide and chambray indigo: a carton whose negative space is the outbound arrow, one waybill ledger, and a contrast table that prints the pairs it fails.',
-    case: '19',
+    case: '20',
   },
   primitives: PRIMITIVES,
   contrast,
@@ -184,7 +184,7 @@ await write(`src/features/${SLUG}/tokens.json`, JSON.stringify(tokens, null, 2) 
 
 /* ── 03 · token layers ────────────────────────────────────────────────────── */
 const prim = PRIMITIVES.map((p) => `  --mf-${p.name}: ${p.value}; /* ${p.oklch} */`).join('\n')
-const css = `/* Manifest — case 19. Layer 1 primitives never flip; layer 2 is the scope. */
+const css = `/* Manifest — case 20. Layer 1 primitives never flip; layer 2 is the scope. */
 .mf-scope {
 ${prim}
 

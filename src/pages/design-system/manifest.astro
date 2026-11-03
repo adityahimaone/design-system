@@ -1,0 +1,690 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import tokens from '@/features/manifest/tokens.json'
+import { CAST, GLYPH_PATH, MARK_PATH, COMPACT_PATH } from '@/features/manifest/manifest-data'
+import '@/features/manifest/manifest-tokens.css'
+import '@/features/manifest/manifest-page.css'
+
+const B = '/brand/manifest'
+const primitives = tokens.primitives
+const contrast = tokens.contrast
+const fails = contrast.filter((c) => !c.pass)
+
+const NAV = [
+  ['idea', 'Idea'],
+  ['mark', 'Mark'],
+  ['ink', 'Ink'],
+  ['surfaces', 'Surfaces'],
+  ['type', 'Type'],
+  ['kit', 'Kit'],
+  ['tokens', 'Tokens'],
+] as const
+
+const PREMISE = [
+  {
+    k: 'Belief',
+    v: 'A shipment is a promise with a paper trail. The interface should look like the documents that make it binding: a waybill, a stamp, a ruled ledger.',
+  },
+  {
+    k: 'Enemy',
+    v: 'The tracking page that hides the exception. Status dots that say “on the way” while the parcel sits on a dock for four days.',
+  },
+  {
+    k: 'Material',
+    v: 'Corrugated kraft, brick oxide, chambray indigo, and warm lampblack ink. Four surfaces, one of them a photograph.',
+  },
+  {
+    k: 'Reject it when',
+    v: 'The product is not about physical movement — a pure-payment or pure-analytics product wearing kraft as a costume.',
+  },
+]
+
+const DECISIONS = [
+  {
+    title: 'The arrow is carved, never drawn',
+    decision:
+      'The mark is one carton mass with the outbound arrow cut out of it (fill-rule="evenodd"). There is no separate arrow element to place, colour or nudge.',
+    because:
+      'A counter-form makes the mark read as a box at 96px and as an arrow at 16px without a second drawing — the two readings come from the same edge.',
+    notWhen: 'The mark is printed at 1 colour on a surface that cannot hold a 4-unit channel (embroidery below 20mm).',
+    breaksNext: 'Adding a stroke around the cut to “sharpen it” — that closes the corridor and the arrow disappears.',
+  },
+  {
+    title: 'Kraft is a field, not a background',
+    decision:
+      'Carton tone only appears as a defined field with an ink rule on at least two sides. Page ground stays stock; reading always happens on stock or chalk.',
+    because:
+      'A full kraft page drops body text to 6.13:1 against kraft-deep shadows and makes the whole product feel like a warehouse app.',
+    notWhen: 'A print piece where the stock itself is kraft and no ink rule can be laid.',
+    breaksNext: 'A hero that puts a paragraph straight on the photograph with no plate under it.',
+  },
+  {
+    title: 'Brick oxide carries the exception',
+    decision:
+      'Brick (#A6382A) means one thing: something needs a human. Delivered is transit green, in motion is kraft-deep, exception is brick.',
+    because:
+      'A single warm signal at 5.60:1 on stock survives being 11px in a dense ledger; three status colours competing at that size do not.',
+    notWhen: 'Marketing surfaces, where brick is decorative and the status meaning is not in play.',
+    breaksNext: 'Using brick for a primary button — the button then reads as an error.',
+  },
+  {
+    title: 'Rules instead of shadows',
+    decision:
+      'Elevation is a 1px ink rule plus a 4px seam. No drop shadow, no blur, no radius above 3px anywhere in the system.',
+    because:
+      'Paper and carton have edges. Blur reads as glass, and glass is the surface we rejected in Section 04.',
+    notWhen: 'Overlays that genuinely float above the page (the theme switch popover) — those take an 8px offset shadow at 14% ink.',
+    breaksNext: 'A card that adds a 20px soft shadow to look “modern” and now reads as a different brand.',
+  },
+]
+
+const SURFACES = [
+  {
+    id: 'kraft',
+    title: 'Kraft field',
+    verdict: 'Shipped — hero + section fields',
+    note: 'Carton tone as a bounded field with an ink rule. Carries display type and the mark; never a paragraph.',
+    demo: 'kraft',
+  },
+  {
+    id: 'brick',
+    title: 'Brick oxide band',
+    verdict: 'Shipped — closing band + exception',
+    note: 'A single warm band at 6.25:1 with chalk type. Used once per page, at the end, so it still means something.',
+    demo: 'brick',
+  },
+  {
+    id: 'ledger',
+    title: 'Ruled waybill ledger',
+    verdict: 'Shipped — every data surface',
+    note: '1px hairlines, tabular figures, 8px row rhythm. The only place dense numbers are allowed to sit without a plate.',
+    demo: 'ledger',
+  },
+  {
+    id: 'flute',
+    title: 'Corrugated flute',
+    verdict: 'Shipped — dividers + loading states',
+    note: 'A 9px repeating gradient standing in for corrugation. Cheap, prints, and reads as material rather than decoration.',
+    demo: 'flute',
+  },
+  {
+    id: 'glass',
+    title: 'Frosted glass pane',
+    verdict: 'Rejected',
+    note: 'Tried over the hero photo. Blur read as a SaaS dashboard sitting on a logistics photo, and it killed the kraft/brick material logic in one element.',
+    demo: 'glass',
+    rejected: true,
+  },
+  {
+    id: 'shadow',
+    title: 'Soft shadow card',
+    verdict: 'Rejected',
+    note: 'A 22px/44px blur card. It made the waybill look like a fintech receipt and cost 40% more paint time on the ledger for no legibility gain.',
+    demo: 'shadow',
+    rejected: true,
+  },
+]
+
+const TYPE_SCALE = [
+  { role: 'Display / 01', face: 'Archivo 700', size: 'clamp(40–74)', lead: '0.94', track: '-0.035em', sample: 'Manifest', cls: 'mf-t-display', px: 74 },
+  { role: 'Display / 02', face: 'Archivo 700', size: '38px', lead: '1.04', track: '-0.03em', sample: 'Section headings', cls: 'mf-t-display', px: 38 },
+  { role: 'Display / 03', face: 'Archivo 700', size: '22px', lead: '1.1', track: '-0.02em', sample: 'Bench figures', cls: 'mf-t-display', px: 22 },
+  { role: 'Reading / 01', face: 'Instrument Sans 400', size: '17px', lead: '1.62', track: '0', sample: 'Every parcel leaves a paper trail, and the trail is the product.', cls: 'mf-t-reading', px: 17 },
+  { role: 'Reading / 02', face: 'Instrument Sans 600', size: '13.5px', lead: '1.5', track: '0', sample: 'Buttons, chips and row labels carry weight, never size.', cls: 'mf-t-reading', px: 13.5 },
+  { role: 'Mono / 01', face: 'DM Mono 400', size: '11px', lead: '1.7', track: '0.13em', sample: 'MF-4471 · IN TRANSIT · 2.4 KG', cls: 'mf-t-mono', px: 11 },
+]
+
+const GAPS = [
+  { k: 'Verified', v: '16 contrast pairs computed from hex, 3 published failures, 10 primitives, a 64-unit mark with a separate 16px drawing, and 6 cast marks on the same cut line.' },
+  { k: 'Verified', v: 'Both scopes: daylight kraft and the night depot. Every pair re-measured after the night scope remaps the semantic layer, not the primitives.' },
+  { k: 'Not verified', v: 'No print proof of the kraft field. Carton tone on uncoated stock will shift warm and the 1px rules may fill in below 300dpi.' },
+  { k: 'Known gap', v: 'No form validation library, no i18n for the waybill, and no motion spec beyond the 140ms state transition — the system stops at the component.' },
+  { k: 'Open', v: 'The mark has not been tested at 12px on a dark UI chrome. Below 24px it must swap to mark-compact, and that swap is a manual rule, not a token.' },
+  { k: 'Open', v: 'Corrugated flute at 2× DPR moirés above 9px pitch. It is capped at 9px here and that ceiling is not enforced by code.' },
+]
+
+const TOKENS_CSS = `/* 1 · primitive — the material, named once */
+.mf-scope {
+  --mf-stock: #F4EDE0;      /* waybill paper */
+  --mf-kraft: #D8BC93;      /* corrugated carton */
+  --mf-brick: #A6382A;      /* brick oxide */
+  --mf-indigo: #2F4A6B;     /* workwear chambray */
+  --mf-ink: #1A1714;        /* warm lampblack */
+}`
+const TOKENS_DAY = `.mf-scope {
+  --mf-surface-page: var(--mf-stock);
+  --mf-surface-plate: var(--mf-chalk);
+  --mf-surface-field: var(--mf-kraft);
+  --mf-text-primary: var(--mf-ink);
+  --mf-text-secondary: var(--mf-indigo);
+  --mf-signal: var(--mf-brick);
+  --mf-line-strong: color-mix(in srgb, var(--mf-ink) 82%, transparent);
+}`
+const TOKENS_NIGHT = `.mf-scope[data-theme='night'] {
+  --mf-surface-page: var(--mf-indigo-deep);
+  --mf-surface-plate: color-mix(in srgb, var(--mf-indigo-deep) 84%, var(--mf-ink));
+  --mf-text-primary: var(--mf-stock);
+  --mf-text-secondary: var(--mf-kraft);
+  --mf-signal: #C9563F;
+}`
+const TOKENS_COMP = `.mf-btn {
+  background: var(--mf-btn-bg);   /* ink */
+  color: var(--mf-btn-text);      /* chalk */
+  border: 1px solid var(--mf-btn-bg);
+  border-radius: 0;
+}
+.mf-chip { border: 1px solid var(--mf-chip-border); }`
+
+const title = 'Manifest — Case 19 | Shipping identity & design system'
+const description =
+  'Manifest: a shipping identity built from corrugated kraft, brick oxide and chambray indigo. A carton whose negative space is the outbound arrow, ten primitives, six cast marks, and a contrast ledger that publishes the three pairs it fails.'
+
+const ledgerRows = [
+  ['MF-4471', 'PDG → SUB', '2.4 kg', 'In transit'],
+  ['MF-4470', 'SUB → PDG', '0.8 kg', 'Delivered'],
+  ['MF-4468', 'BDG → SUB', '11.6 kg', 'Held at depot'],
+  ['MF-4466', 'SUB → MLG', '3.1 kg', 'Damaged'],
+]
+---
+
+<Layout title={title} description={description} canonical="/design-system/manifest" image={`${B}/manifest-brandkit.png`}>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <div class="mf-root mf-scope" data-theme="day" id="top">
+    <a class="mf-skip" href="#main">Skip to the system</a>
+
+    <header class="mf-top">
+      <div class="mf-shell mf-top__in">
+        <a class="mf-top__brand" href="#top" aria-label="Manifest — top">
+          <svg viewBox="0 0 64 64" aria-hidden="true" fill="currentColor"><Fragment set:html={MARK_PATH} /></svg>
+          <b>MANIFEST</b>
+        </a>
+        <nav class="mf-top__nav" aria-label="Sections">
+          {NAV.map(([id, label]) => <a href={`#${id}`}>{label}</a>)}
+        </nav>
+        <button class="mf-toggle" type="button" id="mf-toggle" aria-pressed="false">
+          <i aria-hidden="true"></i> <span id="mf-toggle-label">Daylight</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main">
+      {/* ── Hero · unnumbered · Variant B ──────────────────────────────── */}
+      <section class="mf-hero">
+        <div class="mf-shell">
+          <div class="mf-hero__grid">
+            <div>
+              <div class="mf-eyebrow mf-mono">
+                <span>Case 19</span><hr /><span>Identity · design system</span>
+              </div>
+              <h1>Every parcel leaves a <em>paper trail.</em></h1>
+              <p class="mf-hero__lede">
+                Manifest is a shipping identity built from three materials in the photographs above:
+                corrugated kraft, brick oxide, and the chambray indigo of a work shirt. The mark is one
+                carton with the outbound arrow carved out of it. Everything else is a rule, a seam, or
+                a line of tabular figures.
+              </p>
+              <div class="mf-pills">
+                <span class="mf-pill"><b>10</b> primitives</span>
+                <span class="mf-pill"><b>6.25:1</b> chalk on brick</span>
+                <span class="mf-pill"><b>6</b> cast marks</span>
+                <span class="mf-pill"><b>64</b> unit grid</span>
+              </div>
+            </div>
+
+            <div class="mf-hero__media">
+              <div class="mf-hero__frame">
+                <span class="mf-hero__stamp">Outbound · 2.4 kg</span>
+                <img src={`${B}/hero-parcel.jpg`} alt="A person in a chambray shirt holding a corrugated carton against a red brick wall." width="925" height="617" />
+                <div class="mf-hero__pane">
+                  <img src={`${B}/lockup-reverse.svg`} alt="Manifest lockup" width="288" height="64" />
+                  <span>One carton<br />one cut arrow</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <dl class="mf-stats">
+            <div><dt class="mf-mono">Surface</dt><dd>Kraft + stock</dd></div>
+            <div><dt class="mf-mono">Signal</dt><dd>Brick oxide</dd></div>
+            <div><dt class="mf-mono">Physics</dt><dd>0px · 1px rule</dd></div>
+            <div><dt class="mf-mono">Scope</dt><dd>Day + depot</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      {/* ── Contents rail + 7 sections ─────────────────────────────────── */}
+      <div class="mf-shell mf-layout">
+        <nav class="mf-toc" aria-label="Contents">
+          <div class="mf-toc__h mf-mono">Contents</div>
+          <ol>
+            {NAV.map(([id, label], i) => (
+              <li><a href={`#${id}`} data-toc={id}><i>{String(i + 1).padStart(2, '0')}</i>{label}</a></li>
+            ))}
+          </ol>
+        </nav>
+
+        <div>
+          {/* 01 · Idea */}
+          <section class="mf-sec" id="idea">
+            <div class="mf-sec__h"><span class="n">01</span><h2>The idea</h2></div>
+            <p class="big">
+              A shipment is a promise with a paper trail, and the paperwork is where the trust lives.
+              Manifest borrows the visual authority of a waybill — rules, stamps, ruled rows, a warm
+              paper ground — and refuses the dashboard grammar that logistics software usually wears.
+            </p>
+            <dl class="mf-two">
+              {PREMISE.map((p) => (
+                <div class="mf-cell"><dt class="mf-mono">{p.k}</dt><dd>{p.v}</dd></div>
+              ))}
+            </dl>
+
+            <div class="mf-decs">
+              {DECISIONS.map((d) => {
+                const [lead, ...rest] = d.breaksNext.split(': ')
+                return (
+                  <article class="mf-dec">
+                    <h3>{d.title}</h3>
+                    <dl>
+                      <dt>Decision</dt><dd>{d.decision}</dd>
+                      <dt>Because</dt><dd>{d.because}</dd>
+                      <dt>Not when</dt><dd>{d.notWhen}</dd>
+                      <dt>Breaks next</dt>
+                      <dd>{rest.length ? <><em>{lead}:</em> {rest.join(': ')}</> : d.breaksNext}</dd>
+                    </dl>
+                  </article>
+                )
+              })}
+            </div>
+          </section>
+
+          {/* 02 · Mark */}
+          <section class="mf-sec" id="mark">
+            <div class="mf-sec__h"><span class="n">02</span><h2>The mark</h2></div>
+            <p class="big">
+              One carton on a 64-unit grid: a 10-unit lid strip, a 34-unit body, and a corridor cut
+              through the body that resolves into an arrow. Fill only, <code>fill-rule="evenodd"</code>,
+              zero strokes. The negative space does the work, so there is nothing to align or nudge.
+            </p>
+
+            <div class="mf-marks">
+              <div class="mf-mark">
+                <span>Primary</span>
+                <img src={`${B}/mark.svg`} alt="Manifest primary mark" width="64" height="64" />
+              </div>
+              <div class="mf-mark mf-mark--loud">
+                <span>Reverse</span>
+                <img src={`${B}/mark-reverse.svg`} alt="Manifest reverse mark on lampblack" width="64" height="64" />
+              </div>
+              <div class="mf-mark">
+                <span>Compact · 16–24px</span>
+                <img src={`${B}/mark-compact.svg`} alt="Manifest compact mark, a separate 16px drawing" width="64" height="64" />
+              </div>
+              <div class="mf-mark mf-mark--field">
+                <span>Glyph</span>
+                <img src={`${B}/glyph.svg`} alt="Manifest glyph without the arrow" width="64" height="64" />
+              </div>
+            </div>
+
+            <div class="mf-lock">
+              <div class="mf-lock__row">
+                <img src={`${B}/lockup.svg`} alt="Manifest horizontal lockup" width="288" height="64" />
+                <span>Horizontal · 64-unit cap height</span>
+              </div>
+              <div class="mf-lock__row mf-lock__row--rev">
+                <img src={`${B}/lockup-reverse.svg`} alt="Manifest reverse lockup on ink" width="288" height="64" />
+                <span>Reverse · kraft on ink</span>
+              </div>
+              <div class="mf-lock__row mf-lock__row--stack">
+                <img src={`${B}/lockup-stacked.svg`} alt="Manifest stacked lockup" width="240" height="168" />
+                <span>Stacked · square formats only</span>
+              </div>
+            </div>
+
+            <div class="mf-scale">
+              {[96, 48, 32, 24, 16].map((s) => (
+                <figure>
+                  <img src={s <= 16 ? `${B}/mark-compact.svg` : `${B}/mark.svg`} alt={`Mark at ${s} pixels`} width={s} height={s} />
+                  <figcaption>{s}px{s <= 16 ? ' · compact' : ''}</figcaption>
+                </figure>
+              ))}
+              <figure>
+                <svg viewBox="0 0 64 64" width="16" height="16" fill="currentColor" aria-label="Glyph at 16 pixels"><Fragment set:html={GLYPH_PATH} /></svg>
+                <figcaption>16px · glyph</figcaption>
+              </figure>
+            </div>
+
+            <dl class="mf-rules">
+              <div><dt class="mf-mono">Clear space</dt><dd>One lid strip (10 units) on all four sides. Nothing enters that band — not a rule, not a chip.</dd></div>
+              <div><dt class="mf-mono">Never</dt><dd>No stroke around the cut, no gradient inside the carton, no rotation, no second colour in the body.</dd></div>
+              <div><dt class="mf-mono">Below 24px</dt><dd>Swap to <code>mark-compact</code>: wider shaft, bigger head, lid channel removed so the arrow survives anti-aliasing.</dd></div>
+            </dl>
+          </section>
+
+          {/* 03 · Ink */}
+          <section class="mf-sec" id="ink">
+            <div class="mf-sec__h"><span class="n">03</span><h2>Ink</h2></div>
+            <p class="big">
+              Ten primitives sampled from the three photographs. Primitives never flip between scopes;
+              the semantic layer is what changes at night. Click any chip to copy its token.
+            </p>
+
+            <div class="mf-swatch-grid">
+              {primitives.map((p) => (
+                <button class="mf-sw" type="button" data-copy={`--mf-${p.name}: ${p.value};`} title={`${p.name} — ${p.role}`}>
+                  <span class="mf-sw__chip" style={`background:${p.value}`}></span>
+                  <span class="mf-sw__meta">
+                    <span class="mf-sw__name">{p.name}</span>
+                    <span class="mf-sw__hex">{p.value}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            <div class="mf-pairs">
+              {contrast.map((c) => {
+                const a = primitives.find((p) => p.name === c.a)!
+                const b = primitives.find((p) => p.name === c.b)!
+                return (
+                  <div class:list={['mf-pair', !c.pass && 'mf-pair--fail']}>
+                    <span class="mf-pair__chips">
+                      <i style={`background:${a.value}`}></i><i style={`background:${b.value}`}></i>
+                    </span>
+                    <span class="mf-pair__name">
+                      {c.a} on {c.b}
+                      <small>{c.note}</small>
+                    </span>
+                    <span class="mf-pair__ratio">{c.ratio}:1 {c.pass ? '' : '· fail'}</span>
+                    <span class="mf-pair__job">{c.job}</span>
+                  </div>
+                )
+              })}
+            </div>
+            <p class="mf-sub" style="margin-top:14px">
+              {fails.length} pairs fail 4.5:1 and are published rather than nudged. Kraft on chalk at
+              1.74:1 is a fill relationship, never type; stock on kraft at 1.56:1 is a rule colour;
+              brick on ink at 2.74:1 is a graphic mark on the closing band only.
+            </p>
+          </section>
+
+          {/* 04 · Surfaces */}
+          <section class="mf-sec" id="surfaces">
+            <div class="mf-sec__h"><span class="n">04</span><h2>Surfaces</h2></div>
+            <p class="big">Six surfaces were tried. Four survived.</p>
+            <div class="mf-surf">
+              {SURFACES.map((s) => (
+                <article class:list={['mf-sc', s.rejected && 'mf-sc--rej']}>
+                  <div class:list={['mf-sc__demo', `mf-demo-${s.demo}`]}>
+                    {s.demo === 'kraft' && <b>Outbound</b>}
+                    {s.demo === 'brick' && <span>Exception</span>}
+                    {s.demo === 'ledger' && (
+                      <>
+                        <div><span>MF-4471</span><span>2.4 kg</span></div>
+                        <div><span>MF-4470</span><span>0.8 kg</span></div>
+                        <div><span>MF-4468</span><span>11.6 kg</span></div>
+                        <div><span>MF-4466</span><span>3.1 kg</span></div>
+                      </>
+                    )}
+                    {s.demo === 'flute' && <span>Flute 9px</span>}
+                    {(s.demo === 'glass' || s.demo === 'shadow') && <div></div>}
+                  </div>
+                  <div class="mf-sc__txt">
+                    <div class="mf-sc__head">
+                      <b>{s.title}</b>
+                      <span class="mf-sc__verdict">{s.verdict}</span>
+                    </div>
+                    <p>{s.note}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          {/* 05 · Type */}
+          <section class="mf-sec" id="type">
+            <div class="mf-sec__h"><span class="n">05</span><h2>Type</h2></div>
+            <p class="big">
+              Archivo for display, Instrument Sans for reading, DM Mono for anything a machine wrote.
+              Three voices, no fourth, and figures are always tabular.
+            </p>
+
+            <div class="mf-tscale">
+              {TYPE_SCALE.map((t) => (
+                <div class="mf-tscale__row">
+                  <div class="mf-tscale__meta">
+                    <b>{t.role}</b>
+                    {t.face}<br />{t.size} / {t.lead}<br />{t.track}
+                  </div>
+                  <div class={t.cls} style={`font-size:${t.px}px`}>{t.sample}</div>
+                </div>
+              ))}
+            </div>
+
+            <div class="mf-specs">
+              <div class="mf-spec">
+                <h3>Display</h3>
+                <p class="mf-t-display" style="font-size:34px;line-height:0.95">
+                  Manifest<br />handles it.
+                </p>
+              </div>
+              <div class="mf-spec">
+                <h3>Reading · 62ch</h3>
+                <p>
+                  The parcel was scanned at the depot at 06:12 and again on the van at 09:40. Nothing
+                  between those two events is known, and the interface says so instead of drawing a
+                  smooth line between them.
+                </p>
+              </div>
+              <div class="mf-spec">
+                <h3>Figures</h3>
+                <table class="mf-figures">
+                  <thead><tr><th>Leg</th><th>Mass</th><th>Hours</th></tr></thead>
+                  <tbody>
+                    <tr><td>PDG → SUB</td><td>2.4 kg</td><td>18.5</td></tr>
+                    <tr><td>SUB → BDG</td><td>2.4 kg</td><td>26.0</td></tr>
+                    <tr><td>BDG → MLG</td><td>2.4 kg</td><td>41.2</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="mf-spec">
+                <h3>Labels</h3>
+                <p class="mf-mono" style="line-height:2">
+                  MF-4471 · IN TRANSIT<br />SCAN 06:12 · DEPOT 04<br />EXCEPTION · HELD
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* 06 · Kit */}
+          <section class="mf-sec" id="kit">
+            <div class="mf-sec__h"><span class="n">06</span><h2>The kit</h2></div>
+            <p class="big">
+              Four pressed controls. Zero radius, 1px borders, 140ms state changes — a control should
+              feel like a stamp, not a pill.
+            </p>
+
+            <div class="mf-kit">
+              <div>
+                <h3>Buttons</h3>
+                <div class="mf-btns">
+                  <button class="mf-btn" type="button"><i aria-hidden="true"></i>Book a pickup</button>
+                  <button class="mf-btn mf-btn--ghost" type="button">Print waybill</button>
+                  <button class="mf-btn mf-btn--sm" type="button">Copy MF-4471</button>
+                  <button class="mf-btn" type="button" aria-disabled="true">Cancel shipment</button>
+                </div>
+              </div>
+              <div>
+                <h3>Chips</h3>
+                <div class="mf-chips">
+                  <span class="mf-chip mf-chip--move"><i aria-hidden="true"></i>In transit</span>
+                  <span class="mf-chip mf-chip--done"><i aria-hidden="true"></i>Delivered</span>
+                  <span class="mf-chip mf-chip--held"><i aria-hidden="true"></i>Held at depot</span>
+                  <span class="mf-chip mf-chip--bad"><i aria-hidden="true"></i>Damaged</span>
+                </div>
+              </div>
+              <div>
+                <h3>Fields</h3>
+                <div class="mf-fieldset">
+                  <label class="mf-label" for="mf-tracking">Tracking number</label>
+                  <input class="mf-input" id="mf-tracking" value="MF-4471" aria-invalid="true" aria-describedby="mf-err" />
+                  <div class="mf-err" id="mf-err" role="alert">
+                    <b>2 problems</b>
+                    <span>Tracking number must be 9 characters.</span>
+                    <span>Postcode is required for international routing.</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h3>Waybill rows</h3>
+                <table class="mf-rows">
+                  <caption>Four rows, one selected. Rows are keyboard reachable and carry aria-selected.</caption>
+                  <thead><tr><th scope="col">Docket</th><th scope="col">Leg</th><th scope="col">Mass</th><th scope="col">Status</th></tr></thead>
+                  <tbody>
+                    {ledgerRows.map((r, i) => (
+                      <tr tabindex="0" aria-selected={i === 0 ? 'true' : 'false'} data-row>
+                        {r.map((cell) => <td>{cell}</td>)}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          {/* 07 · Tokens */}
+          <section class="mf-sec" id="tokens">
+            <div class="mf-sec__h"><span class="n">07</span><h2>Tokens</h2></div>
+            <p class="big">
+              Three layers: primitives named for the material, a semantic scope that flips at night,
+              and component recipes that are the only place a control knows its own colours.
+            </p>
+
+            <div class="mf-sheets">
+              {[
+                ['1 · Primitives', TOKENS_CSS],
+                ['2 · Day scope', TOKENS_DAY],
+                ['2 · Night scope', TOKENS_NIGHT],
+                ['3 · Component tokens', TOKENS_COMP],
+              ].map(([label, code]) => (
+                <div class="mf-sheet">
+                  <div class="mf-sheet__h">
+                    <span>{label}</span>
+                    <button class="mf-copy" type="button" data-copy={code as string}>Copy</button>
+                  </div>
+                  <pre><code>{code}</code></pre>
+                </div>
+              ))}
+            </div>
+
+            <h3 class="mf-mono" style="margin:32px 0 0;color:var(--mf-signal)">Audit &amp; known gaps</h3>
+            <dl class="mf-gaps">
+              {GAPS.map((g) => (
+                <div class:list={['mf-gap', g.k === 'Open' && 'mf-gap--open']}>
+                  <dt class="mf-mono">{g.k}</dt><dd>{g.v}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    {/* ── Closing cast band ──────────────────────────────────────────────── */}
+    <section class="mf-cast" aria-labelledby="mf-cast-h">
+      <div class="mf-shell">
+        <div class="mf-cast__head">
+          <b id="mf-cast-h" class="mf-mono" style="font-weight:500;letter-spacing:0.14em">Companion cast · 6 marks · one cut line</b>
+          <span>64-unit grid · fill only</span>
+        </div>
+        <div class="mf-cast__grid">
+          {CAST.map((c) => (
+            <div class="mf-cast__cell">
+              <svg viewBox="0 0 64 64" fill="currentColor" aria-hidden="true"><Fragment set:html={c.path} /></svg>
+              <b>{c.name}</b>
+              <span>{c.note}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <footer class="mf-foot mf-shell">
+      <span>Manifest · case 19 · sunnyside engine</span>
+      <span><a href="/">Back to the shelf</a></span>
+    </footer>
+  </div>
+
+  <script>
+    const root = document.querySelector('.mf-root') as HTMLElement | null
+    const toggle = document.getElementById('mf-toggle')
+    const label = document.getElementById('mf-toggle-label')
+
+    toggle?.addEventListener('click', () => {
+      const night = root?.dataset.theme !== 'night'
+      if (root) root.dataset.theme = night ? 'night' : 'day'
+      toggle.setAttribute('aria-pressed', String(night))
+      if (label) label.textContent = night ? 'Depot' : 'Daylight'
+    })
+
+    document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((el) => {
+      el.addEventListener('click', async () => {
+        const text = el.dataset.copy || ''
+        try {
+          await navigator.clipboard.writeText(text)
+          const prev = el.textContent
+          el.textContent = 'Copied'
+          setTimeout(() => (el.textContent = prev), 1100)
+        } catch {
+          /* clipboard blocked — selection is still available */
+        }
+      })
+    })
+
+    document.querySelectorAll<HTMLTableRowElement>('[data-row]').forEach((row) => {
+      const select = () => {
+        document.querySelectorAll('[data-row]').forEach((r) => r.setAttribute('aria-selected', 'false'))
+        row.setAttribute('aria-selected', 'true')
+      }
+      row.addEventListener('click', select)
+      row.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          select()
+        }
+      })
+    })
+
+    const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('.mf-toc a')]
+    const sections = tocLinks
+      .map((a) => document.getElementById(a.dataset.toc || ''))
+      .filter((el): el is HTMLElement => Boolean(el))
+
+    const setActive = () => {
+      const line = window.innerHeight * 0.3
+      let active = sections[0]?.id
+      sections.forEach((sec) => {
+        if (sec.getBoundingClientRect().top <= line) active = sec.id
+      })
+      tocLinks.forEach((a) => a.setAttribute('aria-current', String(a.dataset.toc === active)))
+    }
+    let ticking = false
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (ticking) return
+        ticking = true
+        requestAnimationFrame(() => {
+          setActive()
+          ticking = false
+        })
+      },
+      { passive: true }
+    )
+    setActive()
+  </script>
+</Layout>

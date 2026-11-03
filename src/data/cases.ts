@@ -32,6 +32,8 @@ export type DesignCase = {
     | 'tavola'
     | 'arete'
     | 'quieta'
+    | 'firstlight'
+    | 'manifest'
 }
 
 export const SUNNYSIDE_URL =
@@ -79,6 +81,23 @@ export const DESIGN_CASES: readonly DesignCase[] = [
       'The Quieta 6-panel brand board: a lime-plastered threshold elevation with the reverse lockup, the Kuwayama 64-unit roof-and-wall mark, 7 warm-stone OKLCH primitives, three type voices, six architectural cast marks, and the four laws.',
     tags: ['Warm Stone', 'Property', 'Threshold Mark', 'OKLCH Dusk'],
     tone: 'quieta',
+  },
+  {
+    slug: 'manifest',
+    number: '19',
+    name: 'Manifest',
+    href: '/design-system/manifest',
+    tagline: 'Every parcel leaves a paper trail.',
+    description:
+      'A shipping identity built from the three supplied photographs: corrugated kraft, brick oxide and chambray indigo. The mark is one carton with the outbound arrow carved out of it as a boolean counter-form, with a separate 16px drawing and six companion cast marks on the same cut line. Ten primitives, a daylight-kraft and night-depot scope, six explored surfaces (four shipped, two rejected), a waybill ledger with tabular figures, and a contrast table that publishes the three pairs it fails.',
+    status: 'Shipped · 2026',
+    role: 'Identity · design system · parametric mark · shipping surfaces · waybill kit · docs',
+    material: 'Corrugated kraft + brick oxide + chambray indigo',
+    cover: '/brand/manifest/manifest-brandkit.png',
+    coverAlt:
+      'The Manifest 6-panel brand board: a chambray-shirt parcel handoff against a red brick wall with the reverse lockup, the boolean carton mark and its MANIFEST wordmark, ten OKLCH primitives, three type voices, six companion cast marks, and the four laws.',
+    tags: ['Logistics', 'Kraft', 'Brick', 'Counter-form'],
+    tone: 'manifest',
   },
   {
     slug: 'arete',
@@ -351,5 +370,22 @@ export const DESIGN_CASES: readonly DesignCase[] = [
       'The Vitrine brand board: the half-light V mark, one glass arm and one Signal arm, Case and Frost palette, Signal field, type specimens, favicon and form specimen.',
     tags: ['Glass', 'Dither', 'Case', 'Forms'],
     tone: 'vitrine',
+  },
+  {
+    slug: 'firstlight',
+    number: '19',
+    name: 'Firstlight',
+    href: '/design-system/firstlight',
+    tagline: 'A daylight-first system for people operations.',
+    description:
+      'Warm stock instead of white, a hairline instead of a shadow, one ember accent for anything that needs a decision, and a mark that is a horizon bar carrying a four-point star at every size. Ten primitives, fourteen measured pairs with three published fails, a Silk field behind the hero, and a roster, a leave queue and a pay run built from the five components the kit actually ships.',
+    status: 'Shipped · 2026',
+    role: 'Identity · design system · tokens · product surface',
+    material: 'Warm stock + ink + ember',
+    cover: '/brand/firstlight/firstlight-brandkit.png',
+    coverAlt:
+      'The Firstlight 6-panel brand board: a printed sunrise plate with the reverse lockup, the horizon-bar and resting-star mark on ink, eight OKLCH primitives with their ratio verdicts, three type voices, six companion marks, and the four surface laws.',
+    tags: ['Print', 'Daylight', 'HRIS', 'Tokens'],
+    tone: 'firstlight',
   },
 ]

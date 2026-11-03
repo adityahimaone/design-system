@@ -1,0 +1,47 @@
+/* Manifest — case 19. Layer 1 primitives never flip; layer 2 is the scope. */
+.mf-scope {
+  --mf-stock: #F4EDE0; /* oklch(0.945 0.014 82) */
+  --mf-chalk: #FCFAF4; /* oklch(0.984 0.008 84) */
+  --mf-kraft: #D8BC93; /* oklch(0.800 0.055 78) */
+  --mf-kraft-deep: #B9905F; /* oklch(0.688 0.072 71) */
+  --mf-brick: #A6382A; /* oklch(0.512 0.148 33) */
+  --mf-brick-deep: #7A271D; /* oklch(0.396 0.118 32) */
+  --mf-indigo: #2F4A6B; /* oklch(0.398 0.062 253) */
+  --mf-indigo-deep: #1B2C42; /* oklch(0.290 0.048 254) */
+  --mf-transit: #3E6B4E; /* oklch(0.477 0.078 152) */
+  --mf-ink: #1A1714; /* oklch(0.208 0.008 66) */
+
+  /* 2 · semantic scope — daylight kraft is the default */
+  --mf-surface-page: var(--mf-stock);
+  --mf-surface-plate: var(--mf-chalk);
+  --mf-surface-field: var(--mf-kraft);
+  --mf-surface-invert: var(--mf-ink);
+  --mf-text-primary: var(--mf-ink);
+  --mf-text-secondary: var(--mf-indigo);
+  --mf-text-invert: var(--mf-chalk);
+  --mf-signal: var(--mf-brick);
+  --mf-signal-deep: var(--mf-brick-deep);
+  --mf-status-ok: var(--mf-transit);
+  --mf-line-strong: color-mix(in srgb, var(--mf-ink) 82%, transparent);
+  --mf-line-subtle: color-mix(in srgb, var(--mf-ink) 16%, transparent);
+
+  /* 3 · component tokens — the only layer that knows a recipe */
+  --mf-btn-bg: var(--mf-ink);
+  --mf-btn-text: var(--mf-chalk);
+  --mf-btn-bg-hover: var(--mf-signal);
+  --mf-chip-border: var(--mf-line-subtle);
+  --mf-field-border: color-mix(in srgb, var(--mf-ink) 34%, transparent);
+  --mf-field-bg: var(--mf-chalk);
+
+  /* type */
+  --mf-font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --mf-font-reading: 'Instrument Sans', 'Archivo', system-ui, sans-serif;
+  --mf-font-mono: 'DM Mono', 'IBM Plex Mono', ui-monospace, monospace;
+
+  /* physics: printed, not rounded */
+  --mf-radius: 0px;
+  --mf-radius-plate: 3px;
+  --mf-rule: 1px;
+  --mf-seam: 4px;
+  --mf-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}

@@ -1,0 +1,107 @@
+/* ==========================================================================
+   ARÊTE DESIGN SYSTEM · TOKENS (v1.0 · Case 18)
+   Paper-cut alpine · every layer is a cut
+   Layer 1 primitives never flip. Only the semantic scope moves at dusk.
+   ========================================================================== */
+
+:root {
+  /* 1 · Primitives — the material, named once */
+  --ar-paper: #F2EDE3;
+  --ar-vellum: #E9E2D5;
+  --ar-deckle: #D7D1C4;
+  --ar-chalk: #FBF8F0;
+  --ar-mist: #C9D0EC;
+  --ar-glacier: #8FA0D2;
+  --ar-ridge: #2E4CA6;
+  --ar-ultramarine: #1E3A8A;
+  --ar-graphite: #4A4E57;
+  --ar-indigo: #101229;
+  --ar-oxide: #C4462B;
+  --ar-dusk: #1A1F4A;
+
+  /* 1b · Perceptual strings (oklch) */
+  --ar-oklch-paper: oklch(0.947 0.014 84.6);
+  --ar-oklch-vellum: oklch(0.915 0.019 83.1);
+  --ar-oklch-deckle: oklch(0.862 0.019 86.2);
+  --ar-oklch-chalk: oklch(0.979 0.011 89.7);
+  --ar-oklch-mist: oklch(0.861 0.040 274.4);
+  --ar-oklch-glacier: oklch(0.711 0.076 269.9);
+  --ar-oklch-ridge: oklch(0.447 0.149 266.4);
+  --ar-oklch-ultramarine: oklch(0.379 0.138 265.5);
+  --ar-oklch-graphite: oklch(0.424 0.016 266.5);
+  --ar-oklch-indigo: oklch(0.194 0.046 277.5);
+  --ar-oklch-oxide: oklch(0.565 0.166 33.7);
+  --ar-oklch-dusk: oklch(0.262 0.079 274.6);
+
+  /* 2 · Semantic — ivory stock scope (default) */
+  --ar-bg-canvas: var(--ar-paper);
+  --ar-bg-surface: var(--ar-vellum);
+  --ar-bg-elevated: var(--ar-chalk);
+  --ar-bg-sunk: var(--ar-deckle);
+  --ar-ink-primary: var(--ar-indigo);
+  --ar-ink-secondary: var(--ar-graphite);
+  --ar-ink-tertiary: var(--ar-deckle);
+  --ar-ink-reverse: var(--ar-paper);
+  --ar-border-subtle: rgba(16, 18, 41, 0.16);
+  --ar-border-strong: rgba(16, 18, 41, 0.34);
+  --ar-border-focus: var(--ar-ultramarine);
+  --ar-accent-primary: var(--ar-ultramarine);
+  --ar-accent-secondary: var(--ar-ridge);
+  --ar-accent-light: var(--ar-glacier);
+  --ar-blaze: var(--ar-oxide);
+
+  /* 3 · Typography */
+  --ar-font-display: 'Bodoni Moda', 'Didot', Georgia, serif;
+  --ar-font-sans: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+  --ar-font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* 4 · Physics & tactility — knife-cut, never rounded */
+  --ar-radius-0: 0px;
+  --ar-radius-xs: 2px;
+  --ar-radius-sm: 4px;
+  --ar-radius-pill: 999px;
+  --ar-seam: 5px;
+  --ar-shadow-sheet: 4px 4px 0 rgba(16, 18, 41, 0.12);
+  --ar-shadow-lift: 8px 8px 0 rgba(16, 18, 41, 0.14);
+  --ar-shadow-plate: 0 1px 0 rgba(16, 18, 41, 0.08), 10px 14px 0 -6px rgba(16, 18, 41, 0.1);
+  --ar-ease-cut: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --ar-transition: 260ms var(--ar-ease-cut);
+
+  /* 5 · Paper surfaces (component layer) */
+  --ar-vellum-tint: 88%;
+  --ar-vellum-blur: 18px;
+  --ar-sheet-offset: 5px;
+  --ar-sheet-shadow: 4px;
+}
+
+/* 2 · Semantic — ultramarine dusk scope */
+[data-ar='dusk'],
+.ar[data-ar='dusk'] {
+  --ar-bg-canvas: #0C0E22;
+  --ar-bg-surface: #141733;
+  --ar-bg-elevated: #1D2144;
+  --ar-bg-sunk: #080A1A;
+  --ar-ink-primary: #F3EEE3;
+  --ar-ink-secondary: #B9BFDD;
+  --ar-ink-tertiary: #59608C;
+  --ar-ink-reverse: #0C0E22;
+  --ar-border-subtle: rgba(243, 238, 227, 0.18);
+  --ar-border-strong: rgba(243, 238, 227, 0.36);
+  --ar-accent-primary: #8C9CE0;
+  --ar-accent-secondary: #C6CDF1;
+  --ar-blaze: #E0664A;
+  --ar-shadow-sheet: 4px 4px 0 rgba(0, 0, 0, 0.4);
+  --ar-shadow-lift: 8px 8px 0 rgba(0, 0, 0, 0.48);
+  --ar-shadow-plate: 0 1px 0 rgba(0, 0, 0, 0.4), 10px 14px 0 -6px rgba(0, 0, 0, 0.36);
+}
+
+/* 6 · Type scale */
+:root {
+  --ar-t-hero: clamp(3rem, 5.4vw + 1rem, 5.4rem);
+  --ar-t-h1: clamp(2.1rem, 3.3vw + 0.5rem, 3.25rem);
+  --ar-t-h2: clamp(1.4rem, 1.9vw + 0.25rem, 1.95rem);
+  --ar-t-lead: clamp(1.12rem, 1.25vw, 1.32rem);
+  --ar-t-body: 1rem (16px);
+  --ar-t-small: 0.86rem (13.8px);
+  --ar-t-micro: 0.6875rem (11px);
+}

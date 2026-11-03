@@ -1,0 +1,1190 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import tokens from '@/features/arete/tokens.json'
+import '@/features/arete/arete-tokens.css'
+import '@/features/arete/arete-page.css'
+
+const B = '/brand/arete'
+const title = 'Arête — Case 18 | Paper-cut alpine · every layer is a cut'
+const description =
+  'Arête: an alpine cartography atelier built from ivory cartridge stock and ultramarine ink. A layered-ridge Kuwayama mark, four paper surfaces, and a measured contrast ledger that prints the three pairs it fails.'
+
+const CAST_ITEMS = [
+  { id: 'sommet', name: 'Sommet', role: 'The high point of a traverse' },
+  { id: 'boussole', name: 'Boussole', role: 'Bearing, declination, north' },
+  { id: 'courbe', name: 'Courbe', role: 'A line of equal altitude' },
+  { id: 'meleze', name: 'Mélèze', role: 'The tree line and its wind' },
+  { id: 'refuge', name: 'Refuge', role: 'Hut, gable, one door' },
+  { id: 'cairn', name: 'Cairn', role: 'A mark left for the next party' },
+]
+
+const DECISIONS = [
+  {
+    title: 'Two papers, four surfaces',
+    decision:
+      'Ivory stock is the canvas and ultramarine is the ink. Depth comes from four named surfaces — cut sheet, lifted layer, vellum overlay, deckle edge — and each has one job.',
+    because:
+      'A two-paper system makes every depth decision explicit instead of letting each component invent its own shadow recipe.',
+    notWhen: 'Print-only exports where a vellum overlay cannot be reproduced on press.',
+    breaksNext: 'Adding a fifth decorative surface without assigning it a job.',
+  },
+  {
+    title: 'The 5-unit seam is the only ornament',
+    decision:
+      'Every gap in the system quotes the 5u knife: the mark aperture, card seams, table rules and the baseline offset of the wordmark.',
+    because:
+      'One measure repeated is what makes a paper system read as the work of one hand rather than a component library in a paper costume.',
+    notWhen: 'Dense permit tables where rows need more air than one knife width.',
+    breaksNext: 'Using 8px gaps in one component and 4px in another and calling both “the seam”.',
+  },
+  {
+    title: 'Hard shadows, zero blur inside a layer',
+    decision:
+      'Cards lift with a 4px 4px 0 shadow at 12% ink. Only the vellum overlay is allowed blur, because it is the one sheet that sits above artwork.',
+    because:
+      'Blur reads as light; paper has an edge. Keeping blur out of the layer system is what keeps the surfaces looking cut instead of rendered.',
+    notWhen: 'The closing poster pane, which sits over a photograph and needs 18px of fiber blur.',
+    breaksNext: 'A component that adds a 20px soft shadow to look “modern”.',
+  },
+  {
+    title: 'Oxide is a blaze, never a label',
+    decision:
+      'Oxide (#C4462B) measures 4.3:1 on stock, so it is restricted to rules ≥3px, survey marks and graphic fills. Text on oxide is indigo at 8.1:1.',
+    because:
+      'Darkening the blaze until it passed 4.5:1 turns a warm survey signal into brick and loses the only warm note in a cold range.',
+    notWhen: 'A chip where oxide is the background and indigo carries the words.',
+    breaksNext: 'Using oxide for link text, a caption, or a 12px status label.',
+  },
+]
+
+const cssPrimitives = `/* 1 · primitive — the material, named once */
+:root {
+${tokens.primitives
+  .map((p) => `  --ar-${p.name}: ${p.value}; /* ${p.oklch} */`)
+  .join('\n')}
+}`
+
+const cssDay = `/* 2 · semantic · ivory stock (default scope) */
+:root {
+  --ar-bg-canvas: var(--ar-paper);
+  --ar-bg-surface: var(--ar-vellum);
+  --ar-bg-elevated: var(--ar-chalk);
+  --ar-ink-primary: var(--ar-indigo);
+  --ar-ink-secondary: var(--ar-graphite);
+  --ar-accent-primary: var(--ar-ultramarine);
+  --ar-accent-secondary: var(--ar-ridge);
+  --ar-blaze: var(--ar-oxide);
+}`
+
+const cssDusk = `/* 2 · semantic · ultramarine dusk — a scope, never a second palette */
+[data-ar='dusk'] {
+  --ar-bg-canvas: #0C0E22;
+  --ar-bg-surface: #141733;
+  --ar-bg-elevated: #1D2144;
+  --ar-ink-primary: #F3EEE3;
+  --ar-ink-secondary: #B9BFDD;
+  --ar-accent-primary: #8C9CE0;
+  --ar-accent-secondary: #C6CDF1;
+}`
+
+const cssPlate = `/* 3 · component — vellum over artwork, the only blurred layer */
+.ar-plate {
+  background: color-mix(in srgb, var(--ar-paper) 88%, transparent);
+  backdrop-filter: blur(18px) saturate(120%);
+  border: 1px solid rgba(16, 18, 41, 0.18);
+  box-shadow: 8px 8px 0 rgba(16, 18, 41, 0.10);
+}`
+
+const ROUTES = [
+  {
+    id: 'midi',
+    name: 'Arête du Midi',
+    meta: 'Summit traverse · 3 hut nights · SE ridge',
+    grade: 'UIAA III',
+    distance: '11.4 km',
+    ascent: '1,486 m',
+    high: '3,842 m',
+    fee: 240,
+    profile: [18, 24, 21, 30, 38, 34, 46, 42, 58, 52, 66, 60, 78, 70, 62, 74, 66, 84, 92, 100, 88, 74, 62, 48],
+  },
+  {
+    id: 'cime',
+    name: 'Col de la Cime',
+    meta: 'Hut-to-hut · 1 hut night · W shoulder',
+    grade: 'UIAA II',
+    distance: '8.2 km',
+    ascent: '940 m',
+    high: '3,104 m',
+    fee: 180,
+    profile: [22, 30, 34, 30, 42, 50, 46, 58, 54, 66, 74, 68, 78, 72, 84, 90, 84, 72, 64, 58, 50, 44, 38, 30],
+  },
+  {
+    id: 'noir',
+    name: 'Glacier Noir',
+    meta: 'Glacier crossing · 2 hut nights · N face',
+    grade: 'UIAA IV',
+    distance: '14.6 km',
+    ascent: '1,820 m',
+    high: '3,566 m',
+    fee: 320,
+    profile: [14, 20, 28, 24, 36, 44, 54, 48, 62, 72, 66, 80, 74, 86, 94, 88, 96, 100, 90, 82, 70, 60, 52, 40],
+  },
+]
+
+const facts = {
+  primitives: tokens.primitives.length,
+  pairs: tokens.contrast.length,
+  fails: tokens.contrast.filter((c) => !c.pass).length,
+}
+---
+
+<Layout title={title} description={description} canonical="/design-system/arete" image={`${B}/arete-brandkit.png`}>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..600&family=Instrument+Sans:ital,wght@0,400..700;1,400..600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <div class="ar" id="top">
+    <script is:inline>
+      try {
+        if (localStorage.getItem('ar-scope') === 'dusk') {
+          document.querySelector('.ar')?.setAttribute('data-ar', 'dusk')
+        }
+      } catch (e) {}
+    </script>
+
+    <header class="ar-bar">
+      <div class="ar-wrap ar-bar__in">
+        <a class="ar-brand" href="#top" aria-label="Arête, back to top">
+          <img src={`${B}/mark.svg`} width="26" height="26" alt="" />
+          <span class="ar-brand__name">Arête</span>
+          <span class="ar-brand__badge">Case 18</span>
+        </a>
+
+        <nav class="ar-nav" aria-label="Arête sections">
+          <a href="#hero">01 Hero</a>
+          <a href="#thesis">02 Thesis</a>
+          <a href="#brandmark">03 Mark</a>
+          <a href="#chromatic">04 Colour</a>
+          <a href="#typography">05 Type</a>
+          <a href="#surfaces">06 Surfaces</a>
+          <a href="#workbench">07 Routes</a>
+          <a href="#tokens">08 Tokens</a>
+        </nav>
+
+        <button id="scopeBtn" class="ar-scope" type="button" aria-pressed="false">
+          <span class="ar-scope__dot"></span>
+          <span id="scopeLabel">Ivory stock</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- 01 · HERO ========================================================= -->
+      <section id="hero" class="ar-hero">
+        <div class="ar-hero__bg" aria-hidden="true">
+          <img
+            id="heroImage"
+            class="ar-hero__img"
+            src={`${B}/arete-panorama.webp`}
+            alt="Paper-cut alpine collage on ivory stock: a white torn-paper peak, a black foreground ridge and a single cobalt seam rising to the right."
+            loading="eager"
+          />
+          <div class="ar-hero__scrim"></div>
+        </div>
+
+        <div class="ar-wrap ar-hero__in">
+          <div class="ar-hero__grid">
+            <div class="ar-plate">
+              <div class="ar-hero__eyebrow">
+                <span>Case 18 · Brand kit &amp; design system</span>
+                <span>·</span>
+                <span>Paper-cut alpine</span>
+                <span>·</span>
+                <span>v4.2</span>
+              </div>
+              <h1 class="ar-hero__title">
+                A range cut from <em>two papers.</em>
+              </h1>
+              <p class="ar-hero__lead">
+                Arête is an alpine cartography atelier: four guided ridge traverses, one hand-cut
+                topographic edition, and an interface built from the supplied paper collage — ivory
+                stock, white peak, grey layer, black ridge, one cobalt seam. No gradient inside a
+                layer. No blur inside a shadow.
+              </p>
+              <div class="ar-hero__actions">
+                <a class="ar-btn ar-btn--accent" href="#workbench">Plan a traverse</a>
+                <a class="ar-btn ar-btn--ghost" href="#tokens">Copy OKLCH tokens</a>
+                <button id="swapScene" class="ar-btn ar-btn--ghost" type="button" aria-label="Swap the hero range">
+                  Swap the range
+                </button>
+              </div>
+            </div>
+
+            <aside class="ar-hero__sheet" aria-label="System specimen">
+              <div class="ar-hero__sheet-top">
+                <img src={`${B}/lockup-reverse.svg`} alt="Arête, alpine cartography" />
+                <span class="ar-hero__coord">
+                  46°12′N<br />07°04′E · 3,842 m
+                </span>
+              </div>
+              <div class="ar-radar">
+                <div class="ar-radar__item">
+                  <span class="ar-radar__lbl">Surface</span>
+                  <span class="ar-radar__val">Cut paper · 0px blur</span>
+                </div>
+                <div class="ar-radar__item">
+                  <span class="ar-radar__lbl">Density</span>
+                  <span class="ar-radar__val">Editorial cartography</span>
+                </div>
+                <div class="ar-radar__item">
+                  <span class="ar-radar__lbl">Physics</span>
+                  <span class="ar-radar__val">Knife-cut · 0 / 2px</span>
+                </div>
+                <div class="ar-radar__item">
+                  <span class="ar-radar__lbl">Mark</span>
+                  <span class="ar-radar__val">Kuwayama 64 grid</span>
+                </div>
+              </div>
+              <div style="border-top: 1px solid rgba(243, 238, 227, 0.28); padding-top: 0.85rem; font-family: var(--ar-font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(243, 238, 227, 0.68);">
+                Ivory cartridge 300gsm · tracing vellum 90gsm · one ultramarine impression
+              </div>
+            </aside>
+          </div>
+
+          <div class="ar-facts">
+            <div class="ar-fact">
+              <div class="ar-fact__fig">{facts.primitives}</div>
+              <span class="ar-fact__lbl">Primitives</span>
+              <p class="ar-fact__note">Two papers, one ink, one blaze — the whole palette.</p>
+            </div>
+            <div class="ar-fact">
+              <div class="ar-fact__fig">{tokens.contrast.find((c) => c.fg === 'indigo' && c.bg === 'paper')?.ratio.toFixed(1)}:1</div>
+              <span class="ar-fact__lbl">Indigo on ivory</span>
+              <p class="ar-fact__note">AAA reading contrast on every stock plate.</p>
+            </div>
+            <div class="ar-fact">
+              <div class="ar-fact__fig">1 + 6</div>
+              <span class="ar-fact__lbl">Mark + cast</span>
+              <p class="ar-fact__note">One layered ridge, six companion cuts, one 64-unit sheet.</p>
+            </div>
+            <div class="ar-fact">
+              <div class="ar-fact__fig">{String(facts.fails).padStart(2, '0')}</div>
+              <span class="ar-fact__lbl">Published fails</span>
+              <p class="ar-fact__note">Glacier, mist and oxide are printed as failures with jobs.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 · THESIS ======================================================= -->
+      <section id="thesis" class="ar-section">
+        <div class="ar-wrap">
+          <div class="ar-sec__head">
+            <div>
+              <div class="ar-sec__num">02 / Thesis &amp; decisions</div>
+              <h2 class="ar-sec__title">Paper separates with an edge, not a glow.</h2>
+            </div>
+            <p class="ar-sec__desc">
+              Four beliefs about maps as physical objects, then four decisions with explicit
+              failure boundaries so the next agent cannot quietly turn stacked sheets into glass
+              cards.
+            </p>
+          </div>
+
+          <div class="ar-thesis">
+            <div class="ar-thesis__cell">
+              <h3>Belief</h3>
+              <p>
+                A map is a physical object before it is an interface. It should feel cut,
+                registered and stacked — read under raking light, not rendered on a screen.
+              </p>
+            </div>
+            <div class="ar-thesis__cell">
+              <h3>Enemy</h3>
+              <p>
+                Gradient-mesh “outdoor brand” chrome, glassmorphic route dashboards, neon contour
+                lines, and soft 40px shadows that turn paper back into plastic.
+              </p>
+            </div>
+            <div class="ar-thesis__cell">
+              <h3>Material</h3>
+              <p>
+                Ivory cartridge stock, 90gsm tracing vellum, one ultramarine impression, one oxide
+                survey blaze, and a graphite pencil for the annotations.
+              </p>
+            </div>
+            <div class="ar-thesis__cell ar-thesis__cell--loud">
+              <h3>The rejection test</h3>
+              <p>
+                If a surface needs a glow to separate from the one beneath it, reject it. Paper
+                separates with an edge and a hard shadow.
+              </p>
+            </div>
+          </div>
+
+          <div class="ar-decisions">
+            {DECISIONS.map((d) => (
+              <article class="ar-decision">
+                <h4>{d.title}</h4>
+                <dl>
+                  <dt>Decision</dt>
+                  <dd>{d.decision}</dd>
+                  <dt>Because</dt>
+                  <dd>{d.because}</dd>
+                  <dt>Not when</dt>
+                  <dd>{d.notWhen}</dd>
+                  <dt>Breaks next</dt>
+                  <dd><em>Breaks when:</em> {d.breaksNext}</dd>
+                </dl>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 · BRANDMARK =================================================== -->
+      <section id="brandmark" class="ar-section ar-section--surface">
+        <div class="ar-wrap">
+          <div class="ar-sec__head">
+            <div>
+              <div class="ar-sec__num">03 / Kuwayama vector discipline</div>
+              <h2 class="ar-sec__title">One floating ridge, one grounded mass.</h2>
+            </div>
+            <p class="ar-sec__desc">
+              A 10-unit ridge ribbon above a grounded mass, parted by a single 5-unit seam. The
+              mark is drawn as two paper sheets, not as a mountain illustration.
+            </p>
+          </div>
+
+          <div class="ar-studio">
+            <div id="studioStage" class="ar-studio__stage">
+              <div id="gridOverlay" class="ar-studio__grid" hidden></div>
+              <img id="studioMark" class="ar-studio__mark" src={`${B}/mark.svg`} alt="Arête master mark" width="172" height="172" />
+
+              <div class="ar-strip">
+                <div class="ar-strip__item">
+                  <img src={`${B}/mark.svg`} width="64" height="64" alt="Arête mark at 64 pixels" />
+                  <span>64 master</span>
+                </div>
+                <div class="ar-strip__item">
+                  <img src={`${B}/mark.svg`} width="32" height="32" alt="Arête mark at 32 pixels" />
+                  <span>32 nav</span>
+                </div>
+                <div class="ar-strip__item">
+                  <img src={`${B}/mark-compact.svg`} width="16" height="16" alt="Arête compact mark at 16 pixels" />
+                  <span>16 compact</span>
+                </div>
+                <div class="ar-strip__item">
+                  <div class="ar-strip__rev">
+                    <img src={`${B}/mark-reverse.svg`} width="26" height="26" alt="Arête reverse mark" />
+                  </div>
+                  <span>reverse</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="ar-studio__panel">
+              <div class="ar-control">
+                <span class="ar-control__lbl">Drawing</span>
+                <div class="ar-pills" role="group" aria-label="Drawing selector">
+                  <button class="ar-pill mark-btn" data-mark="mark" aria-pressed="true" type="button">Master</button>
+                  <button class="ar-pill mark-btn" data-mark="compact" aria-pressed="false" type="button">16px compact</button>
+                  <button class="ar-pill mark-btn" data-mark="lockup" aria-pressed="false" type="button">Horizontal</button>
+                  <button class="ar-pill mark-btn" data-mark="stacked" aria-pressed="false" type="button">Stacked</button>
+                </div>
+              </div>
+
+              <div class="ar-control">
+                <span class="ar-control__lbl">Surface polarity</span>
+                <div class="ar-pills" role="group" aria-label="Surface polarity">
+                  <button class="ar-pill polar-btn" data-bg="paper" aria-pressed="true" type="button">Ivory</button>
+                  <button class="ar-pill polar-btn" data-bg="vellum" aria-pressed="false" type="button">Vellum</button>
+                  <button class="ar-pill polar-btn" data-bg="ultramarine" aria-pressed="false" type="button">Ultramarine</button>
+                  <button class="ar-pill polar-btn" data-bg="indigo" aria-pressed="false" type="button">Indigo</button>
+                </div>
+              </div>
+
+              <div class="ar-control">
+                <span class="ar-control__lbl">Construction</span>
+                <button id="gridBtn" class="ar-pill" aria-pressed="false" type="button">Show 8 × 8 module grid</button>
+              </div>
+
+              <p class="ar-construction">
+                <strong>Geometry, 64-unit sheet</strong>
+                Ribbon 10u thick · seam 5u · aperture 26u · base grounded at y=58 · 8u clearspace.
+                The 16px compact is a separate drawing: one massif with a 4u cut, no ribbon.
+              </p>
+
+              <div style="margin-top: auto;">
+                <button id="copyMark" class="ar-btn ar-btn--accent" type="button">Copy raw SVG</button>
+                <div id="copyMarkToast" class="ar-copy-toast">Copied 64-unit vector SVG to clipboard.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ar-cast">
+            {CAST_ITEMS.map((c) => (
+              <div class="ar-cast__cell">
+                <img src={`${B}/cast/${c.id}.svg`} width="40" height="40" alt={`${c.name} companion mark`} />
+                <b>{c.name}</b>
+                <span>{c.role}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 · CHROMATIC =================================================== -->
+      <section id="chromatic" class="ar-section">
+        <div class="ar-wrap">
+          <div class="ar-sec__head">
+            <div>
+              <div class="ar-sec__num">04 / Perceptual chromatics</div>
+              <h2 class="ar-sec__title">Two papers, one ink, three printed failures.</h2>
+            </div>
+            <p class="ar-sec__desc">
+              Click any swatch to copy its hex. Every pair below is recomputed from hex at build
+              time — including the three that fail, which keep their brand strength and receive a
+              restricted job.
+            </p>
+          </div>
+
+          <div class="ar-swatches">
+            {tokens.primitives.map((p) => {
+              const failedFg = ['glacier', 'mist', 'oxide'].includes(p.name)
+              return (
+                <button class="ar-swatch" type="button" data-copy-hex={p.value} aria-label={`Copy ${p.name} ${p.value}`}>
+                  <span class="ar-swatch__chip" style={`background-color: ${p.value};`}></span>
+                  <span class="ar-swatch__body">
+                    <span class="ar-swatch__name">--ar-{p.name}</span>
+                    <span class="ar-swatch__hex">{p.value}</span>
+                    <span class="ar-swatch__oklch">{p.oklch}</span>
+                    <span class="ar-swatch__role">{p.role}</span>
+                    <span class={`ar-badge ${failedFg ? 'ar-badge--fail' : 'ar-badge--pass'}`}>
+                      {failedFg ? 'Published fail · graphic only' : 'Verified primitive'}
+                    </span>
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+
+          <div class="ar-table-wrap">
+            <table class="ar-table">
+              <thead>
+                <tr>
+                  <th>Pair</th>
+                  <th>Measured</th>
+                  <th>Status</th>
+                  <th>Assigned job</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tokens.contrast.map((c) => (
+                  <tr>
+                    <td>--ar-{c.fg} on --ar-{c.bg}</td>
+                    <td>{c.ratio.toFixed(1)} : 1</td>
+                    <td>
+                      <span class={`ar-badge ${c.pass ? 'ar-badge--pass' : 'ar-badge--fail'}`}>
+                        {c.pass ? `PASS · ${c.target.replace('>=', '≥')}` : `FAIL · ${c.target.replace('>=', '≥')}`}
+                      </span>
+                    </td>
+                    <td>{c.role}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 · TYPOGRAPHY ================================================== -->
+      <section id="typography" class="ar-section ar-section--surface">
+        <div class="ar-wrap">
+          <div class="ar-sec__head">
+            <div>
+              <div class="ar-sec__num">05 / Open-foundry typography</div>
+              <h2 class="ar-sec__title">Bodoni Moda, Instrument Sans &amp; IBM Plex Mono.</h2>
+            </div>
+            <p class="ar-sec__desc">
+              A hairline serif that reads as a knife cut, a narrow humanist UI face, and a
+              tabular mono for coordinates, elevations and permit references.
+            </p>
+          </div>
+
+          <div class="ar-type">
+            <div class="ar-type__panel">
+              <div class="ar-range">
+                <label for="weightRange"><span>Display weight</span><span id="weightVal">400</span></label>
+                <input id="weightRange" type="range" min="400" max="700" step="50" value="400" />
+              </div>
+              <div class="ar-range">
+                <label for="trackingRange"><span>Letter tracking</span><span id="trackingVal">-0.03em</span></label>
+                <input id="trackingRange" type="range" min="-0.04" max="0.12" step="0.01" value="-0.03" />
+              </div>
+              <div class="ar-control">
+                <span class="ar-control__lbl">Figure alignment</span>
+                <button id="tabularBtn" class="ar-pill" aria-pressed="true" type="button">tabular-nums: on</button>
+              </div>
+              <p class="ar-construction" style="border-top: 0; padding-top: 0;">
+                <strong>Why these three</strong>
+                Bodoni’s vertical stress and hairline serifs are the same cut the mark makes.
+                Instrument Sans keeps permit forms quiet. Plex Mono keeps altitude columns level.
+              </p>
+            </div>
+
+            <div class="ar-specimen">
+              <div class="ar-specimen__hint">Live specimen — click to edit</div>
+              <div
+                id="typeStage"
+                class="ar-specimen__stage"
+                contenteditable="true"
+                spellcheck="false"
+                role="textbox"
+                aria-label="Editable type specimen"
+              >
+                Arête du Midi · 3,842 m · 11.4 km
+              </div>
+
+              <div class="ar-alphabet" aria-hidden="true">
+                <span class="ar-alphabet__display">Aa Éé Êê Œœ 0123 %‰</span>
+                <span class="ar-alphabet__mono">
+                  ABCDEFGHIJKLMNOPQRSTUVWXYZ · abcdefghijklmnopqrstuvwxyz · 0123456789 · 46°12′N 07°04′E
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="ar-scale">
+            {tokens.type.scale.map((s) => (
+              <div class="ar-scale__row">
+                <div class="ar-scale__meta">
+                  <strong>{s.role}</strong>
+                  <span>{s.clamp}</span>
+                  <span>{s.lh} / {s.ls} / {s.weight}</span>
+                </div>
+                <div
+                  style={`font-family: ${
+                    s.role.includes('Micro')
+                      ? 'var(--ar-font-mono)'
+                      : s.role.includes('Body') || s.role.includes('Lead') || s.role.includes('Small')
+                        ? 'var(--ar-font-sans)'
+                        : 'var(--ar-font-display)'
+                  }; font-size: ${s.clamp.startsWith('clamp') ? s.clamp : s.clamp.split(' ')[0]}; line-height: ${s.lh}; letter-spacing: ${s.ls}; font-weight: ${s.weight};`}
+                >
+                  {s.sample}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- 06 · SURFACES ==================================================== -->
+      <section id="surfaces" class="ar-section">
+        <div class="ar-wrap">
+          <div class="ar-sec__head">
+            <div>
+              <div class="ar-sec__num">06 / Paper physics</div>
+              <h2 class="ar-sec__title">Four surfaces, all cut from the same stock.</h2>
+            </div>
+            <p class="ar-sec__desc">
+              Surfaces are named recipes, not adjectives. The supplied collage is the field; the
+              stage below lays one vellum sheet over its valley and gives you the tint, fiber blur
+              and sheet offset.
+            </p>
+          </div>
+
+          <div class="ar-surfaces">
+            {[
+              {
+                cls: 'cut',
+                name: 'Cut sheet',
+                body: 'Flat stock, 2u seams, no shadow. The base layer for long reading.',
+                token: '--ar-surface-cut',
+              },
+              {
+                cls: 'lifted',
+                name: 'Lifted layer',
+                body: '4px hard offset, zero blur. One sheet above another — never a soft glow.',
+                token: '--ar-surface-lifted',
+              },
+              {
+                cls: 'vellum',
+                name: 'Vellum overlay',
+                body: '88% ivory tint with 18px fiber blur. The only transparent sheet in the kit.',
+                token: '--ar-surface-vellum',
+              },
+              {
+                cls: 'deckle',
+                name: 'Deckle edge',
+                body: 'One generated rough edge per composition. Dividers and the closing poster.',
+                token: '--ar-surface-deckle',
+              },
+            ].map((s) => (
+              <div class="ar-surface-card">
+                <div class={`ar-surface-card__demo ar-surface-card__demo--${s.cls}`} aria-hidden="true"></div>
+                <h3>{s.name}</h3>
+                <p>{s.body}</p>
+                <code>{s.token}</code>
+              </div>
+            ))}
+          </div>
+
+          <div class="ar-stage__sliders">
+            <div class="ar-range">
+              <label for="tintRange"><span>Vellum opacity</span><span id="tintVal">88%</span></label>
+              <input id="tintRange" type="range" min="45" max="98" step="1" value="88" />
+            </div>
+            <div class="ar-range">
+              <label for="blurRange"><span>Fiber blur</span><span id="blurVal">18px</span></label>
+              <input id="blurRange" type="range" min="0" max="32" step="1" value="18" />
+            </div>
+            <div class="ar-range">
+              <label for="offsetRange"><span>Sheet offset</span><span id="offsetVal">8px</span></label>
+              <input id="offsetRange" type="range" min="0" max="16" step="1" value="8" />
+            </div>
+            <button id="replayCut" class="ar-btn ar-btn--ghost" type="button" style="padding: 0.6rem 0.8rem;">Replay the cut</button>
+          </div>
+
+          <div class="ar-stage">
+            <img class="ar-stage__bg" src={`${B}/arete-closing.webp`} alt="Paper-cut alpine valley: white, grey and cobalt paper mountains framing an empty ivory centre." loading="lazy" />
+            <div id="stagePane" class="ar-stage__pane">
+              <span class="ar-mono" style="color: var(--ar-accent-primary);">Second traverse · the closer cut</span>
+              <h3>Col de la Cime at first light.</h3>
+              <p>
+                A 1:25,000 sheet cut in seven layers, registered by hand. Ivory above the tree line,
+                ultramarine in the valley, and one oxide blaze where the path crosses the glacier.
+              </p>
+              <div class="ar-stage__foot">
+                <span>7 sheets · 5u seam</span>
+                <span id="stageReadout">88% vellum · 18px fiber · 8px lift</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 07 · WORKBENCH =================================================== -->
+      <section id="workbench" class="ar-section ar-section--surface">
+        <div class="ar-wrap">
+          <div class="ar-sec__head">
+            <div>
+              <div class="ar-sec__num">07 / Route workbench</div>
+              <h2 class="ar-sec__title">Choose a ridge; the permit and the profile follow.</h2>
+            </div>
+            <p class="ar-sec__desc">
+              A working traverse ledger: selecting a route redraws its elevation profile in stacked
+              paper layers and recalculates the permit against party size, hut nights, a guide and
+              the hand-cut edition.
+            </p>
+          </div>
+
+          <div class="ar-work">
+            <div class="ar-ledger">
+              <div class="ar-ledger__head">
+                <div>
+                  <span class="ar-mono" style="color: var(--ar-accent-primary);">Traverse ledger · 2026 season</span>
+                  <h3>Three ways above the tree line</h3>
+                </div>
+                <span class="ar-mono" id="routeCount">03 routes</span>
+              </div>
+
+              <div class="ar-routes" role="group" aria-label="Choose a traverse">
+                {ROUTES.map((r, i) => (
+                  <button
+                    class="ar-route"
+                    type="button"
+                    data-route={r.id}
+                    data-fee={r.fee}
+                    aria-pressed={i === 0 ? 'true' : 'false'}
+                  >
+                    <span>
+                      <span class="ar-route__name">{r.name}</span>
+                      <span class="ar-route__meta">{r.meta}</span>
+                    </span>
+                    <span class="ar-route__grade">{r.grade}</span>
+                  </button>
+                ))}
+              </div>
+
+              <div class="ar-profile">
+                <svg id="profileSvg" viewBox="0 0 640 220" role="img" aria-label="Elevation profile of the selected traverse">
+                  <g id="profileGrid" stroke="rgba(16,18,41,0.12)" stroke-width="1">
+                    <line x1="0" y1="40" x2="640" y2="40" />
+                    <line x1="0" y1="90" x2="640" y2="90" />
+                    <line x1="0" y1="140" x2="640" y2="140" />
+                    <line x1="0" y1="190" x2="640" y2="190" />
+                  </g>
+                  <polygon id="profileGlacier" fill="#C9D0EC" points="" />
+                  <polygon id="profileRidge" fill="#2E4CA6" points="" />
+                  <polygon id="profileInk" fill="#1E3A8A" points="" />
+                  <polyline id="profileLine" fill="none" stroke="#101229" stroke-width="2.5" points="" />
+                  <circle id="profileStation" r="5" fill="#101229" />
+                </svg>
+                <div class="ar-profile__legend">
+                  <span>0 m</span>
+                  <span id="profileLabel">Arête du Midi · 3,842 m high point</span>
+                  <span>24 km</span>
+                </div>
+              </div>
+
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--ar-border-subtle);border:1px solid var(--ar-border-subtle);margin-top:1rem;">
+                {[
+                  ['Distance', 'routeDistance', '11.4 km'],
+                  ['Total ascent', 'routeAscent', '1,486 m'],
+                  ['High point', 'routeHigh', '3,842 m'],
+                ].map(([label, id, val]) => (
+                  <div style="background:var(--ar-bg-elevated);padding:0.7rem 0.8rem;">
+                    <span class="ar-mono" style="color:var(--ar-ink-secondary);display:block;font-size:0.55rem;">{label}</span>
+                    <span id={id} style="font-family:var(--ar-font-mono);font-size:0.82rem;">{val}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div class="ar-permit">
+              <div>
+                <span class="ar-mono" style="color: var(--ar-accent-primary);">Permit &amp; edition</span>
+                <h3>Request the traverse</h3>
+              </div>
+
+              <div class="ar-control">
+                <span class="ar-control__lbl">Party size</span>
+                <div class="ar-stepper">
+                  <button id="partyMinus" type="button" aria-label="One fewer climber">−</button>
+                  <output id="partyOut" aria-live="polite">2</output>
+                  <button id="partyPlus" type="button" aria-label="One more climber">+</button>
+                </div>
+              </div>
+
+              <div>
+                <label class="ar-option" for="guideOpt">
+                  <input id="guideOpt" type="checkbox" />
+                  <span>Certified guide <br /><span style="font-size:0.7rem;color:var(--ar-ink-secondary);">IFMGA · per climber</span></span>
+                  <b>CHF 180</b>
+                </label>
+                <label class="ar-option" for="hutOpt">
+                  <input id="hutOpt" type="checkbox" checked />
+                  <span>Hut nights <br /><span style="font-size:0.7rem;color:var(--ar-ink-secondary);">CHF 48 per climber, per night</span></span>
+                  <b id="hutCost">CHF 96</b>
+                </label>
+                <label class="ar-option" for="editionOpt">
+                  <input id="editionOpt" type="checkbox" />
+                  <span>Hand-cut edition <br /><span style="font-size:0.7rem;color:var(--ar-ink-secondary);">1:25,000 · seven sheets</span></span>
+                  <b>CHF 65</b>
+                </label>
+              </div>
+
+              <div class="ar-total">
+                <span class="ar-total__label">Estimated permit</span>
+                <span class="ar-total__figure" id="totalOut">CHF 576</span>
+              </div>
+
+              <p class="ar-permit__note">
+                Permits are issued by the commune; allow four working days. The edition is cut to
+                order and posted flat, numbered and signed.
+              </p>
+
+              <div id="permitSummary" class="ar-summary">
+                Arête du Midi · 2 climbers · 1 hut night · guide off · edition off
+              </div>
+
+              <button id="requestPermit" class="ar-btn ar-btn--accent" type="button">
+                Request permit
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 08 · TOKENS ====================================================== -->
+      <section id="tokens" class="ar-section" style="border-bottom: 0;">
+        <div class="ar-wrap">
+          <div class="ar-sec__head">
+            <div>
+              <div class="ar-sec__num">08 / One source, three layers</div>
+              <h2 class="ar-sec__title">Copy the system, not a screenshot.</h2>
+            </div>
+            <p class="ar-sec__desc">
+              The primitive layer never flips under the dusk scope — only the semantic bindings
+              move. Every block below is the shipped file.
+            </p>
+          </div>
+
+          <div class="ar-codes">
+            {[
+              { title: 'arete-tokens.css · 1 · Primitives', code: cssPrimitives },
+              { title: 'arete-tokens.css · 2 · Ivory stock scope', code: cssDay },
+              { title: 'arete-tokens.css · 2 · Ultramarine dusk scope', code: cssDusk },
+              { title: 'arete-tokens.css · 3 · Vellum plate', code: cssPlate },
+            ].map((item) => (
+              <div class="ar-code">
+                <header>
+                  <span>{item.title}</span>
+                  <button class="copy-code" type="button">Copy</button>
+                </header>
+                <pre><code>{item.code}</code></pre>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- CLOSING POSTER ===================================================== -->
+    <footer class="ar-foot">
+      <img class="ar-foot__img" src={`${B}/arete-closing.webp`} alt="Paper-cut alpine valley on ivory stock with a black foreground ridge and a cobalt seam." loading="lazy" />
+      <div class="ar-foot__scrim" aria-hidden="true"></div>
+
+      <div class="ar-wrap ar-foot__in">
+        <div class="ar-foot__pane">
+          <p class="ar-foot__eyebrow">Case 18 · Arête · Alpine cartography · 2026</p>
+          <p class="ar-foot__quote">The page ends on the same range, turned around.</p>
+          <p class="ar-foot__sub">
+            Two papers, one ink, four surfaces and a mark that is exactly two stacked cuts. Built as
+            a working map atelier first, a component kit second.
+          </p>
+          <div class="ar-foot__links">
+            <a href={`${B}/arete-brandkit.png`} download>Brand board · PNG</a>
+            <a href={`${B}/mark.svg`} download>mark.svg</a>
+            <a href={`${B}/arete-tokens.css`} download>arete-tokens.css</a>
+            <a href={`${B}/DESIGN.md`} download>DESIGN.md</a>
+            <a href="/design-system/arete">Case page</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="ar-foot__bar">
+        <div class="ar-wrap ar-foot__bar-in">
+          <img src={`${B}/lockup.svg`} alt="Arête" />
+          <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center;">
+            <a href="#top">Back to top ↑</a>
+            <a href={`${B}/tokens.json`}>tokens.json</a>
+            <a href="/">All cases →</a>
+            <span>Sunnyside Brand System Engine v4.2</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script is:inline define:vars={{ ROUTES }}>
+    // ── 1 · scope ────────────────────────────────────────────────────────────
+    const root = document.querySelector('.ar')
+    const scopeBtn = document.getElementById('scopeBtn')
+    const scopeLabel = document.getElementById('scopeLabel')
+
+    function setScope(dusk) {
+      if (!root) return
+      if (dusk) root.setAttribute('data-ar', 'dusk')
+      else root.removeAttribute('data-ar')
+      scopeBtn?.setAttribute('aria-pressed', String(dusk))
+      if (scopeLabel) scopeLabel.textContent = dusk ? 'Ultramarine dusk' : 'Ivory stock'
+      try {
+        localStorage.setItem('ar-scope', dusk ? 'dusk' : 'ivory')
+      } catch (e) {}
+    }
+
+    try {
+      if (localStorage.getItem('ar-scope') === 'dusk') setScope(true)
+    } catch (e) {}
+
+    scopeBtn?.addEventListener('click', () => {
+      setScope(root?.getAttribute('data-ar') !== 'dusk')
+    })
+
+    // ── 2 · hero scene swap ──────────────────────────────────────────────────
+    const scenes = [
+      { src: '/brand/arete/arete-panorama.webp', alt: 'Paper-cut alpine collage on ivory stock with a white peak and a cobalt seam.' },
+      { src: '/brand/arete/arete-closing.webp', alt: 'Paper-cut alpine valley: mountains framing an empty ivory centre.' },
+    ]
+    let scene = 0
+    const heroImage = document.getElementById('heroImage')
+    document.getElementById('swapScene')?.addEventListener('click', () => {
+      scene = (scene + 1) % scenes.length
+      if (heroImage) {
+        heroImage.src = scenes[scene].src
+        heroImage.alt = scenes[scene].alt
+      }
+    })
+
+    // ── 3 · mark studio ──────────────────────────────────────────────────────
+    const stageImg = document.getElementById('studioMark')
+    const stage = document.getElementById('studioStage')
+    const grid = document.getElementById('gridOverlay')
+    const gridBtn = document.getElementById('gridBtn')
+    const DARK = ['ultramarine', 'indigo']
+    const BG = { paper: '#F2EDE3', vellum: '#E9E2D5', ultramarine: '#1E3A8A', indigo: '#101229' }
+    let drawing = 'mark'
+    let polarity = 'paper'
+
+    const files = (d, dark) => {
+      if (d === 'lockup') return dark ? '/brand/arete/lockup-reverse.svg' : '/brand/arete/lockup.svg'
+      if (d === 'stacked') return dark ? '/brand/arete/lockup-stacked-reverse.svg' : '/brand/arete/lockup-stacked.svg'
+      if (d === 'compact') return dark ? '/brand/arete/mark-compact-reverse.svg' : '/brand/arete/mark-compact.svg'
+      return dark ? '/brand/arete/mark-reverse.svg' : '/brand/arete/mark.svg'
+    }
+
+    function paintMark() {
+      if (!stageImg) return
+      const dark = DARK.includes(polarity)
+      stageImg.src = files(drawing, dark)
+      stageImg.classList.toggle('ar-studio__mark--wide', drawing === 'lockup' || drawing === 'stacked')
+      if (stage) {
+        stage.style.backgroundColor = BG[polarity]
+        stage.dataset.light = String(polarity === 'paper' || polarity === 'vellum')
+      }
+    }
+
+    document.querySelectorAll('.mark-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        drawing = btn.dataset.mark
+        document.querySelectorAll('.mark-btn').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)))
+        paintMark()
+      })
+    })
+
+    document.querySelectorAll('.polar-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        polarity = btn.dataset.bg
+        document.querySelectorAll('.polar-btn').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)))
+        paintMark()
+      })
+    })
+
+    gridBtn?.addEventListener('click', () => {
+      const on = gridBtn.getAttribute('aria-pressed') !== 'true'
+      gridBtn.setAttribute('aria-pressed', String(on))
+      if (grid) grid.hidden = !on
+    })
+
+    document.getElementById('copyMark')?.addEventListener('click', async () => {
+      try {
+        const svg = await fetch('/brand/arete/mark.svg').then((r) => r.text())
+        await navigator.clipboard.writeText(svg)
+        const toast = document.getElementById('copyMarkToast')
+        if (toast) {
+          toast.style.display = 'block'
+          setTimeout(() => (toast.style.display = 'none'), 2400)
+        }
+      } catch (e) {}
+    })
+
+    // ── 4 · swatches + code blocks ──────────────────────────────────────────
+    document.querySelectorAll('[data-copy-hex]').forEach((card) => {
+      card.addEventListener('click', async () => {
+        const hex = card.dataset.copyHex
+        try {
+          await navigator.clipboard.writeText(hex)
+          const name = card.querySelector('.ar-swatch__name')
+          if (name) {
+            const prev = name.textContent
+            name.textContent = 'Copied ' + hex
+            setTimeout(() => (name.textContent = prev), 1400)
+          }
+        } catch (e) {}
+      })
+    })
+
+    document.querySelectorAll('.copy-code').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const pre = btn.closest('.ar-code')?.querySelector('pre')
+        if (!pre) return
+        try {
+          await navigator.clipboard.writeText(pre.innerText)
+          const prev = btn.textContent
+          btn.textContent = 'Copied'
+          setTimeout(() => (btn.textContent = prev), 1400)
+        } catch (e) {}
+      })
+    })
+
+    // ── 5 · type controls ───────────────────────────────────────────────────
+    const typeStage = document.getElementById('typeStage')
+    const weightRange = document.getElementById('weightRange')
+    const weightVal = document.getElementById('weightVal')
+    const trackingRange = document.getElementById('trackingRange')
+    const trackingVal = document.getElementById('trackingVal')
+    const tabularBtn = document.getElementById('tabularBtn')
+    let tabular = true
+
+    weightRange?.addEventListener('input', (e) => {
+      if (weightVal) weightVal.textContent = e.target.value
+      if (typeStage) typeStage.style.fontWeight = e.target.value
+    })
+    trackingRange?.addEventListener('input', (e) => {
+      const v = e.target.value + 'em'
+      if (trackingVal) trackingVal.textContent = v
+      if (typeStage) typeStage.style.letterSpacing = v
+    })
+    tabularBtn?.addEventListener('click', () => {
+      tabular = !tabular
+      tabularBtn.setAttribute('aria-pressed', String(tabular))
+      tabularBtn.textContent = 'tabular-nums: ' + (tabular ? 'on' : 'off')
+      if (typeStage) typeStage.style.fontVariantNumeric = tabular ? 'tabular-nums' : 'normal'
+    })
+
+    // ── 6 · paper physics ───────────────────────────────────────────────────
+    const pane = document.getElementById('stagePane')
+    const tintRange = document.getElementById('tintRange')
+    const blurRange = document.getElementById('blurRange')
+    const offsetRange = document.getElementById('offsetRange')
+    const tintVal = document.getElementById('tintVal')
+    const blurVal = document.getElementById('blurVal')
+    const offsetVal = document.getElementById('offsetVal')
+    const readout = document.getElementById('stageReadout')
+
+    function paintPane() {
+      if (!pane) return
+      const tint = tintRange ? tintRange.value : '88'
+      const blur = blurRange ? blurRange.value : '18'
+      const offset = offsetRange ? offsetRange.value : '8'
+      pane.style.setProperty('--ar-demo-tint', tint + '%')
+      pane.style.setProperty('--ar-demo-blur', blur + 'px')
+      pane.style.setProperty('--ar-demo-offset', offset + 'px')
+      if (tintVal) tintVal.textContent = tint + '%'
+      if (blurVal) blurVal.textContent = blur + 'px'
+      if (offsetVal) offsetVal.textContent = offset + 'px'
+      if (readout) readout.textContent = tint + '% vellum · ' + blur + 'px fiber · ' + offset + 'px lift'
+    }
+
+    tintRange?.addEventListener('input', paintPane)
+    blurRange?.addEventListener('input', paintPane)
+    offsetRange?.addEventListener('input', paintPane)
+    document.getElementById('replayCut')?.addEventListener('click', () => {
+      if (!pane) return
+      pane.style.transform = 'translateY(-12px)'
+      setTimeout(() => (pane.style.transform = 'none'), 320)
+    })
+    paintPane()
+
+    // ── 7 · route workbench ─────────────────────────────────────────────────
+    const W = 640
+    const H = 220
+    const PAD = 18
+    const routeButtons = [...document.querySelectorAll('.ar-route')]
+    
+    const profileGlacier = document.getElementById('profileGlacier')
+    const profileRidge = document.getElementById('profileRidge')
+    const profileInk = document.getElementById('profileInk')
+    const profileLine = document.getElementById('profileLine')
+    const profileStation = document.getElementById('profileStation')
+    const profileLabel = document.getElementById('profileLabel')
+
+    let current = ROUTES[0]
+    let party = 2
+
+    const toPoints = (samples, lift) => {
+      const n = samples.length
+      return samples
+        .map((v, i) => {
+          const x = PAD + (i / (n - 1)) * (W - PAD * 2)
+          const y = H - PAD - (v / 100) * (H - PAD * 2 - 40) + lift
+          return x.toFixed(1) + ',' + y.toFixed(1)
+        })
+        .join(' ')
+    }
+    const toArea = (samples, lift) =>
+      `${PAD},${H - PAD} ${toPoints(samples, lift)} ${W - PAD},${H - PAD}`
+
+    function drawProfile() {
+      const p = current.profile
+      if (profileGlacier) profileGlacier.setAttribute('points', toArea(p, -22))
+      if (profileRidge) profileRidge.setAttribute('points', toArea(p, -11))
+      if (profileInk) profileInk.setAttribute('points', toArea(p, 0))
+      if (profileLine) profileLine.setAttribute('points', toPoints(p, 0))
+      if (profileStation) {
+        const peak = p.indexOf(Math.max(...p))
+        const n = p.length
+        const x = PAD + (peak / (n - 1)) * (W - PAD * 2)
+        const y = H - PAD - (p[peak] / 100) * (H - PAD * 2 - 40)
+        profileStation.setAttribute('cx', x.toFixed(1))
+        profileStation.setAttribute('cy', y.toFixed(1))
+      }
+      if (profileLabel) profileLabel.textContent = current.name + ' · ' + current.high + ' high point'
+      const d = document.getElementById('routeDistance')
+      const a = document.getElementById('routeAscent')
+      const h = document.getElementById('routeHigh')
+      if (d) d.textContent = current.distance
+      if (a) a.textContent = current.ascent
+      if (h) h.textContent = current.high
+    }
+
+    const partyOut = document.getElementById('partyOut')
+    const totalOut = document.getElementById('totalOut')
+    const summary = document.getElementById('permitSummary')
+    const guideOpt = document.getElementById('guideOpt')
+    const hutOpt = document.getElementById('hutOpt')
+    const editionOpt = document.getElementById('editionOpt')
+    const hutCost = document.getElementById('hutCost')
+
+    function recalc() {
+      const nights = hutOpt && hutOpt.checked ? 1 : 0
+      const total =
+        current.fee * party +
+        (guideOpt && guideOpt.checked ? 180 * party : 0) +
+        (nights ? 48 * party : 0) +
+        (editionOpt && editionOpt.checked ? 65 : 0)
+      if (totalOut) totalOut.textContent = 'CHF ' + total
+      if (partyOut) partyOut.textContent = String(party)
+      if (hutCost) hutCost.textContent = 'CHF ' + 48 * party
+      if (summary) {
+        summary.textContent =
+          current.name +
+          ' · ' +
+          party +
+          ' climber' +
+          (party > 1 ? 's' : '') +
+          ' · ' +
+          (nights ? '1 hut night' : 'no hut night') +
+          ' · guide ' +
+          (guideOpt && guideOpt.checked ? 'on' : 'off') +
+          ' · edition ' +
+          (editionOpt && editionOpt.checked ? 'on' : 'off')
+      }
+    }
+
+    routeButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const found = ROUTES.find((r) => r.id === btn.dataset.route)
+        if (!found) return
+        current = found
+        routeButtons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)))
+        drawProfile()
+        recalc()
+      })
+    })
+
+    document.getElementById('partyMinus')?.addEventListener('click', () => {
+      party = Math.max(1, party - 1)
+      recalc()
+    })
+    document.getElementById('partyPlus')?.addEventListener('click', () => {
+      party = Math.min(8, party + 1)
+      recalc()
+    })
+    guideOpt?.addEventListener('change', recalc)
+    hutOpt?.addEventListener('change', recalc)
+    editionOpt?.addEventListener('change', recalc)
+
+    const permitBtn = document.getElementById('requestPermit')
+    permitBtn?.addEventListener('click', () => {
+      const ref = 'AR-18-' + String(Math.floor(1000 + Math.random() * 8999))
+      const prev = permitBtn.textContent
+      permitBtn.textContent = 'Permit requested · ' + ref
+      permitBtn.style.background = '#2E4CA6'
+      setTimeout(() => {
+        permitBtn.textContent = prev
+        permitBtn.style.background = ''
+      }, 3200)
+    })
+
+    paintMark()
+    drawProfile()
+    recalc()
+  </script>
+</Layout>

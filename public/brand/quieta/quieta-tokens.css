@@ -1,0 +1,95 @@
+/* ==========================================================================
+   QUIETA DESIGN SYSTEM · TOKENS (v1.0 · Case 17)
+   Quiet residences · Detail image beside content
+   Layer 1 primitives never flip. Only the semantic scope moves at dusk.
+   ========================================================================== */
+
+:root {
+  /* 1 · Primitives — the material, named once */
+  --qa-chalk: #F4EEE4;
+  --qa-limestone: #E7DDCD;
+  --qa-travertine: #D3C5AF;
+  --qa-oak: #B98A5C;
+  --qa-clay: #9A4A26;
+  --qa-olive: #5A6844;
+  --qa-sage: #A9B197;
+  --qa-ink: #211C17;
+  --qa-umber: #6A5A4A;
+  --qa-dusk: #2E2822;
+  --qa-gold: #C99A5B;
+  --qa-mist: #B7AE9F;
+
+  /* 1b · Perceptual strings (oklch) */
+  --qa-oklch-chalk: oklch(0.951 0.015 80.7);
+  --qa-oklch-limestone: oklch(0.901 0.024 79.7);
+  --qa-oklch-travertine: oklch(0.829 0.034 79.2);
+  --qa-oklch-oak: oklch(0.669 0.084 64.9);
+  --qa-oklch-clay: oklch(0.504 0.118 43.3);
+  --qa-oklch-olive: oklch(0.496 0.057 125.7);
+  --qa-oklch-sage: oklch(0.747 0.037 121.2);
+  --qa-oklch-ink: oklch(0.230 0.012 67.2);
+  --qa-oklch-umber: oklch(0.479 0.032 66.9);
+  --qa-oklch-dusk: oklch(0.281 0.014 67.2);
+  --qa-oklch-gold: oklch(0.717 0.098 73.3);
+  --qa-oklch-mist: oklch(0.754 0.023 80.7);
+
+  /* 2 · Semantic — daylight garden scope (default) */
+  --qa-bg-canvas: var(--qa-chalk);
+  --qa-bg-surface: var(--qa-limestone);
+  --qa-bg-elevated: #FBF7F0;
+  --qa-bg-sunk: var(--qa-travertine);
+  --qa-ink-primary: var(--qa-ink);
+  --qa-ink-secondary: var(--qa-umber);
+  --qa-ink-tertiary: var(--qa-mist);
+  --qa-ink-reverse: var(--qa-chalk);
+  --qa-border-subtle: rgba(33, 28, 23, 0.13);
+  --qa-border-strong: rgba(33, 28, 23, 0.26);
+  --qa-border-focus: var(--qa-clay);
+  --qa-accent-primary: var(--qa-clay);
+  --qa-accent-secondary: var(--qa-olive);
+  --qa-accent-light: var(--qa-gold);
+  --qa-status-available: var(--qa-olive);
+  --qa-status-reserved: var(--qa-gold);
+  --qa-status-sold: var(--qa-umber);
+
+  /* 3 · Typography */
+  --qa-font-display: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+  --qa-font-sans: 'Schibsted Grotesk', system-ui, -apple-system, sans-serif;
+  --qa-font-mono: 'DM Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* 4 · Physics & tactility */
+  --qa-radius-xs: 4px;
+  --qa-radius-sm: 8px;
+  --qa-radius-md: 12px;
+  --qa-radius-lg: 18px;
+  --qa-radius-pill: 999px;
+  --qa-shadow-plate: 0 2px 6px rgba(33, 28, 23, 0.04), 0 18px 44px -14px rgba(33, 28, 23, 0.16);
+  --qa-shadow-lift: 0 1px 2px rgba(33, 28, 23, 0.05), 0 8px 22px -8px rgba(33, 28, 23, 0.12);
+  --qa-ease-stone: cubic-bezier(0.22, 1, 0.36, 1);
+  --qa-transition: 340ms var(--qa-ease-stone);
+
+  /* 5 · Plate recipe (component layer) */
+  --qa-plate-tint: 91%;
+  --qa-plate-blur: 22px;
+  --qa-plate-saturate: 145%;
+}
+
+/* 2 · Semantic — evening terrace scope */
+[data-qa='dusk'],
+.qa[data-qa='dusk'] {
+  --qa-bg-canvas: #191512;
+  --qa-bg-surface: #221D18;
+  --qa-bg-elevated: #2C2620;
+  --qa-bg-sunk: #14100E;
+  --qa-ink-primary: #F2ECE1;
+  --qa-ink-secondary: #BAAF9F;
+  --qa-ink-tertiary: #7C7264;
+  --qa-ink-reverse: #191512;
+  --qa-border-subtle: rgba(242, 236, 225, 0.14);
+  --qa-border-strong: rgba(242, 236, 225, 0.28);
+  --qa-accent-primary: #E08048;
+  --qa-accent-secondary: #9CAA85;
+  --qa-status-available: #9CAA85;
+  --qa-shadow-plate: 0 2px 6px rgba(0, 0, 0, 0.5), 0 22px 50px -18px rgba(0, 0, 0, 0.72);
+  --qa-shadow-lift: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 26px -10px rgba(0, 0, 0, 0.6);
+}

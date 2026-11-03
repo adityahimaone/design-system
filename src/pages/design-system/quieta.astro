@@ -1,0 +1,1099 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import tokens from '@/features/quieta/tokens.json'
+import '@/features/quieta/quieta-tokens.css'
+import '@/features/quieta/quieta-page.css'
+
+const B = '/brand/quieta'
+const title = 'Quieta — Case 17 | Quiet residences · Detail image beside content'
+const description =
+  'Quieta: a warm-stone property identity for houses that are sold and let by being looked at closely. Lime plaster, honed travertine, terracotta and olive shade, a Kuwayama threshold mark, and a contrast ledger that publishes its failures.'
+
+const CAST_ITEMS = [
+  { id: 'olivo', name: 'Olivo', role: 'Olive canopy · Garden elevation' },
+  { id: 'finestra', name: 'Finestra', role: 'Window aperture · Four panes' },
+  { id: 'scala', name: 'Scala', role: 'Sculptural stair · Treads in stone' },
+  { id: 'anfora', name: 'Anfora', role: 'Terracotta urn · Threshold' },
+  { id: 'sole', name: 'Sole', role: 'Garden light · Low sun' },
+  { id: 'piscina', name: 'Piscina', role: 'Reflected water · Three bars' },
+]
+
+const DECISIONS = [
+  {
+    title: 'Detail image beside content',
+    decision:
+      'Every claim about a house is made twice — once in a 66ch column, once in a photograph set beside it at 5:6. The image is never a hero-only decoration and never sits above the text it explains.',
+    because:
+      'A property is bought by looking closely. Stacked layout forces the eye to travel down and back up; a beside-layout keeps the sentence and the evidence in one glance.',
+    notWhen: 'Mobile below 760px, where the pair collapses to image-then-caption in reading order.',
+    breaksNext: 'Someone puts a full-bleed 21:9 banner at the top of the page and calls it the detail image.',
+  },
+  {
+    title: 'Gold is graphic-only (2.2:1 published failure)',
+    decision:
+      'Garden light (#C99A5B) measures 2.2:1 against chalk. It is assigned the job of light pool, chart fill and hairline glow — never text, never a label.',
+    because:
+      'Darkening gold until it passes 4.5:1 turns garden light into brown ochre and kills the one warm note in a stone palette.',
+    notWhen: 'Ink on gold (#211C17 on #C99A5B = 6.6:1), where gold becomes a chip ground.',
+    breaksNext: 'An agent sets --qa-gold as body copy on chalk because it "looks premium".',
+  },
+  {
+    title: 'The compact is a separate drawing',
+    decision:
+      'Below 24px the mark swaps to mark-compact.svg: the 5u shadow gap between roof slab and wall closes, the roof thickens to 12u and the threshold notch widens from 12u to 16u.',
+    because:
+      'A 5-unit gap resolves to 1.25px at 16×16 and greys into a smudge; the mark stops reading as a house and starts reading as a rectangle.',
+    notWhen: 'Navigation headers (28px+), hero lockups and the brand board, where the shadow gap is the whole idea.',
+    breaksNext: 'Scaling the 64px master down to 16px without swapping the file.',
+  },
+  {
+    title: 'Hero, stage and footer are one material',
+    decision:
+      'The page opens on the threshold elevation, tests plate physics over the hillside vista, and closes on the travertine stair under a dusk scrim — three views of one house.',
+    because:
+      'A property brand earns trust by staying in one place. Three unrelated stock photographs read as a broker; three views of one house read as an architect.',
+    notWhen: 'Token sheets and print exports, which carry no photography at all.',
+    breaksNext: 'Trapping the photography in a small side thumbnail while the hero and footer stay flat grey.',
+  },
+]
+
+const cssPrimitives = `/* 1 · primitive — the material, named once */
+:root {
+${tokens.primitives
+  .slice(0, 9)
+  .map((p) => `  --qa-${p.name}: ${p.value}; /* ${p.oklch} */`)
+  .join('\n')}
+}`
+
+const cssDay = `/* 2 · semantic · daylight garden (default scope) */
+:root {
+  --qa-bg-canvas: var(--qa-chalk);
+  --qa-bg-surface: var(--qa-limestone);
+  --qa-bg-elevated: #FBF7F0;
+  --qa-ink-primary: var(--qa-ink);
+  --qa-ink-secondary: var(--qa-umber);
+  --qa-accent-primary: var(--qa-clay);
+  --qa-accent-secondary: var(--qa-olive);
+}`
+
+const cssDusk = `/* 2 · semantic · evening terrace — a scope, not a second palette */
+[data-qa='dusk'] {
+  --qa-bg-canvas: #191512;
+  --qa-bg-surface: #221D18;
+  --qa-bg-elevated: #2C2620;
+  --qa-ink-primary: #F2ECE1;
+  --qa-ink-secondary: #BAAF9F;
+  --qa-accent-primary: #E08048;
+  --qa-accent-secondary: #9CAA85;
+}`
+
+const cssPlate = `/* 3 · component — the reading plate over garden light */
+.qa-plate {
+  background: color-mix(in srgb, var(--qa-chalk) 91%, transparent);
+  backdrop-filter: blur(22px) saturate(145%);
+  border: 1px solid rgba(244, 238, 228, 0.5);
+  border-radius: var(--qa-radius-lg);
+  box-shadow: 0 24px 70px -30px rgba(20, 16, 13, 0.7);
+}`
+
+const sizeOf = (s) => (s.clamp.startsWith('clamp(') ? s.clamp : s.clamp.split(' ')[0])
+
+const MARK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"><g fill="#211C17"><path fill-rule="evenodd" d="M5 8h54v8H5Z"/><path fill-rule="evenodd" d="M10 21h44v35H10Z M26 31h12v25H26Z"/></g></svg>`
+
+const HOUSES = [
+  {
+    id: 'olivo',
+    name: 'Casa Olivo',
+    plot: 'Plot 02 · North terrace',
+    beds: '3 bed · 2 bath',
+    area: 214,
+    garden: 620,
+    sale: 1180000,
+    rent: 3900,
+    status: 'available',
+    statusLabel: 'Available',
+  },
+  {
+    id: 'travertino',
+    name: 'Casa Travertino',
+    plot: 'Plot 05 · Lower garden',
+    beds: '2 bed · 2 bath',
+    area: 168,
+    garden: 410,
+    sale: 920000,
+    rent: 3150,
+    status: 'reserved',
+    statusLabel: 'Reserved',
+  },
+  {
+    id: 'scala',
+    name: 'Casa Scala',
+    plot: 'Plot 07 · Stair court',
+    beds: '4 bed · 3 bath',
+    area: 268,
+    garden: 840,
+    sale: 1540000,
+    rent: 5200,
+    status: 'available',
+    statusLabel: 'Available',
+  },
+]
+---
+
+<Layout title={title} description={description} canonical="/design-system/quieta" image={`${B}/quieta-brandkit.png`}>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Schibsted+Grotesk:wght@400..900&family=DM+Mono:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <div class="qa" id="top">
+    <script is:inline>
+      try {
+        if (localStorage.getItem('qa-theme') === 'dusk') {
+          document.querySelector('.qa')?.setAttribute('data-qa', 'dusk')
+        }
+      } catch (e) {}
+    </script>
+
+    <!-- ── Sticky rail ───────────────────────────────────────────────── -->
+    <header class="qa-bar">
+      <div class="qa-wrap qa-bar__inner">
+        <a class="qa-bar__brand" href="#top" aria-label="Quieta, back to top">
+          <img class="qa-bar__logo" src={`${B}/mark.svg`} width="24" height="24" alt="" />
+          <span class="qa-bar__title">Quieta</span>
+          <span class="qa-bar__badge">Case 17</span>
+        </a>
+        <nav class="qa-bar__nav" aria-label="Quieta sections">
+          <a href="#hero">01 Hero</a>
+          <a href="#thesis">02 Thesis</a>
+          <a href="#brandmark">03 Mark</a>
+          <a href="#chromatic">04 Colour</a>
+          <a href="#typography">05 Type</a>
+          <a href="#physics">06 Physics</a>
+          <a href="#workbench">07 Workbench</a>
+          <a href="#tokens">08 Tokens</a>
+        </nav>
+        <button id="themeBtn" class="qa-theme" type="button" aria-pressed="false">
+          <span class="qa-theme__dot"></span>
+          <span id="themeLabel">Daylight Garden</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- ===============================================================
+           01 · FULL-BLEED THRESHOLD ELEVATION + READING PLATE
+           =============================================================== -->
+      <section id="hero" class="qa-hero">
+        <div class="qa-hero__backdrop" aria-hidden="true">
+          <img
+            id="heroImage"
+            class="qa-hero__img"
+            src={`${B}/quieta-threshold.webp`}
+            alt="A lime-plastered garden wall and a warm oak door set in a travertine elevation, with an olive tree casting soft shadows across the paving."
+            loading="eager"
+          />
+          <div class="qa-hero__scrim"></div>
+        </div>
+
+        <div class="qa-wrap qa-hero__content">
+          <div class="qa-hero__grid">
+            <div class="qa-plate">
+              <div class="qa-hero__eyebrow">
+                <span>Case 17 · Brand kit &amp; design system</span>
+                <span>·</span>
+                <span>v1.0 Warm Stone</span>
+              </div>
+              <h1 class="qa-hero__headline">
+                Quiet houses,<br />held in <em>stone.</em>
+              </h1>
+              <p class="qa-hero__lead">
+                Six residences on a south-facing slope — lime-plastered walls, honed travertine
+                floors, oiled oak at the threshold and a garden that keeps its own hours. Sold
+                and let by being looked at closely, never at a distance.
+              </p>
+              <div class="qa-hero__actions">
+                <a class="qa-btn" href="#workbench">View the three houses</a>
+                <a class="qa-btn qa-btn--ghost" href="#tokens">Copy OKLCH tokens</a>
+                <button id="swapHero" class="qa-btn qa-btn--ghost" type="button">
+                  Swap view: threshold / vista
+                </button>
+              </div>
+            </div>
+
+            <div class="qa-card-glass">
+              <div class="qa-card-glass__top">
+                <img src={`${B}/lockup-reverse.svg`} width="156" height="32" alt="Quieta" />
+                <span class="qa-card-glass__coords">43.318°N · 11.331°E</span>
+              </div>
+              <div class="qa-spec">
+                <div class="qa-spec__row">
+                  <span class="qa-spec__key">Surface</span>
+                  <span class="qa-spec__val">Lime plaster &amp; travertine</span>
+                </div>
+                <div class="qa-spec__row">
+                  <span class="qa-spec__key">Density</span>
+                  <span class="qa-spec__val">Gallery airy · 66ch</span>
+                </div>
+                <div class="qa-spec__row">
+                  <span class="qa-spec__key">Physics</span>
+                  <span class="qa-spec__val">Concentric 18 / 10</span>
+                </div>
+                <div class="qa-spec__row">
+                  <span class="qa-spec__key">Mark</span>
+                  <span class="qa-spec__val">Kuwayama 64-unit grid</span>
+                </div>
+                <div class="qa-spec__row">
+                  <span class="qa-spec__key">Published fails</span>
+                  <span class="qa-spec__val">3 of {tokens.contrast.length} pairs</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="qa-facts">
+            <div class="qa-fact">
+              <div class="qa-fact__fig">{tokens.primitives.length}</div>
+              <span class="qa-fact__lbl">Primitives</span>
+              <p class="qa-fact__note">One material source across daylight garden and evening terrace.</p>
+            </div>
+            <div class="qa-fact">
+              <div class="qa-fact__fig">14.6:1</div>
+              <span class="qa-fact__lbl">Ink on chalk</span>
+              <p class="qa-fact__note">WCAG AAA reading contrast on plaster plates.</p>
+            </div>
+            <div class="qa-fact">
+              <div class="qa-fact__fig">1 + 6</div>
+              <span class="qa-fact__lbl">Mark + cast</span>
+              <p class="qa-fact__note">64-unit grid, one separate 16px compact drawing.</p>
+            </div>
+            <div class="qa-fact">
+              <div class="qa-fact__fig">3</div>
+              <span class="qa-fact__lbl">Published fails</span>
+              <p class="qa-fact__note">Gold 2.2:1, sage 1.9:1, oak 2.7:1 — graphic jobs only.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===============================================================
+           02 · THESIS & FOUR DECISION CARDS
+           =============================================================== -->
+      <section id="thesis" class="qa-section">
+        <div class="qa-wrap">
+          <div class="qa-head">
+            <div>
+              <div class="qa-head__num">02 / Thesis &amp; spatial mechanics</div>
+              <h2 class="qa-head__title">A house is not a hero image. It is a detail you can stand next to.</h2>
+            </div>
+            <p class="qa-head__desc">
+              Four beliefs and four decisions with explicit failure boundaries, so the next
+              engineer never turns warm stone into generic property-portal cards.
+            </p>
+          </div>
+
+          <div class="qa-thesis">
+            <div class="qa-thesis__cell">
+              <h3>Belief</h3>
+              <p>
+                A listing page should feel like standing in the doorway with the agent a step
+                behind you: unhurried, tactile, and lit from one side.
+              </p>
+            </div>
+            <div class="qa-thesis__cell">
+              <h3>Enemy</h3>
+              <p>
+                Portal chrome: four-photo carousels, saturated badge stickers, price-per-square-metre
+                counters, and a "Book a viewing" bar that follows you down the page.
+              </p>
+            </div>
+            <div class="qa-thesis__cell">
+              <h3>Material</h3>
+              <p>
+                Lime plaster (#F4EEE4), honed travertine (#D3C5AF), terracotta clay (#9A4A26),
+                olive shade (#5A6844) and one low garden light.
+              </p>
+            </div>
+            <div class="qa-thesis__cell qa-thesis__cell--loud">
+              <h3>The rejection test</h3>
+              <p>If a surface makes the house look bigger than it is, reject it.</p>
+            </div>
+          </div>
+
+          <div class="qa-decisions">
+            {DECISIONS.map((d) => (
+              <article class="qa-decision">
+                <h4>{d.title}</h4>
+                <dl>
+                  <dt>Decision</dt>
+                  <dd>{d.decision}</dd>
+                  <dt>Because</dt>
+                  <dd>{d.because}</dd>
+                  <dt>Not when</dt>
+                  <dd>{d.notWhen}</dd>
+                  <dt>Breaks next</dt>
+                  <dd><em>Breaks when:</em> {d.breaksNext}</dd>
+                </dl>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- ===============================================================
+           03 · PARAMETRIC BRANDMARK STUDIO & SIX-MARK CAST
+           =============================================================== -->
+      <section id="brandmark" class="qa-section">
+        <div class="qa-wrap">
+          <div class="qa-head">
+            <div>
+              <div class="qa-head__num">03 / Kuwayama vector discipline</div>
+              <h2 class="qa-head__title">A roof slab, a wall, and one threshold cut.</h2>
+            </div>
+            <p class="qa-head__desc">
+              A 54 × 8u cantilevered roof floats 5u above a 44 × 35u wall mass, with a 12 × 25u
+              threshold notch cut through it to the ground line. Nothing else.
+            </p>
+          </div>
+
+          <div class="qa-studio">
+            <div id="stage" class="qa-studio__stage">
+              <div id="gridOverlay" class="qa-studio__grid" aria-hidden="true"></div>
+              <div class="qa-studio__art">
+                <img id="stageArt" src={`${B}/lockup.svg`} alt="The Quieta mark and wordmark" />
+              </div>
+
+              <div class="qa-strip">
+                <div class="qa-strip__item">
+                  <img data-src-light={`${B}/mark.svg`} data-src-dark={`${B}/mark-reverse.svg`} src={`${B}/mark.svg`} width="64" height="64" alt="" />
+                  <span>64 master</span>
+                </div>
+                <div class="qa-strip__item">
+                  <img data-src-light={`${B}/mark.svg`} data-src-dark={`${B}/mark-reverse.svg`} src={`${B}/mark.svg`} width="36" height="36" alt="" />
+                  <span>36 nav</span>
+                </div>
+                <div class="qa-strip__item">
+                  <img data-src-light={`${B}/mark.svg`} data-src-dark={`${B}/mark-reverse.svg`} src={`${B}/mark.svg`} width="24" height="24" alt="" />
+                  <span>24 nav</span>
+                </div>
+                <div class="qa-strip__item">
+                  <img data-src-light={`${B}/mark-compact.svg`} data-src-dark={`${B}/mark-compact-reverse.svg`} src={`${B}/mark-compact.svg`} width="16" height="16" alt="" />
+                  <span>16 compact</span>
+                </div>
+                <div class="qa-strip__item">
+                  <img data-src-light={`${B}/mark-reverse.svg`} data-src-dark={`${B}/mark.svg`} src={`${B}/mark-reverse.svg`} width="32" height="32" alt="" />
+                  <span>reverse</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="qa-studio__panel">
+              <div>
+                <span class="qa-field__label">Lockup &amp; grid inspection</span>
+                <div class="qa-chiprow">
+                  <button id="btnGrid" class="qa-pill" type="button">8×8 module grid</button>
+                  <button id="btnLockup" class="qa-pill is-active" type="button">Horizontal</button>
+                  <button id="btnStacked" class="qa-pill" type="button">Stacked</button>
+                </div>
+              </div>
+
+              <div>
+                <span class="qa-field__label">Surface polarity test</span>
+                <div class="qa-chiprow">
+                  <button class="qa-pill polarity is-active" data-bg="surface" type="button">Limestone</button>
+                  <button class="qa-pill polarity" data-bg="canvas" type="button">Chalk</button>
+                  <button class="qa-pill polarity" data-bg="ink" type="button">Ink</button>
+                  <button class="qa-pill polarity" data-bg="clay" type="button">Clay</button>
+                </div>
+              </div>
+
+              <p class="qa-note">
+                <strong>Construction maths (64 × 64)</strong>
+                Roof slab x 5–59, y 8–16 · shadow gap 5u · wall mass x 10–54, y 21–56 · threshold
+                notch x 26–38, y 31–56 · clearspace 8u on all sides.
+              </p>
+
+              <div style="margin-top: auto;">
+                <button id="copySvg" class="qa-btn" type="button">Copy raw SVG markup</button>
+                <div id="copyToast" class="qa-toast">Copied 64 × 64 vector to clipboard.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="qa-cast">
+            {CAST_ITEMS.map((c) => (
+              <div class="qa-cast__card">
+                <img src={`${B}/cast/${c.id}.svg`} width="34" height="34" alt={c.name} />
+                <b>{c.name}</b>
+                <span>{c.role}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- ===============================================================
+           04 · OKLCH MATRIX & MEASURED CONTRAST LEDGER
+           =============================================================== -->
+      <section id="chromatic" class="qa-section">
+        <div class="qa-wrap">
+          <div class="qa-head">
+            <div>
+              <div class="qa-head__num">04 / Perceptual chromatics</div>
+              <h2 class="qa-head__title">Dual-scope OKLCH matrix &amp; the honest ledger.</h2>
+            </div>
+            <p class="qa-head__desc">
+              Click any swatch to copy its hex. All {tokens.contrast.length} pairs are measured in
+              the build — including the three that fail, which is the only reason to trust the
+              twelve that pass.
+            </p>
+          </div>
+
+          <div class="qa-swatches">
+            {tokens.primitives.map((p) => {
+              const failed = !tokens.contrast.find((c) => c.fg === p.name)?.pass
+              return (
+                <div class="qa-swatch" data-hex={p.value} role="button" tabindex="0">
+                  <div class="qa-swatch__chip" style={`background-color: ${p.value};`}></div>
+                  <div class="qa-swatch__body">
+                    <span class="qa-swatch__name">--qa-{p.name}</span>
+                    <span class="qa-swatch__hex">{p.value}</span>
+                    <span class="qa-swatch__oklch">{p.oklch}</span>
+                    <span class="qa-swatch__role">{p.role}</span>
+                    {failed && <span class="qa-badge qa-badge--fail">Restricted · graphic only</span>}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          <div class="qa-tablewrap">
+            <table class="qa-table">
+              <thead>
+                <tr>
+                  <th>Foreground / background</th>
+                  <th>Measured</th>
+                  <th>Status</th>
+                  <th>Assigned semantic job</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tokens.contrast.map((c) => (
+                  <tr>
+                    <td>--qa-{c.fg} on --qa-{c.bg}</td>
+                    <td>{c.ratio.toFixed(1)} : 1</td>
+                    <td>
+                      <span class={`qa-badge ${c.pass ? 'qa-badge--pass' : 'qa-badge--fail'}`}>
+                        {c.pass ? `Pass · ${c.target.split(' ')[0]}` : 'Fail · restricted'}
+                      </span>
+                    </td>
+                    <td>{c.role}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===============================================================
+           05 · OPEN-FOUNDRY TYPOGRAPHY & LIVE SPECIMEN
+           =============================================================== -->
+      <section id="typography" class="qa-section">
+        <div class="qa-wrap">
+          <div class="qa-head">
+            <div>
+              <div class="qa-head__num">05 / Typographic hierarchy</div>
+              <h2 class="qa-head__title">Newsreader, Schibsted Grotesk &amp; DM Mono.</h2>
+            </div>
+            <p class="qa-head__desc">
+              An optical-size serif for the house voice, a slightly wide grotesque for plans and
+              prices, and a light mono for plot numbers and tabular figures.
+            </p>
+          </div>
+
+          <div class="qa-type">
+            <div>
+              <div class="qa-range">
+                <label for="weightRange">
+                  <span>Display weight</span>
+                  <span id="weightVal">400</span>
+                </label>
+                <input id="weightRange" type="range" min="200" max="800" value="400" step="50" />
+              </div>
+
+              <div class="qa-range">
+                <label for="trackingRange">
+                  <span>Letter tracking</span>
+                  <span id="trackingVal">-0.03em</span>
+                </label>
+                <input id="trackingRange" type="range" min="-0.06" max="0.10" value="-0.03" step="0.005" />
+              </div>
+
+              <div class="qa-range">
+                <label>
+                  <span>Figure alignment</span>
+                  <span id="tabularVal">tabular</span>
+                </label>
+                <button id="btnTabular" class="qa-pill is-active" type="button" style="width: 100%;">
+                  tabular-nums on
+                </button>
+              </div>
+
+              <p class="qa-note">
+                <strong>Live specimen</strong>
+                The block to the right is editable. Type a plot number, a price, or the name of the
+                house you are standing in.
+              </p>
+            </div>
+
+            <div>
+              <div
+                id="typeStage"
+                class="qa-editable"
+                contenteditable="true"
+                spellcheck="false"
+                style="font-family: var(--qa-font-display); font-size: clamp(1.9rem, 3.6vw, 3.1rem); line-height: 1.02; letter-spacing: -0.03em; font-weight: 400;"
+              >
+                Plot 04 · Casa Scala · €1,540,000
+              </div>
+
+              <div class="qa-scale">
+                {tokens.type.scale.map((s) => (
+                  <div class="qa-scale__row">
+                    <div class="qa-scale__meta">
+                      <strong>{s.role}</strong>
+                      <span>{s.clamp}</span>
+                      <br />
+                      <span>{s.lh} / {s.ls} / {s.weight}</span>
+                    </div>
+                    <div
+                      style={`font-family: ${
+                        s.role.includes('Micro')
+                          ? 'var(--qa-font-mono)'
+                          : s.role.includes('Body') ||
+                              s.role.includes('Lead') ||
+                              s.role.includes('Small')
+                            ? 'var(--qa-font-sans)'
+                            : 'var(--qa-font-display)'
+                      }; font-size: ${sizeOf(s)}; line-height: ${s.lh}; letter-spacing: ${s.ls}; font-weight: ${s.weight};`}
+                    >
+                      {s.sample}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===============================================================
+           06 · SURFACE PHYSICS OVER THE HILLSIDE VISTA
+           =============================================================== -->
+      <section id="physics" class="qa-section">
+        <div class="qa-wrap">
+          <div class="qa-head">
+            <div>
+              <div class="qa-head__num">06 / Surface physics &amp; refraction</div>
+              <h2 class="qa-head__title">A plaster plate, held over a hillside.</h2>
+            </div>
+            <p class="qa-head__desc">
+              The reading plate is the only translucent surface in the system. Scrub blur and tint
+              against real photography and watch where the type stops holding.
+            </p>
+          </div>
+
+          <div class="qa-controls">
+            <div class="qa-range" style="margin: 0;">
+              <label for="blurRange">
+                <span>Backdrop blur</span>
+                <span id="blurVal">18px</span>
+              </label>
+              <input id="blurRange" type="range" min="0" max="32" value="18" step="1" />
+            </div>
+            <div class="qa-range" style="margin: 0;">
+              <label for="tintRange">
+                <span>Plate tint</span>
+                <span id="tintVal">90%</span>
+              </label>
+              <input id="tintRange" type="range" min="45" max="98" value="90" step="1" />
+            </div>
+            <button id="replayMotion" class="qa-btn" type="button" style="justify-content: center;">
+              Replay spring · 380ms
+            </button>
+          </div>
+
+          <div class="qa-stage">
+            <img
+              class="qa-stage__img"
+              src={`${B}/quieta-vista.webp`}
+              alt="A stone house with a still lap pool looking west over an olive-covered hillside toward the sea at low sun."
+              loading="lazy"
+            />
+            <div id="stagePane" class="qa-stage__pane">
+              <span class="qa-stage__eyebrow">Plot 07 · Casa Scala</span>
+              <h3 class="qa-stage__title">West terrace, 17:40</h3>
+              <p class="qa-stage__body">
+                268 m² over two levels. Travertine treads carry the stair down to a 12-metre pool
+                set level with the olive canopy; the west wall closes at dusk.
+              </p>
+              <div class="qa-stage__foot">
+                <span>4 bed · 3 bath · 840 m² garden</span>
+                <strong>14.6:1 plate</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===============================================================
+           07 · DOMAIN WORKBENCH — RESIDENCE LEDGER & TENURE
+           =============================================================== -->
+      <section id="workbench" class="qa-section">
+        <div class="qa-wrap">
+          <div class="qa-head">
+            <div>
+              <div class="qa-head__num">07 / Stateful domain workbench</div>
+              <h2 class="qa-head__title">Residence ledger &amp; tenure summary.</h2>
+            </div>
+            <p class="qa-head__desc">
+              Three of the six houses, live. Switch between acquiring and leasing and the whole
+              ledger recalculates — deposit, mortgage, annual commitment and total.
+            </p>
+          </div>
+
+          <div class="qa-work">
+            <div class="qa-ledger">
+              <div class="qa-ledger__head">
+                <div>
+                  <span class="qa-field__label" style="margin: 0;">The slope · 2026 release</span>
+                  <h3 class="qa-ledger__title">Three houses, one wall</h3>
+                </div>
+                <div class="qa-mode" role="group" aria-label="Tenure mode">
+                  <button class="mode-btn is-active" data-mode="acquire" type="button">Acquire</button>
+                  <button class="mode-btn" data-mode="lease" type="button">Lease</button>
+                </div>
+              </div>
+
+              {HOUSES.map((h, i) => (
+                <button class={`qa-house ${i === 0 ? 'is-active' : ''}`} data-house={h.id} type="button">
+                  <div>
+                    <div class="qa-house__name">
+                      {h.name}
+                      <span class={`qa-status qa-status--${h.status}`}>{h.statusLabel}</span>
+                    </div>
+                    <div class="qa-house__meta">
+                      {h.plot} · {h.beds} · {h.area} m² · garden {h.garden} m²
+                    </div>
+                  </div>
+                  <div class="qa-house__price" data-price-for={h.id}>
+                    €1,180,000
+                    <small>guide price</small>
+                  </div>
+                </button>
+              ))}
+
+              <div class="qa-ledger__foot">
+                Also on the slope · <b>Plot 01</b> sold · <b>Plot 03</b> reserved ·
+                <b>Plot 06</b> released spring 2027 — enquiries by appointment only.
+              </div>
+            </div>
+
+            <div class="qa-tenure">
+              <div>
+                <span class="qa-field__label" style="margin: 0;">Tenure summary</span>
+                <h3 class="qa-ledger__title" id="tenureName" style="margin-top: 0.15rem;">Casa Olivo</h3>
+              </div>
+
+              <div id="tenureRows">
+                <div class="qa-tenure__row"><span>Asking price</span><strong>€1,180,000</strong></div>
+                <div class="qa-tenure__row"><span>Deposit · 20%</span><strong>€236,000</strong></div>
+                <div class="qa-tenure__row"><span>Mortgage · 25y @ 4.2%</span><strong>€944,000</strong></div>
+                <div class="qa-tenure__row"><span>Total to complete</span><strong>€1,292,100</strong></div>
+              </div>
+
+              <div class="qa-tenure__total">
+                <span>Monthly payment</span>
+                <b id="tenureTotal">€5,087</b>
+              </div>
+
+              <div>
+                <span class="qa-field__label">Viewing light</span>
+                <div class="qa-slots">
+                  <button class="qa-pill slot is-active" type="button">09:30 Morning</button>
+                  <button class="qa-pill slot" type="button">12:00 Midday</button>
+                  <button class="qa-pill slot" type="button">17:40 Golden</button>
+                  <button class="qa-pill slot" type="button">19:15 Dusk</button>
+                </div>
+              </div>
+
+              <button id="confirmBtn" class="qa-btn qa-confirm" type="button">Hold a viewing</button>
+              <p class="qa-note" style="border: none; padding: 0; margin: 0;" id="confirmNote">
+                Held for 48 hours. No deposit is taken at this stage.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===============================================================
+           08 · THREE-LAYER TOKENS
+           =============================================================== -->
+      <section id="tokens" class="qa-section qa-section--flush" style="border-bottom: none;">
+        <div class="qa-wrap">
+          <div class="qa-head">
+            <div>
+              <div class="qa-head__num">08 / One source, three layers</div>
+              <h2 class="qa-head__title">Copyable token architecture.</h2>
+            </div>
+            <p class="qa-head__desc">
+              The primitive layer never flips under the dusk scope — only the semantic bindings
+              move. Components never reach past layer three.
+            </p>
+          </div>
+
+          <div class="qa-code">
+            {[
+              { title: 'quieta-tokens.css · 1 · primitives', code: cssPrimitives },
+              { title: 'quieta-tokens.css · 2 · daylight garden', code: cssDay },
+              { title: 'quieta-tokens.css · 2 · evening terrace', code: cssDusk },
+              { title: 'quieta-tokens.css · 3 · reading plate', code: cssPlate },
+            ].map((item) => (
+              <div class="qa-code__card">
+                <header>
+                  <span>{item.title}</span>
+                  <button class="qa-pill copy-code" type="button">Copy</button>
+                </header>
+                <pre><code>{item.code}</code></pre>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ── Closing poster: the same house, one room further in ────────── -->
+    <footer class="qa-foot">
+      <img
+        class="qa-foot__img"
+        src={`${B}/quieta-detail.webp`}
+        alt="A travertine stair curving up beside a plastered wall, with olive shadows falling across the treads and a woven runner at the floor."
+        loading="lazy"
+      />
+      <div class="qa-foot__scrim" aria-hidden="true"></div>
+
+      <div class="qa-wrap qa-foot__inner">
+        <div class="qa-foot__pane">
+          <p class="qa-foot__eyebrow">Case 17 · Quieta · Warm stone · 2026</p>
+          <p class="qa-foot__quote">The page ends on the stair.</p>
+          <p class="qa-foot__sub">
+            Twelve primitives, one threshold mark, six companion glyphs and a ledger that admits
+            three failures. Built as a place you can walk through first, a component kit second.
+          </p>
+          <div class="qa-foot__links">
+            <a href={`${B}/quieta-brandkit.png`} download>Brand board · PNG</a>
+            <a href={`${B}/mark.svg`} download>Mark · SVG</a>
+            <a href={`${B}/quieta-tokens.css`} download>quieta-tokens.css</a>
+            <a href={`${B}/DESIGN.md`} download>DESIGN.md</a>
+            <a href="/">All cases →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-foot__bar">
+        <div class="qa-wrap qa-foot__bar-inner">
+          <img src={`${B}/lockup-reverse.svg`} width="128" height="26" alt="Quieta" />
+          <div>
+            <a href="#top">Back to top ↑</a>
+            <a href={`${B}/tokens.json`}>tokens.json</a>
+            <span>Sunnyside Brand System Engine v4.2</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script is:inline>
+    const root = document.querySelector('.qa')
+
+    /* 1 · theme scope */
+    const themeBtn = document.getElementById('themeBtn')
+    const themeLabel = document.getElementById('themeLabel')
+    function syncTheme(dusk) {
+      if (dusk) {
+        root?.setAttribute('data-qa', 'dusk')
+        themeBtn?.setAttribute('aria-pressed', 'true')
+        if (themeLabel) themeLabel.textContent = 'Evening Terrace'
+      } else {
+        root?.removeAttribute('data-qa')
+        themeBtn?.setAttribute('aria-pressed', 'false')
+        if (themeLabel) themeLabel.textContent = 'Daylight Garden'
+      }
+      try { localStorage.setItem('qa-theme', dusk ? 'dusk' : 'day') } catch (e) {}
+    }
+    try { if (localStorage.getItem('qa-theme') === 'dusk') syncTheme(true) } catch (e) {}
+    themeBtn?.addEventListener('click', () => syncTheme(root?.getAttribute('data-qa') !== 'dusk'))
+
+    /* 2 · hero backdrop swap */
+    const heroImg = document.getElementById('heroImage')
+    let threshold = true
+    document.getElementById('swapHero')?.addEventListener('click', () => {
+      threshold = !threshold
+      if (heroImg)
+        heroImg.src = threshold
+          ? '/brand/quieta/quieta-threshold.webp'
+          : '/brand/quieta/quieta-vista.webp'
+    })
+
+    /* 3 · brandmark studio */
+    const stageArt = document.getElementById('stageArt')
+    const gridOverlay = document.getElementById('gridOverlay')
+    const btnGrid = document.getElementById('btnGrid')
+    const btnLockup = document.getElementById('btnLockup')
+    const btnStacked = document.getElementById('btnStacked')
+
+    btnGrid?.addEventListener('click', () => {
+      const on = gridOverlay?.classList.toggle('is-on')
+      btnGrid.classList.toggle('is-active', !!on)
+    })
+    btnLockup?.addEventListener('click', () => {
+      btnStacked?.classList.remove('is-active')
+      btnLockup.classList.add('is-active')
+      if (stageArt) stageArt.src = '/brand/quieta/lockup.svg'
+    })
+    btnStacked?.addEventListener('click', () => {
+      btnLockup?.classList.remove('is-active')
+      btnStacked.classList.add('is-active')
+      if (stageArt) stageArt.src = '/brand/quieta/lockup-stacked.svg'
+    })
+
+    const stage = document.getElementById('stage')
+    document.querySelectorAll('.polarity').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.polarity').forEach((b) => b.classList.remove('is-active'))
+        btn.classList.add('is-active')
+        const bg = btn.getAttribute('data-bg')
+        if (!stage) return
+        const map = {
+          surface: 'var(--qa-bg-surface)',
+          canvas: 'var(--qa-bg-canvas)',
+          ink: 'var(--qa-ink)',
+          clay: 'var(--qa-clay)',
+        }
+        const dark = bg === 'ink' || bg === 'clay'
+        stage.style.backgroundColor = map[bg] || 'var(--qa-bg-surface)'
+        stage.setAttribute('data-dark', String(dark))
+        if (stageArt)
+          stageArt.src = dark
+            ? '/brand/quieta/lockup-reverse.svg'
+            : '/brand/quieta/lockup.svg'
+        stage.querySelectorAll('.qa-strip__item img').forEach((img) => {
+          const next = dark ? img.getAttribute('data-src-dark') : img.getAttribute('data-src-light')
+          if (next) img.src = next
+        })
+      })
+    })
+
+    document.getElementById('copySvg')?.addEventListener('click', () => {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"><g fill="#211C17"><path fill-rule="evenodd" d="M5 8h54v8H5Z"/><path fill-rule="evenodd" d="M10 21h44v35H10Z M26 31h12v25H26Z"/></g></svg>`
+      navigator.clipboard?.writeText(svg).then(() => {
+        const t = document.getElementById('copyToast')
+        if (t) { t.style.display = 'block'; setTimeout(() => (t.style.display = 'none'), 2400) }
+      })
+    })
+
+    /* 4 · swatch copy */
+    document.querySelectorAll('[data-hex]').forEach((el) => {
+      const copy = () => {
+        const hex = el.getAttribute('data-hex')
+        if (!hex) return
+        navigator.clipboard?.writeText(hex)
+        const nameEl = el.querySelector('.qa-swatch__hex')
+        if (nameEl) {
+          const prev = nameEl.textContent
+          nameEl.textContent = `copied ${hex}`
+          setTimeout(() => (nameEl.textContent = prev), 1300)
+        }
+      }
+      el.addEventListener('click', copy)
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copy() }
+      })
+    })
+
+    /* 5 · typography playground */
+    const typeStage = document.getElementById('typeStage')
+    const weightRange = document.getElementById('weightRange')
+    const weightVal = document.getElementById('weightVal')
+    const trackingRange = document.getElementById('trackingRange')
+    const trackingVal = document.getElementById('trackingVal')
+    const btnTabular = document.getElementById('btnTabular')
+    const tabularVal = document.getElementById('tabularVal')
+    let tabular = true
+
+    weightRange?.addEventListener('input', (e) => {
+      if (weightVal) weightVal.textContent = e.target.value
+      if (typeStage) typeStage.style.fontWeight = e.target.value
+    })
+    trackingRange?.addEventListener('input', (e) => {
+      const v = `${Number(e.target.value).toFixed(3).replace(/0+$/, '').replace(/\.$/, '')}em`
+      if (trackingVal) trackingVal.textContent = v
+      if (typeStage) typeStage.style.letterSpacing = v
+    })
+    btnTabular?.addEventListener('click', () => {
+      tabular = !tabular
+      if (typeStage) typeStage.style.fontVariantNumeric = tabular ? 'tabular-nums' : 'normal'
+      if (tabularVal) tabularVal.textContent = tabular ? 'tabular' : 'normal'
+      btnTabular.textContent = `tabular-nums ${tabular ? 'on' : 'off'}`
+      btnTabular.classList.toggle('is-active', tabular)
+    })
+
+    /* 6 · refraction stage */
+    const pane = document.getElementById('stagePane')
+    const blurRange = document.getElementById('blurRange')
+    const blurVal = document.getElementById('blurVal')
+    const tintRange = document.getElementById('tintRange')
+    const tintVal = document.getElementById('tintVal')
+
+    blurRange?.addEventListener('input', (e) => {
+      if (blurVal) blurVal.textContent = `${e.target.value}px`
+      pane?.style.setProperty('--qa-demo-blur', `${e.target.value}px`)
+    })
+    tintRange?.addEventListener('input', (e) => {
+      if (tintVal) tintVal.textContent = `${e.target.value}%`
+      pane?.style.setProperty('--qa-demo-tint', `${e.target.value}%`)
+    })
+    document.getElementById('replayMotion')?.addEventListener('click', () => {
+      if (!pane) return
+      pane.style.transform = 'translateY(-12px) scale(1.02)'
+      setTimeout(() => (pane.style.transform = 'none'), 400)
+    })
+
+    /* 7 · residence workbench */
+    const HOUSES = {
+      olivo: { name: 'Casa Olivo', sale: 1180000, rent: 3900 },
+      travertino: { name: 'Casa Travertino', sale: 920000, rent: 3150 },
+      scala: { name: 'Casa Scala', sale: 1540000, rent: 5200 },
+    }
+    const euro = (n) => '€' + Math.round(n).toLocaleString('en-GB')
+
+    let mode = 'acquire'
+    let selected = 'olivo'
+    let slot = '09:30 Morning'
+
+    const tenureName = document.getElementById('tenureName')
+    const tenureRows = document.getElementById('tenureRows')
+    const tenureTotal = document.getElementById('tenureTotal')
+    const confirmBtn = document.getElementById('confirmBtn')
+    const confirmNote = document.getElementById('confirmNote')
+
+    function row(k, v) {
+      return `<div class="qa-tenure__row"><span>${k}</span><strong>${v}</strong></div>`
+    }
+
+    function syncLedger() {
+      const h = HOUSES[selected]
+
+      Object.keys(HOUSES).forEach((id) => {
+        const el = document.querySelector(`[data-price-for="${id}"]`)
+        if (!el) return
+        if (mode === 'acquire') {
+          el.innerHTML = `${euro(HOUSES[id].sale)}<small>guide price</small>`
+        } else {
+          el.innerHTML = `${euro(HOUSES[id].rent)}<small>per month</small>`
+        }
+      })
+
+      if (tenureName) tenureName.textContent = h.name
+
+      if (mode === 'acquire') {
+        const deposit = h.sale * 0.2
+        const loan = h.sale - deposit
+        const i = 0.042 / 12
+        const n = 300
+        const monthly = (loan * i) / (1 - Math.pow(1 + i, -n))
+        const total = h.sale * 1.095
+        if (tenureRows)
+          tenureRows.innerHTML =
+            row('Asking price', euro(h.sale)) +
+            row('Deposit · 20%', euro(deposit)) +
+            row('Mortgage · 25y @ 4.2%', euro(loan)) +
+            row('Total to complete', euro(total))
+        if (tenureTotal) tenureTotal.textContent = euro(monthly)
+        if (confirmBtn) confirmBtn.textContent = 'Hold a viewing'
+      } else {
+        const deposit = h.rent * 2
+        const year = h.rent * 12
+        if (tenureRows)
+          tenureRows.innerHTML =
+            row('Monthly rent', euro(h.rent)) +
+            row('Deposit · 2 months', euro(deposit)) +
+            row('Annual rent', euro(year)) +
+            row('First year total', euro(year + deposit))
+        if (tenureTotal) tenureTotal.textContent = euro(h.rent)
+        if (confirmBtn) confirmBtn.textContent = 'Request a tenancy'
+      }
+      if (confirmNote)
+        confirmNote.textContent =
+          mode === 'acquire'
+            ? 'Held for 48 hours. No deposit is taken at this stage.'
+            : 'References requested within 24 hours. Holding deposit refundable for 7 days.'
+    }
+
+    document.querySelectorAll('.mode-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.mode-btn').forEach((b) => b.classList.remove('is-active'))
+        btn.classList.add('is-active')
+        mode = btn.getAttribute('data-mode') || 'acquire'
+        syncLedger()
+      })
+    })
+
+    document.querySelectorAll('.qa-house').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.qa-house').forEach((b) => b.classList.remove('is-active'))
+        btn.classList.add('is-active')
+        selected = btn.getAttribute('data-house') || 'olivo'
+        syncLedger()
+      })
+    })
+
+    document.querySelectorAll('.slot').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.slot').forEach((b) => b.classList.remove('is-active'))
+        btn.classList.add('is-active')
+        slot = btn.textContent.trim()
+        if (confirmNote) confirmNote.textContent = `${HOUSES[selected].name} · ${slot} light · held for 48 hours.`
+      })
+    })
+
+    confirmBtn?.addEventListener('click', () => {
+      const verb = mode === 'acquire' ? 'Viewing held' : 'Tenancy requested'
+      confirmBtn.textContent = `${verb} · ${slot}`
+      confirmBtn.classList.add('is-done')
+      if (confirmNote) confirmNote.textContent = `${HOUSES[selected].name} · ${slot} · we will confirm within one working day.`
+      setTimeout(() => {
+        confirmBtn.classList.remove('is-done')
+        confirmBtn.textContent = mode === 'acquire' ? 'Hold a viewing' : 'Request a tenancy'
+      }, 3200)
+    })
+
+    syncLedger()
+
+    /* 8 · copy code blocks */
+    document.querySelectorAll('.copy-code').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const pre = btn.closest('.qa-code__card')?.querySelector('pre')
+        if (!pre) return
+        navigator.clipboard?.writeText(pre.innerText).then(() => {
+          const old = btn.textContent
+          btn.textContent = 'Copied'
+          setTimeout(() => (btn.textContent = old), 1400)
+        })
+      })
+    })
+  </script>
+</Layout>

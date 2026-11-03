@@ -141,7 +141,7 @@ export function CaseGallery({ facts }: { facts: SystemFacts }) {
             </p>
 
             <h1 className="ha-display lg-hero__title">
-              Fifteen systems, held in <em>glass</em>.
+              Eighteen systems, held in <em>glass</em>.
             </h1>
 
             <p className="lg-hero__lead">
@@ -194,7 +194,7 @@ export function CaseGallery({ facts }: { facts: SystemFacts }) {
           <span className="lg-shelf__num">01 · Index</span>
           <h2 className="lg-shelf__title">The shelf</h2>
           <p className="lg-shelf__note">
-            Fifteen cases, five collections. Search a material or a hue, or narrow by collection.
+            Eighteen cases, five collections. Search a material or a hue, or narrow by collection.
             Every cover is the case's own board — nothing is restyled to match the shelf.
           </p>
         </div>
@@ -256,7 +256,7 @@ export function CaseGallery({ facts }: { facts: SystemFacts }) {
             <div className="lg-empty">
               <h3>No case matches that</h3>
               <p>
-                Nothing on the shelf answers “{query}”. Fifteen cases, five collections — try a
+                Nothing on the shelf answers “{query}”. Eighteen cases, five collections — try a
                 material like paper, glass, stone or emerald, or clear the filter.
               </p>
               <button className="ha-btn ha-btn--sm" onClick={clear}>

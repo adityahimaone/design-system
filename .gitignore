@@ -22,3 +22,6 @@ Thumbs.db
 
 # agent workspace (local memory, not project source)
 .workbuddy-ai/
+
+# command code agent workspace
+.commandcode/

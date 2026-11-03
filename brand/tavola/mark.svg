@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img">
+  <g fill="#D85A38" fill-rule="evenodd">
+    <!-- Afternoon Solar Arc -->
+    <path d="M14 28 C14 18.06 22.06 10 32 10 C41.94 10 50 18.06 50 28 H43 C43 21.925 38.075 17 32 17 C25.925 17 21 21.925 21 28 Z"/>
+    <!-- Communal Table Slab -->
+    <path d="M8 31 H56 V37 H8 Z"/>
+    <!-- Pedestal & Terrace Footing -->
+    <path d="M28 41 H36 V48 H48 V54 H16 V48 H28 Z"/>
+    <!-- 45-degree Coastal Afternoon Light Ray -->
+    <path d="M21 48 L26 43 H38 L43 48 L39 50 L35 46 H29 L25 50 Z"/>
+  </g>
+</svg>

@@ -1,0 +1,982 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import tokens from '@/features/tavola/tokens.json'
+import '@/features/tavola/tavola-tokens.css'
+import '@/features/tavola/tavola-page.css'
+
+const B = '/brand/tavola'
+const title = 'Tavola — Case 16 | Around the table · Coastal lunch in afternoon light'
+const description =
+  'Tavola: an unhurried coastal Mediterranean dining identity. Sunlit ivory linen, warm terracotta, blood orange zest, and an interlocking Kuwayama parametric table mark.'
+
+const CAST_ITEMS = [
+  { id: 'sol', name: 'Sol', role: 'Afternoon zenith · Terrace hours' },
+  { id: 'amphora', name: 'Olivo & Olio', role: 'First-press olive oil cruet' },
+  { id: 'ulivo', name: 'Ramo', role: 'Wild olive & laurel branch' },
+  { id: 'calice', name: 'Calice', role: 'Volcanic white & cellar pour' },
+  { id: 'onda', name: 'Marea', role: 'Tyrrhenian sea horizon' },
+  { id: 'meridiana', name: 'Meridiana', role: 'Sundial shadow at 14:30' },
+]
+
+const DECISIONS = [
+  {
+    title: 'Field + Linen Reading Plate',
+    decision: 'Coastal photography carries the display headline and reverse lockup; every paragraph over two lines sits on a woven ivory linen plate (91% opacity + 22px blur).',
+    because: 'Dappled Mediterranean sunlight shifts from 1.8:1 to 11:1 across a tablecloth crop; a solid reading plate guarantees 14.8:1 AAA contrast at every viewport.',
+    notWhen: 'Large display headlines (>= 40px) over the measured dark scrim.',
+    breaksNext: 'Setting 13px caption copy directly over sunlit photography without a plate.',
+  },
+  {
+    title: 'Citron is graphic-only (2.1:1 published failure)',
+    decision: 'Charred Amalfi lemon (#E6A817) measures 2.1:1 against ivory linen. It is assigned the job of culinary chip and highlight bar, never text.',
+    because: 'Darkening lemon until it passed 4.5:1 turns it into muddy ochre and destroys the sunlit citrus note.',
+    notWhen: 'Paired as a background badge with deep espresso ink (#221A15 on #E6A817 = 8.4:1).',
+    breaksNext: 'An agent uses --tv-citron for link text or small badges on light linen.',
+  },
+  {
+    title: 'The 16px compact is a separate drawing',
+    decision: 'Below 24px, the mark swaps to mark-compact.svg: the table slab thickens from 6 to 8 units and the 45° light-ray cut is omitted.',
+    because: 'A 2px negative-space chamfer closes up under anti-aliasing at 16×16 favicon scale.',
+    notWhen: 'Navigation headers (28px+) and hero lockups where the 45° afternoon ray cut is crisp.',
+    breaksNext: 'Scaling the 64px master down to 16px without swapping the file.',
+  },
+  {
+    title: 'Hero and footer are the same coast turned around',
+    decision: 'The page opens on the sunlit terrace table (tavola-table.webp) and closes on the full-bleed coastal catch scene (tavola-dish.webp) with a floating dusk glass pane.',
+    because: 'A page feels immersive when one material idea is carried to both edges rather than ending in a dead grey copyright bar.',
+    notWhen: 'Print exports or standalone token sheets.',
+    breaksNext: 'Trapping the surface photography inside a small side thumbnail while leaving the hero and footer flat.',
+  },
+]
+
+const cssPrimitives = `/* 1 · primitive — the material, named once */
+:root {
+${tokens.primitives.slice(0, 9).map((p) => `  --tv-${p.name}: ${p.value}; /* ${p.oklch} */`).join('\n')}
+}`
+
+const cssDay = `/* 2 · semantic · daylight terrace (default scope) */
+:root {
+  --tv-bg-canvas: var(--tv-ivory);
+  --tv-bg-surface: var(--tv-terrace);
+  --tv-bg-elevated: var(--tv-porcelain);
+  --tv-ink-primary: var(--tv-espresso);
+  --tv-ink-secondary: var(--tv-cedar);
+  --tv-accent-primary: var(--tv-terracotta);
+  --tv-accent-secondary: var(--tv-cobalt);
+}`
+
+const cssNight = `/* 2 · semantic · evening cellar — a scope, never a second palette */
+[data-tv='night'] {
+  --tv-bg-canvas: #161311;
+  --tv-bg-surface: #201B18;
+  --tv-bg-elevated: #2C2522;
+  --tv-ink-primary: #F5F1E8;
+  --tv-ink-secondary: #B3A898;
+  --tv-accent-primary: #E86D48;
+  --tv-accent-secondary: #4D85DE;
+}`
+
+const cssPlate = `/* 3 · component — the linen reading plate over sunlit photography */
+.tv-plate {
+  background: color-mix(in srgb, var(--tv-bg-canvas) 91%, transparent);
+  backdrop-filter: blur(22px) saturate(145%);
+  border: 1px solid var(--tv-border-subtle);
+  border-radius: var(--tv-radius-lg);
+  box-shadow: var(--tv-shadow-plate);
+}`
+---
+
+<Layout title={title} description={description} canonical="/design-system/tavola" image={`${B}/tavola-brandkit.png`}>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..800&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <div class="tv" id="top">
+    <script is:inline>
+      try {
+        if (localStorage.getItem('tv-theme') === 'night') {
+          document.querySelector('.tv')?.setAttribute('data-tv', 'night')
+        }
+      } catch (e) {}
+    </script>
+
+    <!-- Sticky Navigation Rail -->
+    <header class="tv-bar">
+      <div class="tv-wrap tv-bar__inner">
+        <a class="tv-bar__brand" href="#top" aria-label="Tavola, back to top">
+          <img class="tv-bar__logo" src={`${B}/mark.svg`} width="26" height="26" alt="" />
+          <span class="tv-bar__title">Tavola</span>
+          <span class="tv-bar__badge">Case 16</span>
+        </a>
+        <nav class="tv-bar__nav" aria-label="Tavola Sections">
+          <a href="#hero">01 Hero</a>
+          <a href="#philosophy">02 Thesis</a>
+          <a href="#brandmark">03 Mark &amp; Cast</a>
+          <a href="#chromatic">04 Colour</a>
+          <a href="#typography">05 Type</a>
+          <a href="#physics">06 Refraction</a>
+          <a href="#workbench">07 Workbench</a>
+          <a href="#tokens">08 Tokens</a>
+        </nav>
+        <button id="themeToggleBtn" class="tv-theme-toggle" type="button" aria-pressed="false">
+          <span class="tv-theme-dot"></span>
+          <span id="themeToggleLabel">Daylight Terrace</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- ===================================================================
+           01 / FULL-BLEED SUNLIT COASTAL HERO STAGE + LINEN READING PLATE
+           =================================================================== -->
+      <section id="hero" class="tv-hero">
+        <div class="tv-hero__backdrop" aria-hidden="true">
+          <img
+            id="heroImage"
+            class="tv-hero__backdrop-img"
+            src={`${B}/tavola-table.webp`}
+            alt="Sunlit coastal restaurant table with ivory linen tablecloth, blood orange salad, and Mediterranean sea cliff view."
+            loading="eager"
+          />
+          <div class="tv-hero__scrim"></div>
+        </div>
+
+        <div class="tv-wrap tv-hero__content">
+          <div class="tv-hero__grid">
+            <!-- Left: Linen Reading Plate (Rule 5: Field + Plate) -->
+            <div class="tv-hero__plate">
+              <div class="tv-hero__eyebrow">
+                <span>Case 16 · Brand Kit &amp; Design System</span>
+                <span>·</span>
+                <span>v4.2 Coastal Edition</span>
+              </div>
+              <h1 class="tv-hero__headline">
+                Around the table in <em>afternoon light.</em>
+              </h1>
+              <p class="tv-hero__lead">
+                Tavola is a coastal Mediterranean dining identity carved from woven ivory linen, sun-baked terracotta, blood orange zest, and clear views of the dining room and Tyrrhenian sea.
+              </p>
+              <div class="tv-hero__actions">
+                <a class="tv-btn" href="#workbench">Reserve Terrace Table</a>
+                <a class="tv-btn tv-btn--ghost" href="#tokens">Copy OKLCH Tokens</a>
+                <button id="toggleHeroPhoto" class="tv-btn tv-btn--ghost" type="button">
+                  Swap Backdrop: Table / Catch
+                </button>
+              </div>
+            </div>
+
+            <!-- Right: Translucent Sea-Glass Specimen Card over the Coast -->
+            <div class="tv-hero__glass-card">
+              <div class="tv-hero__glass-top">
+                <img src={`${B}/lockup-reverse.svg`} width="195" height="39" alt="Tavola Mare & Terrazza" />
+                <span style="font-family: var(--tv-font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: #F7C873;">
+                  40.633°N · 14.602°E
+                </span>
+              </div>
+              <div class="tv-hero__radar">
+                <div class="tv-radar__item">
+                  <span class="tv-radar__label">Surface Tactility</span>
+                  <span class="tv-radar__val">Woven Linen &amp; Sea Glass</span>
+                </div>
+                <div class="tv-radar__item">
+                  <span class="tv-radar__label">Spatial Density</span>
+                  <span class="tv-radar__val">Editorial Balanced (64ch)</span>
+                </div>
+                <div class="tv-radar__item">
+                  <span class="tv-radar__label">Corner Physics</span>
+                  <span class="tv-radar__val">Concentric (18px / 10px)</span>
+                </div>
+                <div class="tv-radar__item">
+                  <span class="tv-radar__label">Mark Geometry</span>
+                  <span class="tv-radar__val">Kuwayama 64-Unit Grid</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rule 7: Data Row That Breathes -->
+          <div class="tv-facts">
+            <div class="tv-fact">
+              <div class="tv-fact__fig">{tokens.primitives.length}</div>
+              <span class="tv-fact__lbl">Primitives</span>
+              <p class="tv-fact__note">One material source across daylight terrace &amp; night cellar.</p>
+            </div>
+            <div class="tv-fact">
+              <div class="tv-fact__fig">14.8:1</div>
+              <span class="tv-fact__lbl">Espresso on Ivory</span>
+              <p class="tv-fact__note">WCAG AAA primary reading contrast on woven linen plates.</p>
+            </div>
+            <div class="tv-fact">
+              <div class="tv-fact__fig">1 + 6</div>
+              <span class="tv-fact__lbl">Mark + Companion Cast</span>
+              <p class="tv-fact__note">Constructed on a 64-unit grid with a separate 16px compact.</p>
+            </div>
+            <div class="tv-fact">
+              <div class="tv-fact__fig">2</div>
+              <span class="tv-fact__lbl">Published Fails</span>
+              <p class="tv-fact__note">Citron (2.1:1) &amp; Terracotta on Ink (3.2:1) restricted to graphics.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           02 / THESIS BEATS & 4 ARCHITECTURAL DECISION CARDS
+           =================================================================== -->
+      <section id="philosophy" class="tv-section">
+        <div class="tv-wrap">
+          <div class="tv-section__header">
+            <div class="tv-section__num">02 / Thesis &amp; Spatial Mechanics</div>
+            <h2 class="tv-section__title">A dining room is a frame for the coast, not a screen in front of it.</h2>
+            <p class="tv-section__desc">
+              Four foundational beats and four architectural decisions with explicit failure boundaries so the next engineer never turns warm linen into generic SaaS cards.
+            </p>
+          </div>
+
+          <!-- 4 Thesis Beats -->
+          <div class="tv-thesis-grid">
+            <div class="tv-thesis-cell">
+              <h3>Belief</h3>
+              <p>An afternoon menu or reservation flow should feel like sitting down at an ivory-draped table by an open balcony: unhurried, tactile, and sunlit.</p>
+            </div>
+            <div class="tv-thesis-cell">
+              <h3>Enemy</h3>
+              <p>Delivery-app food chrome: saturated RGB #FF5500 badges, cramped 3-column upsell carousels, and dark-mode overlays that turn fresh citrus grey.</p>
+            </div>
+            <div class="tv-thesis-cell">
+              <h3>Material</h3>
+              <p>Bleached cellulose linen (#FAF6EE), sun-baked limestone (#F2ECE0), terracotta clay (#D85A38), and one translucent sea-glass pane.</p>
+            </div>
+            <div class="tv-thesis-cell tv-thesis-cell--loud">
+              <h3>The Rejection Test</h3>
+              <p style="color: inherit;">If a surface hides the coastal light instead of framing it with an honest linen plate, reject it.</p>
+            </div>
+          </div>
+
+          <!-- 4 Decision / Because / Not when / Breaks next Cards -->
+          <div class="tv-decisions-grid">
+            {DECISIONS.map((d) => (
+              <article class="tv-decision-card">
+                <h4>{d.title}</h4>
+                <dl>
+                  <dt>Decision</dt>
+                  <dd>{d.decision}</dd>
+                  <dt>Because</dt>
+                  <dd>{d.because}</dd>
+                  <dt>Not when</dt>
+                  <dd>{d.notWhen}</dd>
+                  <dt>Breaks next</dt>
+                  <dd><em>Breaks when:</em> {d.breaksNext}</dd>
+                </dl>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           03 / PARAMETRIC BRANDMARK STUDIO & 6-MARK COMPANION CAST
+           =================================================================== -->
+      <section id="brandmark" class="tv-section">
+        <div class="tv-wrap">
+          <div class="tv-section__header">
+            <div class="tv-section__num">03 / Kuwayama Vector Discipline</div>
+            <h2 class="tv-section__title">Parametric Brandmark Studio &amp; Cast</h2>
+            <p class="tv-section__desc">
+              Constructed on a 64×64 grid: a semicircular afternoon solar arc rising above a horizontal cantilever table slab, paired with a 6-mark coastal cast on the same cut line.
+            </p>
+          </div>
+
+          <div class="tv-studio">
+            <div id="studioStage" class="tv-studio__stage">
+              <div id="gridOverlay" class="tv-studio__grid-overlay" style="display: none;"></div>
+              <div class="tv-studio__svg-wrap">
+                <img id="studioMarkImg" src={`${B}/mark.svg`} alt="Tavola Parametric Mark" width="180" height="180" />
+              </div>
+
+              <div class="tv-stress-strip">
+                <div class="tv-stress-item">
+                  <img src={`${B}/mark.svg`} width="64" height="64" alt="64px" />
+                  <span>64px Master</span>
+                </div>
+                <div class="tv-stress-item">
+                  <img src={`${B}/mark.svg`} width="32" height="32" alt="32px" />
+                  <span>32px Nav</span>
+                </div>
+                <div class="tv-stress-item">
+                  <img src={`${B}/mark-compact.svg`} width="16" height="16" alt="16px" />
+                  <span>16px Compact</span>
+                </div>
+                <div class="tv-stress-item">
+                  <div style="background-color: #221A15; padding: 6px; border-radius: 6px; display: inline-flex;">
+                    <img src={`${B}/mark-reverse.svg`} width="24" height="24" alt="Reverse" />
+                  </div>
+                  <span>Reverse</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tv-studio__controls">
+              <div class="tv-control-group">
+                <span class="tv-control-group__label">Lockup &amp; Grid Inspection</span>
+                <div class="tv-btn-pill-group">
+                  <button id="toggleGridBtn" class="tv-btn-pill" type="button">8×8 Module Grid</button>
+                  <button id="toggleLockupBtn" class="tv-btn-pill" type="button">Horizontal Lockup</button>
+                  <button id="toggleStackedBtn" class="tv-btn-pill" type="button">Stacked Lockup</button>
+                </div>
+              </div>
+
+              <div class="tv-control-group">
+                <span class="tv-control-group__label">Surface Polarity Test</span>
+                <div class="tv-btn-pill-group">
+                  <button class="tv-btn-pill active stage-bg-btn" data-bg="surface" type="button">Limestone (#F2ECE0)</button>
+                  <button class="tv-btn-pill stage-bg-btn" data-bg="ivory" type="button">Ivory (#FAF6EE)</button>
+                  <button class="tv-btn-pill stage-bg-btn" data-bg="espresso" type="button">Espresso (#221A15)</button>
+                  <button class="tv-btn-pill stage-bg-btn" data-bg="terracotta" type="button">Terracotta (#D85A38)</button>
+                </div>
+              </div>
+
+              <div style="font-size: 0.85rem; color: var(--tv-ink-secondary); line-height: 1.55; border-top: 1px solid var(--tv-border-subtle); padding-top: 1rem;">
+                <strong style="color: var(--tv-ink-primary); display: block; margin-bottom: 0.25rem;">Construction Math (64×64):</strong>
+                Solar Arc: outer R=18, inner R=11 · Table Slab: y=31..37 (6u) · Pedestal: x=28..36 · Afternoon Ray Cut: 45° bevel inset.
+              </div>
+
+              <div style="margin-top: auto;">
+                <button id="copySvgBtn" class="tv-btn-primary" type="button">Copy Raw SVG Markup</button>
+                <div id="copyToast" style="display: none; margin-top: 0.5rem; font-family: var(--tv-font-mono); font-size: 0.72rem; color: var(--tv-accent-olive);">
+                  Copied 64×64 vector SVG to clipboard.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6-Mark Companion Cast -->
+          <div class="tv-cast-grid">
+            {CAST_ITEMS.map((c) => (
+              <div class="tv-cast-card">
+                <img src={`${B}/cast/${c.id}.svg`} width="44" height="44" alt={c.name} />
+                <b>{c.name}</b>
+                <span>{c.role}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           04 / OKLCH CHROMATIC MATRIX & MEASURED CONTRAST LEDGER
+           =================================================================== -->
+      <section id="chromatic" class="tv-section">
+        <div class="tv-wrap">
+          <div class="tv-section__header">
+            <div class="tv-section__num">04 / Perceptual Chromatics</div>
+            <h2 class="tv-section__title">Dual-Scope OKLCH Matrix &amp; Contrast Ledger</h2>
+            <p class="tv-section__desc">
+              Click any swatch to copy its hex value. A palette that only publishes its passing pairs is a brochure—below are all 12 computed pairs, including the 2 restricted failures.
+            </p>
+          </div>
+
+          <div class="tv-swatch-grid">
+            {tokens.primitives.slice(0, 9).map((p) => {
+              const isFail = p.name === 'citron'
+              return (
+                <div class="tv-swatch-card" data-copy-hex={p.value}>
+                  <div class="tv-swatch-card__preview" style={`background-color: ${p.value};`}></div>
+                  <div class="tv-swatch-card__info">
+                    <span class="tv-swatch-card__name">--tv-{p.name}</span>
+                    <div class="tv-swatch-card__codes">
+                      <span>{p.value}</span>
+                      <span>{p.oklch.replace('oklch(', '').replace(')', '')}</span>
+                    </div>
+                    <span class="tv-swatch-card__role">{p.role}</span>
+                    <span class={`tv-swatch-card__badge ${isFail ? 'tv-badge--fail' : 'tv-badge--pass'}`}>
+                      {isFail ? '2.1:1 · Graphic Chip Only' : 'Verified Primitive'}
+                    </span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          <!-- Measured Contrast Table -->
+          <div class="tv-table-wrap">
+            <table class="tv-table">
+              <thead>
+                <tr>
+                  <th>Foreground / Background Pair</th>
+                  <th>Measured Ratio</th>
+                  <th>Status</th>
+                  <th>Assigned Semantic Job</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tokens.contrast.map((c) => (
+                  <tr>
+                    <td style="font-family: var(--tv-font-mono); font-weight: 600;">
+                      --tv-{c.fg} on --tv-{c.bg}
+                    </td>
+                    <td style="font-family: var(--tv-font-mono); font-variant-numeric: tabular-nums;">
+                      {c.ratio.toFixed(1)} : 1
+                    </td>
+                    <td>
+                      <span class={`tv-swatch-card__badge ${c.pass ? 'tv-badge--pass' : 'tv-badge--fail'}`} style="margin: 0;">
+                        {c.pass ? `PASS · ${c.target}` : `FAIL · ${c.target}`}
+                      </span>
+                    </td>
+                    <td style="color: var(--tv-ink-secondary);">{c.role}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           05 / OPEN-FOUNDRY TYPOGRAPHY & VARIABLE SPECIMEN
+           =================================================================== -->
+      <section id="typography" class="tv-section">
+        <div class="tv-wrap">
+          <div class="tv-section__header">
+            <div class="tv-section__num">05 / Typographic Hierarchy</div>
+            <h2 class="tv-section__title">Fraunces, Plus Jakarta Sans &amp; JetBrains Mono</h2>
+            <p class="tv-section__desc">
+              Warm optical-sized serif display headlines paired with disciplined humanist UI copy and tabular cellar numerals.
+            </p>
+          </div>
+
+          <div class="tv-type-playground">
+            <div class="tv-type-controls">
+              <div class="tv-range-wrap">
+                <label for="weightRange">
+                  <span>Display Weight</span>
+                  <span id="weightVal">500</span>
+                </label>
+                <input id="weightRange" type="range" min="300" max="800" value="500" step="50" />
+              </div>
+
+              <div class="tv-range-wrap">
+                <label for="trackingRange">
+                  <span>Letter Tracking</span>
+                  <span id="trackingVal">-0.03em</span>
+                </label>
+                <input id="trackingRange" type="range" min="-0.06" max="0.10" value="-0.03" step="0.01" />
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <span style="font-family: var(--tv-font-mono); font-size: 0.72rem; text-transform: uppercase; color: var(--tv-ink-secondary);">Cellar Figure Alignment</span>
+                <button id="toggleTabularBtn" class="tv-btn-pill active" type="button">tabular-nums: ON</button>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-family: var(--tv-font-mono); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--tv-accent-primary); margin-bottom: 0.45rem;">
+                Live Editable Specimen (Click to type):
+              </div>
+              <div
+                id="typeStage"
+                class="tv-editable-stage"
+                contenteditable="true"
+                spellcheck="false"
+                style="font-family: var(--tv-font-display); font-size: clamp(2rem, 3.8vw, 3.35rem); line-height: 1.04; letter-spacing: -0.03em; font-weight: 500;"
+              >
+                Spigola alla Griglia · Table 14 at 14:30 · €44.00
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem; border-top: 1px solid var(--tv-border-subtle); padding-top: 1.5rem;">
+              {tokens.type.scale.map((s) => (
+                <div style="display: grid; grid-template-columns: 150px 1fr; align-items: baseline; gap: 1rem; padding-bottom: 0.85rem; border-bottom: 1px dashed var(--tv-border-subtle);">
+                  <div style="font-family: var(--tv-font-mono); font-size: 0.72rem; color: var(--tv-ink-secondary);">
+                    <strong style="color: var(--tv-ink-primary); display: block;">{s.role}</strong>
+                    <span>{s.lh} / {s.ls}</span>
+                  </div>
+                  <div style={`font-family: ${s.role.includes('Micro') ? 'var(--tv-font-mono)' : s.role.includes('Body') || s.role.includes('Lead') || s.role.includes('Small') ? 'var(--tv-font-sans)' : 'var(--tv-font-display)'}; font-size: ${s.clamp.split(' ')[0]}; line-height: ${s.lh}; letter-spacing: ${s.ls}; font-weight: ${s.weight};`}>
+                    {s.sample}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           06 / INTERACTIVE REFRACTION & PHYSICS OVER COASTAL DISH BACKDROP
+           =================================================================== -->
+      <section id="physics" class="tv-section">
+        <div class="tv-wrap">
+          <div class="tv-section__header">
+            <div class="tv-section__num">06 / Surface Physics &amp; Refraction</div>
+            <h2 class="tv-section__title">Linen &amp; Sea-Glass Plate over Afternoon Light</h2>
+            <p class="tv-section__desc">
+              Test how the reading plate holds legibility over the freshly served sea bass photography (`tavola-dish.webp`) by scrubbing blur and linen opacity in real time.
+            </p>
+          </div>
+
+          <div class="tv-type-controls" style="margin-bottom: 1.5rem; background: var(--tv-bg-surface); padding: 1.5rem; border-radius: var(--tv-radius-md); border: 1px solid var(--tv-border-subtle);">
+            <div class="tv-range-wrap">
+              <label for="blurRange">
+                <span>Backdrop Blur (--tv-glass-blur)</span>
+                <span id="blurVal">18px</span>
+              </label>
+              <input id="blurRange" type="range" min="0" max="32" value="18" step="1" />
+            </div>
+            <div class="tv-range-wrap">
+              <label for="tintRange">
+                <span>Linen Plate Opacity (--tv-plate-tint)</span>
+                <span id="tintVal">86%</span>
+              </label>
+              <input id="tintRange" type="range" min="45" max="98" value="86" step="1" />
+            </div>
+            <div style="display: flex; align-items: flex-end;">
+              <button id="triggerMotionBtn" class="tv-btn-pill active" style="width: 100%; padding: 0.65rem;" type="button">
+                Replay Coastal Spring (320ms)
+              </button>
+            </div>
+          </div>
+
+          <div class="tv-refraction-stage">
+            <img
+              class="tv-refraction-stage__img"
+              src={`${B}/tavola-dish.webp`}
+              alt="Whole grilled Mediterranean sea bass with charred lemon and arugula on an ivory linen table."
+              loading="lazy"
+            />
+            <div id="refractionPane" class="tv-refraction-stage__pane" style="transition: transform 360ms var(--tv-ease-coastal);">
+              <span style="font-family: var(--tv-font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--tv-accent-primary);">
+                Second Course · Catch of the Day
+              </span>
+              <h3 style="font-family: var(--tv-font-display); font-size: 1.85rem; margin: 0.35rem 0 0.65rem; font-weight: 500;">
+                Spigola alla Griglia con Limone d’Amalfi
+              </h3>
+              <p style="font-size: 0.95rem; color: var(--tv-ink-secondary); margin: 0 0 1rem;">
+                Line-caught Mediterranean sea bass roasted with caperberry emulsion, wild rocket, blistered Datterini tomatoes, and charred lemon.
+              </p>
+              <div style="display: flex; justify-content: space-between; font-family: var(--tv-font-mono); font-size: 0.75rem; border-top: 1px solid var(--tv-border-subtle); padding-top: 0.75rem;">
+                <span>PAIRING: GRECO DI TUFO RISERVA</span>
+                <strong style="color: var(--tv-accent-primary);">14.8:1 PLATE READABILITY</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           07 / DOMAIN-AUTHENTIC INTERACTIVE WORKBENCH
+           =================================================================== -->
+      <section id="workbench" class="tv-section">
+        <div class="tv-wrap">
+          <div class="tv-section__header">
+            <div class="tv-section__num">07 / Stateful Domain Workbench</div>
+            <h2 class="tv-section__title">Terrazza Tasting Ledger &amp; Table Reservation</h2>
+            <p class="tv-section__desc">
+              Interconnected restaurant components with live course selection, sommelier pairing calculation, and terrace table booking.
+            </p>
+          </div>
+
+          <div class="tv-workbench-grid">
+            <div class="tv-menu-board">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; border-bottom: 1px solid var(--tv-border-subtle); padding-bottom: 1rem;">
+                <div>
+                  <span style="font-family: var(--tv-font-mono); font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--tv-accent-primary);">Afternoon Menu · Interactive Selection</span>
+                  <h3 style="font-family: var(--tv-font-display); font-size: 1.5rem; margin: 0.2rem 0 0 0;">Pranzo sul Mare</h3>
+                </div>
+                <span id="menuTotalBadge" style="font-family: var(--tv-font-mono); font-size: 0.85rem; font-weight: 600; padding: 0.3rem 0.75rem; border-radius: var(--tv-radius-pill); background-color: var(--tv-bg-canvas); border: 1px solid var(--tv-border-subtle); color: var(--tv-accent-primary);">
+                  Selected: €66.00
+                </span>
+              </div>
+
+              <div class="tv-menu-dish">
+                <div>
+                  <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer;">
+                    <input type="checkbox" class="dish-check" data-price="22" checked style="accent-color: var(--tv-accent-primary); width: 16px; height: 16px;" />
+                    <span class="tv-dish-name">Insalata di Agrumi e Finocchio</span>
+                  </label>
+                  <p class="tv-dish-desc" style="padding-left: 1.6rem;">Blood orange, shaved crisp fennel, Gaeta olives and wild mint leaves.</p>
+                </div>
+                <span class="tv-dish-price">€22.00</span>
+              </div>
+
+              <div class="tv-menu-dish">
+                <div>
+                  <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer;">
+                    <input type="checkbox" class="dish-check" data-price="44" checked style="accent-color: var(--tv-accent-primary); width: 16px; height: 16px;" />
+                    <span class="tv-dish-name">Spigola alla Griglia con Limone</span>
+                  </label>
+                  <p class="tv-dish-desc" style="padding-left: 1.6rem;">Line-caught Mediterranean sea bass, blistered cherry tomatoes and charred lemon.</p>
+                </div>
+                <span class="tv-dish-price">€44.00</span>
+              </div>
+
+              <div class="tv-menu-dish">
+                <div>
+                  <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer;">
+                    <input type="checkbox" class="dish-check" data-price="18" style="accent-color: var(--tv-accent-primary); width: 16px; height: 16px;" />
+                    <span class="tv-dish-name">Greco di Tufo Riserva (Calice)</span>
+                  </label>
+                  <p class="tv-dish-desc" style="padding-left: 1.6rem;">Mineral-forward volcanic white with citrus blossom and sea salt finish.</p>
+                </div>
+                <span class="tv-dish-price">€18.00</span>
+              </div>
+            </div>
+
+            <div class="tv-booking-card">
+              <div>
+                <span style="font-family: var(--tv-font-mono); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tv-accent-primary);">Table Ledger</span>
+                <h3 style="font-family: var(--tv-font-display); font-size: 1.45rem; margin: 0.2rem 0 0.4rem 0;">Reserve an Afternoon Table</h3>
+                <p style="font-size: 0.875rem; color: var(--tv-ink-secondary); margin: 0;">Choose your seating zone and sunlight hour.</p>
+              </div>
+
+              <div>
+                <span style="display: block; font-family: var(--tv-font-mono); font-size: 0.72rem; text-transform: uppercase; color: var(--tv-ink-secondary); margin-bottom: 0.5rem;">
+                  Seating Atmosphere
+                </span>
+                <div class="tv-table-selector">
+                  <button class="tv-table-btn active table-loc-btn" data-loc="Covered Terrace (Sea View)" type="button">
+                    <strong style="display: block; font-size: 0.875rem;">Covered Terrace</strong>
+                    <span style="font-size: 0.75rem; color: var(--tv-ink-secondary);">Table 14 · Sea Horizon</span>
+                  </button>
+                  <button class="tv-table-btn table-loc-btn" data-loc="Vaulted Dining Room" type="button">
+                    <strong style="display: block; font-size: 0.875rem;">Dining Room</strong>
+                    <span style="font-size: 0.75rem; color: var(--tv-ink-secondary);">Table 06 · Cellar Wall</span>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <span style="display: block; font-family: var(--tv-font-mono); font-size: 0.72rem; text-transform: uppercase; color: var(--tv-ink-secondary); margin-bottom: 0.5rem;">
+                  Afternoon Seating Hour
+                </span>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <button class="tv-btn-pill slot-btn" type="button">12:30</button>
+                  <button class="tv-btn-pill active slot-btn" type="button">14:30</button>
+                  <button class="tv-btn-pill slot-btn" type="button">16:00</button>
+                  <button class="tv-btn-pill slot-btn" type="button">17:30 Sunset</button>
+                </div>
+              </div>
+
+              <div id="bookingSummary" style="padding: 0.95rem; border-radius: var(--tv-radius-sm); background-color: var(--tv-bg-surface); font-family: var(--tv-font-mono); font-size: 0.78rem; border: 1px solid var(--tv-border-subtle);">
+                Covered Terrace (Sea View) · 14:30 · Est. €66.00
+              </div>
+
+              <button id="bookTableBtn" class="tv-btn-primary" type="button">
+                Confirm Terrace Reservation
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           08 / THREE-LAYER TOKENS & HONEST AUDIT LEDGER
+           =================================================================== -->
+      <section id="tokens" class="tv-section" style="border-bottom: none;">
+        <div class="tv-wrap">
+          <div class="tv-section__header">
+            <div class="tv-section__num">08 / One Source, Three Layers</div>
+            <h2 class="tv-section__title">Copyable Token Architecture &amp; Audit</h2>
+            <p class="tv-section__desc">
+              The primitive layer never flips under the night scope—only the semantic bindings shift.
+            </p>
+          </div>
+
+          <div class="tv-code-grid">
+            {[
+              { title: 'tavola-tokens.css · 1 · Primitives', code: cssPrimitives },
+              { title: 'tavola-tokens.css · 2 · Daylight Scope', code: cssDay },
+              { title: 'tavola-tokens.css · 2 · Evening Cellar Scope', code: cssNight },
+              { title: 'tavola-tokens.css · 3 · Linen Reading Plate', code: cssPlate },
+            ].map((item) => (
+              <div class="tv-code-card">
+                <header>
+                  <span>{item.title}</span>
+                  <button class="tv-btn-pill copy-code-btn" type="button" style="padding: 0.2rem 0.65rem;">Copy</button>
+                </header>
+                <pre><code>{item.code}</code></pre>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- =====================================================================
+         CLOSING FULL-BLEED COASTAL FOOTER POSTER (Rule 6: Same Coast Turned Around)
+         ===================================================================== -->
+    <footer class="tv-foot">
+      <img
+        class="tv-foot__img"
+        src={`${B}/tavola-dish.webp`}
+        alt="Freshly grilled sea bass and lemon on an ivory linen table overlooking the Mediterranean coast."
+        loading="lazy"
+      />
+      <div class="tv-foot__scrim" aria-hidden="true"></div>
+
+      <div class="tv-wrap tv-foot__inner">
+        <div class="tv-foot__pane">
+          <p class="tv-foot__eyebrow">Case 16 · Tavola Mare &amp; Terrazza · 2026</p>
+          <p class="tv-foot__quote">The page ends at the table.</p>
+          <p class="tv-foot__sub">
+            Woven ivory linen over sunlit coastal stone, one terracotta signal, and a 64-unit Kuwayama mark family. Built as a living dining specimen first, a component kit second.
+          </p>
+          <div class="tv-foot__links">
+            <a href={`${B}/tavola-brandkit.png`} download>Brand Board (PNG)</a>
+            <a href={`${B}/mark.svg`} download>Download Mark (SVG)</a>
+            <a href={`${B}/tavola-tokens.css`} download>tavola-tokens.css</a>
+            <a href={`${B}/DESIGN.md`} download>DESIGN.md</a>
+            <a href="/">All Cases →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tv-foot__bar">
+        <div class="tv-wrap tv-foot__bar-inner">
+          <img src={`${B}/lockup-reverse.svg`} width="165" height="33" alt="Tavola" />
+          <div style="display: flex; gap: 1.5rem;">
+            <a href="#top">Back to Top ↑</a>
+            <a href={`${B}/tokens.json`}>tokens.json</a>
+            <span>Sunnyside Brand System Engine v4.2</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script is:inline>
+    // 1. Theme Scope Switcher
+    const themeBtn = document.getElementById('themeToggleBtn')
+    const themeLabel = document.getElementById('themeToggleLabel')
+    const tvRoot = document.querySelector('.tv')
+
+    function syncTheme(isNight) {
+      if (isNight) {
+        tvRoot?.setAttribute('data-tv', 'night')
+        themeBtn?.setAttribute('aria-pressed', 'true')
+        if (themeLabel) themeLabel.textContent = 'Evening Cellar'
+        localStorage.setItem('tv-theme', 'night')
+      } else {
+        tvRoot?.removeAttribute('data-tv')
+        themeBtn?.setAttribute('aria-pressed', 'false')
+        if (themeLabel) themeLabel.textContent = 'Daylight Terrace'
+        localStorage.setItem('tv-theme', 'day')
+      }
+    }
+
+    if (localStorage.getItem('tv-theme') === 'night') syncTheme(true)
+    themeBtn?.addEventListener('click', () => {
+      syncTheme(tvRoot?.getAttribute('data-tv') !== 'night')
+    })
+
+    // 2. Hero Backdrop Scene Switcher
+    const heroImg = document.getElementById('heroImage')
+    const toggleHeroBtn = document.getElementById('toggleHeroPhoto')
+    let isTableBackdrop = true
+    toggleHeroBtn?.addEventListener('click', () => {
+      isTableBackdrop = !isTableBackdrop
+      if (heroImg) {
+        heroImg.src = isTableBackdrop
+          ? '/brand/tavola/tavola-table.webp'
+          : '/brand/tavola/tavola-dish.webp'
+      }
+    })
+
+    // 3. Brandmark Studio
+    const toggleGridBtn = document.getElementById('toggleGridBtn')
+    const gridOverlay = document.getElementById('gridOverlay')
+    let gridOn = false
+    toggleGridBtn?.addEventListener('click', () => {
+      gridOn = !gridOn
+      if (gridOverlay) gridOverlay.style.display = gridOn ? 'block' : 'none'
+      toggleGridBtn.classList.toggle('active', gridOn)
+    })
+
+    const studioMarkImg = document.getElementById('studioMarkImg')
+    const toggleLockupBtn = document.getElementById('toggleLockupBtn')
+    const toggleStackedBtn = document.getElementById('toggleStackedBtn')
+
+    toggleLockupBtn?.addEventListener('click', () => {
+      toggleStackedBtn?.classList.remove('active')
+      toggleLockupBtn.classList.toggle('active')
+      if (studioMarkImg) {
+        studioMarkImg.src = toggleLockupBtn.classList.contains('active')
+          ? '/brand/tavola/lockup.svg'
+          : '/brand/tavola/mark.svg'
+      }
+    })
+
+    toggleStackedBtn?.addEventListener('click', () => {
+      toggleLockupBtn?.classList.remove('active')
+      toggleStackedBtn.classList.toggle('active')
+      if (studioMarkImg) {
+        studioMarkImg.src = toggleStackedBtn.classList.contains('active')
+          ? '/brand/tavola/lockup-stacked.svg'
+          : '/brand/tavola/mark.svg'
+      }
+    })
+
+    const stage = document.getElementById('studioStage')
+    document.querySelectorAll('.stage-bg-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.stage-bg-btn').forEach((b) => b.classList.remove('active'))
+        btn.classList.add('active')
+        const bg = btn.getAttribute('data-bg')
+        if (!stage) return
+        if (bg === 'surface') stage.style.backgroundColor = 'var(--tv-bg-surface)'
+        if (bg === 'ivory') stage.style.backgroundColor = 'var(--tv-ivory)'
+        if (bg === 'espresso') stage.style.backgroundColor = 'var(--tv-espresso)'
+        if (bg === 'terracotta') stage.style.backgroundColor = 'var(--tv-terracotta)'
+      })
+    })
+
+    // Copy Raw SVG
+    const copyBtn = document.getElementById('copySvgBtn')
+    const toast = document.getElementById('copyToast')
+    copyBtn?.addEventListener('click', () => {
+      const svgCode = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img"><g fill="#D85A38" fill-rule="evenodd"><path d="M14 28 C14 18.06 22.06 10 32 10 C41.94 10 50 18.06 50 28 H43 C43 21.925 38.075 17 32 17 C25.925 17 21 21.925 21 28 Z"/><path d="M8 31 H56 V37 H8 Z"/><path d="M28 41 H36 V48 H48 V54 H16 V48 H28 Z"/><path d="M21 48 L26 43 H38 L43 48 L39 50 L35 46 H29 L25 50 Z"/></g></svg>`
+      navigator.clipboard.writeText(svgCode).then(() => {
+        if (toast) {
+          toast.style.display = 'block'
+          setTimeout(() => (toast.style.display = 'none'), 2500)
+        }
+      })
+    })
+
+    // 4. Click Swatch to Copy Hex
+    document.querySelectorAll('[data-copy-hex]').forEach((card) => {
+      card.addEventListener('click', () => {
+        const hex = card.getAttribute('data-copy-hex')
+        if (!hex) return
+        navigator.clipboard.writeText(hex)
+        const nameEl = card.querySelector('.tv-swatch-card__name')
+        if (nameEl) {
+          const prev = nameEl.textContent
+          nameEl.textContent = `Copied ${hex}!`
+          setTimeout(() => (nameEl.textContent = prev), 1400)
+        }
+      })
+    })
+
+    // 5. Typography Playground
+    const typeStage = document.getElementById('typeStage')
+    const weightRange = document.getElementById('weightRange')
+    const weightVal = document.getElementById('weightVal')
+    const trackingRange = document.getElementById('trackingRange')
+    const trackingVal = document.getElementById('trackingVal')
+
+    weightRange?.addEventListener('input', (e) => {
+      const val = e.target.value
+      if (weightVal) weightVal.textContent = val
+      if (typeStage) typeStage.style.fontWeight = val
+    })
+
+    trackingRange?.addEventListener('input', (e) => {
+      const val = `${e.target.value}em`
+      if (trackingVal) trackingVal.textContent = val
+      if (typeStage) typeStage.style.letterSpacing = val
+    })
+
+    const toggleTabular = document.getElementById('toggleTabularBtn')
+    let isTabular = true
+    toggleTabular?.addEventListener('click', () => {
+      isTabular = !isTabular
+      if (typeStage) typeStage.style.fontVariantNumeric = isTabular ? 'tabular-nums' : 'normal'
+      toggleTabular.textContent = `tabular-nums: ${isTabular ? 'ON' : 'OFF'}`
+      toggleTabular.classList.toggle('active', isTabular)
+    })
+
+    // 6. Refraction Stage over Coastal Dish
+    const refractionPane = document.getElementById('refractionPane')
+    const blurRange = document.getElementById('blurRange')
+    const blurVal = document.getElementById('blurVal')
+    const tintRange = document.getElementById('tintRange')
+    const tintVal = document.getElementById('tintVal')
+
+    blurRange?.addEventListener('input', (e) => {
+      const v = `${e.target.value}px`
+      if (blurVal) blurVal.textContent = v
+      refractionPane?.style.setProperty('--tv-demo-blur', v)
+    })
+
+    tintRange?.addEventListener('input', (e) => {
+      const v = `${e.target.value}%`
+      if (tintVal) tintVal.textContent = v
+      refractionPane?.style.setProperty('--tv-demo-tint', v)
+    })
+
+    document.getElementById('triggerMotionBtn')?.addEventListener('click', () => {
+      if (!refractionPane) return
+      refractionPane.style.transform = 'translateY(-10px) scale(1.02)'
+      setTimeout(() => (refractionPane.style.transform = 'none'), 340)
+    })
+
+    // 7. Interactive Menu & Reservation Workbench
+    let selectedLoc = 'Covered Terrace (Sea View)'
+    let selectedSlot = '14:30'
+    let menuTotal = 66
+    const bookingSummary = document.getElementById('bookingSummary')
+    const menuTotalBadge = document.getElementById('menuTotalBadge')
+
+    function syncWorkbench() {
+      if (menuTotalBadge) menuTotalBadge.textContent = `Selected: €${menuTotal.toFixed(2)}`
+      if (bookingSummary) {
+        bookingSummary.textContent = `${selectedLoc} · ${selectedSlot} · Est. €${menuTotal.toFixed(2)}`
+      }
+    }
+
+    document.querySelectorAll('.dish-check').forEach((chk) => {
+      chk.addEventListener('change', () => {
+        let sum = 0
+        document.querySelectorAll('.dish-check').forEach((c) => {
+          if (c.checked) sum += Number(c.getAttribute('data-price') || 0)
+        })
+        menuTotal = sum
+        syncWorkbench()
+      })
+    })
+
+    document.querySelectorAll('.table-loc-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.table-loc-btn').forEach((b) => b.classList.remove('active'))
+        btn.classList.add('active')
+        selectedLoc = btn.getAttribute('data-loc') || 'Covered Terrace'
+        syncWorkbench()
+      })
+    })
+
+    document.querySelectorAll('.slot-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.slot-btn').forEach((b) => b.classList.remove('active'))
+        btn.classList.add('active')
+        selectedSlot = btn.textContent.trim()
+        syncWorkbench()
+      })
+    })
+
+    const bookBtn = document.getElementById('bookTableBtn')
+    bookBtn?.addEventListener('click', () => {
+      bookBtn.textContent = '✓ Confirmed · Table Held in Afternoon Light'
+      bookBtn.style.backgroundColor = 'var(--tv-accent-olive)'
+      setTimeout(() => {
+        bookBtn.textContent = 'Confirm Terrace Reservation'
+        bookBtn.style.backgroundColor = 'var(--tv-accent-primary)'
+      }, 3200)
+    })
+
+    // 8. Copy Code Blocks
+    document.querySelectorAll('.copy-code-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const pre = btn.closest('.tv-code-card')?.querySelector('pre')
+        if (!pre) return
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+          const old = btn.textContent
+          btn.textContent = 'Copied!'
+          setTimeout(() => (btn.textContent = old), 1400)
+        })
+      })
+    })
+  </script>
+</Layout>

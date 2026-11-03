@@ -29,6 +29,7 @@ export type DesignCase = {
     | 'wildflower'
     | 'vesper'
     | 'halation'
+    | 'tavola'
 }
 
 export const SUNNYSIDE_URL =
@@ -59,6 +60,23 @@ export const DESIGN_CASES: readonly DesignCase[] = [
       'The Sunnyside brand kit: paper and ink identity board with the sun mark, palette, type specimens and favicon sizes.',
     tags: ['Paper', 'Cobalt', 'Marker', 'Stickers'],
     tone: 'sunnyside',
+  },
+  {
+    slug: 'tavola',
+    number: '16',
+    name: 'Tavola',
+    href: '/design-system/tavola',
+    tagline: 'Around the table · Coastal lunch in afternoon light.',
+    description:
+      'Sunlit coastal dining carved from ivory linen tablecloths, warm terracotta, blood orange zest and unhurried views of the Tyrrhenian sea. An interlocking communal table-and-sun parametric mark, dual-scope OKLCH daylight-to-dusk chromatic architecture, and an editorial dining specimen.',
+    status: 'Shipped · 2026',
+    role: 'Identity · design system · parametric mark · interactive workbench · docs',
+    material: 'Woven ivory linen + sunlit terracotta + sea cobalt',
+    cover: '/brand/tavola/tavola-brandkit.png',
+    coverAlt:
+      'The Tavola 6-panel brand board: sunlit coastal lunch table with reverse lockup, Kuwayama 64-grid mark scale strip, 7 OKLCH primitives, 3 voices, 6-mark coastal cast, and architectural laws.',
+    tags: ['Coastal Dining', 'Ivory Linen', 'Parametric Mark', 'OKLCH Daylight'],
+    tone: 'tavola',
   },
   {
     slug: 'halation',

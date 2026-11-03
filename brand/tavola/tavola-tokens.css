@@ -1,0 +1,69 @@
+/* ==========================================================================
+   TAVOLA DESIGN SYSTEM · TOKENS (v4.1)
+   Case 16 · Around the table: Coastal lunch in afternoon light
+   ========================================================================== */
+
+:root {
+  /* 1 · Primitives (The Material) */
+  --tv-ivory: #FAF6EE;
+  --tv-terrace: #F2ECE0;
+  --tv-porcelain: #FFFFFF;
+  --tv-espresso: #221A15;
+  --tv-cedar: #6E5D52;
+  --tv-terracotta: #D85A38;
+  --tv-cobalt: #2A62B6;
+  --tv-citron: #E6A817;
+  --tv-olive: #587545;
+
+  /* Perceptual OKLCH strings */
+  --tv-oklch-ivory: oklch(0.978 0.012 85);
+  --tv-oklch-terrace: oklch(0.948 0.018 80);
+  --tv-oklch-espresso: oklch(0.180 0.022 55);
+  --tv-oklch-terracotta: oklch(0.600 0.190 38);
+  --tv-oklch-cobalt: oklch(0.520 0.165 250);
+
+  /* 2 · Semantic Hierarchy (Daylight Terrace Scope) */
+  --tv-bg-canvas: var(--tv-ivory);
+  --tv-bg-surface: var(--tv-terrace);
+  --tv-bg-elevated: var(--tv-porcelain);
+  --tv-ink-primary: var(--tv-espresso);
+  --tv-ink-secondary: var(--tv-cedar);
+  --tv-border-subtle: rgba(34, 26, 21, 0.12);
+  --tv-border-focus: var(--tv-terracotta);
+  --tv-accent-primary: var(--tv-terracotta);
+  --tv-accent-secondary: var(--tv-cobalt);
+  --tv-accent-citron: var(--tv-citron);
+  --tv-accent-olive: var(--tv-olive);
+
+  /* 3 · Typography */
+  --tv-font-display: 'Fraunces', Georgia, serif;
+  --tv-font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --tv-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* 4 · Physics & Tactility */
+  --tv-radius-sm: 4px;
+  --tv-radius-md: 10px;
+  --tv-radius-lg: 18px;
+  --tv-radius-pill: 999px;
+  --tv-shadow-sun: 0 4px 16px -2px rgba(34, 26, 21, 0.05), 0 12px 32px -6px rgba(34, 26, 21, 0.08);
+  --tv-shadow-plate: 0 2px 8px rgba(34, 26, 21, 0.04), 0 16px 40px -8px rgba(34, 26, 21, 0.10);
+  --tv-ease-coastal: cubic-bezier(0.25, 1, 0.35, 1);
+  --tv-transition: 320ms var(--tv-ease-coastal);
+}
+
+/* 5 · Night / Dusk Scope (Cellar & Evening Terrace) */
+[data-tv='night'],
+[data-theme='dark'] .tv,
+.tv[data-tv='night'] {
+  --tv-bg-canvas: #161311;
+  --tv-bg-surface: #201B18;
+  --tv-bg-elevated: #2C2522;
+  --tv-ink-primary: #F5F1E8;
+  --tv-ink-secondary: #B3A898;
+  --tv-border-subtle: rgba(245, 241, 232, 0.14);
+  --tv-border-focus: #E86D48;
+  --tv-accent-primary: #E86D48;
+  --tv-accent-secondary: #4D85DE;
+  --tv-shadow-sun: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --tv-shadow-plate: 0 12px 40px rgba(0, 0, 0, 0.60), 0 1px 0 inset rgba(255, 255, 255, 0.08);
+}

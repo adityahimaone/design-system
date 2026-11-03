@@ -1,0 +1,1192 @@
+/* ============================================================================
+   TAVOLA DESIGN SYSTEM · SHOWCASE STYLES (v4.2 — Flagship Edition)
+   Case 16 · Around the table: Coastal lunch in afternoon light
+   Every value resolves through a --tv-* token.
+   ========================================================================== */
+
+.tv {
+  background-color: var(--tv-bg-canvas);
+  color: var(--tv-ink-primary);
+  font-family: var(--tv-font-sans);
+  font-size: 1rem;
+  line-height: 1.68;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  transition: background-color var(--tv-transition), color var(--tv-transition);
+  position: relative;
+  overflow-x: clip;
+}
+
+.tv *,
+.tv *::before,
+.tv *::after {
+  box-sizing: border-box;
+}
+
+.tv ::selection {
+  background: var(--tv-accent-primary);
+  color: #FAF6EE;
+}
+
+.tv a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.tv :focus-visible {
+  outline: 2px solid var(--tv-accent-primary);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+.tv-wrap {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .tv-wrap {
+    padding: 0 2.5rem;
+  }
+}
+
+/* ── Sticky Top Rail ──────────────────────────────────────────────────────── */
+
+.tv-bar {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  backdrop-filter: blur(18px) saturate(145%);
+  background-color: color-mix(in srgb, var(--tv-bg-canvas) 84%, transparent);
+  border-bottom: 1px solid var(--tv-border-subtle);
+  transition: background-color var(--tv-transition), border-color var(--tv-transition);
+}
+
+.tv-bar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4rem;
+}
+
+.tv-bar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tv-bar__logo {
+  width: 26px;
+  height: 26px;
+}
+
+.tv-bar__title {
+  font-family: var(--tv-font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.tv-bar__badge {
+  font-family: var(--tv-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--tv-radius-pill);
+  background-color: var(--tv-bg-surface);
+  color: var(--tv-ink-secondary);
+  border: 1px solid var(--tv-border-subtle);
+}
+
+.tv-bar__nav {
+  display: none;
+  align-items: center;
+  gap: 1.35rem;
+  font-family: var(--tv-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tv-ink-secondary);
+}
+
+@media (min-width: 960px) {
+  .tv-bar__nav {
+    display: flex;
+  }
+}
+
+.tv-bar__nav a {
+  transition: color 0.15s ease;
+}
+
+.tv-bar__nav a:hover {
+  color: var(--tv-accent-primary);
+}
+
+.tv-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.42rem 0.9rem;
+  border-radius: var(--tv-radius-pill);
+  border: 1px solid var(--tv-border-subtle);
+  background-color: var(--tv-bg-surface);
+  color: var(--tv-ink-primary);
+  font-family: var(--tv-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--tv-transition);
+}
+
+.tv-theme-toggle:hover {
+  border-color: var(--tv-accent-primary);
+  color: var(--tv-accent-primary);
+}
+
+.tv-theme-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  background: var(--tv-accent-primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--tv-accent-primary) 24%, transparent);
+}
+
+/* ── Section 01 · Full-Bleed Sunlit Coastal Hero Stage ────────────────────── */
+
+.tv-hero {
+  position: relative;
+  min-height: 760px;
+  display: flex;
+  align-items: flex-end;
+  padding: 5.5rem 0 3.5rem;
+  border-bottom: 1px solid var(--tv-border-subtle);
+  overflow: hidden;
+}
+
+.tv-hero__backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.tv-hero__backdrop-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  transform: scale(1.01);
+  transition: transform 900ms var(--tv-ease-coastal), filter 500ms ease;
+}
+
+[data-tv='night'] .tv-hero__backdrop-img {
+  filter: brightness(0.68) contrast(1.08) saturate(0.92);
+}
+
+.tv-hero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(22, 19, 17, 0.34) 0%, rgba(22, 19, 17, 0.10) 36%, rgba(22, 19, 17, 0.62) 100%),
+    linear-gradient(90deg, rgba(22, 19, 17, 0.56) 0%, transparent 65%);
+}
+
+.tv-hero__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.tv-hero__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: end;
+}
+
+@media (min-width: 1024px) {
+  .tv-hero__grid {
+    grid-template-columns: 1.18fr 0.82fr;
+  }
+}
+
+/* Reading Plate over Coastal Backdrop (Rule 5: Field + Plate) */
+.tv-hero__plate {
+  background: color-mix(in srgb, var(--tv-bg-canvas) 91%, transparent);
+  backdrop-filter: blur(22px) saturate(145%);
+  border: 1px solid color-mix(in srgb, var(--tv-ink-primary) 14%, rgba(255, 255, 255, 0.45));
+  border-radius: var(--tv-radius-lg);
+  padding: 2.5rem;
+  box-shadow: 0 24px 60px -12px rgba(22, 19, 17, 0.28);
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+.tv-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--tv-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tv-accent-primary);
+}
+
+.tv-hero__headline {
+  font-family: var(--tv-font-display);
+  font-size: clamp(2.65rem, 4.8vw + 0.8rem, 4.35rem);
+  line-height: 0.96;
+  letter-spacing: -0.038em;
+  font-weight: 500;
+  margin: 0;
+  color: var(--tv-ink-primary);
+}
+
+.tv-hero__headline em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--tv-accent-primary);
+}
+
+.tv-hero__lead {
+  font-size: 1.125rem;
+  line-height: 1.62;
+  color: var(--tv-ink-secondary);
+  max-width: 58ch;
+  margin: 0;
+}
+
+.tv-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+}
+
+.tv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1.35rem;
+  border-radius: var(--tv-radius-pill);
+  font-family: var(--tv-font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--tv-accent-primary);
+  color: #FAF6EE;
+  border: 1px solid var(--tv-accent-primary);
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.tv-btn:hover {
+  filter: brightness(1.07);
+  transform: translateY(-1px);
+}
+
+.tv-btn--ghost {
+  background: var(--tv-bg-surface);
+  color: var(--tv-ink-primary);
+  border-color: var(--tv-border-subtle);
+}
+
+.tv-btn--ghost:hover {
+  border-color: var(--tv-accent-primary);
+  color: var(--tv-accent-primary);
+}
+
+/* Right-side Floating Glass Specimen Card over the Sea View */
+.tv-hero__glass-card {
+  background: rgba(22, 19, 17, 0.56);
+  backdrop-filter: blur(18px) saturate(145%);
+  border: 1px solid rgba(250, 246, 238, 0.24);
+  border-radius: var(--tv-radius-lg);
+  padding: 1.5rem;
+  color: #FAF6EE;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.26);
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.tv-hero__glass-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(250, 246, 238, 0.16);
+  padding-bottom: 0.9rem;
+}
+
+.tv-hero__radar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+.tv-radar__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.tv-radar__label {
+  font-family: var(--tv-font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(250, 246, 238, 0.65);
+}
+
+.tv-radar__val {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #FAF6EE;
+}
+
+/* Rule 7: A data row that breathes (padding on both sides of every divider) */
+.tv-facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 2rem;
+  background: color-mix(in srgb, var(--tv-bg-canvas) 92%, transparent);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--tv-border-subtle);
+  border-radius: var(--tv-radius-md);
+  padding: 0 1.5rem;
+}
+
+.tv-fact {
+  padding: 1.15rem 1.35rem;
+  border-right: 1px solid var(--tv-border-subtle);
+}
+
+.tv-fact:first-child {
+  padding-left: 0;
+}
+
+.tv-fact:last-child {
+  padding-right: 0;
+  border-right: 0;
+}
+
+@media (max-width: 760px) {
+  .tv-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .tv-fact:nth-child(2n) {
+    border-right: 0;
+    padding-right: 0;
+  }
+  .tv-fact:nth-child(2n + 1) {
+    padding-left: 0;
+  }
+}
+
+.tv-fact__fig {
+  font-family: var(--tv-font-display);
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--tv-accent-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.tv-fact__lbl {
+  display: block;
+  font-family: var(--tv-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tv-ink-primary);
+  margin-top: 0.35rem;
+}
+
+.tv-fact__note {
+  font-size: 0.8125rem;
+  color: var(--tv-ink-secondary);
+  margin: 0.2rem 0 0;
+}
+
+/* ── Section Scaffolding ──────────────────────────────────────────────────── */
+
+.tv-section {
+  padding: 5.5rem 0;
+  border-bottom: 1px solid var(--tv-border-subtle);
+}
+
+.tv-section__header {
+  margin-bottom: 3rem;
+}
+
+.tv-section__num {
+  font-family: var(--tv-font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  color: var(--tv-accent-primary);
+  text-transform: uppercase;
+  margin-bottom: 0.55rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.tv-section__num::after {
+  content: '';
+  display: inline-block;
+  width: 2.2rem;
+  height: 1px;
+  background-color: var(--tv-accent-primary);
+  opacity: 0.45;
+}
+
+.tv-section__title {
+  font-family: var(--tv-font-display);
+  font-size: clamp(2rem, 3.4vw + 0.5rem, 3.1rem);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  font-weight: 500;
+  margin: 0 0 0.85rem 0;
+}
+
+.tv-section__desc {
+  font-size: 1.125rem;
+  line-height: 1.62;
+  color: var(--tv-ink-secondary);
+  max-width: 64ch;
+  margin: 0;
+}
+
+/* ── Section 02 · Thesis Beats & 4 Decision Cards ─────────────────────────── */
+
+.tv-thesis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+.tv-thesis-cell {
+  background: var(--tv-bg-surface);
+  border: 1px solid var(--tv-border-subtle);
+  border-radius: var(--tv-radius-md);
+  padding: 1.5rem;
+}
+
+.tv-thesis-cell--loud {
+  background: var(--tv-ink-primary);
+  color: var(--tv-bg-canvas);
+}
+
+.tv-thesis-cell h3 {
+  font-family: var(--tv-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tv-accent-primary);
+  margin: 0 0 0.6rem 0;
+}
+
+.tv-thesis-cell p {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.tv-decisions-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 860px) {
+  .tv-decisions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.tv-decision-card {
+  background: var(--tv-bg-elevated);
+  border: 1px solid var(--tv-border-subtle);
+  border-radius: var(--tv-radius-md);
+  padding: 1.75rem;
+  box-shadow: var(--tv-shadow-sun);
+}
+
+.tv-decision-card h4 {
+  font-family: var(--tv-font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0 0 1rem 0;
+}
+
+.tv-decision-card dl {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  row-gap: 0.65rem;
+  column-gap: 0.75rem;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.tv-decision-card dt {
+  font-family: var(--tv-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tv-ink-secondary);
+  padding-top: 0.15rem;
+}
+
+.tv-decision-card dd {
+  margin: 0;
+  color: var(--tv-ink-primary);
+}
+
+.tv-decision-card dd em {
+  color: var(--tv-accent-primary);
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* ── Section 03 · Brandmark Studio & 6-Mark Cast ──────────────────────────── */
+
+.tv-studio {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .tv-studio {
+    grid-template-columns: 1.2fr 0.8fr;
+  }
+}
+
+.tv-studio__stage {
+  background-color: var(--tv-bg-surface);
+  border: 1px solid var(--tv-border-subtle);
+  border-radius: var(--tv-radius-lg);
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 390px;
+  position: relative;
+  transition: background-color var(--tv-transition);
+}
+
+.tv-studio__svg-wrap {
+  width: 220px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.tv-studio__svg-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.tv-studio__grid-overlay {
+  position: absolute;
+  inset: -16px;
+  border: 1px dashed var(--tv-accent-primary);
+  pointer-events: none;
+  background-size: 22.5px 22.5px;
+  background-image:
+    linear-gradient(to right, rgba(216, 90, 56, 0.22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(216, 90, 56, 0.22) 1px, transparent 1px);
+}
+
+.tv-studio__controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  background: var(--tv-bg-surface);
+  border: 1px solid var(--tv-border-subtle);
+  border-radius: var(--tv-radius-lg);
+  padding: 2rem;
+}
+
+.tv-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tv-control-group__label {
+  font-family: var(--tv-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tv-ink-secondary);
+}
+
+.tv-btn-pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.tv-btn-pill {
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--tv-radius-pill);
+  font-family: var(--tv-font-mono);
+  font-size: 0.72rem;
+  background-color: var(--tv-bg-canvas);
+  border: 1px solid var(--tv-border-subtle);
+  color: var(--tv-ink-primary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tv-btn-pill:hover,
+.tv-btn-pill.active {
+  background-color: var(--tv-accent-primary);
+  border-color: var(--tv-accent-primary);
+  color: #FAF6EE;
+}
+
+.tv-stress-strip {
+  display: flex;
+  align-items: flex-end;
+  gap: 2rem;
+  padding: 1.1rem 1.5rem;
+  background-color: var(--tv-bg-canvas);
+  border: 1px solid var(--tv-border-subtle);
+  border-radius: var(--tv-radius-md);
+  margin-top: 1.5rem;
+}
+
+.tv-stress-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.tv-stress-item span {
+  font-family: var(--tv-font-mono);
+  font-size: 0.65rem;
+  color: var(--tv-ink-secondary);
+}
+
+/* Companion Cast Grid */
+.tv-cast-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+
+.tv-cast-card {
+  background: var(--tv-bg-surface);
+  border: 1px solid var(--tv-border-subtle);
+  border-radius: var(--tv-radius-md);
+  padding: 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.6rem;
+}
+
+[data-tv='night'] .tv-cast-card img {
+  filter: invert(0.92) hue-rotate(180deg);
+}
+
+.tv-cast-card b {
+  font-family: var(--tv-font-display);
+  font-size: 1.05rem;
+}
+
+.tv-cast-card span {
+  font-size: 0.8125rem;
+  color: var(--tv-ink-secondary);
+}
+
+/* ── Section 04 · OKLCH Chromatic Matrix & Contrast Table ─────────────────── */
+
+.tv-swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.25rem;
+}
+
+.tv-swatch-card {
+  background-color: var(--tv-bg-surface);
+  border: 1px solid var(--tv-border-subtle);
+  border-radius: var(--tv-radius-md);
+  overflow: hidden;
+  box-shadow: var(--tv-shadow-sun);
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.tv-swatch-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--tv-shadow-plate);
+}
+
+.tv-swatch-card__preview {
+  height: 92px;
+  position: relative;
+}
+
+.tv-swatch-card__info {
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.tv-swatch-card__name {
+  font-family: var(--tv-font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--tv-ink-primary);
+}
+
+.tv-swatch-card__codes {
+  font-family: var(--tv-font-mono);
+  font-size: 0.6875rem;
+  color: var(--tv-ink-secondary);
+  display: flex;
+  justify-content: space-between;
+}
+
+.tv-swatch-card__role {
+  font-size: 0.8rem;
+  color: var(--tv-ink-secondary);
+  margin-top: 0.2rem;
+}
+
+.tv-swatch-card__badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--tv-font-mono);
+  font-size: 0.65rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: var(--tv-radius-pill);
+  margin-top: 0.35rem;
+  width: fit-content;
+}
+
+.tv-badge--pass {
+  background-color: rgba(88, 117, 69, 0.15);
+  color: var(--tv-accent-olive);
+}
+
+.tv-badge--fail {
+  background-color: rgba(216, 90, 56, 0.16);
+  color: var(--tv-accent-primary);
+}
+
+/* Measured Contrast Table */
+.tv-table-wrap {
+  margin-top: 2.5rem;
+  overflow-x: auto;
+  background: var(--tv-bg-surface);
+  border: 1px solid var(--tv-border-subtle);
+  border-radius: var(--tv-radius-md);
+  padding: 1.5rem;
+}
+
+.tv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.tv-table th {
+  text-align: left;
+  font-family: var(--tv-font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tv-ink-secondary);
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--tv-border-subtle);
+}
+
+.tv-table td {
+  padding: 0.75rem;
+  border-bottom: 1px dashed var(--tv-border-subtle);
+}
+
+/* ── Section 05 · Typography Playground ──────────────────────────────────── */
+
+.tv-type-playground {
+  background-color: var(--tv-bg-surface);
+  border: 1px solid var(--tv-border-subtle);
+  border-radius: var(--tv-radius-lg);
+  padding: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  box-shadow: var(--tv-shadow-sun);
+}
+
+.tv-type-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid var(--tv-border-subtle);
+}
+
+.tv-range-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tv-range-wrap label {
+  font-family: var(--tv-font-mono);
+  font-size: 0.72rem;
+  color: var(--tv-ink-secondary);
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+}
+
+.tv-range-wrap input[type='range'] {
+  accent-color: var(--tv-accent-primary);
+}
+
+.tv-editable-stage {
+  min-height: 140px;
+  outline: none;
+  border: 1px dashed transparent;
+  border-radius: var(--tv-radius-sm);
+  padding: 0.5rem;
+  transition: border-color 0.2s ease;
+}
+
+.tv-editable-stage:focus {
+  border-color: var(--tv-accent-primary);
+}
+
+/* ── Section 06 · Interactive Refraction & Surface Stage over Dish Photo ─── */
+
+.tv-refraction-stage {
+  position: relative;
+  border-radius: var(--tv-radius-lg);
+  overflow: hidden;
+  min-height: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  border: 1px solid var(--tv-border-subtle);
+}
+
+.tv-refraction-stage__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.tv-refraction-stage__pane {
+  position: relative;
+  z-index: 2;
+  max-width: 560px;
+  width: 100%;
+  padding: 2.25rem;
+  border-radius: var(--tv-radius-md);
+  background: color-mix(in srgb, var(--tv-bg-canvas) var(--tv-demo-tint, 86%), transparent);
+  backdrop-filter: blur(var(--tv-demo-blur, 18px)) saturate(145%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 20px 50px rgba(22, 19, 17, 0.26);
+}
+
+/* ── Section 07 · Domain Workbench ────────────────────────────────────────── */
+
+.tv-workbench-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .tv-workbench-grid {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+}
+
+.tv-menu-board {
+  background-color: var(--tv-bg-surface);
+  border: 1px solid var(--tv-border-subtle);
+  border-radius: var(--tv-radius-lg);
+  padding: 2.25rem;
+  box-shadow: var(--tv-shadow-sun);
+}
+
+.tv-menu-dish {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 1.15rem 0;
+  border-bottom: 1px dashed var(--tv-border-subtle);
+}
+
+.tv-menu-dish:last-child {
+  border-bottom: none;
+}
+
+.tv-dish-name {
+  font-family: var(--tv-font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+}
+
+.tv-dish-desc {
+  font-size: 0.875rem;
+  color: var(--tv-ink-secondary);
+  margin: 0;
+}
+
+.tv-dish-price {
+  font-family: var(--tv-font-mono);
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--tv-accent-primary);
+  white-space: nowrap;
+}
+
+.tv-booking-card {
+  background-color: var(--tv-bg-elevated);
+  border: 1px solid var(--tv-border-subtle);
+  border-radius: var(--tv-radius-lg);
+  padding: 2.25rem;
+  box-shadow: var(--tv-shadow-plate);
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+.tv-table-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.tv-table-btn {
+  padding: 0.85rem;
+  border-radius: var(--tv-radius-md);
+  border: 1px solid var(--tv-border-subtle);
+  background-color: var(--tv-bg-surface);
+  color: var(--tv-ink-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tv-table-btn:hover,
+.tv-table-btn.active {
+  border-color: var(--tv-accent-primary);
+  background-color: color-mix(in srgb, var(--tv-accent-primary) 8%, var(--tv-bg-surface));
+}
+
+.tv-btn-primary {
+  width: 100%;
+  padding: 0.9rem;
+  border-radius: var(--tv-radius-pill);
+  border: none;
+  background-color: var(--tv-accent-primary);
+  color: #FAF6EE;
+  font-family: var(--tv-font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(216, 90, 56, 0.25);
+  transition: all 0.2s ease;
+}
+
+.tv-btn-primary:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+/* ── Section 08 · Multi-Format Code Blocks ───────────────────────────────── */
+
+.tv-code-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 900px) {
+  .tv-code-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.tv-code-card {
+  background: var(--tv-bg-surface);
+  border: 1px solid var(--tv-border-subtle);
+  border-radius: var(--tv-radius-md);
+  overflow: hidden;
+}
+
+.tv-code-card header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.15rem;
+  border-bottom: 1px solid var(--tv-border-subtle);
+  font-family: var(--tv-font-mono);
+  font-size: 0.72rem;
+  color: var(--tv-ink-secondary);
+}
+
+.tv-code-card pre {
+  margin: 0;
+  padding: 1.15rem;
+  overflow-x: auto;
+  font-family: var(--tv-font-mono);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--tv-ink-primary);
+}
+
+/* ── Closing Full-Bleed Coastal Footer Poster (Rule 6: Same Poster Turned Around) ── */
+
+.tv-foot {
+  position: relative;
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  color: #FAF6EE;
+}
+
+.tv-foot__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 55%;
+  z-index: 0;
+}
+
+.tv-foot__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(22, 19, 17, 0.52) 0%, rgba(22, 19, 17, 0.25) 45%, rgba(22, 19, 17, 0.88) 100%),
+    radial-gradient(circle at 20% 50%, rgba(22, 19, 17, 0.68) 0%, transparent 65%);
+}
+
+.tv-foot__inner {
+  position: relative;
+  z-index: 2;
+  padding: 4.5rem 0 3rem;
+}
+
+.tv-foot__pane {
+  max-width: 580px;
+  background: rgba(22, 19, 17, 0.64);
+  backdrop-filter: blur(20px) saturate(145%);
+  border: 1px solid rgba(250, 246, 238, 0.22);
+  border-radius: var(--tv-radius-lg);
+  padding: 2.5rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.tv-foot__eyebrow {
+  font-family: var(--tv-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #F7C873;
+  margin: 0 0 0.65rem 0;
+}
+
+.tv-foot__quote {
+  font-family: var(--tv-font-display);
+  font-size: clamp(2rem, 3.5vw, 2.85rem);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.85rem 0;
+  color: #FAF6EE;
+}
+
+.tv-foot__sub {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(250, 246, 238, 0.82);
+  margin: 0 0 1.5rem 0;
+}
+
+.tv-foot__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.tv-foot__links a {
+  padding: 0.55rem 1.05rem;
+  border-radius: var(--tv-radius-pill);
+  font-family: var(--tv-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(250, 246, 238, 0.14);
+  border: 1px solid rgba(250, 246, 238, 0.26);
+  color: #FAF6EE;
+  transition: all 0.15s ease;
+}
+
+.tv-foot__links a:hover {
+  background: var(--tv-accent-primary);
+  border-color: var(--tv-accent-primary);
+}
+
+.tv-foot__bar {
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid rgba(250, 246, 238, 0.16);
+  background: rgba(16, 13, 11, 0.72);
+  backdrop-filter: blur(12px);
+  padding: 1.25rem 0;
+}
+
+.tv-foot__bar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--tv-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 238, 0.68);
+}

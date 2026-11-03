@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img">
+  <g fill="#D85A38" fill-rule="evenodd">
+    <!-- Bold Solar Arc -->
+    <path d="M12 28 C12 16.95 20.95 8 32 8 C43.05 8 52 16.95 52 28 H42 C42 22.48 37.52 18 32 18 C26.48 18 22 22.48 22 28 Z"/>
+    <!-- Heavy Table Slab -->
+    <path d="M6 30 H58 V38 H6 Z"/>
+    <!-- Solid Pedestal Base -->
+    <path d="M26 40 H38 V48 H50 V56 H14 V48 H26 Z"/>
+  </g>
+</svg>

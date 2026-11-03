@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img">
+  <g fill="currentColor" fill-rule="evenodd">
+    <path d="M14 28 C14 18.06 22.06 10 32 10 C41.94 10 50 18.06 50 28 H43 C43 21.925 38.075 17 32 17 C25.925 17 21 21.925 21 28 Z"/>
+    <path d="M8 31 H56 V37 H8 Z"/>
+    <path d="M28 41 H36 V48 H48 V54 H16 V48 H28 Z"/>
+  </g>
+</svg>

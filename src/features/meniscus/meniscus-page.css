@@ -68,8 +68,9 @@
   color: inherit;
 }
 .me-brand img {
-  width: 26px;
-  height: 22px;
+  /* the mark is drawn on a square 64 grid — never letterbox it into the old 26 × 22 box */
+  width: 24px;
+  height: 24px;
 }
 .me-brand__name {
   font-family: var(--me-font-display);

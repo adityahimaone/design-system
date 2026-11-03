@@ -1,16 +1,23 @@
 ---
 import Layout from '@/layouts/Layout.astro'
-import '@/features/meniscus/meniscus-tokens.css'
-import '@/features/meniscus/meniscus-page.css'
-import '@/features/meniscus/meniscus-ui.css'
-import '@/features/meniscus/meniscus-gallery.css'
+import tokens from '@/features/halation/tokens.json'
+import '@/features/halation/halation-tokens.css'
+import '@/features/halation/halation-page.css'
+import '@/features/halation/halation-gallery.css'
 import { CaseGallery } from '@/components/case-gallery'
+
+/* the landing states its own system's numbers, read from the token file rather than typed */
+const facts = {
+  primitives: tokens.primitives.length,
+  pairs: tokens.contrast.length,
+  fails: tokens.contrast.filter((c) => !c.pass).length,
+}
 ---
 
 <Layout
-  title="Meniscus — design systems & case library · Aditya Himawan"
-  description="Fourteen design systems held in one glass frame. Each entry states its own primitives, mark family, and the contrast pair it fails."
+  title="Halation — design systems & case library · Aditya Himawan"
+  description="Fifteen design systems held in one glass frame. Each entry states its own primitives, mark family, and the contrast pair it fails."
   canonical="/"
 >
-  <CaseGallery client:load />
+  <CaseGallery facts={facts} client:load />
 </Layout>

@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Halation — brand board</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Schibsted+Grotesk:wght@400;500;700&family=Geist+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* The board is the cover: 1500 × 1125 at 2×. Every value is a token value, written out —
+         a board cannot import the app's CSS, so it states them literally and the audit compares. */
+      :root {
+        --porcelain: #fdf1ec;
+        --shell: #fffaf7;
+        --wash: #f8dcd8;
+        --ink: #1c0b10;
+        --mute: #74545f;
+        --coral: #ff4a34;
+        --coral-deep: #b01f2d;
+        --ember: #f2892f;
+        --lilac: #cbb0d8;
+        --obsidian: #0b0409;
+        --wine: #240309;
+        --chalk: #fbeae6;
+        --reeds: repeating-linear-gradient(
+          90deg,
+          rgb(255 255 255 / 0) 0 6.75px,
+          rgb(255 255 255 / 0.17) 6.75px 8px
+        );
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      html,
+      body {
+        width: 1500px;
+        height: 1125px;
+        overflow: hidden;
+      }
+      body {
+        background: var(--porcelain);
+        color: var(--ink);
+        font-family: 'Schibsted Grotesk', system-ui, sans-serif;
+        padding: 56px 60px 48px;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 34px;
+      }
+      .mono {
+        font-family: 'Geist Mono', ui-monospace, monospace;
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--mute);
+      }
+      .top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 40px;
+      }
+      .top h1 {
+        font-family: 'Syne', sans-serif;
+        font-weight: 600;
+        font-size: 62px;
+        letter-spacing: -0.035em;
+        line-height: 0.95;
+        margin-top: 12px;
+      }
+      .promise {
+        font-size: 17px;
+        line-height: 1.55;
+        color: var(--mute);
+        max-width: 46ch;
+        margin-top: 14px;
+      }
+      .markplate {
+        width: 236px;
+        height: 236px;
+        border-radius: 18px;
+        background: var(--wine);
+        display: grid;
+        place-items: center;
+        box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22);
+        flex: none;
+      }
+      .markplate img {
+        width: 150px;
+        height: 150px;
+        display: block;
+      }
+
+      .mid {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 34px;
+        min-height: 0;
+      }
+      .field {
+        position: relative;
+        border-radius: 18px;
+        overflow: hidden;
+        background-image: url('field-coral.jpg');
+        background-size: cover;
+        background-position: 62% 46%;
+        display: grid;
+        align-items: end;
+        padding: 26px;
+      }
+      .field::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: var(--reeds);
+        opacity: 0.7;
+        mix-blend-mode: soft-light;
+      }
+      .pane {
+        position: relative;
+        z-index: 1;
+        border-radius: 14px;
+        padding: 18px 20px;
+        background: color-mix(in oklab, var(--shell) 62%, transparent);
+        border: 1px solid rgb(255 255 255 / 0.62);
+        box-shadow:
+          inset 0 1px 0 rgb(255 255 255 / 0.7),
+          0 1px 2px rgb(28 11 16 / 0.08);
+        -webkit-backdrop-filter: blur(18px) saturate(1.55) contrast(1.04);
+        backdrop-filter: blur(18px) saturate(1.55) contrast(1.04);
+      }
+      .pane::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background-image: var(--reeds);
+        opacity: 0.8;
+        mix-blend-mode: soft-light;
+      }
+      .pane h2 {
+        font-family: 'Syne', sans-serif;
+        font-size: 23px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        position: relative;
+      }
+      .pane p {
+        position: relative;
+        margin-top: 6px;
+        font-size: 12.5px;
+        line-height: 1.5;
+        color: color-mix(in oklab, var(--ink) 78%, transparent);
+        max-width: 38ch;
+      }
+      .spill {
+        position: absolute;
+        z-index: 2;
+        right: 14px;
+        top: -8px;
+        bottom: -8px;
+        width: 5px;
+        border-radius: 3px;
+        background: var(--coral);
+        box-shadow: 0 0 22px -4px rgb(255 74 52 / 0.8);
+      }
+
+      .right {
+        display: grid;
+        grid-template-rows: auto auto auto;
+        gap: 26px;
+        min-height: 0;
+      }
+      .swatches {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 1px;
+        background: rgb(28 11 16 / 0.12);
+        border: 1px solid rgb(28 11 16 / 0.12);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .sw {
+        background: var(--shell);
+        padding-bottom: 9px;
+      }
+      .sw i {
+        display: block;
+        height: 62px;
+        position: relative;
+      }
+      .sw i::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: var(--reeds);
+        opacity: 0.4;
+        mix-blend-mode: soft-light;
+      }
+      .sw b {
+        display: block;
+        font-family: 'Syne', sans-serif;
+        font-size: 11.5px;
+        font-weight: 700;
+        padding: 8px 9px 1px;
+      }
+      .sw span {
+        display: block;
+        font-family: 'Geist Mono', monospace;
+        font-size: 9.5px;
+        color: var(--mute);
+        padding: 0 9px;
+      }
+
+      .type {
+        display: grid;
+        gap: 10px;
+        align-content: start;
+      }
+      .type .big {
+        font-family: 'Syne', sans-serif;
+        font-size: 54px;
+        line-height: 0.95;
+        letter-spacing: -0.035em;
+        font-weight: 600;
+      }
+      .type .big em {
+        font-style: normal;
+        color: var(--coral-deep);
+        text-shadow: 1.5px 0 0 rgb(255 74 52 / 0.5);
+      }
+      .type .read {
+        font-size: 13.5px;
+        line-height: 1.6;
+        color: var(--mute);
+        max-width: 52ch;
+      }
+      .type .row {
+        display: flex;
+        gap: 16px;
+        align-items: baseline;
+        font-family: 'Geist Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        color: var(--mute);
+        text-transform: uppercase;
+        border-top: 1px solid rgb(28 11 16 / 0.12);
+        padding-top: 10px;
+      }
+
+      .recipe {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1px;
+        background: rgb(28 11 16 / 0.12);
+        border: 1px solid rgb(28 11 16 / 0.12);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .recipe div {
+        background: var(--shell);
+        padding: 11px 13px;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10px;
+      }
+      .recipe span {
+        font-family: 'Geist Mono', monospace;
+        font-size: 9px;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        color: var(--mute);
+      }
+      .recipe b {
+        font-family: 'Geist Mono', monospace;
+        font-size: 10.5px;
+        font-weight: 500;
+        color: var(--ink);
+      }
+
+      .recipe {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1px;
+        background: rgb(28 11 16 / 0.12);
+        border: 1px solid rgb(28 11 16 / 0.12);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .recipe div {
+        background: var(--shell);
+        padding: 11px 13px;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10px;
+      }
+      .recipe span {
+        font-family: 'Geist Mono', monospace;
+        font-size: 9px;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        color: var(--mute);
+      }
+      .recipe b {
+        font-family: 'Geist Mono', monospace;
+        font-size: 10.5px;
+        font-weight: 500;
+        color: var(--ink);
+      }
+
+      .bottom {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 30px;
+        align-items: end;
+        border-top: 1px solid rgb(28 11 16 / 0.14);
+        padding-top: 20px;
+      }
+      .marks {
+        display: flex;
+        align-items: flex-end;
+        gap: 26px;
+      }
+      .marks figure {
+        display: grid;
+        gap: 7px;
+        justify-items: center;
+      }
+      .marks figcaption {
+        font-family: 'Geist Mono', monospace;
+        font-size: 9px;
+        letter-spacing: 0.1em;
+        color: var(--mute);
+      }
+      .lockup {
+        height: 30px;
+        width: auto;
+        display: block;
+        margin-bottom: 6px;
+      }
+      .stamp {
+        text-align: right;
+        font-family: 'Geist Mono', monospace;
+        font-size: 9.5px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--mute);
+        line-height: 1.9;
+      }
+      .stamp b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div>
+        <div class="mono">Case 15 · Reeded glass · 2026</div>
+        <h1>Halation</h1>
+        <p class="promise">
+          An interface identity of reeded prismatic glass: one refraction, one specular edge, one
+          colour that escapes the pane.
+        </p>
+      </div>
+      <div class="markplate"><img src="mark-reverse.svg" alt="Halation mark" /></div>
+    </header>
+
+    <section class="mid">
+      <div class="field">
+        <div class="pane">
+          <h2>Light leaves a trace.</h2>
+          <p>
+            The pane tints what it covers toward coral and lifts on a 1px specular edge. The ribs
+            arrive as bands, not as a blur.
+          </p>
+          <div class="spill"></div>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="swatches">
+          <div class="sw"><i style="background:#fdf1ec"></i><b>porcelain</b><span>#fdf1ec</span></div>
+          <div class="sw"><i style="background:#1c0b10"></i><b>ink</b><span>#1c0b10</span></div>
+          <div class="sw"><i style="background:#ff4a34"></i><b>coral</b><span>#ff4a34</span></div>
+          <div class="sw"><i style="background:#b01f2d"></i><b>coral-deep</b><span>#b01f2d</span></div>
+          <div class="sw"><i style="background:#f2892f"></i><b>ember</b><span>#f2892f</span></div>
+          <div class="sw"><i style="background:#cbb0d8"></i><b>lilac</b><span>#cbb0d8</span></div>
+        </div>
+
+        <div class="type">
+          <div class="big">Light does not stop at the <em>edge</em>.</div>
+          <p class="read">
+            Syne carries the display at 92/0.92 with −0.035em tracking; Schibsted Grotesk reads at
+            16.5/1.66 over 66ch; Geist Mono labels every ratio. Small type never sits on the field.
+          </p>
+          <div class="row"><span>Syne 600</span><span>Schibsted 400</span><span>Geist Mono 500</span></div>
+        </div>
+
+        <div class="recipe">
+          <div><span>Pane tint</span><b>shell 56%</b></div>
+          <div><span>Blur</span><b>22px · 1.55</b></div>
+          <div><span>Specular edge</span><b>white 62%</b></div>
+          <div><span>Spill</span><b>5 × 64 · gap 6</b></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="bottom">
+      <div class="marks">
+        <img class="lockup" src="lockup.svg" alt="Halation lockup" />
+        <figure><img src="mark.svg" width="48" height="48" alt="" /><figcaption>48</figcaption></figure>
+        <figure><img src="mark.svg" width="32" height="32" alt="" /><figcaption>32</figcaption></figure>
+        <figure>
+          <img src="mark-compact.svg" width="16" height="16" alt="" /><figcaption>16 · compact</figcaption>
+        </figure>
+        <figure><img src="icon.svg" width="44" height="44" alt="" /><figcaption>icon</figcaption></figure>
+      </div>
+      <div class="stamp">
+        <b>18 primitives · 20 measured pairs</b><br />
+        coral on porcelain 3.02:1 — graphic only<br />
+        design system · case 15
+      </div>
+    </footer>
+  </body>
+</html>

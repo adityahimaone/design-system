@@ -1,0 +1,2114 @@
+/* ============================================================================
+   Halation — the proof page. Case 15.
+   Every value resolves through a --ha-* token. No component names a colour.
+   ========================================================================== */
+
+.ha {
+  overflow-x: clip;
+  background: var(--ha-surface-page);
+  color: var(--ha-text);
+  font-family: var(--ha-font-reading);
+  font-size: var(--ha-t-body);
+  line-height: var(--ha-t-body-lh);
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background var(--ha-e-base),
+    color var(--ha-e-base);
+}
+
+.ha *,
+.ha *::before,
+.ha *::after {
+  box-sizing: border-box;
+}
+
+.ha ::selection {
+  background: var(--ha-accent);
+  color: var(--ha-accent-ink);
+}
+
+.ha a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ha :focus-visible {
+  outline: 2px solid var(--ha-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.ha-wrap {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 var(--ha-s6);
+}
+
+/* ── type roles ───────────────────────────────────────────────────────────── */
+
+.ha-display {
+  font-family: var(--ha-font-display);
+  font-size: var(--ha-t-display);
+  line-height: var(--ha-t-display-lh);
+  letter-spacing: var(--ha-t-display-ls);
+  font-weight: var(--ha-t-display-w);
+  margin: 0;
+}
+
+.ha-h1 {
+  font-family: var(--ha-font-display);
+  font-size: var(--ha-t-h1);
+  line-height: var(--ha-t-h1-lh);
+  letter-spacing: var(--ha-t-h1-ls);
+  font-weight: var(--ha-t-h1-w);
+  margin: 0;
+}
+
+.ha-h2 {
+  font-family: var(--ha-font-display);
+  font-size: var(--ha-t-h2);
+  line-height: var(--ha-t-h2-lh);
+  letter-spacing: var(--ha-t-h2-ls);
+  font-weight: var(--ha-t-h2-w);
+  margin: 0;
+}
+
+.ha-h3 {
+  font-family: var(--ha-font-display);
+  font-size: var(--ha-t-h3);
+  line-height: var(--ha-t-h3-lh);
+  letter-spacing: var(--ha-t-h3-ls);
+  font-weight: var(--ha-t-h3-w);
+  margin: 0;
+}
+
+.ha-lead {
+  font-size: var(--ha-t-lead);
+  line-height: var(--ha-t-lead-lh);
+  letter-spacing: var(--ha-t-lead-ls);
+  max-width: 62ch;
+  margin: 0;
+  color: var(--ha-text-mute);
+}
+
+.ha-body {
+  font-size: var(--ha-t-body);
+  line-height: var(--ha-t-body-lh);
+  max-width: 66ch;
+  margin: 0;
+}
+
+.ha-small {
+  font-size: var(--ha-t-small);
+  line-height: var(--ha-t-small-lh);
+  color: var(--ha-text-mute);
+  margin: 0;
+}
+
+.ha-label {
+  font-family: var(--ha-font-mono);
+  font-size: var(--ha-t-label);
+  line-height: var(--ha-t-label-lh);
+  letter-spacing: var(--ha-t-label-ls);
+  font-weight: var(--ha-t-label-w);
+  text-transform: uppercase;
+  color: var(--ha-text-mute);
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.ha-figure {
+  font-family: var(--ha-font-display);
+  font-size: var(--ha-t-figure);
+  line-height: var(--ha-t-figure-lh);
+  letter-spacing: var(--ha-t-figure-ls);
+  font-weight: var(--ha-t-figure-w);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  margin: 0;
+}
+
+.ha-accent {
+  color: var(--ha-text-accent);
+}
+
+/* ── the pane: the system's one surface ───────────────────────────────────── */
+
+.ha-pane {
+  position: relative;
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 0.3) 0%, rgb(255 255 255 / 0) 42%),
+    linear-gradient(var(--ha-glass-refraction), var(--ha-glass-refraction)),
+    var(--ha-pane-bg);
+  border: 1px solid var(--ha-pane-edge);
+  border-radius: var(--ha-r-pane);
+  box-shadow: var(--ha-elev-pane), inset 0 -1px 0 color-mix(in oklab, var(--ha-ink) 8%, transparent);
+  -webkit-backdrop-filter: blur(var(--ha-pane-blur)) saturate(1.55) contrast(1.04);
+  backdrop-filter: blur(var(--ha-pane-blur)) saturate(1.55) contrast(1.04);
+}
+
+/* the refraction: the reeds continue through the glass, and the glass tints coral */
+.ha-pane::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: var(--ha-reeds);
+  background-size: auto, auto;
+  opacity: 0.85;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+}
+
+.ha-pane--read {
+  background: color-mix(in oklab, var(--ha-surface-plate) 84%, transparent);
+}
+
+/* the spill: the mark applied to the surface — one reed of light past the edge */
+.ha-spill::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  right: calc(var(--ha-gap) * -1 - var(--ha-spill));
+  width: var(--ha-spill);
+  border-radius: var(--ha-r-rib);
+  background: var(--ha-accent);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--ha-ink) 18%, transparent),
+    0 0 22px -4px color-mix(in oklab, var(--ha-accent) 70%, transparent);
+}
+
+/* ── top bar ──────────────────────────────────────────────────────────────── */
+
+.ha-bar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: color-mix(in oklab, var(--ha-surface-page) 82%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  backdrop-filter: blur(18px) saturate(1.2);
+  border-bottom: 1px solid var(--ha-rule);
+}
+
+.ha-bar__in {
+  display: flex;
+  align-items: center;
+  gap: var(--ha-s4);
+  height: 62px;
+}
+
+.ha-bar__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto;
+}
+
+.ha-bar__name {
+  font-family: var(--ha-font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-size: 17px;
+}
+
+.ha-bar__case {
+  font-family: var(--ha-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ha-text-mute);
+  border: 1px solid var(--ha-rule-strong);
+  border-radius: var(--ha-r-pill);
+  padding: 3px 8px;
+}
+
+.ha-bar__nav {
+  display: flex;
+  gap: var(--ha-s5);
+  font-family: var(--ha-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ha-text-mute);
+}
+
+.ha-bar__nav a:hover {
+  color: var(--ha-text);
+}
+
+.ha-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px 0 8px;
+  border-radius: var(--ha-r-pill);
+  border: 1px solid var(--ha-rule-strong);
+  background: var(--ha-surface-plate);
+  color: var(--ha-text);
+  font-family: var(--ha-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--ha-e-fast), border-color var(--ha-e-fast);
+}
+
+.ha-toggle:hover {
+  border-color: var(--ha-focus);
+}
+
+.ha-toggle__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--ha-accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ha-accent) 20%, transparent);
+}
+
+/* ── hero ─────────────────────────────────────────────────────────────────── */
+
+.ha-hero {
+  position: relative;
+  isolation: isolate;
+  padding: 104px 0 0;
+  overflow: clip;
+}
+
+.ha-hero__field {
+  position: absolute;
+  inset: 0 0 96px;
+  background-image: var(--ha-field-image);
+  background-size: cover;
+  background-position: 52% 46%;
+  z-index: -2;
+}
+
+/* the reeds, on the photograph — the reason the field arrives as bands */
+.ha-hero__field::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--ha-reeds);
+  opacity: 0.7;
+  mix-blend-mode: soft-light;
+}
+
+.ha-hero__scrim {
+  position: absolute;
+  inset: 0 0 96px;
+  z-index: -1;
+  background:
+    radial-gradient(120% 90% at 12% 10%, color-mix(in oklab, var(--ha-porcelain) 42%, transparent), transparent 62%),
+    linear-gradient(to bottom, transparent 46%, var(--ha-surface-page) 100%);
+}
+
+[data-ha='night'] .ha-hero__scrim {
+  background:
+    radial-gradient(120% 90% at 12% 10%, color-mix(in oklab, var(--ha-obsidian) 30%, transparent), transparent 60%),
+    linear-gradient(to bottom, transparent 40%, var(--ha-surface-page) 100%);
+}
+
+.ha-hero__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--ha-s3);
+  margin-bottom: var(--ha-s6);
+}
+
+.ha-hero__eyebrow .ha-label {
+  color: color-mix(in oklab, var(--ha-text) 78%, transparent);
+}
+
+.ha-hero__rule {
+  height: 1px;
+  width: 56px;
+  background: color-mix(in oklab, var(--ha-text) 40%, transparent);
+}
+
+.ha-hero__pane {
+  padding: var(--ha-s8) var(--ha-s8) var(--ha-s7);
+  max-width: 860px;
+}
+
+.ha-hero__display {
+  max-width: 15ch;
+  color: var(--ha-text);
+  text-wrap: balance;
+}
+
+/* register ghost — a 1.5px coral second impression, so it prints and screenshots */
+.ha-hero__display em {
+  font-style: normal;
+  color: var(--ha-text-accent);
+  text-shadow: 1.5px 0 0 color-mix(in oklab, var(--ha-accent) 55%, transparent);
+}
+
+.ha-hero__lead {
+  margin-top: var(--ha-s5);
+  max-width: 46ch;
+  color: color-mix(in oklab, var(--ha-text) 78%, transparent);
+}
+
+.ha-hero__acts {
+  display: flex;
+  align-items: center;
+  gap: var(--ha-s3);
+  margin-top: var(--ha-s6);
+  flex-wrap: wrap;
+}
+
+.ha-hero__meta {
+  display: flex;
+  gap: var(--ha-s5);
+  margin-top: var(--ha-s6);
+  padding-top: var(--ha-s4);
+  border-top: 1px solid color-mix(in oklab, var(--ha-text) 16%, transparent);
+  flex-wrap: wrap;
+}
+
+.ha-hero__meta span {
+  font-family: var(--ha-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--ha-text) 64%, transparent);
+}
+
+/* the fact strip — small type never sits on the field */
+.ha-facts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin-top: var(--ha-s9);
+  background: var(--ha-rule);
+  border-top: 1px solid var(--ha-rule);
+  border-bottom: 1px solid var(--ha-rule);
+}
+
+.ha-fact {
+  background: var(--ha-surface-page);
+  padding: var(--ha-s5) var(--ha-s5) var(--ha-s6);
+}
+
+.ha-fact .ha-figure {
+  font-size: 38px;
+  color: var(--ha-text);
+}
+
+.ha-fact .ha-label {
+  margin-top: var(--ha-s3);
+  display: block;
+}
+
+.ha-fact p {
+  margin: var(--ha-s2) 0 0;
+  font-size: var(--ha-t-small);
+  line-height: 1.5;
+  color: var(--ha-text-mute);
+  max-width: 30ch;
+}
+
+/* ── section shell ────────────────────────────────────────────────────────── */
+
+.ha-sec {
+  padding: var(--ha-s9) 0;
+  border-top: 1px solid var(--ha-rule);
+}
+
+.ha-sec__head {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr) minmax(0, 340px);
+  gap: var(--ha-s6);
+  align-items: start;
+  margin-bottom: var(--ha-s8);
+}
+
+.ha-sec__head .ha-h1 {
+  font-size: clamp(28px, 3.2vw, 40px);
+  max-width: 26ch;
+  text-wrap: balance;
+}
+
+.ha-sec__num {
+  font-family: var(--ha-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ha-text-mute);
+  padding-top: 8px;
+}
+
+.ha-sec__num b {
+  display: block;
+  font-family: var(--ha-font-display);
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ha-accent);
+  line-height: 1;
+  margin-bottom: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ha-sec__note {
+  font-size: var(--ha-t-small);
+  line-height: 1.6;
+  color: var(--ha-text-mute);
+  padding-top: 6px;
+}
+
+/* ── thesis ───────────────────────────────────────────────────────────────── */
+
+.ha-thesis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--ha-rule);
+  border: 1px solid var(--ha-rule);
+  border-radius: var(--ha-r-crop);
+  overflow: hidden;
+  margin-bottom: var(--ha-s8);
+}
+
+.ha-thesis__cell {
+  background: var(--ha-surface-plate);
+  padding: var(--ha-s6);
+  min-height: 168px;
+}
+
+.ha-thesis__cell h3 {
+  margin: 0 0 var(--ha-s3);
+}
+
+.ha-thesis__cell p {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.62;
+  max-width: 44ch;
+  color: color-mix(in oklab, var(--ha-text) 82%, transparent);
+}
+
+.ha-thesis__cell--loud {
+  background: var(--ha-accent);
+  color: var(--ha-ink);
+}
+
+.ha-thesis__cell--loud .ha-label,
+.ha-thesis__cell--loud p {
+  color: color-mix(in oklab, var(--ha-ink) 78%, transparent);
+}
+
+.ha-thesis__cell--loud h3 {
+  color: var(--ha-ink);
+}
+
+.ha-thesis__cell--loud p {
+  font-size: 19px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  max-width: 34ch;
+  color: var(--ha-ink);
+}
+
+.ha-thesis__cell--loud p {
+  font-size: 19px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  max-width: 34ch;
+  color: var(--ha-ink);
+}
+
+/* decision cards: Decision / Because / Not when / Breaks next */
+.ha-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ha-s5);
+}
+
+.ha-card {
+  border: 1px solid var(--ha-rule);
+  border-radius: var(--ha-r-crop);
+  padding: var(--ha-s5);
+  background: var(--ha-surface-plate);
+  display: grid;
+  gap: var(--ha-s3);
+}
+
+.ha-card h4 {
+  font-family: var(--ha-font-display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  margin: 0;
+}
+
+.ha-card dl {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 6px var(--ha-s3);
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.ha-card dt {
+  font-family: var(--ha-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ha-text-mute);
+  padding-top: 3px;
+}
+
+.ha-card dd {
+  margin: 0;
+  color: color-mix(in oklab, var(--ha-text) 88%, transparent);
+}
+
+/* ── the mark ─────────────────────────────────────────────────────────────── */
+
+.ha-mark-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: var(--ha-s5);
+  margin-bottom: var(--ha-s5);
+}
+
+.ha-plate {
+  border: 1px solid var(--ha-rule);
+  border-radius: var(--ha-r-crop);
+  padding: var(--ha-s6);
+  background: var(--ha-surface-plate);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ha-s5);
+}
+
+.ha-plate--ink {
+  background: var(--ha-ink);
+  border-color: transparent;
+}
+
+.ha-plate--field {
+  position: relative;
+  overflow: hidden;
+  border-color: transparent;
+  background-image: var(--ha-field-image);
+  background-size: cover;
+  background-position: 60% 40%;
+  min-height: 220px;
+}
+
+.ha-plate--field::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--ha-reeds);
+  opacity: 0.6;
+  mix-blend-mode: soft-light;
+}
+
+.ha-plate__row {
+  display: flex;
+  align-items: center;
+  gap: var(--ha-s6);
+  flex-wrap: wrap;
+}
+
+.ha-mark-big {
+  width: 148px;
+  height: 148px;
+  display: block;
+}
+
+.ha-mark-sizes {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--ha-s5);
+}
+
+.ha-mark-sizes figure {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+}
+
+.ha-mark-sizes img {
+  display: block;
+}
+
+.ha-mark-sizes figcaption {
+  font-family: var(--ha-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: var(--ha-text-mute);
+}
+
+.ha-wordmark-scale {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--ha-s6);
+  flex-wrap: wrap;
+}
+
+.ha-wordmark-scale figure {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.ha-wordmark-scale figcaption {
+  font-family: var(--ha-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: var(--ha-text-mute);
+}
+
+.ha-wordmark-scale img {
+  display: block;
+}
+
+.ha-rules {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ha-s5);
+}
+
+.ha-rule-card {
+  border-top: 2px solid var(--ha-accent);
+  padding-top: var(--ha-s4);
+}
+
+.ha-rule-card h4 {
+  font-family: var(--ha-font-display);
+  font-size: 15px;
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+
+.ha-rule-card p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ha-text-mute);
+}
+
+/* ── spectrum ─────────────────────────────────────────────────────────────── */
+
+.ha-swatch-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--ha-rule);
+  border: 1px solid var(--ha-rule);
+  border-radius: var(--ha-r-crop);
+  overflow: hidden;
+  margin-bottom: var(--ha-s5);
+}
+
+.ha-swatch {
+  background: var(--ha-surface-plate);
+  padding: 0;
+}
+
+.ha-swatch__chip {
+  height: 92px;
+  position: relative;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ha-ink) 8%, transparent);
+}
+
+.ha-swatch__chip::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--ha-reeds);
+  opacity: 0.4;
+  mix-blend-mode: soft-light;
+}
+
+.ha-swatch__meta {
+  padding: 10px 12px 14px;
+  display: grid;
+  gap: 2px;
+}
+
+.ha-swatch__name {
+  font-family: var(--ha-font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.ha-swatch__hex {
+  font-family: var(--ha-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--ha-text-mute);
+}
+
+.ha-swatch__role {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--ha-text-mute);
+  margin-top: 2px;
+}
+
+.ha-material {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ha-s5);
+  margin-bottom: var(--ha-s7);
+}
+
+.ha-material figure {
+  margin: 0;
+  position: relative;
+  border-radius: var(--ha-r-crop);
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+}
+
+.ha-material img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ha-material figcaption {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  font-family: var(--ha-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ha-shell);
+  background: color-mix(in oklab, var(--ha-ink) 62%, transparent);
+  padding: 5px 9px;
+  border-radius: var(--ha-r-pill);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+/* the contrast table — every pair computed, the failure printed */
+.ha-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.ha-table caption {
+  text-align: left;
+  font-family: var(--ha-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ha-text-mute);
+  padding-bottom: 10px;
+}
+
+.ha-table th {
+  text-align: left;
+  font-family: var(--ha-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ha-text-mute);
+  font-weight: 500;
+  padding: 0 var(--ha-s4) 10px 0;
+  border-bottom: 1px solid var(--ha-rule-strong);
+}
+
+.ha-table td {
+  padding: 11px var(--ha-s4) 11px 0;
+  border-bottom: 1px solid var(--ha-rule);
+  vertical-align: middle;
+}
+
+.ha-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.ha-table td:first-child {
+  padding-left: 0;
+}
+
+.ha-table__pair {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--ha-font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.ha-chip {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  border: 1px solid var(--ha-rule-strong);
+  flex: none;
+}
+
+.ha-table__ratio {
+  font-family: var(--ha-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 12.5px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.ha-table__job {
+  color: var(--ha-text-mute);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.ha-table tr[data-pass='false'] td {
+  background: color-mix(in oklab, var(--ha-danger) 7%, transparent);
+}
+
+.ha-table tr[data-pass='false'] .ha-table__ratio {
+  color: var(--ha-danger);
+  font-weight: 600;
+}
+
+.ha-verdict {
+  display: inline-block;
+  font-family: var(--ha-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: var(--ha-r-pill);
+  border: 1px solid currentColor;
+}
+
+.ha-verdict[data-pass='true'] {
+  color: var(--ha-success);
+}
+
+.ha-verdict[data-pass='false'] {
+  color: var(--ha-danger);
+}
+
+/* ── measure: type specimens ──────────────────────────────────────────────── */
+
+.ha-specimen {
+  border-top: 1px solid var(--ha-rule-strong);
+  padding: var(--ha-s6) 0;
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: var(--ha-s6);
+}
+
+.ha-specimen__meta {
+  font-family: var(--ha-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ha-text-mute);
+  line-height: 1.9;
+  padding-top: 10px;
+}
+
+.ha-specimen__meta b {
+  display: block;
+  color: var(--ha-text);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+}
+
+.ha-specimen__display {
+  font-family: var(--ha-font-display);
+  font-size: var(--ha-t-display);
+  line-height: var(--ha-t-display-lh);
+  letter-spacing: var(--ha-t-display-ls);
+  font-weight: 600;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.ha-reading {
+  font-size: 17px;
+  line-height: 1.68;
+  max-width: 66ch;
+  margin: 0;
+}
+
+.ha-reading + .ha-reading {
+  margin-top: 1em;
+}
+
+.ha-figures {
+  display: grid;
+  gap: 2px;
+  max-width: 360px;
+}
+
+.ha-figures__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--ha-s4);
+  padding: 9px 0;
+  border-bottom: 1px solid var(--ha-rule);
+  font-family: var(--ha-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--ha-text-mute);
+}
+
+.ha-figures__row b {
+  font-family: var(--ha-font-display);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ha-text);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* live scale */
+.ha-scale {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--ha-rule-strong);
+}
+
+.ha-scale__row {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr) 120px;
+  gap: var(--ha-s5);
+  align-items: baseline;
+  padding: var(--ha-s4) 0;
+  border-bottom: 1px solid var(--ha-rule);
+}
+
+.ha-scale__row .ha-label {
+  padding-top: 6px;
+}
+
+.ha-scale__sample {
+  overflow: hidden;
+  white-space: nowrap;
+  -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent 100%);
+  mask-image: linear-gradient(90deg, #000 88%, transparent 100%);
+}
+
+.ha-scale__vals {
+  font-family: var(--ha-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  color: var(--ha-text-mute);
+  text-align: right;
+  line-height: 1.7;
+}
+
+/* foundations */
+.ha-found {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ha-s5);
+  margin-top: var(--ha-s6);
+}
+
+.ha-found__box {
+  border: 1px solid var(--ha-rule);
+  border-radius: var(--ha-r-crop);
+  padding: var(--ha-s5);
+  background: var(--ha-surface-plate);
+}
+
+.ha-found__box h4 {
+  font-family: var(--ha-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ha-text-mute);
+  margin: 0 0 var(--ha-s4);
+  font-weight: 500;
+}
+
+.ha-bars {
+  display: grid;
+  gap: 7px;
+}
+
+.ha-bars div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--ha-font-mono);
+  font-size: 9.5px;
+  color: var(--ha-text-mute);
+}
+
+.ha-bars i {
+  display: block;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--ha-accent);
+  flex: none;
+}
+
+.ha-radii {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ha-radii figure {
+  margin: 0;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+}
+
+.ha-radii figure[data-wide] i {
+  width: 88px;
+}
+
+.ha-radii i {
+  display: block;
+  width: 54px;
+  height: 54px;
+  min-width: 54px;
+  background: var(--ha-surface-raised);
+  border: 1px solid var(--ha-rule-strong);
+}
+
+.ha-radii figcaption {
+  font-family: var(--ha-font-mono);
+  font-size: 9px;
+  color: var(--ha-text-mute);
+}
+
+.ha-elevs {
+  display: grid;
+  gap: 10px;
+}
+
+.ha-elevs div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ha-s4);
+  background: var(--ha-surface-plate);
+  border: 1px solid var(--ha-rule);
+  border-radius: var(--ha-r-pane);
+  padding: 12px 14px;
+  font-family: var(--ha-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ha-text-mute);
+}
+
+.ha-elevs div[data-e='pane'] {
+  box-shadow: var(--ha-elev-pane);
+}
+
+.ha-elevs div[data-e='float'] {
+  box-shadow: var(--ha-elev-float);
+}
+
+.ha-elevs div[data-e='spill'] {
+  box-shadow: var(--ha-elev-spill);
+}
+
+.ha-motion {
+  display: grid;
+  gap: 10px;
+}
+
+.ha-motion div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--ha-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  color: var(--ha-text-mute);
+  border-bottom: 1px solid var(--ha-rule);
+  padding-bottom: 8px;
+}
+
+.ha-motion i {
+  display: block;
+  width: 44px;
+  height: 2px;
+  background: var(--ha-accent);
+  transform-origin: left;
+}
+
+.ha-motion div:hover i {
+  animation: ha-ease 900ms var(--ha-e-base) both;
+}
+
+@keyframes ha-ease {
+  0% {
+    transform: scaleX(0.1);
+  }
+  60% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+/* ── instrument: the kit ──────────────────────────────────────────────────── */
+
+.ha-kit {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ha-s5);
+}
+
+.ha-kit__box {
+  border: 1px solid var(--ha-rule);
+  border-radius: var(--ha-r-crop);
+  background: var(--ha-surface-plate);
+  padding: var(--ha-s5);
+  display: grid;
+  gap: var(--ha-s4);
+  align-content: start;
+}
+
+.ha-kit__box > .ha-label {
+  margin-bottom: 2px;
+}
+
+.ha-kit__box--span {
+  grid-column: 1 / -1;
+}
+
+/* glass controls have nothing to refract on a plate, so the specimen gets a
+   strip of the field to sit on */
+.ha-kit__field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: var(--ha-s5);
+  border-radius: var(--ha-r-crop);
+  background-image: var(--ha-field-image);
+  background-size: cover;
+  background-position: 28% 44%;
+}
+
+/* buttons */
+.ha-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 18px;
+  border-radius: var(--ha-r-pill);
+  border: 1px solid transparent;
+  background: var(--ha-btn-bg);
+  color: var(--ha-btn-ink);
+  font-family: var(--ha-font-reading);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition:
+    background var(--ha-e-fast),
+    transform var(--ha-e-fast),
+    box-shadow var(--ha-e-fast);
+}
+
+.ha-btn:hover {
+  background: var(--ha-btn-bg-hover);
+  box-shadow: var(--ha-elev-spill);
+}
+
+.ha-btn:active {
+  transform: translateY(1px);
+}
+
+.ha-btn--ghost {
+  background: transparent;
+  color: var(--ha-btn-ghost-ink);
+  border-color: var(--ha-btn-ghost-edge);
+}
+
+.ha-btn--ghost:hover {
+  background: color-mix(in oklab, var(--ha-text) 6%, transparent);
+  box-shadow: none;
+}
+
+.ha-btn--sm {
+  height: 32px;
+  font-size: 12.5px;
+  padding: 0 14px;
+}
+
+.ha-btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ha-btn--ghost-light {
+  background: color-mix(in oklab, var(--ha-shell) 70%, transparent);
+  border-color: color-mix(in oklab, var(--ha-ink) 22%, transparent);
+  color: var(--ha-ink);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.ha-btn--ghost-light:hover {
+  background: var(--ha-shell);
+  box-shadow: none;
+}
+
+/* ── liquid glass controls ────────────────────────────────────────────────────
+   The pane recipe at control scale. Four layers, always in this order: the
+   specular wash that only lights the top of the shape, the coral refraction that
+   keeps the control inside the material, the reeds, and the translucent tint that
+   does the work. Never a solid fill — the field is still read through it.
+
+   The silhouette is the part that decides whether this looks like glass or like
+   a sticker: on a bright field a chalk rim is invisible, so the edge is a soft
+   shade and all the light stays inside the shape. That pairing is a lens. */
+.ha-btn--glass,
+.ha-btn--glass-quiet {
+  position: relative;
+  border-color: var(--ha-glass-ctl-ring);
+  -webkit-backdrop-filter: blur(20px) saturate(1.65) contrast(1.04);
+  backdrop-filter: blur(20px) saturate(1.65) contrast(1.04);
+  box-shadow:
+    inset 0 1px 0 var(--ha-glass-ctl-lit),
+    inset 0 -3px 8px -5px var(--ha-glass-ctl-shade),
+    inset 0 -1px 0 var(--ha-glass-ctl-shade),
+    0 1px 1px color-mix(in oklab, var(--ha-ink) 10%, transparent),
+    var(--ha-glass-ctl-shadow);
+}
+
+.ha-btn--glass {
+  background:
+    linear-gradient(
+      180deg,
+      rgb(255 255 255 / 0.5) 0%,
+      rgb(255 255 255 / 0.07) 44%,
+      rgb(255 255 255 / 0) 64%
+    ),
+    linear-gradient(var(--ha-glass-refraction), var(--ha-glass-refraction)),
+    var(--ha-reeds),
+    var(--ha-glass-accent);
+  color: var(--ha-btn-ink);
+}
+
+.ha-btn--glass-quiet {
+  background:
+    linear-gradient(
+      180deg,
+      rgb(255 255 255 / 0.44) 0%,
+      rgb(255 255 255 / 0.05) 46%,
+      rgb(255 255 255 / 0) 66%
+    ),
+    linear-gradient(var(--ha-glass-refraction), var(--ha-glass-refraction)),
+    var(--ha-reeds),
+    color-mix(in oklab, var(--ha-surface-plate) 38%, transparent);
+  color: var(--ha-btn-ghost-ink);
+}
+
+/* hover lifts the light, not the tint: the control gets wetter, not more solid */
+.ha-btn--glass:hover {
+  background:
+    linear-gradient(
+      180deg,
+      rgb(255 255 255 / 0.58) 0%,
+      rgb(255 255 255 / 0.1) 44%,
+      rgb(255 255 255 / 0) 64%
+    ),
+    linear-gradient(var(--ha-glass-refraction), var(--ha-glass-refraction)),
+    var(--ha-reeds),
+    color-mix(in oklab, var(--ha-accent) 74%, transparent);
+  box-shadow:
+    inset 0 1px 0 var(--ha-glass-ctl-lit),
+    inset 0 -3px 8px -5px var(--ha-glass-ctl-shade),
+    inset 0 -1px 0 var(--ha-glass-ctl-shade),
+    0 1px 1px color-mix(in oklab, var(--ha-ink) 10%, transparent),
+    0 16px 36px -18px color-mix(in oklab, var(--ha-accent) 62%, transparent);
+}
+
+.ha-btn--glass-quiet:hover {
+  background:
+    linear-gradient(
+      180deg,
+      rgb(255 255 255 / 0.54) 0%,
+      rgb(255 255 255 / 0.09) 46%,
+      rgb(255 255 255 / 0) 66%
+    ),
+    linear-gradient(var(--ha-glass-refraction), var(--ha-glass-refraction)),
+    var(--ha-reeds),
+    color-mix(in oklab, var(--ha-surface-plate) 56%, transparent);
+  box-shadow:
+    inset 0 1px 0 var(--ha-glass-ctl-lit),
+    inset 0 -3px 8px -5px var(--ha-glass-ctl-shade),
+    inset 0 -1px 0 var(--ha-glass-ctl-shade),
+    0 1px 1px color-mix(in oklab, var(--ha-ink) 10%, transparent),
+    var(--ha-glass-ctl-shadow);
+}
+
+/* fields */
+.ha-field {
+  display: grid;
+  gap: 7px;
+}
+
+.ha-field > span {
+  font-family: var(--ha-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ha-text-mute);
+}
+
+.ha-input,
+.ha-select,
+.ha-textarea {
+  width: 100%;
+  font-family: var(--ha-font-reading);
+  font-size: 14.5px;
+  color: var(--ha-field-ink);
+  background: var(--ha-field-bg);
+  border: 1px solid var(--ha-field-edge);
+  border-radius: 10px;
+  padding: 11px 13px;
+  transition:
+    border-color var(--ha-e-fast),
+    box-shadow var(--ha-e-fast);
+  appearance: none;
+}
+
+.ha-input::placeholder,
+.ha-textarea::placeholder {
+  color: var(--ha-field-ph);
+}
+
+.ha-input:hover,
+.ha-select:hover,
+.ha-textarea:hover {
+  border-color: var(--ha-focus);
+}
+
+.ha-input:focus,
+.ha-select:focus,
+.ha-textarea:focus {
+  outline: none;
+  border-color: var(--ha-focus);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ha-focus) 18%, transparent);
+}
+
+.ha-select {
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) 50%,
+    calc(100% - 13px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
+}
+
+.ha-field[data-state='error'] .ha-input {
+  border-color: var(--ha-danger);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ha-danger) 14%, transparent);
+}
+
+.ha-field[data-state='error'] .ha-hint {
+  color: var(--ha-danger);
+}
+
+.ha-field[data-state='ok'] .ha-input {
+  border-color: var(--ha-success);
+}
+
+.ha-field[data-state='ok'] .ha-hint {
+  color: var(--ha-success);
+}
+
+.ha-hint {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ha-text-mute);
+  margin: 0;
+}
+
+.ha-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--ha-text);
+  cursor: pointer;
+}
+
+.ha-check input {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin: 1px 0 0;
+  border: 1px solid var(--ha-field-edge);
+  border-radius: 5px;
+  background: var(--ha-field-bg);
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  transition: background var(--ha-e-fast), border-color var(--ha-e-fast);
+}
+
+.ha-check input::after {
+  content: '';
+  width: 9px;
+  height: 5px;
+  border-left: 2px solid var(--ha-accent-ink);
+  border-bottom: 2px solid var(--ha-accent-ink);
+  transform: rotate(-45deg) scale(0);
+  transition: transform var(--ha-e-fast);
+  margin-top: -2px;
+}
+
+.ha-check input:checked {
+  background: var(--ha-accent);
+  border-color: var(--ha-accent);
+}
+
+.ha-check input:checked::after {
+  transform: rotate(-45deg) scale(1);
+}
+
+.ha-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+
+.ha-switch input {
+  appearance: none;
+  width: 38px;
+  height: 22px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--ha-text) 18%, transparent);
+  position: relative;
+  cursor: pointer;
+  transition: background var(--ha-e-fast);
+}
+
+.ha-switch input::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--ha-surface-plate);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
+  transition: transform var(--ha-e-fast);
+}
+
+.ha-switch input:checked {
+  background: var(--ha-accent);
+}
+
+.ha-switch input:checked::after {
+  transform: translateX(16px);
+}
+
+/* tabs */
+.ha-tabs {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--ha-r-pill);
+  background: color-mix(in oklab, var(--ha-text) 6%, transparent);
+  border: 1px solid var(--ha-rule);
+}
+
+.ha-tabs button {
+  border: 0;
+  background: transparent;
+  color: var(--ha-tab-ink);
+  font-family: var(--ha-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 7px 13px;
+  border-radius: var(--ha-r-pill);
+  cursor: pointer;
+  transition: background var(--ha-e-fast), color var(--ha-e-fast);
+}
+
+.ha-tabs button[aria-selected='true'] {
+  background: var(--ha-tab-bg-on);
+  color: var(--ha-tab-ink-on);
+  box-shadow: var(--ha-elev-pane);
+}
+
+.ha-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ha-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--ha-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 9px;
+  border-radius: var(--ha-r-pill);
+  background: var(--ha-badge-bg);
+  color: var(--ha-badge-ink);
+}
+
+.ha-badge--solid {
+  background: var(--ha-accent);
+  color: var(--ha-accent-ink);
+}
+
+.ha-badge--line {
+  background: transparent;
+  border: 1px solid var(--ha-rule-strong);
+  color: var(--ha-text-mute);
+}
+
+/* the refraction demo — the pane must be adjustable, or the claim is decoration */
+.ha-demo {
+  position: relative;
+  border-radius: var(--ha-r-sheet);
+  overflow: hidden;
+  border: 1px solid var(--ha-rule);
+  min-height: 360px;
+  display: grid;
+  align-items: center;
+  padding: var(--ha-s6);
+  background-image: var(--ha-field-image);
+  background-size: cover;
+  background-position: 30% 50%;
+  isolation: isolate;
+}
+
+.ha-demo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--ha-reeds);
+  opacity: 0.55;
+  mix-blend-mode: soft-light;
+}
+
+.ha-demo__pane {
+  position: relative;
+  z-index: 1;
+  max-width: 420px;
+  padding: var(--ha-s5);
+  display: grid;
+  gap: var(--ha-s3);
+  /* Re-tint the pane, never re-declare its background: the .ha-pane stack is what carries the
+     sheen and the refraction, and replacing the shorthand would throw both away. */
+  --ha-pane-bg: color-mix(in oklab, var(--ha-surface-plate) var(--ha-demo-tint, 26%), transparent);
+}
+
+.ha-demo__pane .ha-h3 {
+  color: var(--ha-text);
+}
+
+.ha-demo__pane p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: color-mix(in oklab, var(--ha-text) 76%, transparent);
+}
+
+.ha-demo__bar {
+  display: grid;
+  gap: 12px;
+  margin-top: var(--ha-s4);
+  max-width: 520px;
+}
+
+.ha-demo__ctl {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) 54px;
+  gap: var(--ha-s3);
+  align-items: center;
+}
+
+.ha-demo__ctl > span:first-child {
+  font-family: var(--ha-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ha-text-mute);
+}
+
+.ha-demo__ctl input[type='range'] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: color-mix(in oklab, var(--ha-text) 22%, transparent);
+  cursor: pointer;
+}
+
+.ha-demo__ctl input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ha-accent);
+  border: 3px solid var(--ha-surface-plate);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--ha-ink) 24%, transparent);
+  cursor: grab;
+}
+
+.ha-demo__ctl input[type='range']::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--ha-accent);
+  border: 3px solid var(--ha-surface-plate);
+}
+
+.ha-demo__val {
+  font-family: var(--ha-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--ha-text);
+}
+
+/* ── nightfall ────────────────────────────────────────────────────────────── */
+
+.ha-night {
+  position: relative;
+  isolation: isolate;
+  background: var(--ha-surface-page);
+  color: var(--ha-text);
+  padding: var(--ha-s9) 0;
+  overflow: clip;
+}
+
+.ha-night__field {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image: var(--ha-field-image);
+  background-size: cover;
+  background-position: 50% 30%;
+  opacity: 0.9;
+}
+
+.ha-night__field::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--ha-reeds);
+  opacity: 0.65;
+  mix-blend-mode: soft-light;
+}
+
+.ha-night__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(90% 80% at 18% 34%, color-mix(in oklab, var(--ha-obsidian) 78%, transparent), transparent 72%),
+    linear-gradient(to bottom, var(--ha-obsidian) 0%, transparent 26%, transparent 68%, var(--ha-obsidian) 100%);
+}
+
+.ha-night .ha-hero__eyebrow .ha-label {
+  color: color-mix(in oklab, var(--ha-chalk) 72%, transparent);
+}
+
+.ha-night .ha-hero__eyebrow .ha-label {
+  color: color-mix(in oklab, var(--ha-chalk) 72%, transparent);
+}
+
+.ha-night__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  gap: var(--ha-s7);
+  align-items: center;
+}
+
+.ha-night__pane {
+  padding: var(--ha-s6);
+  display: grid;
+  gap: var(--ha-s4);
+}
+
+.ha-night__pane .ha-label {
+  color: var(--ha-text-mute);
+}
+
+.ha-night__pane p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ha-text-mute);
+}
+
+.ha-night__stats {
+  display: grid;
+  gap: 1px;
+  background: var(--ha-rule);
+  border: 1px solid var(--ha-rule);
+  border-radius: var(--ha-r-crop);
+  overflow: hidden;
+}
+
+.ha-night__stat {
+  background: var(--ha-surface-plate);
+  padding: var(--ha-s4) var(--ha-s5);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--ha-s4);
+}
+
+.ha-night__stat b {
+  font-family: var(--ha-font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ha-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.ha-night__stat span {
+  font-family: var(--ha-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ha-text-mute);
+}
+
+/* ── spec ─────────────────────────────────────────────────────────────────── */
+
+.ha-code-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ha-s5);
+}
+
+.ha-code {
+  position: relative;
+  border: 1px solid var(--ha-rule);
+  border-radius: var(--ha-r-crop);
+  background: var(--ha-code-bg);
+  overflow: hidden;
+}
+
+.ha-code header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ha-s4);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--ha-rule);
+}
+
+.ha-code header span {
+  font-family: var(--ha-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ha-text-mute);
+}
+
+.ha-copy {
+  border: 1px solid var(--ha-rule-strong);
+  background: transparent;
+  color: var(--ha-text-mute);
+  font-family: var(--ha-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: var(--ha-r-pill);
+  cursor: pointer;
+  transition: color var(--ha-e-fast), border-color var(--ha-e-fast);
+}
+
+.ha-copy:hover {
+  color: var(--ha-text);
+  border-color: var(--ha-focus);
+}
+
+.ha-code pre {
+  margin: 0;
+  padding: 14px;
+  overflow: auto;
+  max-height: 300px;
+  font-family: var(--ha-font-mono);
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: var(--ha-code-ink);
+}
+
+.ha-code pre .c {
+  color: var(--ha-text-mute);
+}
+
+.ha-code pre .k {
+  color: var(--ha-text-accent);
+}
+
+.ha-files {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ha-s5);
+  margin-top: var(--ha-s6);
+}
+
+.ha-file {
+  border-top: 1px solid var(--ha-rule-strong);
+  padding-top: var(--ha-s3);
+}
+
+.ha-file code {
+  font-family: var(--ha-font-mono);
+  font-size: 11px;
+  color: var(--ha-text);
+}
+
+.ha-file p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ha-text-mute);
+}
+
+/* ── the close: the surface is the mark ───────────────────────────────────── */
+
+.ha-close {
+  border-top: 1px solid var(--ha-rule);
+  padding: var(--ha-s9) 0 var(--ha-s8);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: var(--ha-s7);
+  align-items: end;
+}
+
+.ha-close__pane {
+  position: relative;
+  height: 260px;
+  border-radius: var(--ha-r-pane);
+  overflow: visible;
+}
+
+.ha-close__pane .ha-close__in {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: var(--ha-field-image);
+  background-size: cover;
+  background-position: 40% 50%;
+  overflow: hidden;
+}
+
+.ha-close__in::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--ha-reeds);
+  opacity: 0.8;
+  mix-blend-mode: soft-light;
+}
+
+.ha-close__spill {
+  position: absolute;
+  top: -8px;
+  bottom: -8px;
+  right: -11px;
+  width: 5px;
+  border-radius: 3px;
+  background: var(--ha-accent);
+  box-shadow: 0 0 26px -2px color-mix(in oklab, var(--ha-accent) 80%, transparent);
+}
+
+.ha-foot {
+  border-top: 1px solid var(--ha-rule);
+  padding: var(--ha-s5) 0 var(--ha-s7);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--ha-s5);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.ha-foot__links {
+  display: flex;
+  gap: var(--ha-s4);
+  font-family: var(--ha-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ha-text-mute);
+}
+
+.ha-foot__links a:hover {
+  color: var(--ha-text-accent);
+}
+
+/* ── responsive ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 1080px) {
+  .ha-sec__head {
+    grid-template-columns: 96px minmax(0, 1fr);
+  }
+  .ha-sec__note {
+    grid-column: 2;
+  }
+  .ha-mark-grid,
+  .ha-night__grid,
+  .ha-close {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ha-swatch-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .ha-close__pane {
+    height: 180px;
+  }
+}
+
+@media (max-width: 780px) {
+  .ha {
+    font-size: 16px;
+  }
+  .ha-wrap {
+    padding: 0 var(--ha-s4);
+  }
+  .ha-hero {
+    padding-top: 64px;
+  }
+  .ha-hero__pane {
+    padding: var(--ha-s5);
+  }
+  .ha-hero__display {
+    font-size: clamp(40px, 11vw, 64px);
+    max-width: 18ch;
+  }
+  .ha-display {
+    font-size: clamp(40px, 11vw, 64px);
+  }
+  /* the display token is 92px; below 780 the specimen takes the responsive size so the page
+     never scrolls sideways. The scale table still states the token, which is the truth. */
+  .ha-specimen__display {
+    font-size: clamp(34px, 9.4vw, 52px);
+    line-height: 1.02;
+  }
+  .ha-thesis__cell--loud p {
+    font-size: 17px;
+  }
+  /* the display token is 92px; below 780 the specimen takes the responsive size so the page
+     never scrolls sideways. The scale table still states the token, which is the truth. */
+  .ha-specimen__display {
+    font-size: clamp(34px, 9.4vw, 52px);
+    line-height: 1.02;
+  }
+  .ha-thesis__cell--loud p {
+    font-size: 17px;
+  }
+  .ha-h1 {
+    font-size: 34px;
+  }
+  .ha-h2 {
+    font-size: 26px;
+  }
+  .ha-facts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .ha-thesis,
+  .ha-cards,
+  .ha-kit,
+  .ha-found,
+  .ha-code-grid,
+  .ha-material,
+  .ha-files,
+  .ha-rules {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ha-sec {
+    padding: var(--ha-s8) 0;
+  }
+  .ha-sec__head {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ha-s3);
+    margin-bottom: var(--ha-s6);
+  }
+  .ha-sec__note {
+    grid-column: 1;
+  }
+  .ha-specimen,
+  .ha-scale__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ha-s3);
+  }
+  .ha-scale__vals {
+    text-align: left;
+  }
+  .ha-swatch-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ha-bar__nav {
+    display: none;
+  }
+  .ha-table {
+    font-size: 12.5px;
+  }
+  .ha-table__job {
+    display: none;
+  }
+  .ha-demo {
+    padding: var(--ha-s4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ha *,
+  .ha *::before,
+  .ha *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .ha-motion div:hover i {
+    animation: none;
+    transform: scaleX(1);
+  }
+}
+
+/* the page ground must reach the browser chrome, not stop at the footer */
+html:has(.ha) {
+  background: var(--ha-surface-page);
+}
+
+/* the page ground must reach the browser chrome, not stop at the footer */
+html:has(.ha) {
+  background: var(--ha-surface-page);
+}

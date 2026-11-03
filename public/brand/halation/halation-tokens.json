@@ -1,0 +1,161 @@
+{
+  "meta": {
+    "name": "Halation",
+    "version": "1.0.0",
+    "year": 2026,
+    "author": "Aditya Himawan",
+    "case": "Case 15",
+    "namespace": "--ha-",
+    "archetype": "minimal",
+    "primaryAccent": "coral",
+    "family": "pane-spill",
+    "track": "constructed",
+    "essence": "Light does not stop at the edge of what it lights.",
+    "promise": "Every pane earns its blur: one refraction, one specular edge, one colour that escapes.",
+    "oneSentence": "An interface identity of reeded prismatic glass over warm porcelain: a pane of smoked ribs with a single reed of coral light that runs past its top and bottom edge, proven on a coral field by day and an ember field by night.",
+    "fieldImage": "/brand/halation/field-coral.jpg",
+    "nightFieldImage": "/brand/halation/field-ember.jpg",
+    "gate": "v3.7"
+  },
+  "theme": {
+    "family": "pane-spill",
+    "material": "reeded glass, 4 mm ribs at 9 mm pitch, over porcelain by day and ember by night",
+    "edge": "1px specular hairline — white at 55% on the top and left edge only, ink at 10% on the bottom",
+    "offset": "panes lift by the specular edge, never by a shadow; shadow is reserved for the one floating layer",
+    "refraction": "the pane tints what it covers toward coral at 8% and offsets its backdrop by 0.6px",
+    "stroke": "none anywhere in the mark",
+    "tile": "64 grid, 4 unit rib, 36 × 44 pane, 6 gap, 5 × 64 spill to the canvas edge",
+    "radius": "3 on a rib · 8 on a field crop · 14 on a pane · 22 on a sheet · 999 on a pill",
+    "ring": "2px coral-deep, 2px offset, 1px porcelain gap",
+    "density": "4 / 8 / 12 / 16 / 24 / 32 / 48 / 72 / 112",
+    "label": "mono 10.5px, 0.16em, uppercase",
+    "field-recipe": "bands",
+    "mark-form": "a ribbed pane with one reed of light that runs past its edge to the edge of the canvas"
+  },
+  "sections": [
+    "refraction",
+    "thesis",
+    "pane",
+    "spectrum",
+    "measure",
+    "instrument",
+    "nightfall",
+    "spec"
+  ],
+  "primitives": [
+    { "name": "porcelain", "value": "#fdf1ec", "role": "Core · page ground, the warm light surface" },
+    { "name": "shell", "value": "#fffaf7", "role": "Core · solid plate under small type" },
+    { "name": "wash", "value": "#f8dcd8", "role": "Core · raised pane, one tint step over the ground" },
+    { "name": "ink", "value": "#1c0b10", "role": "Core · body ink and the pane body" },
+    { "name": "mute", "value": "#74545f", "role": "Core · secondary text, metadata, labels" },
+    { "name": "coral", "value": "#ff4a34", "role": "Signal · the escaping light — graphic only, never type on porcelain" },
+    { "name": "coral-deep", "value": "#b01f2d", "role": "Signal · the same light at text weight" },
+    { "name": "ember", "value": "#f2892f", "role": "Material · second stop of the spectrum" },
+    { "name": "lilac", "value": "#cbb0d8", "role": "Material · third, cool stop of the spectrum" },
+    { "name": "obsidian", "value": "#0b0409", "role": "Night · page ground, the blue-black the ember falls into" },
+    { "name": "wine", "value": "#240309", "role": "Night · solid plate and pane body" },
+    { "name": "chalk", "value": "#fbeae6", "role": "Night · body ink" },
+    { "name": "mute-night", "value": "#a98e97", "role": "Night · secondary text" },
+    { "name": "coral-light", "value": "#ff8f7d", "role": "Night · the signal, lifted so it reads on wine" },
+    { "name": "crimson", "value": "#8f1026", "role": "State · error, cooler than the signal so it is not mistaken for brand" },
+    { "name": "moss", "value": "#24604b", "role": "State · success, the palette's only cool note" },
+    { "name": "danger-night", "value": "#ff9aa6", "role": "State · error on wine" },
+    { "name": "success-night", "value": "#86d3ae", "role": "State · success on wine" }
+  ],
+  "semantic": {
+    "light": [
+      { "name": "surface-page", "value": "var(--ha-porcelain)", "role": "Day scope — the page" },
+      { "name": "surface-plate", "value": "var(--ha-shell)", "role": "Day scope — solid plate under type" },
+      { "name": "surface-raised", "value": "var(--ha-wash)", "role": "Day scope — a raised pane" },
+      { "name": "text-primary", "value": "var(--ha-ink)", "role": "Day scope — body ink" },
+      { "name": "text-secondary", "value": "var(--ha-mute)", "role": "Day scope — metadata" },
+      { "name": "text-accent", "value": "var(--ha-coral-deep)", "role": "Day scope — accent at text weight" },
+      { "name": "accent", "value": "var(--ha-coral)", "role": "Day scope — the signal, graphic" },
+      { "name": "accent-ink", "value": "var(--ha-ink)", "role": "Type that sits on the signal" },
+      { "name": "glass-tint", "value": "color-mix(in oklab, var(--ha-shell) 56%, transparent)", "role": "A pane's tint — the glass is never untinted" },
+      { "name": "glass-refraction", "value": "color-mix(in oklab, var(--ha-coral) 9%, transparent)", "role": "The colour a pane adds to what it covers" },
+      { "name": "edge-specular", "value": "rgb(255 255 255 / 0.62)", "role": "The 1px top edge that makes a pane lift" },
+      { "name": "rule", "value": "color-mix(in oklab, var(--ha-ink) 12%, transparent)", "role": "Hairline" },
+      { "name": "rule-strong", "value": "color-mix(in oklab, var(--ha-ink) 26%, transparent)", "role": "Pane edge, table rule" },
+      { "name": "focus", "value": "var(--ha-coral-deep)", "role": "Focus ring" },
+      { "name": "danger", "value": "var(--ha-crimson)", "role": "Error text and border" },
+      { "name": "success", "value": "var(--ha-moss)", "role": "Success text and border" }
+    ],
+    "dark": [
+      { "name": "surface-page", "value": "var(--ha-obsidian)", "role": "Night scope — the page" },
+      { "name": "surface-plate", "value": "var(--ha-wine)", "role": "Night scope — solid plate under type" },
+      { "name": "surface-raised", "value": "color-mix(in oklab, var(--ha-wine) 82%, var(--ha-coral))", "role": "Night scope — a raised pane" },
+      { "name": "text-primary", "value": "var(--ha-chalk)", "role": "Night scope — body ink" },
+      { "name": "text-secondary", "value": "var(--ha-mute-night)", "role": "Night scope — metadata" },
+      { "name": "text-accent", "value": "var(--ha-coral-light)", "role": "Night scope — accent at text weight" },
+      { "name": "accent", "value": "var(--ha-coral-light)", "role": "Night scope — the signal, graphic" },
+      { "name": "accent-ink", "value": "var(--ha-ink)", "role": "Type that sits on the signal" },
+      { "name": "glass-tint", "value": "color-mix(in oklab, var(--ha-wine) 52%, transparent)", "role": "A night pane's tint" },
+      { "name": "glass-refraction", "value": "color-mix(in oklab, var(--ha-coral-light) 10%, transparent)", "role": "The colour a night pane adds" },
+      { "name": "edge-specular", "value": "rgb(255 255 255 / 0.28)", "role": "Night specular edge — lower, because the ground is already dark" },
+      { "name": "rule", "value": "color-mix(in oklab, var(--ha-chalk) 14%, transparent)", "role": "Hairline" },
+      { "name": "rule-strong", "value": "color-mix(in oklab, var(--ha-chalk) 28%, transparent)", "role": "Pane edge, table rule" },
+      { "name": "focus", "value": "var(--ha-coral-light)", "role": "Focus ring" },
+      { "name": "danger", "value": "var(--ha-danger-night)", "role": "Error text and border" },
+      { "name": "success", "value": "var(--ha-success-night)", "role": "Success text and border" }
+    ]
+  },
+  "contrast": [
+    { "label": "ink on shell", "fg": "#1c0b10", "bg": "#fffaf7", "ratio": 18.35, "job": "Body and display type on a solid plate", "pass": true },
+    { "label": "ink on porcelain", "fg": "#1c0b10", "bg": "#fdf1ec", "ratio": 17.17, "job": "Body type on the page ground", "pass": true },
+    { "label": "ink on wash", "fg": "#1c0b10", "bg": "#f8dcd8", "ratio": 14.68, "job": "Type on a raised pane", "pass": true },
+    { "label": "mute on shell", "fg": "#74545f", "bg": "#fffaf7", "ratio": 6.38, "job": "Metadata and labels on a plate", "pass": true },
+    { "label": "mute on porcelain", "fg": "#74545f", "bg": "#fdf1ec", "ratio": 5.97, "job": "Metadata on the ground", "pass": true },
+    { "label": "coral-deep on shell", "fg": "#b01f2d", "bg": "#fffaf7", "ratio": 6.58, "job": "Links and accent text on a plate", "pass": true },
+    { "label": "coral-deep on porcelain", "fg": "#b01f2d", "bg": "#fdf1ec", "ratio": 6.16, "job": "Accent text on the ground", "pass": true },
+    { "label": "ink on coral", "fg": "#1c0b10", "bg": "#ff4a34", "ratio": 5.69, "job": "The primary button: ink on the signal", "pass": true },
+    { "label": "crimson on shell", "fg": "#8f1026", "bg": "#fffaf7", "ratio": 8.93, "job": "Error text and border", "pass": true },
+    { "label": "moss on shell", "fg": "#24604b", "bg": "#fffaf7", "ratio": 7.11, "job": "Success text and border", "pass": true },
+    { "label": "chalk on obsidian", "fg": "#fbeae6", "bg": "#0b0409", "ratio": 17.4, "job": "Night body type on the page", "pass": true },
+    { "label": "chalk on wine", "fg": "#fbeae6", "bg": "#240309", "ratio": 16.5, "job": "Night type on a plate", "pass": true },
+    { "label": "mute-night on wine", "fg": "#a98e97", "bg": "#240309", "ratio": 6.41, "job": "Night metadata", "pass": true },
+    { "label": "coral-light on wine", "fg": "#ff8f7d", "bg": "#240309", "ratio": 8.68, "job": "Night accent text and links", "pass": true },
+    { "label": "lilac on wine", "fg": "#cbb0d8", "bg": "#240309", "ratio": 9.84, "job": "Night material note", "pass": true },
+    { "label": "ember on obsidian", "fg": "#f2892f", "bg": "#0b0409", "ratio": 8.11, "job": "Night material note", "pass": true },
+    { "label": "coral on shell", "fg": "#ff4a34", "bg": "#fffaf7", "ratio": 3.23, "job": "FORBIDDEN as type. Graphic only: the spill, a 3px rule, a mark fill, a chart series", "pass": false },
+    { "label": "coral on porcelain", "fg": "#ff4a34", "bg": "#fdf1ec", "ratio": 3.02, "job": "FORBIDDEN as type. Graphic only — this is the published failure of the system", "pass": false },
+    { "label": "ember on shell", "fg": "#f2892f", "bg": "#fffaf7", "ratio": 2.41, "job": "FORBIDDEN as type on a light plate. Ember is a field colour and a night note only", "pass": false },
+    { "label": "lilac on shell", "fg": "#cbb0d8", "bg": "#fffaf7", "ratio": 1.89, "job": "FORBIDDEN as type on a light plate. Lilac is a field note only", "pass": false }
+  ],
+  "type": {
+    "family": {
+      "display": "Syne",
+      "reading": "Schibsted Grotesk",
+      "mono": "Geist Mono"
+    },
+    "scale": [
+      { "name": "display", "value": "Syne", "size": 92, "leading": 0.92, "tracking": -0.035, "weight": 600, "use": "The hero line only, once per page" },
+      { "name": "h1", "value": "Syne", "size": 54, "leading": 1.02, "tracking": -0.03, "weight": 700, "use": "Section openers" },
+      { "name": "h2", "value": "Syne", "size": 32, "leading": 1.12, "tracking": -0.02, "weight": 700, "use": "Sub-sections, card titles" },
+      { "name": "h3", "value": "Syne", "size": 21, "leading": 1.25, "tracking": -0.012, "weight": 700, "use": "List heads, pane titles" },
+      { "name": "lead", "value": "Schibsted Grotesk", "size": 20, "leading": 1.55, "tracking": -0.005, "weight": 400, "use": "One per section, at most 62ch" },
+      { "name": "body", "value": "Schibsted Grotesk", "size": 16.5, "leading": 1.66, "tracking": 0, "weight": 400, "use": "Reading copy, 60–68ch" },
+      { "name": "small", "value": "Schibsted Grotesk", "size": 13.5, "leading": 1.55, "tracking": 0.002, "weight": 400, "use": "Captions, table cells" },
+      { "name": "label", "value": "Geist Mono", "size": 10.5, "leading": 1.4, "tracking": 0.16, "weight": 500, "use": "Eyebrows, token names, section numerals" },
+      { "name": "figure", "value": "Syne", "size": 44, "leading": 1, "tracking": -0.02, "weight": 600, "use": "Measured numbers, tabular" }
+    ]
+  },
+  "space": [4, 8, 12, 16, 24, 32, 48, 72, 112],
+  "radius": [
+    { "name": "rib", "value": "3px" },
+    { "name": "crop", "value": "8px" },
+    { "name": "pane", "value": "14px" },
+    { "name": "sheet", "value": "22px" },
+    { "name": "pill", "value": "999px" }
+  ],
+  "elevation": [
+    { "name": "pane", "value": "inset 0 1px 0 rgb(255 255 255 / 0.62), 0 1px 2px rgb(28 11 16 / 0.06)", "role": "The default lift — the specular edge does the work" },
+    { "name": "float", "value": "0 24px 60px -28px rgb(28 11 16 / 0.34), inset 0 1px 0 rgb(255 255 255 / 0.72)", "role": "The one floating layer: a menu, a sheet" },
+    { "name": "spill", "value": "0 0 0 1px rgb(255 74 52 / 0.28), 0 10px 40px -12px rgb(255 74 52 / 0.42)", "role": "Focus and the escaping light — never a drop shadow on text" }
+  ],
+  "motion": [
+    { "name": "fast", "value": "160ms cubic-bezier(0.2, 0.8, 0.2, 1)", "role": "Hover, focus" },
+    { "name": "base", "value": "260ms cubic-bezier(0.2, 0.8, 0.2, 1)", "role": "Panes, menus, theme flip" },
+    { "name": "slow", "value": "520ms cubic-bezier(0.16, 1, 0.3, 1)", "role": "The refraction settle, the hero reveal" }
+  ]
+}

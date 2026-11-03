@@ -1,30 +1,40 @@
 # design-system
 
-Astro v5 design system library and showcase hosting 14 documented interface design systems (Cases 01–14), an interactive case gallery, and a public JSON API endpoint (`/api/cases.json`).
+Astro v5 design system library and showcase hosting 15 documented interface design systems (Cases 01–15), an interactive case gallery, and a public JSON API endpoint (`/api/cases.json`).
 
-## The shelf identity — Meniscus (Case 00)
+## The library identity — Halation (Case 00)
 
-The library itself is branded **Meniscus**: smoked graphite under glass, panes that lift by a 1px
-specular edge instead of a shadow, and one warm caustic (#ffa768) where the light exits. It is not a
-fifteenth case — it is the shelf that holds them.
+The library itself is branded **Halation**: reeded prismatic glass, one coral spill, and a day scope and
+a night scope cut from the same eighteen primitives. It is not a sixteenth case — it is the shelf that
+holds them.
 
-The name is the shape: a meniscus is the curve a liquid makes where it meets its container. The hero
-band — fourteen covers curved round the inside of a cylinder, flattening at the centre and swelling as
-they come past the lens — is that curve, and the mark is the same curve scooped out of a tile.
+The name is the behaviour: a halation is the glow that bleeds past the edge of a light source. The mark
+is that sentence drawn — a ribbed pane with one reed of light that runs past its edge to the edge of the
+canvas. Every pane in the system tints and refracts rather than only blurring, and the palette publishes
+the pair it fails: coral measures 3.02:1 on porcelain, so it is assigned graphic duty, never body text.
 
-- Brand system page: `/design-system/meniscus` (hero, premise, mark, caustic, voice, components, index, tokens)
-- Tokens: `src/features/meniscus/tokens.json` → `meniscus-tokens.css` (primitive → semantic → component, **smoked** + **board** scopes). 12 primitives, 15 measured contrast pairs, 3 published failures.
-- Marks and wordmark: `public/brand/meniscus/` — Bricolage Grotesque 800 outlined wordmark; every asset ships twice (`*.svg` ink for smoked, `*-reverse.svg` ink-solid for board) and `<Ink />` picks by scope.
-- Caustic plates for the hero band: `public/brand/meniscus/plates/` — four generated glass plates that alternate with the covers so the band has rhythm instead of being a strip of screenshots.
-- UI kit: `meniscus-ui.css` + `src/features/meniscus/ui/` — `Button`, `Field`, `Input`, `Textarea`,
-  `Select`, `SearchField`, `Checkbox`, `Radio`, `Switch`, `Badge`, `Tag`, `Surface`, `Tabs`, `EmptyState`.
-  No component names a colour; every value resolves through a `--me-*` token, so the whole kit inverts
-  with the smoked/board scope toggle.
-- Hero band: `src/components/tilted-grid-hero.tsx` — a CSS-3D cylinder built from 16 vertical slices per
-  tile, transform-only on the compositor. Below 700px the tile shrinks, the bend eases and the axis
-  lifts, so the band never fights the stacked type.
-- The gallery (`/`) wears the same tokens and runs on that kit: search, sort, collection tabs, live
-  result count, and an empty state. Cases keep their own identities untouched.
+- **Landing (`/`)**: `src/components/case-gallery.tsx` + `halation-gallery.css`. The display line is set
+  directly on the prismatic field, and the shelf runs beneath it as a CSS-3D band
+  (`tilted-grid-hero.tsx` — 16 slices per tile, transform-only on the compositor). The scope toggle flips
+  `[data-ha]` on the page root, so field, type, rules and surfaces all invert from one token layer.
+- **Brand system page**: `/design-system/halation` (hero, thesis, mark, colour, type, foundations, kit,
+  night, tokens).
+- **Tokens**: `src/features/halation/tokens.json` → `halation-tokens.css` (primitive → semantic →
+  component, **day** + **night** scopes). 18 primitives, 20 measured contrast pairs, 4 published failures.
+- **Marks and wordmark**: `public/brand/halation/` — Syne 600 outlined wordmark; every asset ships twice
+  (`*.svg` ink for day, `*-reverse.svg` chalk for night), plus a separate 16px compact drawing because the
+  ribs merge below 24px.
+- **Site icons**: `brand/halation/icons.py` renders the whole set from the mark — `public/favicon.svg`,
+  `favicon-16/32/48.png`, `apple-touch-icon.png`, `icon-192/512.png`, `icon-maskable-512.png`. Run
+  `python3 brand/halation/icons.py` after changing the mark; never hand-edit a PNG.
+- **Social card**: `public/brand/halation/og.html` composed on the ember field, rendered to `public/og.jpg`
+  (1200 × 630).
+- **Manifest**: `public/site.webmanifest` (standalone, obsidian ground, coral theme).
+
+The **Meniscus** system in `src/features/meniscus/` (documented at `/design-system/meniscus`) was the
+library's previous identity: smoked graphite, a warm caustic, 12 primitives, 15 contrast pairs and 3
+published failures. Its page still ships as a documented system; the landing no longer loads its
+stylesheet.
 
 ## Design Systems
 
@@ -42,10 +52,11 @@ they come past the lens — is that curve, and the mark is the same curve scoope
 - **Case 12**: Bluewater Freight (Maritime Chart & Hull Waterline)
 - **Case 13**: Wildflower Wind (Seed House & Refracted Violet)
 - **Case 14**: Vesper (Two Inks & Stipple)
+- **Case 15**: Halation (Reeded Glass & One Coral Spill)
 
 ## API Endpoint
 
-- `GET /api/cases.json` returns structured metadata, cover thumbnails, tags, and links for all 14 cases.
+- `GET /api/cases.json` returns structured metadata, cover thumbnails, tags, and links for all 15 cases.
 
 ## Development
 

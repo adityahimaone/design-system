@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Halation — mark proof sheet</title>
+    <style>
+      /* The sheet exists to be judged at 16px, on both grounds, with nothing else competing. */
+      body {
+        margin: 0;
+        font: 11px 'Geist Mono', ui-monospace, monospace;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      section {
+        padding: 28px;
+        display: grid;
+        gap: 22px;
+      }
+      .day {
+        background: #fdf1ec;
+        color: #1c0b10;
+      }
+      .night {
+        background: #240309;
+        color: #fbeae6;
+      }
+      h2 {
+        margin: 0;
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        opacity: 0.6;
+        font-weight: 500;
+      }
+      .row {
+        display: flex;
+        align-items: flex-end;
+        gap: 22px;
+        flex-wrap: wrap;
+      }
+      figure {
+        margin: 0;
+        display: grid;
+        gap: 7px;
+        justify-items: center;
+      }
+      figcaption {
+        font-size: 9px;
+        letter-spacing: 0.1em;
+        opacity: 0.55;
+      }
+      .sizes img {
+        display: block;
+      }
+      .lock {
+        height: 34px;
+        width: auto;
+      }
+      .zoom {
+        width: 8px;
+        height: 8px;
+        image-rendering: pixelated;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="day">
+      <h2>Day · porcelain · 16 / 24 / 32 / 48 / 96</h2>
+      <div class="row sizes">
+        <figure><img src="mark.svg" width="16" height="16" alt="" /><figcaption>mark 16</figcaption></figure>
+        <figure><img src="mark.svg" width="24" height="24" alt="" /><figcaption>24</figcaption></figure>
+        <figure><img src="mark.svg" width="32" height="32" alt="" /><figcaption>32</figcaption></figure>
+        <figure><img src="mark.svg" width="48" height="48" alt="" /><figcaption>48</figcaption></figure>
+        <figure><img src="mark.svg" width="96" height="96" alt="" /><figcaption>96</figcaption></figure>
+      </div>
+      <h2>Compact · the 16px drawing</h2>
+      <div class="row sizes">
+        <figure><img src="mark-compact.svg" width="16" height="16" alt="" /><figcaption>16</figcaption></figure>
+        <figure><img src="mark-compact.svg" width="24" height="24" alt="" /><figcaption>24</figcaption></figure>
+        <figure><img src="mark-compact.svg" width="32" height="32" alt="" /><figcaption>32</figcaption></figure>
+        <figure><img src="glyph.svg" width="32" height="32" alt="" /><figcaption>glyph 32</figcaption></figure>
+        <figure><img src="mark-mono.svg" width="32" height="32" alt="" /><figcaption>mono 32</figcaption></figure>
+        <figure><img src="icon.svg" width="48" height="48" alt="" /><figcaption>icon 48</figcaption></figure>
+      </div>
+      <h2>Lockups</h2>
+      <div class="row">
+        <figure><img class="lock" src="lockup.svg" alt="Halation lockup" /><figcaption>lockup · cap 30</figcaption></figure>
+        <figure><img src="lockup-stacked.svg" style="height: 74px; width: auto" alt="Halation stacked lockup" /><figcaption>stacked</figcaption></figure>
+      </div>
+      <h2>Wordmark · minimum 14</h2>
+      <div class="row">
+        <img src="wordmark.svg" style="height: 34px; width: auto" alt="" />
+        <img src="wordmark.svg" style="height: 14px; width: auto" alt="" />
+      </div>
+    </section>
+
+    <section class="night">
+      <h2>Night · wine · 16 / 24 / 32 / 48 / 96</h2>
+      <div class="row sizes">
+        <figure><img src="mark-reverse.svg" width="16" height="16" alt="" /><figcaption>mark 16</figcaption></figure>
+        <figure><img src="mark-reverse.svg" width="24" height="24" alt="" /><figcaption>24</figcaption></figure>
+        <figure><img src="mark-reverse.svg" width="32" height="32" alt="" /><figcaption>32</figcaption></figure>
+        <figure><img src="mark-reverse.svg" width="48" height="48" alt="" /><figcaption>48</figcaption></figure>
+        <figure><img src="mark-reverse.svg" width="96" height="96" alt="" /><figcaption>96</figcaption></figure>
+      </div>
+      <h2>Compact · reverse</h2>
+      <div class="row sizes">
+        <figure><img src="mark-compact-reverse.svg" width="16" height="16" alt="" /><figcaption>16</figcaption></figure>
+        <figure><img src="mark-compact-reverse.svg" width="24" height="24" alt="" /><figcaption>24</figcaption></figure>
+        <figure><img src="mark-compact-reverse.svg" width="32" height="32" alt="" /><figcaption>32</figcaption></figure>
+        <figure><img src="icon.svg" width="48" height="48" alt="" /><figcaption>icon 48</figcaption></figure>
+      </div>
+      <h2>Lockups</h2>
+      <div class="row">
+        <figure><img class="lock" src="lockup-reverse.svg" alt="Halation reverse lockup" /><figcaption>lockup · reverse</figcaption></figure>
+        <figure><img src="lockup-stacked-reverse.svg" style="height: 74px; width: auto" alt="" /><figcaption>stacked</figcaption></figure>
+      </div>
+      <h2>Wordmark · reverse</h2>
+      <div class="row">
+        <img src="wordmark-reverse.svg" style="height: 34px; width: auto" alt="" />
+        <img src="wordmark-reverse.svg" style="height: 14px; width: auto" alt="" />
+      </div>
+    </section>
+  </body>
+</html>

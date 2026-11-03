@@ -5,13 +5,21 @@ interface Props {
   title?: string
   description?: string
   canonical?: string
+  image?: string
+  noindex?: boolean
 }
 
 const {
-  title = 'Design Systems — Aditya Himawan',
-  description = 'Documented design-system cases and live brand kits.',
+  title = 'Halation — design systems & case library',
+  description = 'Fifteen documented interface design systems. Each case states its own primitives, its mark family, and the contrast pair it fails.',
   canonical,
+  image = '/og.jpg',
+  noindex = false,
 } = Astro.props
+
+const site = Astro.site ?? new URL('https://design-system.adityahimaone.space')
+const url = canonical ? new URL(canonical, site).href : new URL(Astro.url.pathname, site).href
+const ogImage = new URL(image, site).href
 ---
 
 <!doctype html>
@@ -21,7 +29,38 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="canonical" href={url} />
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <!-- the mark carries the tab, the home screen, and the share card -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/favicon-16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#fdf1ec" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b0409" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Halation" />
+    <meta property="og:locale" content="en" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={url} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="The Halation mark beside the line: Light does not stop at the edge of what it lights."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

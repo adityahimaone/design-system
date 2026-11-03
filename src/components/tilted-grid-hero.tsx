@@ -55,7 +55,7 @@ function measure(
 ) {
   const narrow = width < NARROW
   const phone = width < PHONE
-  const t = tile * (phone ? 0.52 : narrow ? 0.62 : 1)
+  const t = tile * (phone ? 0.64 : narrow ? 0.72 : 1)
   const b = narrow ? Math.min(bend, (50 * Math.PI) / 180) : bend
   const h = Math.min((t / 100) * height, ((MAX_WIDTH / 100) * width) / aspect)
   const radius = width * arc(b)
@@ -121,6 +121,7 @@ export function TiltedGridHero({
   ...props
 }: React.ComponentProps<'div'> & TiltedGridHeroProps) {
   const ref = React.useRef<HTMLDivElement>(null)
+  const bandRef = React.useRef<HTMLDivElement>(null)
   const id = React.useId().replace(/[^a-zA-Z0-9]/g, '')
   const orbit = `tgh-o-${id}`
   const tile = `tgh-t-${id}`
@@ -129,8 +130,11 @@ export function TiltedGridHero({
   const [layout, setLayout] = React.useState<ReturnType<typeof measure> | null>(null)
   const [shown, setShown] = React.useState<Record<number, number>>({})
 
+  // The band is its own size container, so a caller can give it a lane of its
+  // own and the tiles will size to that lane rather than to the whole frame.
+  // Measure the band, not the root, or the arc is spaced for the wrong height.
   React.useEffect(() => {
-    const el = ref.current
+    const el = bandRef.current ?? ref.current
     if (!el) return
     const ro = new ResizeObserver(([entry]) => {
       const { width, height } = entry.contentRect
@@ -158,7 +162,7 @@ export function TiltedGridHero({
     `calc(${+n.toFixed(4)} * min(${tileSize}cqh, ${+((MAX_WIDTH / aspectRatio).toFixed(4))}cqw))`
 
   const r = 100 * arc(bent)
-  const axisAt = phone ? +(axis * 0.78).toFixed(3) : axis
+  const axisAt = phone ? +(axis * 1).toFixed(3) : axis
   const radius = `${+r.toFixed(3)}cqw`
   const turn = (deg: number) =>
     `translateZ(${radius}) rotateY(${+deg.toFixed(4)}deg) translateZ(-${radius})`
@@ -183,15 +187,17 @@ export function TiltedGridHero({
       ref={ref}
       className={cn('tgh', className)}
       {...props}
-      style={{ containerType: 'size', ...props.style }}
+      style={{ containerType: 'inline-size', ...props.style }}
     >
       <style>{css}</style>
 
       <div
+        ref={bandRef}
         aria-hidden
         className="tgh__band"
         style={{
           opacity: layout ? 1 : 0,
+          containerType: 'size',
           perspective: `${+(r * CAMERA).toFixed(3)}cqw`,
           perspectiveOrigin: `50% ${axisAt}%`,
           maskImage: mask,

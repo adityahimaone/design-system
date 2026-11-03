@@ -28,6 +28,7 @@ export type DesignCase = {
     | 'bluewater'
     | 'wildflower'
     | 'vesper'
+    | 'halation'
 }
 
 export const SUNNYSIDE_URL =
@@ -58,6 +59,23 @@ export const DESIGN_CASES: readonly DesignCase[] = [
       'The Sunnyside brand kit: paper and ink identity board with the sun mark, palette, type specimens and favicon sizes.',
     tags: ['Paper', 'Cobalt', 'Marker', 'Stickers'],
     tone: 'sunnyside',
+  },
+  {
+    slug: 'halation',
+    number: '15',
+    name: 'Halation',
+    href: '/design-system/halation',
+    tagline: 'Light does not stop at the edge of what it lights.',
+    description:
+      'An interface identity of reeded prismatic glass: a ribbed pane with one reed of coral light that runs past its edge to the edge of the canvas. Coral and ink are sampled from the prismatic field, porcelain and wine from the ember field, and the same eighteen primitives carry a day scope and a night scope. Every pane tints and refracts rather than only blurring; coral measures 3.02:1 on porcelain, so it is assigned the job of graphic and the failure is printed.',
+    status: 'Shipped · 2026',
+    role: 'Identity · design system · mark family · tokens · docs',
+    material: 'Reeded glass + porcelain + one coral spill',
+    cover: '/brand/halation/halation-brandkit.png',
+    coverAlt:
+      'The Halation board: the ribbed pane mark with its coral spill on a wine plate, six primitives, the Syne display line, and the mark at 48, 32 and 16.',
+    tags: ['Reeded glass', 'Liquid glass', 'Dual scope', 'Computed contrast'],
+    tone: 'halation',
   },
   {
     slug: 'vesper',

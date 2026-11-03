@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Halation">
+  <title>Halation</title>
+  <rect width="64" height="64" rx="14" fill="#ff4a34"/>
+  <g transform="translate(7.43 7.04) scale(0.78)">
+    <path d="M8 10H44V54H8ZM12 16H16V48H12ZM20 16H24V48H20ZM28 16H32V48H28ZM36 16H40V48H36Z" fill="#1c0b10" fill-rule="evenodd"/>
+    <path d="M50 0H55V64H50Z" fill="#fbeae6"/>
+  </g>
+</svg>

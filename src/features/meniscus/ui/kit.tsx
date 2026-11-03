@@ -194,7 +194,7 @@ export function Kit() {
 
       <EmptyState
         title="No case matches that"
-        body="Fourteen cases, five collections. Try a material — paper, glass, stone, emerald, cobalt — or clear the filter."
+        body="Fifteen cases, five collections. Try a material — paper, glass, stone, emerald, cobalt — or clear the filter."
         action={
           <Button size="sm" onClick={() => setSearch('')}>
             Clear filters

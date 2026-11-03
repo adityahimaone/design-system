@@ -1,0 +1,255 @@
+/* ============================================================================
+   Halation — tokens. Case 15.
+   Three layers, one source: src/features/halation/tokens.json.
+   1 · primitive   the material, named once. Nothing here knows a job.
+   2 · semantic    the job. Day is the default; night is a scope, never a second palette.
+   3 · component   the only place a control knows its colour.
+   ========================================================================== */
+
+/* ── 1 · primitive ─────────────────────────────────────────────────────────── */
+:root {
+  /* core — 5 + 1 */
+  --ha-porcelain: #fdf1ec;
+  --ha-shell: #fffaf7;
+  --ha-wash: #f8dcd8;
+  --ha-ink: #1c0b10;
+  --ha-mute: #74545f;
+  --ha-coral: #ff4a34;
+
+  /* signal */
+  --ha-coral-deep: #b01f2d;
+
+  /* material — field notes, never a job */
+  --ha-ember: #f2892f;
+  --ha-lilac: #cbb0d8;
+
+  /* night */
+  --ha-obsidian: #0b0409;
+  --ha-wine: #240309;
+  --ha-chalk: #fbeae6;
+  --ha-mute-night: #a98e97;
+  --ha-coral-light: #ff8f7d;
+
+  /* state */
+  --ha-crimson: #8f1026;
+  --ha-moss: #24604b;
+  --ha-danger-night: #ff9aa6;
+  --ha-success-night: #86d3ae;
+
+  /* type — the faces */
+  --ha-font-display: var(--font-syne, 'Syne'), 'Archivo', sans-serif;
+  --ha-font-reading: var(--font-schibsted, 'Schibsted Grotesk'), ui-sans-serif, system-ui, sans-serif;
+  --ha-font-mono: var(--font-geist-mono, 'Geist Mono'), ui-monospace, 'SF Mono', monospace;
+
+  /* geometry — one grid, stated once */
+  --ha-rib: 4px; /* the rib unit */
+  --ha-pitch: 8px; /* rib + gap */
+  --ha-gap: 6px; /* pane edge → spill */
+  --ha-spill: 5px;
+
+  /* space */
+  --ha-s1: 4px;
+  --ha-s2: 8px;
+  --ha-s3: 12px;
+  --ha-s4: 16px;
+  --ha-s5: 24px;
+  --ha-s6: 32px;
+  --ha-s7: 48px;
+  --ha-s8: 72px;
+  --ha-s9: 112px;
+
+  /* radius */
+  --ha-r-rib: 3px;
+  --ha-r-crop: 8px;
+  --ha-r-pane: 14px;
+  --ha-r-sheet: 22px;
+  --ha-r-pill: 999px;
+
+  /* motion */
+  --ha-e-fast: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ha-e-base: 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ha-e-slow: 520ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* the reed overlay — the material, as a repeating gradient, not an image */
+  --ha-reeds: repeating-linear-gradient(
+    90deg,
+    rgb(255 255 255 / 0) 0 calc(var(--ha-pitch) - 1.25px),
+    rgb(255 255 255 / 0.16) calc(var(--ha-pitch) - 1.25px) var(--ha-pitch)
+  );
+}
+
+/* ── 2 · semantic · day (default) ──────────────────────────────────────────── */
+:root,
+[data-ha='day'] {
+  color-scheme: light;
+
+  --ha-surface-page: var(--ha-porcelain);
+  --ha-surface-plate: var(--ha-shell);
+  --ha-surface-raised: var(--ha-wash);
+
+  --ha-text: var(--ha-ink);
+  --ha-text-mute: var(--ha-mute);
+  --ha-text-accent: var(--ha-coral-deep);
+  --ha-accent: var(--ha-coral);
+  --ha-accent-ink: var(--ha-ink);
+
+  --ha-glass-tint: color-mix(in oklab, var(--ha-shell) 56%, transparent);
+  --ha-glass-refraction: color-mix(in oklab, var(--ha-coral) 9%, transparent);
+  --ha-edge-specular: rgb(255 255 255 / 0.62);
+  --ha-edge-shade: color-mix(in oklab, var(--ha-ink) 10%, transparent);
+
+  --ha-rule: color-mix(in oklab, var(--ha-ink) 12%, transparent);
+  --ha-rule-strong: color-mix(in oklab, var(--ha-ink) 26%, transparent);
+
+  --ha-focus: var(--ha-coral-deep);
+  --ha-danger: var(--ha-crimson);
+  --ha-success: var(--ha-moss);
+
+  --ha-elev-pane: inset 0 1px 0 rgb(255 255 255 / 0.62), 0 1px 2px rgb(28 11 16 / 0.06);
+  --ha-elev-float: 0 24px 60px -28px rgb(28 11 16 / 0.34), inset 0 1px 0 rgb(255 255 255 / 0.72);
+  --ha-elev-spill: 0 0 0 1px rgb(255 74 52 / 0.28), 0 10px 40px -12px rgb(255 74 52 / 0.42);
+
+  --ha-field-image: url('/brand/halation/field-coral.jpg');
+  --ha-field-vector: url('/brand/halation/field-prism.svg');
+}
+
+/* ── 2 · semantic · night (a scope) ────────────────────────────────────────── */
+[data-ha='night'] {
+  color-scheme: dark;
+
+  --ha-surface-page: var(--ha-obsidian);
+  --ha-surface-plate: var(--ha-wine);
+  --ha-surface-raised: color-mix(in oklab, var(--ha-wine) 82%, var(--ha-coral));
+
+  --ha-text: var(--ha-chalk);
+  --ha-text-mute: var(--ha-mute-night);
+  --ha-text-accent: var(--ha-coral-light);
+  --ha-accent: var(--ha-coral-light);
+  --ha-accent-ink: var(--ha-ink);
+
+  --ha-glass-tint: color-mix(in oklab, var(--ha-wine) 52%, transparent);
+  --ha-glass-refraction: color-mix(in oklab, var(--ha-coral-light) 10%, transparent);
+  --ha-edge-specular: rgb(255 255 255 / 0.28);
+  --ha-edge-shade: color-mix(in oklab, var(--ha-obsidian) 60%, transparent);
+
+  --ha-rule: color-mix(in oklab, var(--ha-chalk) 14%, transparent);
+  --ha-rule-strong: color-mix(in oklab, var(--ha-chalk) 28%, transparent);
+
+  --ha-focus: var(--ha-coral-light);
+  --ha-danger: var(--ha-danger-night);
+  --ha-success: var(--ha-success-night);
+
+  --ha-elev-pane: inset 0 1px 0 rgb(255 255 255 / 0.28), 0 1px 2px rgb(0 0 0 / 0.4);
+  --ha-elev-float: 0 24px 60px -28px rgb(0 0 0 / 0.7), inset 0 1px 0 rgb(255 255 255 / 0.34);
+  --ha-elev-spill: 0 0 0 1px rgb(255 143 125 / 0.3), 0 10px 40px -12px rgb(255 143 125 / 0.4);
+
+  --ha-field-image: url('/brand/halation/field-ember.jpg');
+  --ha-field-vector: url('/brand/halation/field-prism-night.svg');
+}
+
+/* ── type scale ────────────────────────────────────────────────────────────── */
+:root {
+  --ha-t-display: 92px;
+  --ha-t-display-lh: 0.92;
+  --ha-t-display-ls: -0.035em;
+  --ha-t-display-w: 600;
+
+  --ha-t-h1: 54px;
+  --ha-t-h1-lh: 1.02;
+  --ha-t-h1-ls: -0.03em;
+  --ha-t-h1-w: 700;
+
+  --ha-t-h2: 32px;
+  --ha-t-h2-lh: 1.12;
+  --ha-t-h2-ls: -0.02em;
+  --ha-t-h2-w: 700;
+
+  --ha-t-h3: 21px;
+  --ha-t-h3-lh: 1.25;
+  --ha-t-h3-ls: -0.012em;
+  --ha-t-h3-w: 700;
+
+  --ha-t-lead: 20px;
+  --ha-t-lead-lh: 1.55;
+  --ha-t-lead-ls: -0.005em;
+  --ha-t-lead-w: 400;
+
+  --ha-t-body: 16.5px;
+  --ha-t-body-lh: 1.66;
+  --ha-t-body-ls: 0;
+  --ha-t-body-w: 400;
+
+  --ha-t-small: 13.5px;
+  --ha-t-small-lh: 1.55;
+  --ha-t-small-ls: 0.002em;
+  --ha-t-small-w: 400;
+
+  --ha-t-label: 10.5px;
+  --ha-t-label-lh: 1.4;
+  --ha-t-label-ls: 0.16em;
+  --ha-t-label-w: 500;
+
+  --ha-t-figure: 44px;
+  --ha-t-figure-lh: 1;
+  --ha-t-figure-ls: -0.02em;
+  --ha-t-figure-w: 600;
+}
+
+/* ── 3 · component ─────────────────────────────────────────────────────────── */
+/* Declared in BOTH scopes on purpose: a custom property resolves on the element that declares it,
+   so `--ha-pane-bg: var(--ha-glass-tint)` written only on :root would freeze the day tint and a
+   night pane would inherit porcelain glass. Re-declaring the mapping in each scope is what makes
+   the component layer follow the semantic layer. */
+:root,
+[data-ha='day'],
+[data-ha='night'] {
+  --ha-btn-bg: var(--ha-accent);
+  --ha-btn-ink: var(--ha-accent-ink);
+  --ha-btn-bg-hover: color-mix(in oklab, var(--ha-accent) 88%, var(--ha-ink));
+  --ha-btn-ghost-ink: var(--ha-text);
+  --ha-btn-ghost-edge: var(--ha-rule-strong);
+
+  /* liquid glass at control scale: a tint the field can still be read through,
+     a lit rim, and the shade that keeps the bottom edge from floating */
+  --ha-glass-ctl: var(--ha-pane-bg);
+  --ha-glass-ctl-lit: rgb(255 255 255 / 0.44);
+  --ha-glass-ctl-edge: color-mix(in oklab, var(--ha-chalk) 46%, transparent);
+  /* the silhouette: a shade on a bright field, a light on a dark one */
+  --ha-glass-ctl-ring: color-mix(in oklab, var(--ha-ink) 15%, transparent);
+  --ha-glass-ctl-shade: color-mix(in oklab, var(--ha-ink) 12%, transparent);
+  --ha-glass-ctl-shadow: 0 18px 44px -26px color-mix(in oklab, var(--ha-ink) 54%, transparent);
+  --ha-glass-accent: color-mix(in oklab, var(--ha-accent) 64%, transparent);
+
+  --ha-field-bg: var(--ha-surface-plate);
+  --ha-field-edge: var(--ha-rule-strong);
+  --ha-field-ink: var(--ha-text);
+  --ha-field-ph: var(--ha-text-mute);
+
+  --ha-pane-bg: var(--ha-glass-tint);
+  --ha-pane-edge: var(--ha-edge-specular);
+  --ha-pane-blur: 22px;
+  --ha-pane-refract: 0.6px;
+
+  --ha-tab-ink: var(--ha-text-mute);
+  --ha-tab-ink-on: var(--ha-text);
+  --ha-tab-bg-on: var(--ha-surface-plate);
+
+  --ha-badge-bg: color-mix(in oklab, var(--ha-accent) 14%, transparent);
+  --ha-badge-ink: var(--ha-text-accent);
+
+  --ha-table-rule: var(--ha-rule);
+  --ha-code-bg: color-mix(in oklab, var(--ha-ink) 6%, var(--ha-surface-plate));
+  --ha-code-ink: var(--ha-text);
+}
+
+/* the glass rim is a light source, so it dims with the room instead of carrying over */
+[data-ha='night'] {
+  --ha-glass-ctl-lit: rgb(255 255 255 / 0.2);
+  --ha-glass-ctl-edge: color-mix(in oklab, var(--ha-chalk) 22%, transparent);
+  --ha-glass-ctl-ring: color-mix(in oklab, var(--ha-chalk) 20%, transparent);
+  --ha-glass-ctl-shade: color-mix(in oklab, var(--ha-obsidian) 46%, transparent);
+  --ha-glass-ctl-shadow: 0 18px 44px -26px rgb(0 0 0 / 0.72);
+  /* the accent itself is light in night, so the tint has to stay close to it or
+     the ink label lands on a dark rose and the button stops being readable */
+  --ha-glass-accent: color-mix(in oklab, var(--ha-accent) 72%, transparent);
+}

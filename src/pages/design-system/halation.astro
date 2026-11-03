@@ -1,0 +1,996 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import tokens from '@/features/halation/tokens.json'
+import '@/features/halation/halation-tokens.css'
+import '@/features/halation/halation-page.css'
+
+const { meta, theme, primitives, contrast, type, space, radius, elevation, motion } = tokens
+
+const B = '/brand/halation'
+
+/* hex → oklch, so the page states the material in the same space the tokens were chosen in */
+function oklch(hex: string) {
+  const n = hex.replace('#', '')
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(n.slice(i, i + 2), 16) / 255)
+  const lin = (c: number) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)
+  const [R, G, Bl] = [r, g, b].map(lin)
+  const l = Math.cbrt(0.4122214708 * R + 0.5363325363 * G + 0.0514459929 * Bl)
+  const m = Math.cbrt(0.2119034982 * R + 0.6806995451 * G + 0.1073969566 * Bl)
+  const s = Math.cbrt(0.0883024619 * R + 0.2817188376 * G + 0.6299787005 * Bl)
+  const L = 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s
+  const A = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s
+  const Bb = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s
+  const h = ((Math.atan2(Bb, A) * 180) / Math.PI + 360) % 360
+  return `oklch(${(L * 100).toFixed(1)}% ${Math.hypot(A, Bb).toFixed(3)} ${h.toFixed(0)})`
+}
+
+const CORE = ['porcelain', 'ink', 'coral', 'coral-deep', 'ember', 'lilac']
+const byName = Object.fromEntries(primitives.map((p) => [p.name, p]))
+const core = CORE.map((n) => ({ ...byName[n], oklch: oklch(byName[n].value) }))
+
+const fails = contrast.filter((c) => !c.pass)
+const passes = contrast.filter((c) => c.pass)
+
+const SCALE = [
+  { role: 'Display', token: '--ha-t-display', px: '92', lh: '0.92', ls: '-0.035em', w: '600', sample: 'Light leaves a trace' },
+  { role: 'H1', token: '--ha-t-h1', px: '54', lh: '1.02', ls: '-0.030em', w: '700', sample: 'A pane, not a scrim' },
+  { role: 'H2', token: '--ha-t-h2', px: '32', lh: '1.12', ls: '-0.020em', w: '700', sample: 'One refraction' },
+  { role: 'H3', token: '--ha-t-h3', px: '21', lh: '1.25', ls: '-0.012em', w: '700', sample: 'The reed is the identity' },
+  { role: 'Lead', token: '--ha-t-lead', px: '20', lh: '1.55', ls: '-0.005em', w: '400', sample: 'Every pane earns its blur.' },
+  { role: 'Body', token: '--ha-t-body', px: '16.5', lh: '1.66', ls: '0', w: '400', sample: 'Small type sits on a solid plate beside the field.' },
+  { role: 'Small', token: '--ha-t-small', px: '13.5', lh: '1.55', ls: '+0.002em', w: '400', sample: 'The job a failing pair may not do.' },
+  { role: 'Label', token: '--ha-t-label', px: '10.5', lh: '1.40', ls: '+0.160em', w: '500', sample: 'Case 15 · reeded glass' },
+  { role: 'Figure', token: '--ha-t-figure', px: '44', lh: '1.00', ls: '-0.020em', w: '600', sample: '3.02' },
+]
+
+const cssPrimitives = `/* 1 · primitive — the material. Nothing here knows a job. */
+:root {
+${primitives.map((p) => `  --ha-${p.name}: ${p.value};`).join('\n')}
+}`
+
+const cssDay = `/* 2 · semantic · day — the default scope */
+:root {
+  --ha-surface-page: var(--ha-porcelain);
+  --ha-text: var(--ha-ink);
+  --ha-accent: var(--ha-coral);
+  --ha-text-accent: var(--ha-coral-deep);
+  --ha-glass-tint: color-mix(in oklab, var(--ha-shell) 56%, transparent);
+  --ha-glass-refraction: color-mix(in oklab, var(--ha-coral) 9%, transparent);
+  --ha-edge-specular: rgb(255 255 255 / 0.62);
+}`
+
+const cssNight = `/* 2 · semantic · night — a scope, not a second palette */
+[data-ha='night'] {
+  --ha-surface-page: var(--ha-obsidian);
+  --ha-text: var(--ha-chalk);
+  --ha-accent: var(--ha-coral-light);
+  --ha-text-accent: var(--ha-coral-light);
+  --ha-glass-tint: color-mix(in oklab, var(--ha-wine) 52%, transparent);
+  --ha-glass-refraction: color-mix(in oklab, var(--ha-coral-light) 10%, transparent);
+  --ha-edge-specular: rgb(255 255 255 / 0.28);
+}`
+
+const cssPane = `/* 3 · component — the pane, the only place glass knows its recipe */
+.ha-pane {
+  background:
+    linear-gradient(var(--ha-glass-refraction), var(--ha-glass-refraction)),
+    var(--ha-pane-bg);
+  border: 1px solid var(--ha-pane-edge);
+  box-shadow: var(--ha-elev-pane);
+  backdrop-filter: blur(var(--ha-pane-blur)) saturate(1.55) contrast(1.04);
+  position: relative;
+}
+.ha-pane::before {            /* the refraction: the reeds continue through the glass */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--ha-reeds);
+  mix-blend-mode: soft-light;
+  opacity: 0.85;
+}`
+
+const title = 'Halation — Case 15 | Reeded glass, one refraction'
+const description =
+  'Halation: a 2026 interface identity of reeded prismatic glass over porcelain and ember. A ribbed pane, one reed of coral light that overshoots its edge, 18 primitives and 20 measured contrast pairs.'
+---
+
+<Layout title={title} description={description} canonical="/design-system/halation">
+  <div class="ha" id="top">
+    <script is:inline>
+      try {
+        if (localStorage.getItem('ha-theme') === 'night') document.documentElement.dataset.ha = 'night'
+      } catch (e) {}
+    </script>
+
+    <header class="ha-bar">
+      <div class="ha-wrap ha-bar__in">
+        <a class="ha-bar__brand" href="#top" aria-label="Halation, back to top">
+          <img src={`${B}/glyph.svg`} width="22" height="22" alt="" />
+          <span class="ha-bar__name">Halation</span>
+          <span class="ha-bar__case">Case 15</span>
+        </a>
+        <nav class="ha-bar__nav" aria-label="Sections">
+          <a href="#thesis">Thesis</a>
+          <a href="#pane">Mark</a>
+          <a href="#spectrum">Spectrum</a>
+          <a href="#measure">Type</a>
+          <a href="#instrument">Kit</a>
+          <a href="#nightfall">Night</a>
+          <a href="#spec">Tokens</a>
+        </nav>
+        <button class="ha-toggle" id="ha-theme" type="button" aria-pressed="false">
+          <span class="ha-toggle__dot"></span>
+          <span id="ha-theme-label">Day</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ── 01 · refraction ─────────────────────────────────────────────── -->
+    <section class="ha-hero" id="refraction">
+      <div class="ha-hero__field" aria-hidden="true"></div>
+      <div class="ha-hero__scrim" aria-hidden="true"></div>
+
+      <div class="ha-wrap">
+        <div class="ha-hero__eyebrow">
+          <span class="ha-label">Case 15</span>
+          <span class="ha-hero__rule"></span>
+          <span class="ha-label">Reeded glass · 2026</span>
+        </div>
+
+        <div class="ha-pane ha-pane--read ha-spill ha-hero__pane">
+          <h1 class="ha-display ha-hero__display">
+            Light does not stop at the <em>edge</em> of what it lights.
+          </h1>
+          <p class="ha-lead ha-hero__lead">
+            Halation is an interface identity for surfaces that carry colour: a pane of smoked ribs
+            over porcelain by day, over ember by night, and one reed of coral light that runs past
+            the edge.
+          </p>
+          <div class="ha-hero__acts">
+            <a class="ha-btn" href="#thesis">Read the thesis</a>
+            <a class="ha-btn ha-btn--ghost" href="#spec">Take the tokens</a>
+          </div>
+          <div class="ha-hero__meta">
+            <span>{primitives.length} primitives</span>
+            <span>{contrast.length} measured pairs</span>
+            <span>2 surfaces · 1 palette</span>
+            <span>Syne · Schibsted · Geist Mono</span>
+          </div>
+        </div>
+
+        <div class="ha-facts">
+          <div class="ha-fact">
+            <p class="ha-figure">{primitives.length}</p>
+            <span class="ha-label">Primitives</span>
+            <p>Five core, one signal, and the material needed to prove both surfaces.</p>
+          </div>
+          <div class="ha-fact">
+            <p class="ha-figure">{contrast.length}</p>
+            <span class="ha-label">Contrast pairs</span>
+            <p>Every ratio recomputed from hex. {fails.length} failures published, not hidden.</p>
+          </div>
+          <div class="ha-fact">
+            <p class="ha-figure">2</p>
+            <span class="ha-label">Surfaces</span>
+            <p>Day and night are semantic scopes over one set of primitives.</p>
+          </div>
+          <div class="ha-fact">
+            <p class="ha-figure">0</p>
+            <span class="ha-label">Scrims</span>
+            <p>No pane here only blurs. Each one tints, refracts and lifts on a specular edge.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 02 · thesis ────────────────────────────────────────────────── -->
+    <section class="ha-sec" id="thesis">
+      <div class="ha-wrap">
+        <div class="ha-sec__head">
+          <div class="ha-sec__num"><b>02</b>Thesis</div>
+          <h2 class="ha-h1">A surface should change the colour it covers, not hide it.</h2>
+          <p class="ha-sec__note">
+            Four statements the rest of the system can be measured against. If a pane only dims the
+            photograph behind it, it is not Halation — it is the default this brand was drawn
+            against.
+          </p>
+        </div>
+
+        <div class="ha-thesis">
+          <div class="ha-thesis__cell">
+            <h3 class="ha-h3">Belief</h3>
+            <p>
+              Glass is a lens before it is a surface. It bends what is behind it, adds a colour to
+              it, and ends in a single bright line where the light leaves. An interface built this
+              way can carry photography without going grey.
+            </p>
+          </div>
+          <div class="ha-thesis__cell">
+            <h3 class="ha-h3">Enemy</h3>
+            <p>
+              The frosted-glass default of 2024–25: a grey <code>backdrop-filter</code> panel, white
+              type on top, a photograph reduced to a smear, and no evidence that anyone chose it.
+            </p>
+          </div>
+          <div class="ha-thesis__cell">
+            <h3 class="ha-h3">Material</h3>
+            <p>
+              {theme.material.charAt(0).toUpperCase() + theme.material.slice(1)}. The rib is why the
+              field arrives in vertical bands instead of a blur, and why the mark is a pane with
+              ribs cut out of it.
+            </p>
+          </div>
+          <div class="ha-thesis__cell ha-thesis__cell--loud">
+            <h3 class="ha-h3">Promise</h3>
+            <p>{meta.promise}</p>
+          </div>
+        </div>
+
+        <div class="ha-cards">
+          <article class="ha-card">
+            <h4>The pane carries a spill</h4>
+            <dl>
+              <dt>Decision</dt>
+              <dd>
+                A 5px reed of coral runs 6px past the top and bottom edge of every pane, at the same
+                gap the mark uses.
+              </dd>
+              <dt>Because</dt>
+              <dd>
+                It makes the mark structural instead of decorative: any glass surface on this page is
+                recognisable as Halation with the logo removed.
+              </dd>
+              <dt>Not when</dt>
+              <dd>
+                Surfaces under 120px wide — the spill becomes a stray tick. Use a solid plate.
+              </dd>
+              <dt>Breaks next</dt>
+              <dd>
+                Applying it to cards and inputs turns a signal into a border, and the pane stops
+                meaning “this is glass”.
+              </dd>
+            </dl>
+          </article>
+
+          <article class="ha-card">
+            <h4>Coral is never type on porcelain</h4>
+            <dl>
+              <dt>Decision</dt>
+              <dd>
+                The signal measures {contrast[17].ratio}:1 on a plate. It is assigned the job of
+                graphic — fill, rule, spill, chart series — and the failure is printed.
+              </dd>
+              <dt>Because</dt>
+              <dd>
+                Darkening it until it passed would produce a different brand and hide the decision
+                inside a hex value.
+              </dd>
+              <dt>Not when</dt>
+              <dd>
+                Ink on coral is 5.69:1. The reverse pair is allowed, and it is the primary button.
+              </dd>
+              <dt>Breaks next</dt>
+              <dd>
+                A new agent reads “coral” and writes a link. Links point at
+                <code>--ha-text-accent</code>.
+              </dd>
+            </dl>
+          </article>
+
+          <article class="ha-card">
+            <h4>Night is a scope, not a palette</h4>
+            <dl>
+              <dt>Decision</dt>
+              <dd>
+                Primitives are named for material — porcelain, wine, obsidian. Only the semantic
+                layer swaps under <code>[data-ha='night']</code>.
+              </dd>
+              <dt>Because</dt>
+              <dd>
+                Nothing can disappear on a theme flip, and there is one place to add a pair rather
+                than two.
+              </dd>
+              <dt>Not when</dt>
+              <dd>
+                One section inverts inside a day page. That is the same scope, applied to the
+                section.
+              </dd>
+              <dt>Breaks next</dt>
+              <dd>
+                A mode-prefixed primitive (<code>--ha-night-ground</code>) forks the palette and
+                doubles every future pair.
+              </dd>
+            </dl>
+          </article>
+
+          <article class="ha-card">
+            <h4>Small type never sits on the field</h4>
+            <dl>
+              <dt>Decision</dt>
+              <dd>
+                Every piece of type under 24px sits on a plate or on a read pane at 84% tint. The
+                field carries the display and the mark only.
+              </dd>
+              <dt>Because</dt>
+              <dd>
+                13.5px on this photograph measures between 1.9:1 and 3.2:1 depending on the crop, and
+                the crop changes at every breakpoint.
+              </dd>
+              <dt>Not when</dt>
+              <dd>
+                The type is ≥24px and bold and the field is behind a read pane — the hero display is
+                exactly that case.
+              </dd>
+              <dt>Breaks next</dt>
+              <dd>
+                A hero redesign that removes the plate looks correct in one crop and fails in the
+                next.
+              </dd>
+            </dl>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 03 · the mark ──────────────────────────────────────────────── -->
+    <section class="ha-sec" id="pane">
+      <div class="ha-wrap">
+        <div class="ha-sec__head">
+          <div class="ha-sec__num"><b>03</b>The mark</div>
+          <h2 class="ha-h1">A pane of ribs, and one reed that leaves it.</h2>
+          <p class="ha-sec__note">
+            Drawn on a 64 grid: a 36 × 44 pane, four 4-unit ribs on an 8-unit pitch, a 6-unit gap,
+            and a 5 × 64 spill that runs to the edge of the canvas. Fill only — no stroke, no
+            circle, one accent. The compact is a different drawing, not a scaled copy.
+          </p>
+        </div>
+
+        <div class="ha-mark-grid">
+          <div class="ha-plate">
+            <span class="ha-label">Primary · mark.svg</span>
+            <div class="ha-plate__row">
+              <img class="ha-mark-big" src={`${B}/mark.svg`} alt="Halation mark: a ribbed pane with a coral reed running past its edge" />
+              <div class="ha-mark-sizes">
+                <figure><img src={`${B}/mark.svg`} width="96" height="96" alt="" /><figcaption>96</figcaption></figure>
+                <figure><img src={`${B}/mark.svg`} width="48" height="48" alt="" /><figcaption>48</figcaption></figure>
+                <figure><img src={`${B}/mark.svg`} width="32" height="32" alt="" /><figcaption>32</figcaption></figure>
+                <figure><img src={`${B}/mark-compact.svg`} width="16" height="16" alt="" /><figcaption>16 · compact</figcaption></figure>
+              </div>
+            </div>
+            <p class="ha-small">
+              At 16px the ribs merge, so the compact drops them and thickens the spill from 5 to 8
+              units. It is a second drawing — a solid pane and one bar — and it is the one that
+              ships in a favicon.
+            </p>
+          </div>
+
+          <div class="ha-plate ha-plate--ink">
+            <span class="ha-label" style="color: var(--ha-mute-night)">Reverse · on wine</span>
+            <div class="ha-plate__row">
+              <img src={`${B}/mark-reverse.svg`} width="88" height="88" alt="Halation mark reversed: chalk pane, coral-light reed" />
+              <img src={`${B}/lockup-reverse.svg`} style="height: 44px; width: auto" alt="Halation reverse lockup" />
+            </div>
+            <p class="ha-small" style="color: var(--ha-mute-night)">
+              The reverse keeps the same gap and the same 5-unit reed; only the ink and the signal
+              lift. On a night plate the mark never turns pure white — chalk keeps the wine in it.
+            </p>
+          </div>
+        </div>
+
+        <div class="ha-mark-grid">
+          <div class="ha-plate ha-plate--field">
+            <div class="ha-plate__row" style="position: relative; z-index: 1">
+              <img src={`${B}/mark-reverse.svg`} width="72" height="72" alt="The reverse mark on the coral field" />
+              <img src={`${B}/mark-mono.svg`} width="40" height="40" alt="The mono mark on the coral field" />
+            </div>
+          </div>
+
+          <div class="ha-plate">
+            <span class="ha-label">Wordmark · Syne 600, outlined</span>
+            <div class="ha-wordmark-scale">
+              <figure>
+                <img src={`${B}/wordmark.svg`} style="height: 34px; width: auto" alt="Halation wordmark" />
+                <figcaption>34 · cap 30</figcaption>
+              </figure>
+              <figure>
+                <img src={`${B}/wordmark.svg`} style="height: 22px; width: auto" alt="" />
+                <figcaption>22</figcaption>
+              </figure>
+              <figure>
+                <img src={`${B}/wordmark.svg`} style="height: 14px; width: auto" alt="" />
+                <figcaption>14 · minimum</figcaption>
+              </figure>
+            </div>
+            <img src={`${B}/lockup.svg`} style="height: 40px; width: auto; margin-top: 4px" alt="Halation lockup" />
+            <p class="ha-small">
+              Outlined from the Syne variable font at weight 600 and −0.025em tracking. Never live
+              text: a font failure must not change the name. Below 14px the reading face carries it.
+            </p>
+          </div>
+        </div>
+
+        <div class="ha-rules">
+          <div class="ha-rule-card">
+            <h4>The mark never gets a stroke</h4>
+            <p>
+              The ribs are holes cut with <code>fill-rule="evenodd"</code>, not lines. It reads on
+              porcelain, on wine and on the field because it has no background of its own.
+            </p>
+          </div>
+          <div class="ha-rule-card">
+            <h4>The spill is one colour</h4>
+            <p>
+              Coral on light, coral-light on night. It never becomes a gradient and never carries a
+              second reed — two would read as a pause icon.
+            </p>
+          </div>
+          <div class="ha-rule-card">
+            <h4>Clear space is the gap</h4>
+            <p>
+              The 6-unit gap between pane and spill is the minimum margin on every side. Nothing
+              enters it, including the wordmark in a lockup.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 04 · spectrum ──────────────────────────────────────────────── -->
+    <section class="ha-sec" id="spectrum">
+      <div class="ha-wrap">
+        <div class="ha-sec__head">
+          <div class="ha-sec__num"><b>04</b>Spectrum</div>
+          <h2 class="ha-h1">Six colours, sampled from the material.</h2>
+          <p class="ha-sec__note">
+            Porcelain and ink come from the light end of the ember asset; coral, coral-deep, ember
+            and lilac are ribs from the prismatic field. Stated in OKLCH because that is the space
+            they were chosen in.
+          </p>
+        </div>
+
+        <div class="ha-swatch-row">
+          {core.map((c) => (
+            <div class="ha-swatch">
+              <div class="ha-swatch__chip" style={`background:${c.value}`}></div>
+              <div class="ha-swatch__meta">
+                <span class="ha-swatch__name">{c.name}</span>
+                <span class="ha-swatch__hex">{c.value}</span>
+                <span class="ha-swatch__hex">{c.oklch}</span>
+                <span class="ha-swatch__role">{c.role.replace(/^[^·]+·\s*/, '')}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="ha-material">
+          <figure>
+            <img src={`${B}/field-coral.jpg`} alt="Coral prismatic ridges: vertical bands of coral, magenta and lilac over a pale ground" />
+            <figcaption>Field 01 · coral prismatic</figcaption>
+          </figure>
+          <figure>
+            <img src={`${B}/field-ember.jpg`} alt="Ember gradient glow: vertical bands from amber through crimson into blue-black" />
+            <figcaption>Field 02 · ember gradient</figcaption>
+          </figure>
+        </div>
+
+        <table class="ha-table">
+          <caption>
+            Contrast · {contrast.length} pairs recomputed from hex · {passes.length} pass · {fails.length} fail
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Pair</th>
+              <th scope="col" style="text-align: right">Ratio</th>
+              <th scope="col">Verdict</th>
+              <th scope="col">The job it may do</th>
+            </tr>
+          </thead>
+          <tbody>
+            {contrast.map((c) => (
+              <tr data-pass={String(c.pass)}>
+                <td>
+                  <span class="ha-table__pair">
+                    <span class="ha-chip" style={`background:${c.fg}`}></span>
+                    <span class="ha-chip" style={`background:${c.bg}`}></span>
+                    {c.label}
+                  </span>
+                </td>
+                <td class="ha-table__ratio">{c.ratio.toFixed(2)}:1</td>
+                <td><span class="ha-verdict" data-pass={String(c.pass)}>{c.pass ? 'Pass' : 'Fail'}</span></td>
+                <td class="ha-table__job">{c.job}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── 05 · measure ───────────────────────────────────────────────── -->
+    <section class="ha-sec" id="measure">
+      <div class="ha-wrap">
+        <div class="ha-sec__head">
+          <div class="ha-sec__num"><b>05</b>Measure</div>
+          <h2 class="ha-h1">Type at its real size, not a table about it.</h2>
+          <p class="ha-sec__note">
+            Syne carries the display, Schibsted Grotesk the reading, Geist Mono every label and
+            ratio. The specimens below are set at the tokens, not at a convenient approximation.
+          </p>
+        </div>
+
+        <div class="ha-specimen">
+          <div class="ha-specimen__meta">
+            <b>Display</b>
+            Syne 600<br />
+            92 / 0.92<br />
+            −0.035em
+          </div>
+          <p class="ha-specimen__display">Halation, before the light stops.</p>
+        </div>
+
+        <div class="ha-specimen">
+          <div class="ha-specimen__meta">
+            <b>Reading</b>
+            Schibsted 400<br />
+            17 / 1.68<br />
+            66ch
+          </div>
+          <div>
+            <p class="ha-reading">
+              A halation is the halo a bright edge leaves after the light has already stopped. It is
+              a photographic accident — the emulsion keeps glowing past the boundary of the thing
+              that lit it — and it is the only honest metaphor for a surface that refuses to be
+              neutral. Glass in an interface usually does the opposite: it dims what it covers until
+              the photograph is a grey field and the type is safe.
+            </p>
+            <p class="ha-reading">
+              Halation makes the pane add something instead. The ribs bend the field into bands, the
+              tint pushes it toward coral, and one reed of colour leaves the edge so the eye has
+              somewhere to go. Small type never takes part: it sits on a plate, at a measured ratio,
+              where the photograph cannot reach it.
+            </p>
+          </div>
+        </div>
+
+        <div class="ha-specimen">
+          <div class="ha-specimen__meta">
+            <b>Figures</b>
+            Syne 600<br />
+            26 / tabular<br />
+            right-aligned
+          </div>
+          <div class="ha-figures">
+            <div class="ha-figures__row"><span>Primitives declared</span><b>18</b></div>
+            <div class="ha-figures__row"><span>Contrast pairs computed</span><b>20</b></div>
+            <div class="ha-figures__row"><span>Weakest published ratio</span><b>1.89</b></div>
+            <div class="ha-figures__row"><span>Pane blur, default</span><b>22px</b></div>
+            <div class="ha-figures__row"><span>Rib pitch</span><b>8px</b></div>
+          </div>
+        </div>
+
+        <div class="ha-scale">
+          {SCALE.map((s) => (
+            <div class="ha-scale__row">
+              <span class="ha-label">{s.role}</span>
+              <span
+                class="ha-scale__sample"
+                style={`font-family:var(--ha-font-${s.role === 'Label' ? 'mono' : s.role === 'Body' || s.role === 'Small' || s.role === 'Lead' ? 'reading' : 'display'});font-size:var(--ha-t-${s.role.toLowerCase()});line-height:var(--ha-t-${s.role.toLowerCase()}-lh);letter-spacing:var(--ha-t-${s.role.toLowerCase()}-ls);font-weight:var(--ha-t-${s.role.toLowerCase()}-w)`}
+              >
+                {s.sample}
+              </span>
+              <span class="ha-scale__vals">
+                {s.px}px · {s.lh}
+                <br />
+                {s.ls} · {s.w}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div class="ha-found">
+          <div class="ha-found__box">
+            <h4>Spacing · 9 steps</h4>
+            <div class="ha-bars">
+              {space.map((v) => (
+                <div><i style={`width:${v}px`}></i>{v}</div>
+              ))}
+            </div>
+          </div>
+
+          <div class="ha-found__box">
+            <h4>Radius · 5 steps</h4>
+            <div class="ha-radii">
+              {radius.map((r) => (
+                <figure data-wide={r.name === 'pill' ? '' : undefined}>
+                  <i style={`border-radius:${r.value}`}></i>
+                  <figcaption>{r.name} {r.value}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+
+          <div class="ha-found__box">
+            <h4>Elevation · the edge does the work</h4>
+            <div class="ha-elevs">
+              {elevation.map((e) => (
+                <div data-e={e.name}><span>{e.name}</span><span>{e.role}</span></div>
+              ))}
+            </div>
+          </div>
+
+          <div class="ha-found__box">
+            <h4>Motion · hover to run</h4>
+            <div class="ha-motion">
+              {motion.map((m) => (
+                <div><span>{m.name} · {m.value.split(' ')[0]}</span><i></i></div>
+              ))}
+            </div>
+            <p class="ha-small" style="margin-top: 12px">
+              One easing curve for everything: cubic-bezier(0.2, 0.8, 0.2, 1). The 520ms slow token
+              is reserved for the refraction settling, and reduced motion turns all of it into a
+              still frame.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 06 · instrument ────────────────────────────────────────────── -->
+    <section class="ha-sec" id="instrument">
+      <div class="ha-wrap">
+        <div class="ha-sec__head">
+          <div class="ha-sec__num"><b>06</b>Instrument</div>
+          <h2 class="ha-h1">The kit, including the states nobody designs.</h2>
+          <p class="ha-sec__note">
+            Every control resolves through <code>--ha-*</code> tokens, so the whole kit inverts with
+            the scope toggle. Error and success are cooler than the brand on purpose: a failed field
+            must not look like a brand moment.
+          </p>
+        </div>
+
+        <div class="ha-kit">
+          <div class="ha-kit__box">
+            <span class="ha-label">Buttons</span>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+              <button class="ha-btn" type="button">Reserve a pane</button>
+              <button class="ha-btn ha-btn--ghost" type="button">Specimen</button>
+              <button class="ha-btn ha-btn--sm" type="button">Small</button>
+              <button class="ha-btn" type="button" disabled>Disabled</button>
+            </div>
+            <p class="ha-small">
+              The primary is ink on coral — the reverse pair at 5.69:1. Hover adds the spill shadow,
+              never a drop shadow on the type.
+            </p>
+          </div>
+
+          <div class="ha-kit__box">
+            <span class="ha-label">Glass controls · field only</span>
+            <div class="ha-kit__field">
+              <button class="ha-btn ha-btn--glass" type="button">Open the shelf</button>
+              <button class="ha-btn ha-btn--glass-quiet" type="button">Read the system</button>
+            </div>
+            <p class="ha-small">
+              The pane's three layers at control scale. The reeds run through the fill, so the
+              control is never a flat tint, and the rim is a shade on a bright field, a light on a
+              dark one. Only ever over the field — on a plate it has nothing to refract.
+            </p>
+          </div>
+
+          <div class="ha-kit__box">
+            <span class="ha-label">Selection</span>
+            <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center">
+              <label class="ha-check"><input type="checkbox" checked /> Send the specimen sheet</label>
+              <label class="ha-check"><input type="checkbox" /> Notify on release</label>
+            </div>
+            <label class="ha-switch">
+              <input type="checkbox" checked />
+              <span>Refraction on</span>
+            </label>
+            <div class="ha-tabs" role="tablist" aria-label="Sample tabs">
+              <button role="tab" aria-selected="true" type="button">Day</button>
+              <button role="tab" aria-selected="false" type="button">Night</button>
+              <button role="tab" aria-selected="false" type="button">Print</button>
+            </div>
+            <div class="ha-badges">
+              <span class="ha-badge ha-badge--solid">Signal</span>
+              <span class="ha-badge">Graphic only</span>
+              <span class="ha-badge ha-badge--line">3.02:1</span>
+            </div>
+          </div>
+
+          <div class="ha-kit__box ha-kit__box--span">
+            <span class="ha-label">The refraction demo · drag it</span>
+            <div class="ha-demo" id="ha-demo">
+              <div class="ha-pane ha-spill ha-demo__pane" id="ha-demo-pane">
+                <p class="ha-h3" style="font-size:18px">This pane is doing work</p>
+                <p>
+                  The blur alone would make the field grey. The tint, the reed overlay and the
+                  specular edge are what keep the coral in the glass.
+                </p>
+              </div>
+            </div>
+            <div class="ha-demo__bar">
+              <div class="ha-demo__ctl">
+                <span>Blur</span>
+                <input id="ha-blur" type="range" min="0" max="40" value="22" aria-label="Pane blur" />
+                <span class="ha-demo__val" id="ha-blur-val">22px</span>
+              </div>
+              <div class="ha-demo__ctl">
+                <span>Tint</span>
+                <input id="ha-tint" type="range" min="16" max="90" value="26" aria-label="Pane tint" />
+                <span class="ha-demo__val" id="ha-tint-val">26%</span>
+              </div>
+            </div>
+            <p class="ha-small">
+              Drag blur to 0 and the pane becomes a scrim — the field goes muddy and the type starts
+              to fight it. That is the enemy, made adjustable.
+            </p>
+          </div>
+
+          <div class="ha-kit__box">
+            <span class="ha-label">Form · live validation</span>
+            <form id="ha-form" novalidate style="display:grid;gap:14px">
+              <label class="ha-field" data-state="">
+                <span>Email</span>
+                <input class="ha-input" type="email" name="email" placeholder="you@studio.com" required />
+                <p class="ha-hint">We send one specimen sheet, once.</p>
+              </label>
+              <label class="ha-field" data-state="">
+                <span>Surface</span>
+                <select class="ha-select">
+                  <option>Day · porcelain</option>
+                  <option>Night · ember</option>
+                  <option>Print · vector field</option>
+                </select>
+              </label>
+              <button class="ha-btn ha-btn--sm" type="submit" style="justify-self:start">Send</button>
+            </form>
+          </div>
+
+          <div class="ha-kit__box">
+            <span class="ha-label">States · the part usually missing</span>
+            <label class="ha-field" data-state="ok">
+              <span>Project name</span>
+              <input class="ha-input" value="Reeded glass study" />
+              <p class="ha-hint">Available. 5.69:1 on the plate.</p>
+            </label>
+            <label class="ha-field" data-state="error">
+              <span>Invoice reference</span>
+              <input class="ha-input" value="HA-2026" aria-invalid="true" />
+              <p class="ha-hint">Needs 8 characters — you have 7.</p>
+            </label>
+            <label class="ha-field" data-state="">
+              <span>Notes</span>
+              <textarea class="ha-textarea" rows="2" placeholder="Anything the pane should know"></textarea>
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 07 · nightfall ─────────────────────────────────────────────── -->
+    <section class="ha-night" id="nightfall" data-ha="night">
+      <div class="ha-night__field" aria-hidden="true"></div>
+      <div class="ha-night__scrim" aria-hidden="true"></div>
+      <div class="ha-wrap">
+        <div class="ha-night__grid">
+          <div>
+            <div class="ha-hero__eyebrow">
+              <span class="ha-label">07 · Night</span>
+              <span class="ha-hero__rule" style="background: color-mix(in oklab, var(--ha-chalk) 40%, transparent)"></span>
+              <span class="ha-label">Ember field</span>
+            </div>
+            <h2 class="ha-h1" style="margin-bottom: 18px">
+              The same system, one scope down.
+            </h2>
+            <p class="ha-lead" style="color: var(--ha-text-mute); max-width: 44ch">
+              No component was redrawn for this section. The scope swaps the semantic layer, and the
+              primitives that were already declared do the rest.
+            </p>
+            <div class="ha-pane ha-spill ha-night__pane" style="margin-top: 26px">
+              <span class="ha-label">Night pane</span>
+              <p>
+                Tint drops to 52% wine, the specular edge falls to 28% because the ground is already
+                dark, and the signal lifts from coral to coral-light so it still reads at 8.68:1.
+              </p>
+              <div class="ha-badges">
+                <span class="ha-badge ha-badge--solid">Coral light</span>
+                <span class="ha-badge ha-badge--line">8.68:1</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="ha-night__stats">
+            {[
+              ['Page ground', 'obsidian #0b0409'],
+              ['Plate', 'wine #240309'],
+              ['Body ink', 'chalk 16.50:1'],
+              ['Metadata', 'mute-night 6.41:1'],
+              ['Signal', 'coral-light 8.68:1'],
+              ['Specular edge', 'white 28%'],
+              ['Pane tint', 'wine 52%'],
+              ['Backdrop blur', '22px · saturate 1.35'],
+            ].map(([k, v]) => (
+              <div class="ha-night__stat"><span>{k}</span><b>{v}</b></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 08 · spec ──────────────────────────────────────────────────── -->
+    <section class="ha-sec" id="spec">
+      <div class="ha-wrap">
+        <div class="ha-sec__head">
+          <div class="ha-sec__num"><b>08</b>Tokens</div>
+          <h2 class="ha-h1">One source, three layers, two scopes.</h2>
+          <p class="ha-sec__note">
+            Copy any block. The primitive layer is the only place a hex value is written; the
+            semantic layer is the only place a job is named; the component layer is the only place a
+            control knows its colour.
+          </p>
+        </div>
+
+        <div class="ha-code-grid">
+          {[
+            { file: 'halation-tokens.css · 1', body: cssPrimitives },
+            { file: 'halation-tokens.css · 2 · day', body: cssDay },
+            { file: 'halation-tokens.css · 2 · night', body: cssNight },
+            { file: 'halation-tokens.css · 3 · pane', body: cssPane },
+          ].map((b) => (
+            <div class="ha-code">
+              <header>
+                <span>{b.file}</span>
+                <button class="ha-copy" type="button" data-copy>Copy</button>
+              </header>
+              <pre><code>{b.body}</code></pre>
+            </div>
+          ))}
+        </div>
+
+        <div class="ha-files">
+          <div class="ha-file">
+            <code>src/features/halation/tokens.json</code>
+            <p>The source. {primitives.length} primitives, {contrast.length} pairs, type, space, radius, elevation, motion.</p>
+          </div>
+          <div class="ha-file">
+            <code>public/brand/halation/</code>
+            <p>Mark, compact, glyph, mono, reverse, wordmark, four lockups, icon, both fields, the proof sheet.</p>
+          </div>
+          <div class="ha-file">
+            <code>brand/halation/mark.mjs</code>
+            <p>Regenerates the mark family from stated grid units. Run it; never hand-edit an SVG.</p>
+          </div>
+        </div>
+
+        <div class="ha-thesis" style="margin-top: 32px; margin-bottom: 0">
+          <div class="ha-thesis__cell">
+            <h3 class="ha-h3">What is measured</h3>
+            <p>
+              {contrast.length} contrast pairs recomputed from hex, the type scale at its real
+              tokens, the mark at 16px in a separate drawing, and both surfaces proven on the page
+              you are reading.
+            </p>
+          </div>
+          <div class="ha-thesis__cell">
+            <h3 class="ha-h3">What is not</h3>
+            <p>
+              The blur cost of a pane over video on a low-end device, and the coral field’s behaviour
+              on a wide-gamut display. Both are real; neither is measured here, so neither is
+              claimed.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── close ──────────────────────────────────────────────────────── -->
+    <div class="ha-wrap">
+      <div class="ha-close">
+        <div>
+          <span class="ha-label">The last surface</span>
+          <p class="ha-display" style="font-size: clamp(32px, 4.6vw, 56px); margin-top: 14px; max-width: 20ch">
+            The page ends in the object the identity is made of.
+          </p>
+          <p class="ha-small" style="margin-top: 14px; max-width: 46ch">
+            One pane of reeded glass, one reed of light past its edge, built from the same tokens as
+            every control above. No screenshot of the brand — the brand, at 260px.
+          </p>
+        </div>
+        <div class="ha-close__pane">
+          <div class="ha-close__in"></div>
+          <div class="ha-close__spill"></div>
+        </div>
+      </div>
+
+      <footer class="ha-foot">
+        <span class="ha-label">Halation · Case 15 · {meta.year}</span>
+        <div class="ha-foot__links">
+          <a href="#top">Top</a>
+          <a href="/">All cases</a>
+          <a href={`${B}/halation-tokens.json`}>tokens.json</a>
+          <a href={`${B}/sheet.html`}>proof sheet</a>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // theme scope
+    const root = document.documentElement
+    const btn = document.getElementById('ha-theme')
+    const label = document.getElementById('ha-theme-label')
+    const sync = () => {
+      const night = root.dataset.ha === 'night'
+      if (btn) btn.setAttribute('aria-pressed', String(night))
+      if (label) label.textContent = night ? 'Night' : 'Day'
+    }
+    sync()
+    btn?.addEventListener('click', () => {
+      const night = root.dataset.ha === 'night'
+      if (night) delete root.dataset.ha
+      else root.dataset.ha = 'night'
+      try {
+        localStorage.setItem('ha-theme', night ? 'day' : 'night')
+      } catch (e) {}
+      sync()
+    })
+
+    // the refraction demo
+    const demo = document.getElementById('ha-demo')
+    const pane = document.getElementById('ha-demo-pane')
+    const blur = document.getElementById('ha-blur') as HTMLInputElement | null
+    const tint = document.getElementById('ha-tint') as HTMLInputElement | null
+    const paint = () => {
+      if (!pane || !blur || !tint) return
+      pane.style.setProperty('--ha-pane-blur', `${blur.value}px`)
+      pane.style.setProperty('--ha-demo-tint', `${tint.value}%`)
+      const bv = document.getElementById('ha-blur-val')
+      const tv = document.getElementById('ha-tint-val')
+      if (bv) bv.textContent = `${blur.value}px`
+      if (tv) tv.textContent = `${tint.value}%`
+    }
+    blur?.addEventListener('input', paint)
+    tint?.addEventListener('input', paint)
+    paint() // the pane must start at the value the readout claims, not at a stylesheet fallback
+    paint() // the pane must start at the value the readout claims, not at a stylesheet fallback
+
+    // tabs
+    document.querySelectorAll('.ha-tabs').forEach((tablist) => {
+      const tabs = Array.from(tablist.querySelectorAll('button'))
+      tabs.forEach((t) => {
+        t.addEventListener('click', () => {
+          tabs.forEach((o) => o.setAttribute('aria-selected', String(o === t)))
+        })
+      })
+    })
+
+    // copy
+    document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) => {
+      b.addEventListener('click', async () => {
+        const pre = b.closest('.ha-code')?.querySelector('pre')
+        if (!pre) return
+        try {
+          await navigator.clipboard.writeText(pre.innerText)
+          const old = b.textContent
+          b.textContent = 'Copied'
+          setTimeout(() => (b.textContent = old), 1400)
+        } catch (e) {
+          b.textContent = 'Select'
+        }
+      })
+    })
+
+    // form validation
+    const form = document.getElementById('ha-form') as HTMLFormElement | null
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault()
+      const field = form.querySelector<HTMLElement>('.ha-field')
+      const input = field?.querySelector('input')
+      if (!field || !input) return
+      const ok = /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(input.value)
+      field.dataset.state = ok ? 'ok' : 'error'
+      const hint = field.querySelector('.ha-hint')
+      if (hint) hint.textContent = ok ? 'Sent. Check your inbox for the sheet.' : 'That address is missing a domain.'
+    })
+  </script>
+</Layout>

@@ -256,7 +256,7 @@ export const DESIGN_CASES: readonly DesignCase[] = [
     slug: 'ledger',
     number: '09',
     name: LEDGER.name,
-    href: '/ledger',
+    href: '/design-system/ledger',
     tagline: LEDGER.tagline,
     description: LEDGER.description,
     status: LEDGER.status,

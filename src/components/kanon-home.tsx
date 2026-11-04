@@ -384,8 +384,8 @@ export function KanonHome({ facts }: { facts: SystemFacts }) {
               aspectRatio={4 / 3}
               gap={5}
               axis={50}
-              curve={62}
-              fade={14}
+              curve={30}
+              fade={18}
             />
           </div>
         </section>

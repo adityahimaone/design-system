@@ -429,16 +429,25 @@
   padding-top: clamp(28px, 3.4vw, 44px);
 }
 
-.kn-case { display: grid; grid-template-rows: auto 1fr; gap: 0; min-width: 0; }
+.kn-case {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  gap: 0;
+  min-width: 0;
+}
 .kn-case__cover {
   position: relative;
   display: block;
+  width: 100%;
+  min-width: 0;
   border: var(--sr-rule) solid var(--kn-rule);
   background: var(--kn-plate);
   overflow: hidden;
   transition: border-color var(--kn-t);
 }
 .kn-case__cover img {
+  display: block;
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;

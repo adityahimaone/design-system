@@ -18,8 +18,14 @@ import { cn } from '@/lib/utils'
  * the arc it sits. The band is transform-only on the compositor; the fade
  * is a static mask over it.
  *
- * The only JS is a ResizeObserver that sizes the loop, and a handler that
- * hands a tile its next image each time it wraps, out of sight.
+ * Nothing is an <img>: each slice paints its crop as a background. A tile is
+ * 16 slices, so an <img> per slice meant ~400 replaced elements per band, each
+ * one a full-size bitmap laid out behind its slice. Painted crops keep the
+ * same geometry with one decode of one URL.
+ *
+ * The only JS is a ResizeObserver that sizes the loop. When several images are
+ * supplied, a handler hands a tile its next one each time it wraps, out of
+ * sight; with a single image there is nothing to hand over and no state.
  * ─────────────────────────────────────────────────────────────── */
 
 const SLICES = 16
@@ -171,11 +177,9 @@ export function TiltedGridHero({
     return () => ro.disconnect()
   }, [tileHeight, aspectRatio, gap, bend])
 
-  // Fetch every image up front. A tile picks up its next one just before
-  // it comes back into view, too late to start loading it then.
-  React.useEffect(() => {
-    for (const { src } of images) new Image().src = src
-  }, [images])
+  // No preload pass: every tile is on screen from the first frame and paints a
+  // background, so the browser already requests one copy of each URL at mount.
+  // Adding `new Image()` for the same 23 URLs only scheduled the work twice.
 
   // Every tile is placed by its own negative delay, so the row is only a row if
   // every tile's animation started on the same frame. Mounting a provisional
@@ -264,13 +268,17 @@ export function TiltedGridHero({
                     animation: `${orbit} ${duration}s linear ${-t * speed}s infinite`,
                   } as React.CSSProperties
                 }
-                onAnimationIteration={(e) => {
-                  const lap = Math.round(e.elapsedTime / duration)
-                  setShown((prev) => {
-                    const next = lap * columns + first
-                    return prev[t] === next ? prev : { ...prev, [t]: next }
-                  })
-                }}
+                onAnimationIteration={
+                  images.length > 1
+                    ? (e) => {
+                        const lap = Math.round(e.elapsedTime / duration)
+                        setShown((prev) => {
+                          const next = lap * columns + first
+                          return prev[t] === next ? prev : { ...prev, [t]: next }
+                        })
+                      }
+                    : undefined
+                }
               >
                 {Array.from({ length: SLICES }, (_, k) => (
                   <div
@@ -285,22 +293,12 @@ export function TiltedGridHero({
                       width: k === SLICES - 1 ? u(share) : `calc(${u(share)} + 1px)`,
                       height: u(1),
                       transform: turn((aspectRatio / 2 - (k + 0.5) * share) * unit),
+                      backgroundImage: img ? `url("${img.src}")` : undefined,
+                      backgroundSize: `${u(aspectRatio)} ${u(1)}`,
+                      backgroundPosition: `${u(-k * share)} 0`,
+                      backgroundRepeat: 'no-repeat',
                     }}
-                  >
-                    {img ? (
-                      <img
-                        src={img.src}
-                        alt={k === 0 ? (img.alt ?? '') : ''}
-                        draggable={false}
-                        className="tgh__img"
-                        style={{
-                          left: u(-k * share),
-                          width: u(aspectRatio),
-                          height: u(1),
-                        }}
-                      />
-                    ) : null}
-                  </div>
+                  />
                 ))}
               </div>
             )

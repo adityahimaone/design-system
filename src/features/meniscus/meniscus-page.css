@@ -163,13 +163,6 @@
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
 }
-.tgh__img {
-  position: absolute;
-  top: 0;
-  max-width: none;
-  object-fit: cover;
-  object-position: center top;
-}
 
 /* the band dissolves into the page at both ends — liquid, not a strip */
 .me-hero__scrim {

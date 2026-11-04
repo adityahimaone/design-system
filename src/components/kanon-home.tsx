@@ -42,15 +42,75 @@ import { COLLECTIONS, collectionOf } from '../data/collections'
    palette are installed components, themed only through tokens.
    ========================================================================== */
 
-const BAND = DESIGN_CASES.map((c) => ({ src: c.cover, alt: c.coverAlt }))
+/* Thumbnails: the shelf paints a ≤420px card, a band tile is a 190px facet, and
+   neither ever needs the 3000×2250 board behind it. Two sizes, from
+   `node scripts/build-covers.mjs`: 1200×900 for the shelf (1.2 MB for all 23),
+   560×420 for the band (344 KB for all 23) — against 32 MB of PNG. */
+const thumbOf = (c: DesignCase) => `/brand/thumbs/${c.slug}.webp`
+const bandThumbOf = (c: DesignCase) => `/brand/thumbs/${c.slug}-sm.webp`
+
+/* All 23 boards ride the band, one per tile. It is the canon itself going past,
+   which is the one thing the hero can say that the shelf below cannot. */
+const BAND = DESIGN_CASES.map((c) => ({ src: bandThumbOf(c), alt: '' }))
 
 const INSTALL_CMD =
   'npx skills add adityahimaone/sunnyside --skill sunnyside-brand-system --full-depth'
 
-/* The published skill ships six capabilities. The page no longer enumerates
-   them one by one — the install panel does that — but the count is real and it
-   is stated in the figures. */
-const SKILL_COUNT = 6
+/* The six skills, named as they are published — `skills add` takes that id. A
+   skill is a verb and the artefact is the proof it ran, so each line states the
+   one thing it writes and the file you get. No preamble, no folder inventory. */
+const SKILLS = [
+  {
+    n: '01',
+    name: 'Brand system',
+    id: 'sunnyside-brand-system',
+    writes: 'Brief → mark, cast, board, tokens in two scopes.',
+    file: 'mark.svg · board',
+  },
+  {
+    n: '02',
+    name: 'Build',
+    id: 'implement-brand-system',
+    writes: 'That identity → a page: primitives, states, metadata.',
+    file: '<slug>.astro',
+  },
+  {
+    n: '03',
+    name: 'Dashboard',
+    id: 'sunnyside-dashboard-system',
+    writes: 'A product shell with tabular figures and an honest audit.',
+    file: 'shell · charts',
+  },
+  {
+    n: '04',
+    name: 'Print',
+    id: 'sunnyside-print',
+    writes: 'Sleeves and specimens drawn in code, not decorated.',
+    file: 'sleeve.webp',
+  },
+  {
+    n: '05',
+    name: 'Cover',
+    id: 'sunnyside-thumbnail',
+    writes: 'The sleeve for a case that has no screenshot.',
+    file: 'cover.svg',
+  },
+  {
+    n: '06',
+    name: 'Canvas',
+    id: 'openpencil-design-canvas',
+    writes: 'The finished system as an editable .fig, headless.',
+    file: '<slug>.fig',
+  },
+] as const
+
+/* What one `skills add` actually unpacks, counted from the published tree. */
+const SKILL_LOAD = [
+  ['references', 9],
+  ['templates', 10],
+  ['scripts', 25],
+  ['examples', 3],
+] as const
 
 const SORTS = [
   { id: 'shelf', label: 'Shelf order' },
@@ -97,7 +157,16 @@ function CaseCard({ c }: { c: DesignCase }) {
         rel={external ? 'noreferrer' : undefined}
         aria-label={`Open ${c.name}`}
       >
-        <img src={c.cover} alt={c.coverAlt} loading="lazy" />
+        <img
+          src={thumbOf(c)}
+          srcSet={`${bandThumbOf(c)} 560w, ${thumbOf(c)} 1200w`}
+          sizes="(min-width:1080px) 33vw, (min-width:640px) 50vw, 100vw"
+          alt={c.coverAlt}
+          width={1200}
+          height={900}
+          loading="lazy"
+          decoding="async"
+        />
         <span className="kn-case__badges">
           <span className="kn-case__badge">Case {c.number}</span>
           {external && <span className="kn-case__badge kn-case__badge--ext">Studio ↗</span>}
@@ -205,7 +274,7 @@ export function KanonHome({ facts }: { facts: SystemFacts }) {
 
   const figures = [
     { n: DESIGN_CASES.length, l: 'Cases held' },
-    { n: SKILL_COUNT, l: 'Skills', pad: true },
+    { n: SKILLS.length, l: 'Skills', pad: true },
     { n: facts.primitives, l: 'Primitives' },
     { n: facts.pairs, l: 'Pairs measured' },
     { n: facts.fails, l: 'Published fails', pad: true, accent: true },
@@ -297,8 +366,9 @@ export function KanonHome({ facts }: { facts: SystemFacts }) {
             <aside className="kn-hero__note" aria-label="Plate 01">
               <span className="kn-hero__plate">Plate 01</span>
               <p>
-                The canon in shelf order. Every board on the band is the case's own cover —{' '}
-                <b>nothing restyled</b> to match the shelf.
+                All {DESIGN_CASES.length} boards are on the band, one per facet —{' '}
+                <b>no case restyled</b> to match the shelf. What turns past you is the canon
+                itself.
               </p>
               <span className="kn-hero__spec">
                 {DESIGN_CASES.length} boards · 4:3 · rotating
@@ -342,13 +412,12 @@ export function KanonHome({ facts }: { facts: SystemFacts }) {
               <span className="kn-head__num">01 · Install</span>
               <h2 id="kn-install-title">Six skills, one command.</h2>
               <p className="kn-head__note">
-                Every case on this page was made by the same published skill. Install it and the
-                next one is made the same way — marks on one grid, tokens in three layers, and a
-                ledger that <b>names what it fails</b>.
+                Six artefacts, in the order they get written — and one command that writes them.
               </p>
             </div>
 
-            <div className="kn-install__panel">
+            <div className="kn-install">
+              {/* What to run. One line, wrapping, never scrolled. */}
               <div className="kn-cmd">
                 <span className="kn-cmd__shell" aria-hidden="true">
                   $
@@ -373,42 +442,39 @@ export function KanonHome({ facts }: { facts: SystemFacts }) {
                 </span>
               </div>
 
-              <div className="kn-parts">
-                {[
-                  {
-                    name: 'references',
-                    count: 9,
-                    blurb:
-                      'The rules the build is held to: the craft bar, the gates, the mark and cast system, the three-layer tokens, immersive surfaces, form theming, research, Figma export — and the case evidence every claim on this page is traced back to.',
-                  },
-                  {
-                    name: 'templates',
-                    count: 10,
-                    blurb:
-                      'The files that get written: the case page, the brandkit board, the design-system page, the single-page proof, the Figma plugin, the OpenPencil board and build, the guidelines, and the audit schema.',
-                  },
-                  {
-                    name: 'scripts',
-                    count: 25,
-                    blurb:
-                      'The forge — marks, casts, boards, fields, glyphs, outlined wordmarks, tokens, DESIGN.md, Figma export, the audit and the gates. Deterministic: no API calls, no placeholder output.',
-                  },
-                  {
-                    name: 'examples',
-                    count: 3,
-                    blurb:
-                      'Three worked briefs with their configs, so the intake reads as a shape you can copy rather than a paragraph you have to interpret.',
-                  },
-                ].map((part, i) => (
-                  <details className="kn-part" key={part.name} open={i === 0}>
-                    <summary>
-                      <span className="kn-part__name">{part.name}</span>
-                      <span className="kn-part__n">{String(part.count).padStart(2, '0')}</span>
-                    </summary>
-                    <p>{part.blurb}</p>
-                  </details>
+              {/* One line of proof that it is real: what lands on disk, and what
+                  a brief turns into. */}
+              <p className="kn-install__meta">
+                <span className="kn-install__load">
+                  <span className="kn-load__k">Unpacks</span>
+                  {SKILL_LOAD.map(([name, n]) => (
+                    <span key={name}>
+                      <b>{String(n).padStart(2, '0')}</b> {name}
+                    </span>
+                  ))}
+                </span>
+                <span className="kn-install__hand">
+                  Hand it one brief — “a dental studio in Bandung, warm, no blue” — and the six
+                  artefacts below come back in that order.
+                </span>
+              </p>
+
+              {/* The six, one compact cell each: verb, id, artefact. */}
+              <ol className="kn-skills">
+                {SKILLS.map((k) => (
+                  <li className="kn-skill" key={k.n}>
+                    <div className="kn-skill__head">
+                      <span className="kn-skill__n" aria-hidden="true">
+                        {k.n}
+                      </span>
+                      <h3 className="kn-skill__name">{k.name}</h3>
+                    </div>
+                    <code className="kn-skill__id">{k.id}</code>
+                    <p className="kn-skill__writes">{k.writes}</p>
+                    <span className="kn-skill__file">{k.file}</span>
+                  </li>
                 ))}
-              </div>
+              </ol>
             </div>
           </div>
         </section>
@@ -523,34 +589,51 @@ export function KanonHome({ facts }: { facts: SystemFacts }) {
               <h2 id="kn-method-title">A rule is only real if it repeats.</h2>
               <p className="kn-head__note">
                 The canon is worth reading only if the work under it was made the same way twice.
-                Three constraints hold every case on this page to the same bar.
+                These three hold every case here — and each one is checkable on this site.
               </p>
             </div>
 
             <div className="kn-method">
               <div className="kn-method__col">
                 <span className="kn-method__num">01</span>
-                <h3>One grid, six marks</h3>
+                <h3>The shelf is 23 runs, not 23 drawings</h3>
                 <p>
-                  Every mark is drawn on the same 64-unit grid in the real palette. Six are cast,
-                  one survives — the test is 16px, not the presentation render.
+                  Every cover on this page is the case&rsquo;s own 1500×1125 board — the panel the
+                  brand skill prints. Nothing was drawn for the shelf, which is why the band can
+                  carry all {DESIGN_CASES.length} of them without one being dressed for the
+                  occasion.
                 </p>
+                <code className="kn-method__ref">
+                  sunnyside-brand-system · public/brand/&lt;slug&gt;/&lt;slug&gt;-brandkit.png
+                </code>
               </div>
+
               <div className="kn-method__col">
                 <span className="kn-method__num">02</span>
-                <h3>Three layers, two scopes</h3>
+                <h3>Every case is a live route</h3>
                 <p>
-                  Primitive, semantic, component. Daylight and night are the same primitives with a
-                  different semantic sheet — never a second palette mixed by eye.
+                  The build skill writes the page, and it is on this site: all{' '}
+                  {DESIGN_CASES.length} resolve at <b>/design-system/&lt;slug&gt;</b>, and thirteen
+                  also ship a built page at <b>/&lt;slug&gt;</b>. Both read one token sheet in two
+                  scopes, so a case cannot be a mood board with a screenshot stapled on.
                 </p>
+                <code className="kn-method__ref">
+                  implement-brand-system · /design-system/serenica
+                </code>
               </div>
+
               <div className="kn-method__col">
                 <span className="kn-method__num">03</span>
-                <h3>Publish the fail</h3>
+                <h3>The counts here are computed</h3>
                 <p>
-                  Every contrast pair is recomputed from hex and the failures are printed with the
-                  job they may not do. A system that hides its worst pair is a mood board.
+                  {facts.primitives} primitives, {facts.pairs} pairs and {facts.fails} published
+                  fails are read out of the case-23 token file when this page builds — no number
+                  was typed. The index at <b>/api/cases.json</b> is the same array that paints the
+                  shelf and the band, so the count in the nav cannot drift from the cards.
                 </p>
+                <code className="kn-method__ref">
+                  src/features/serenica/tokens.json · src/data/cases.ts
+                </code>
               </div>
             </div>
           </div>

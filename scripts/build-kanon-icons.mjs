@@ -1,7 +1,10 @@
 /**
  * Kanon · icons + share card
- * The tab icon is the reverse mark (paper rosette on ink) so it survives a
- * light tab bar; the share card is a printed sheet with the studio's line.
+ * The tab icon is the header's mark exactly: the ink rosette on the paper
+ * ground, same art, same 64 grid. It used to be a reversed lockup — paper
+ * rosette on a solid ink square — which read as a different logo in a light
+ * tab bar: a black chip where the page shows a drawn mark.
+ * The share card is a printed sheet with the studio's line.
  *
  *   node scripts/build-kanon-icons.mjs
  */
@@ -28,12 +31,12 @@ const wordPaths = [...wordmark.matchAll(/<path transform="([^"]+)" d="([^"]+)"/g
   .map((m) => `<path transform="${m[1]}" d="${m[2]}"/>`)
   .join('')
 
-/* ── 01 · favicon.svg — ink field, paper rosette, no radius ─────────────── */
+/* ── 01 · favicon.svg — the page in one tile: paper ground, ink mark ────── */
 const favicon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Kanon">
   <title>Kanon</title>
-  <rect width="64" height="64" fill="${INK}"/>
-  <g transform="translate(8 8) scale(0.75)">
-    <path fill="${PAPER}" fill-rule="evenodd" d="${compactD}"/>
+  <rect width="64" height="64" fill="${PAPER}"/>
+  <g transform="translate(5 5) scale(0.844)">
+    <path fill="${INK}" fill-rule="evenodd" d="${markD}"/>
   </g>
 </svg>
 `
@@ -104,11 +107,19 @@ const sizes = [
   ['icon-512.png', 512],
 ]
 
+/* The brandkit's own rule: below 24px the eight-petal mark closes into a blob,
+   so the compact mark — ring, four petals, centre dot — carries the small
+   rasters. Same identity, fewer strokes than the pixel has room for. */
+const tile = (size) =>
+  size < 24
+    ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="${PAPER}"/><g transform="translate(8 8) scale(0.75)"><path fill="${INK}" fill-rule="evenodd" d="${compactD}"/></g></svg>`
+    : favicon
+
 for (const [name, size] of sizes) {
   const p = await browser.newPage({ viewport: { width: size, height: size }, deviceScaleFactor: 1 })
   await p.setContent(
     `<html><body style="margin:0"><img src="data:image/svg+xml;utf8,${encodeURIComponent(
-      favicon,
+      tile(size),
     )}" width="${size}" height="${size}" style="display:block"/></body></html>`,
   )
   await p.waitForTimeout(120)
@@ -121,9 +132,9 @@ for (const [name, size] of sizes) {
   const size = 512
   const p = await browser.newPage({ viewport: { width: size, height: size }, deviceScaleFactor: 1 })
   await p.setContent(
-    `<html><body style="margin:0;background:${INK}"><div style="width:${size}px;height:${size}px;display:grid;place-items:center">
+    `<html><body style="margin:0;background:${PAPER}"><div style="width:${size}px;height:${size}px;display:grid;place-items:center">
       <img src="data:image/svg+xml;utf8,${encodeURIComponent(
-        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g transform="translate(8 8) scale(0.75)"><path fill="${PAPER}" fill-rule="evenodd" d="${compactD}"/></g></svg>`,
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g transform="translate(5 5) scale(0.844)"><path fill="${INK}" fill-rule="evenodd" d="${markD}"/></g></svg>`,
       )}" width="${size * 0.62}" height="${size * 0.62}"/></div></body></html>`,
   )
   await p.waitForTimeout(120)

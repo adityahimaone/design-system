@@ -296,13 +296,6 @@
 }
 .kn-hero__band .tgh__tile { position: absolute; will-change: transform; }
 .kn-hero__band .tgh__slice { position: absolute; top: 0; overflow: hidden; }
-.kn-hero__band .tgh__img {
-  position: absolute;
-  top: 0;
-  max-width: none;
-  object-fit: cover;
-  object-position: center top;
-}
 /* a hairline keeps two pale boards from bleeding into one another, and keeps
    every cover off the ridges behind it */
 .kn-hero__band .tgh__slice { box-shadow: inset 0 0 0 1px var(--kn-hair); }
@@ -593,38 +586,56 @@
   color: var(--kn-ink-2);
   max-width: 40ch;
 }
+/* the skill or the path this column is talking about — the section's tie back
+   to the six ids and to the routes this site actually serves */
+.kn-method__ref {
+  margin-top: 2px;
+  font-family: var(--kn-mono);
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: 0.03em;
+  color: var(--kn-accent);
+  overflow-wrap: anywhere;
+}
 
 /* ── install ─────────────────────────────────────────────────────────────── */
-.kn-install__panel {
-  margin-top: clamp(26px, 3vw, 38px);
-  border: var(--sr-rule) solid var(--kn-rule);
+/* Three questions in the order they get asked, and nothing else: what do I run
+   (one command), what lands on disk (one receipt line), what does each skill
+   write (six compact cells). The six used to be four collapsed folders —
+   inventory with no purpose stated — and then six paragraphs, which made a
+   wall. A cell is now: number, verb, published id, one clause, one artefact. */
+.kn-install {
+  margin-top: clamp(24px, 2.8vw, 34px);
+  padding-top: clamp(16px, 1.8vw, 22px);
+  border-top: var(--sr-rule) solid var(--kn-rule);
 }
+
+/* The command is the point of the section, so it wraps instead of scrolling:
+   an 82-character line in a 493px column hid its own tail behind a scrollbar. */
 .kn-cmd {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px 12px;
   padding: 14px 16px;
-  border-bottom: var(--sr-rule) solid var(--kn-rule);
+  border: var(--sr-rule) solid var(--kn-rule);
   background: var(--kn-plate);
-  flex-wrap: wrap;
 }
 .kn-cmd__shell {
   font-family: var(--kn-mono);
-  font-size: 12px;
+  font-size: 12.5px;
+  line-height: 1.55;
   color: var(--kn-accent);
-  flex: none;
   user-select: none;
 }
 .kn-cmd__code {
   font-family: var(--kn-mono);
   font-size: 12.5px;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--kn-ink);
-  overflow-x: auto;
-  white-space: nowrap;
-  flex: 1 1 320px;
-  min-width: 0;
-  scrollbar-width: thin;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding-top: 1px;
 }
 .kn-copy {
   display: inline-flex;
@@ -645,42 +656,96 @@
 .kn-copy:hover { background: var(--kn-band); border-color: var(--kn-ink); }
 .kn-copy[data-copied='true'] { background: var(--kn-accent); color: var(--kn-accent-ink); border-color: transparent; }
 
-.kn-parts { display: grid; grid-template-columns: minmax(0, 1fr); }
-.kn-part {
-  border-bottom: var(--sr-rule) solid var(--kn-hair);
-}
-.kn-part:last-child { border-bottom: 0; }
-.kn-part summary {
+/* the receipt: what one `skills add` unpacks, and the brief it answers */
+.kn-install__meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 16px;
-  padding: 15px 16px;
-  cursor: pointer;
-  list-style: none;
-  transition: background-color var(--kn-t);
+  gap: 6px clamp(20px, 4vw, 48px);
+  margin-top: 12px;
 }
-.kn-part summary::-webkit-details-marker { display: none; }
-.kn-part summary:hover { background: var(--kn-plate); }
-.kn-part__name {
-  font-family: var(--kn-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.17em;
-  text-transform: uppercase;
-}
-.kn-part__n {
+.kn-install__load {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
   font-family: var(--kn-mono);
   font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--kn-ink-2);
+}
+.kn-install__load b {
+  color: var(--kn-ink);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.kn-load__k { color: var(--kn-ink); }
+.kn-install__hand {
+  font-family: var(--kn-read);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--kn-ink-2);
+  max-width: 62ch;
+}
+
+/* the six, one cell each */
+.kn-skills {
+  list-style: none;
+  margin: clamp(16px, 2vw, 22px) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+.kn-skill {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  padding: 13px 0 15px;
+  border-top: var(--sr-rule) solid var(--kn-hair);
+}
+.kn-skill__head {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+.kn-skill__n {
+  font-family: var(--kn-mono);
+  font-size: 9.5px;
   letter-spacing: 0.12em;
   color: var(--kn-ink-2);
   font-variant-numeric: tabular-nums;
 }
-.kn-part p {
-  padding: 0 16px 18px;
-  font-size: 13.5px;
-  line-height: 1.6;
+.kn-skill__name {
+  font-family: var(--kn-display);
+  font-size: 16px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+  color: var(--kn-ink);
+  margin: 0;
+}
+.kn-skill__id {
+  font-family: var(--kn-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.03em;
   color: var(--kn-ink-2);
-  max-width: 72ch;
+  overflow-wrap: anywhere;
+}
+.kn-skill__writes {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--kn-ink-2);
+  max-width: 34ch;
+}
+.kn-skill__file {
+  font-family: var(--kn-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.05em;
+  color: var(--kn-accent);
+  margin-top: 1px;
 }
 
 /* ── footer ──────────────────────────────────────────────────────────────── */
@@ -725,6 +790,7 @@
 }
 @media (max-width: 559px) {
   .kn-acts { flex-direction: column; align-items: stretch; }
+  .kn-cmd__code { font-size: 11px; }
   .kn-acts > * { width: 100%; }
   .kn-bar__name { font-size: 19px; }
 }
@@ -734,8 +800,6 @@
   .kn-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .kn-tools { grid-template-columns: minmax(0, 1fr) 220px; align-items: end; }
   .kn-tools__end { grid-column: 1 / -1; justify-content: flex-end; }
-  .kn-part summary { padding: 16px 20px; }
-  .kn-part p { padding: 0 20px 20px; }
   .kn-cmd { padding: 15px 20px; }
 }
 
@@ -760,10 +824,9 @@
   }
   .kn-method__col:last-child { border-right: 0; padding-right: 0; }
   .kn-method__col + .kn-method__col { padding-left: 24px; }
-  .kn-parts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .kn-part { border-right: var(--sr-rule) solid var(--kn-hair); }
-  .kn-part:nth-child(2n) { border-right: 0; }
-  .kn-part:nth-last-child(-n + 2) { border-bottom: 0; }
+  .kn-method__col p { max-width: 46ch; }
+  /* six cells as a 2×3 sheet of hairlines, then a 3×2 one on a wide desk */
+  .kn-skills { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(24px, 3.2vw, 40px); }
   .kn-figures__in { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .kn-figure { border-bottom: 0; border-right: var(--sr-rule) solid var(--kn-hair); padding: 20px 0 20px 18px; }
   .kn-figure:first-child { padding-left: 0; }
@@ -772,6 +835,7 @@
 
 @media (min-width: 1120px) {
   .kn-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .kn-skills { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 /* ── reduced motion ──────────────────────────────────────────────────────── */

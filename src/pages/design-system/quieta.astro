@@ -184,98 +184,73 @@ const HOUSES = [
 
     <main>
       <!-- ===============================================================
-           01 · FULL-BLEED THRESHOLD ELEVATION + READING PLATE
+           01 · TYPOGRAPHIC COVER — the headline is the whole artwork
            =============================================================== -->
       <section id="hero" class="qa-hero">
-        <div class="qa-hero__backdrop" aria-hidden="true">
-          <img
-            id="heroImage"
-            class="qa-hero__img"
-            src={`${B}/quieta-threshold.webp`}
-            alt="A lime-plastered garden wall and a warm oak door set in a travertine elevation, with an olive tree casting soft shadows across the paving."
-            loading="eager"
-          />
-          <div class="qa-hero__scrim"></div>
-        </div>
+        <div class="qa-hero__grid-lines" aria-hidden="true"></div>
 
-        <div class="qa-wrap qa-hero__content">
-          <div class="qa-hero__grid">
-            <div class="qa-plate">
-              <div class="qa-hero__eyebrow">
-                <span>Case 17 · Brand kit &amp; design system</span>
-                <span>·</span>
-                <span>v1.0 Warm Stone</span>
-              </div>
-              <h1 class="qa-hero__headline">
-                Quiet houses,<br />held in <em>stone.</em>
-              </h1>
+        <div class="qa-wrap qa-hero__inner">
+          <div class="qa-hero__top">
+            <p class="qa-hero__eyebrow">
+              <span>Case 17</span>
+              <span>·</span>
+              <span>Brand kit &amp; design system</span>
+              <span>·</span>
+              <span>v1.0 Warm stone</span>
+            </p>
+            <span class="qa-hero__mark" role="img" aria-label="Quieta mark"></span>
+          </div>
+
+          <h1 class="qa-hero__headline">Quiet houses,<br />held in <em>stone.</em></h1>
+
+          <div class="qa-hero__foot">
+            <div class="qa-hero__reading">
+              <span class="qa-hero__rule" aria-hidden="true"></span>
               <p class="qa-hero__lead">
                 Six residences on a south-facing slope — lime-plastered walls, honed travertine
                 floors, oiled oak at the threshold and a garden that keeps its own hours. Sold
                 and let by being looked at closely, never at a distance.
               </p>
-              <div class="qa-hero__actions">
-                <a class="qa-btn" href="#workbench">View the three houses</a>
-                <a class="qa-btn qa-btn--ghost" href="#tokens">Copy OKLCH tokens</a>
-                <button id="swapHero" class="qa-btn qa-btn--ghost" type="button">
-                  Swap view: threshold / vista
-                </button>
-              </div>
+              <span class="qa-hero__rule qa-hero__rule--last" aria-hidden="true"></span>
             </div>
 
-            <div class="qa-card-glass">
-              <div class="qa-card-glass__top">
-                <img src={`${B}/lockup-reverse.svg`} width="156" height="32" alt="Quieta" />
-                <span class="qa-card-glass__coords">43.318°N · 11.331°E</span>
+            <dl class="qa-hero__ledger">
+              <div>
+                <dt>Primitives</dt>
+                <dd>{tokens.primitives.length}</dd>
               </div>
-              <div class="qa-spec">
-                <div class="qa-spec__row">
-                  <span class="qa-spec__key">Surface</span>
-                  <span class="qa-spec__val">Lime plaster &amp; travertine</span>
-                </div>
-                <div class="qa-spec__row">
-                  <span class="qa-spec__key">Density</span>
-                  <span class="qa-spec__val">Gallery airy · 66ch</span>
-                </div>
-                <div class="qa-spec__row">
-                  <span class="qa-spec__key">Physics</span>
-                  <span class="qa-spec__val">Concentric 18 / 10</span>
-                </div>
-                <div class="qa-spec__row">
-                  <span class="qa-spec__key">Mark</span>
-                  <span class="qa-spec__val">Kuwayama 64-unit grid</span>
-                </div>
-                <div class="qa-spec__row">
-                  <span class="qa-spec__key">Published fails</span>
-                  <span class="qa-spec__val">3 of {tokens.contrast.length} pairs</span>
-                </div>
+              <div>
+                <dt>Ink on chalk</dt>
+                <dd>14.6:1</dd>
               </div>
-            </div>
-          </div>
-
-          <div class="qa-facts">
-            <div class="qa-fact">
-              <div class="qa-fact__fig">{tokens.primitives.length}</div>
-              <span class="qa-fact__lbl">Primitives</span>
-              <p class="qa-fact__note">One material source across daylight garden and evening terrace.</p>
-            </div>
-            <div class="qa-fact">
-              <div class="qa-fact__fig">14.6:1</div>
-              <span class="qa-fact__lbl">Ink on chalk</span>
-              <p class="qa-fact__note">WCAG AAA reading contrast on plaster plates.</p>
-            </div>
-            <div class="qa-fact">
-              <div class="qa-fact__fig">1 + 6</div>
-              <span class="qa-fact__lbl">Mark + cast</span>
-              <p class="qa-fact__note">64-unit grid, one separate 16px compact drawing.</p>
-            </div>
-            <div class="qa-fact">
-              <div class="qa-fact__fig">3</div>
-              <span class="qa-fact__lbl">Published fails</span>
-              <p class="qa-fact__note">Gold 2.2:1, sage 1.9:1, oak 2.7:1 — graphic jobs only.</p>
-            </div>
+              <div>
+                <dt>Contrast fails</dt>
+                <dd>3 of {tokens.contrast.length}</dd>
+              </div>
+              <div>
+                <dt>Mark grid</dt>
+                <dd>64u</dd>
+              </div>
+            </dl>
           </div>
         </div>
+
+        {/* hero: G · relation none — type only, and the one photographic event
+            is the full-bleed band that closes it. Square, unframed, edge to
+            edge; the caption is a printed line, not a floating label. */}
+        <figure class="qa-hero__plate">
+          <img
+            src={`${B}/quieta-vista.webp`}
+            alt="One stone house on a south-facing slope at dusk: a single tower, a low lime-plastered wing and the slope falling away to the left."
+            width="1672"
+            height="941"
+            fetchpriority="high"
+          />
+          <figcaption>
+            <span>Plate 01 · the south slope, 19:40</span>
+            <span>Six residences · one slope</span>
+          </figcaption>
+        </figure>
       </section>
 
       <!-- ===============================================================
@@ -775,45 +750,60 @@ const HOUSES = [
       </section>
     </main>
 
-    <!-- ── Closing poster: the same house, one room further in ────────── -->
+    <!-- ── Bench echo: five hairline cells, then a bar ───────────────── -->
     <footer class="qa-foot">
-      <img
-        class="qa-foot__img"
-        src={`${B}/quieta-detail.webp`}
-        alt="A travertine stair curving up beside a plastered wall, with olive shadows falling across the treads and a woven runner at the floor."
-        loading="lazy"
-      />
-      <div class="qa-foot__scrim" aria-hidden="true"></div>
+      {/* footer: F1 · bench echo — the page ends on the stair, and the stair
+          is shown, edge to edge, above the bench rather than behind type. */}
+      <figure class="qa-foot__plate">
+        <img
+          src={`${B}/quieta-detail.webp`}
+          alt="The bottom stair in honed travertine, cut by a hard shadow and finished with an oiled oak nosing."
+          width="1672"
+          height="941"
+          loading="lazy"
+        />
+        <figcaption>Plate 03 · the last tread</figcaption>
+      </figure>
 
-      <div class="qa-wrap qa-foot__inner">
-        <div class="qa-foot__pane">
-          <p class="qa-foot__eyebrow">Case 17 · Quieta · Warm stone · 2026</p>
-          <p class="qa-foot__quote">The page ends on the stair.</p>
-          <p class="qa-foot__sub">
-            Twelve primitives, one threshold mark, six companion glyphs and a ledger that admits
-            three failures. Built as a place you can walk through first, a component kit second.
-          </p>
-          <div class="qa-foot__links">
-            <a href={`${B}/quieta-brandkit.png`} download>Brand board · PNG</a>
-            <a href={`${B}/mark.svg`} download>Mark · SVG</a>
-            <a href={`${B}/quieta-tokens.css`} download>quieta-tokens.css</a>
-            <a href={`${B}/DESIGN.md`} download>DESIGN.md</a>
-            <a href="/">All cases →</a>
+      <div class="qa-wrap">
+        <p class="qa-foot__statement">The page ends on the stair.</p>
+
+        <div class="qa-foot__bench">
+          <div class="qa-foot__cell">
+            <span class="qa-foot__lbl">Place</span>
+            <span class="qa-foot__val">South slope · 43.318°N 11.331°E</span>
+          </div>
+          <div class="qa-foot__cell">
+            <span class="qa-foot__lbl">Year</span>
+            <span class="qa-foot__val">2026</span>
+          </div>
+          <div class="qa-foot__cell">
+            <span class="qa-foot__lbl">Licence</span>
+            <span class="qa-foot__val">v1.0 Warm stone</span>
+          </div>
+          <div class="qa-foot__cell">
+            <span class="qa-foot__lbl">Board</span>
+            <a class="qa-foot__val qa-foot__link" href={`${B}/quieta-brandkit.png`} download>
+              quieta-brandkit.png
+            </a>
+          </div>
+          <div class="qa-foot__cell qa-foot__cell--mark">
+            <span class="qa-foot__mark" role="img" aria-label="Quieta mark"></span>
           </div>
         </div>
       </div>
 
       <div class="qa-foot__bar">
         <div class="qa-wrap qa-foot__bar-inner">
-          <img src={`${B}/lockup-reverse.svg`} width="128" height="26" alt="Quieta" />
-          <div>
+          <span>Case 17 · Quieta · Warm stone · 2026</span>
+          <div class="qa-foot__bar-links">
             <a href="#top">Back to top ↑</a>
-            <a href={`${B}/tokens.json`}>tokens.json</a>
-            <span>Sunnyside Brand System Engine v4.2</span>
+            <a href="/">All cases →</a>
           </div>
         </div>
       </div>
     </footer>
+
   </div>
 
   <script is:inline>
@@ -836,17 +826,6 @@ const HOUSES = [
     }
     try { if (localStorage.getItem('qa-theme') === 'dusk') syncTheme(true) } catch (e) {}
     themeBtn?.addEventListener('click', () => syncTheme(root?.getAttribute('data-qa') !== 'dusk'))
-
-    /* 2 · hero backdrop swap */
-    const heroImg = document.getElementById('heroImage')
-    let threshold = true
-    document.getElementById('swapHero')?.addEventListener('click', () => {
-      threshold = !threshold
-      if (heroImg)
-        heroImg.src = threshold
-          ? '/brand/quieta/quieta-threshold.webp'
-          : '/brand/quieta/quieta-vista.webp'
-    })
 
     /* 3 · brandmark studio */
     const stageArt = document.getElementById('stageArt')

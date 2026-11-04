@@ -130,95 +130,53 @@ const cssPlate = `/* 3 · component — the linen reading plate over sunlit phot
 
     <main>
       <!-- ===================================================================
-           01 / FULL-BLEED SUNLIT COASTAL HERO STAGE + LINEN READING PLATE
+           01 / FULL-BLEED ATMOSPHERIC PLATE — type set ON the photograph
            =================================================================== -->
       <section id="hero" class="tv-hero">
-        <div class="tv-hero__backdrop" aria-hidden="true">
-          <img
-            id="heroImage"
-            class="tv-hero__backdrop-img"
-            src={`${B}/tavola-table.webp`}
-            alt="Sunlit coastal restaurant table with ivory linen tablecloth, blood orange salad, and Mediterranean sea cliff view."
-            loading="eager"
-          />
-          <div class="tv-hero__scrim"></div>
-        </div>
+        <img
+          id="heroImage"
+          class="tv-hero__photo"
+          src={`${B}/tavola-table.webp`}
+          alt="Sunlit coastal restaurant table with ivory linen tablecloth, blood orange salad, and Mediterranean sea cliff view."
+          loading="eager"
+        />
+        <div class="tv-hero__scrim" aria-hidden="true"></div>
 
-        <div class="tv-wrap tv-hero__content">
-          <div class="tv-hero__grid">
-            <!-- Left: Linen Reading Plate (Rule 5: Field + Plate) -->
-            <div class="tv-hero__plate">
-              <div class="tv-hero__eyebrow">
-                <span>Case 16 · Brand Kit &amp; Design System</span>
-                <span>·</span>
-                <span>v4.2 Coastal Edition</span>
-              </div>
-              <h1 class="tv-hero__headline">
-                Around the table in <em>afternoon light.</em>
-              </h1>
-              <p class="tv-hero__lead">
-                Tavola is a coastal Mediterranean dining identity carved from woven ivory linen, sun-baked terracotta, blood orange zest, and clear views of the dining room and Tyrrhenian sea.
-              </p>
-              <div class="tv-hero__actions">
-                <a class="tv-btn" href="#workbench">Reserve Terrace Table</a>
-                <a class="tv-btn tv-btn--ghost" href="#tokens">Copy OKLCH Tokens</a>
-                <button id="toggleHeroPhoto" class="tv-btn tv-btn--ghost" type="button">
-                  Swap Backdrop: Table / Catch
-                </button>
-              </div>
+        <div class="tv-wrap tv-hero__inner">
+          <div class="tv-hero__meta">
+            <span>Case 16 · Coastal lunch</span>
+            <span>40.633°N 14.602°E</span>
+            <span>14:30</span>
+          </div>
+          <div class="tv-hero__horizon" aria-hidden="true"></div>
+
+          <h1 class="tv-hero__headline">
+            Around the table in <em>afternoon light.</em>
+          </h1>
+
+          <p class="tv-hero__lede">Ivory linen, terracotta signal, sea glass.</p>
+
+          <div class="tv-hero__stats">
+            <div class="tv-hero__stat">
+              <span class="tv-hero__statfig">{tokens.primitives.length}</span>
+              <span class="tv-hero__statlbl">Primitives</span>
             </div>
-
-            <!-- Right: Translucent Sea-Glass Specimen Card over the Coast -->
-            <div class="tv-hero__glass-card">
-              <div class="tv-hero__glass-top">
-                <img src={`${B}/lockup-reverse.svg`} width="195" height="39" alt="Tavola Mare & Terrazza" />
-                <span style="font-family: var(--tv-font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: #F7C873;">
-                  40.633°N · 14.602°E
-                </span>
-              </div>
-              <div class="tv-hero__radar">
-                <div class="tv-radar__item">
-                  <span class="tv-radar__label">Surface Tactility</span>
-                  <span class="tv-radar__val">Woven Linen &amp; Sea Glass</span>
-                </div>
-                <div class="tv-radar__item">
-                  <span class="tv-radar__label">Spatial Density</span>
-                  <span class="tv-radar__val">Editorial Balanced (64ch)</span>
-                </div>
-                <div class="tv-radar__item">
-                  <span class="tv-radar__label">Corner Physics</span>
-                  <span class="tv-radar__val">Concentric (18px / 10px)</span>
-                </div>
-                <div class="tv-radar__item">
-                  <span class="tv-radar__label">Mark Geometry</span>
-                  <span class="tv-radar__val">Kuwayama 64-Unit Grid</span>
-                </div>
-              </div>
+            <div class="tv-hero__stat">
+              <span class="tv-hero__statfig">14.8:1</span>
+              <span class="tv-hero__statlbl">Espresso on Ivory</span>
+            </div>
+            <div class="tv-hero__stat">
+              <span class="tv-hero__statfig">1 + 6</span>
+              <span class="tv-hero__statlbl">Mark &amp; Cast</span>
             </div>
           </div>
 
-          <!-- Rule 7: Data Row That Breathes -->
-          <div class="tv-facts">
-            <div class="tv-fact">
-              <div class="tv-fact__fig">{tokens.primitives.length}</div>
-              <span class="tv-fact__lbl">Primitives</span>
-              <p class="tv-fact__note">One material source across daylight terrace &amp; night cellar.</p>
-            </div>
-            <div class="tv-fact">
-              <div class="tv-fact__fig">14.8:1</div>
-              <span class="tv-fact__lbl">Espresso on Ivory</span>
-              <p class="tv-fact__note">WCAG AAA primary reading contrast on woven linen plates.</p>
-            </div>
-            <div class="tv-fact">
-              <div class="tv-fact__fig">1 + 6</div>
-              <span class="tv-fact__lbl">Mark + Companion Cast</span>
-              <p class="tv-fact__note">Constructed on a 64-unit grid with a separate 16px compact.</p>
-            </div>
-            <div class="tv-fact">
-              <div class="tv-fact__fig">2</div>
-              <span class="tv-fact__lbl">Published Fails</span>
-              <p class="tv-fact__note">Citron (2.1:1) &amp; Terracotta on Ink (3.2:1) restricted to graphics.</p>
-            </div>
+          <div class="tv-hero__actions">
+            <a class="tv-btn" href="#workbench">Reserve Terrace Table</a>
+            <a class="tv-btn tv-btn--ghost" href="#tokens">Copy OKLCH Tokens</a>
+            <button id="toggleHeroPhoto" class="tv-btn tv-btn--ghost" type="button">
+              Swap Backdrop: Table / Catch
+            </button>
           </div>
         </div>
       </section>
@@ -705,42 +663,68 @@ const cssPlate = `/* 3 · component — the linen reading plate over sunlit phot
     </main>
 
     <!-- =====================================================================
-         CLOSING FULL-BLEED COASTAL FOOTER POSTER (Rule 6: Same Coast Turned Around)
+         CLOSING FROZEN SPECIMEN — the spec readout held at its final state
          ===================================================================== -->
     <footer class="tv-foot">
-      <img
-        class="tv-foot__img"
-        src={`${B}/tavola-dish.webp`}
-        alt="Freshly grilled sea bass and lemon on an ivory linen table overlooking the Mediterranean coast."
-        loading="lazy"
-      />
-      <div class="tv-foot__scrim" aria-hidden="true"></div>
+      {/* footer: F3 · frozen specimen — the plinth holds the actual table, not
+          a diagram of it. The photograph is flush to the stage edge, square,
+          and the readout sits beside it on the dark ground. The hero is left
+          alone; only the closing state changes. */}
+      <div class="tv-foot__stage">
+        <figure class="tv-foot__plate">
+          <img
+            src={`${B}/tavola-dish.webp`}
+            alt="The coastal catch, plated: sea bass with citrus, herbs and oil on a linen-covered table above the water."
+            width="1672"
+            height="941"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption class="tv-foot__plate-cap">Fig. 06 · the catch, plated 14:30</figcaption>
+        </figure>
 
-      <div class="tv-wrap tv-foot__inner">
-        <div class="tv-foot__pane">
-          <p class="tv-foot__eyebrow">Case 16 · Tavola Mare &amp; Terrazza · 2026</p>
-          <p class="tv-foot__quote">The page ends at the table.</p>
-          <p class="tv-foot__sub">
-            Woven ivory linen over sunlit coastal stone, one terracotta signal, and a 64-unit Kuwayama mark family. Built as a living dining specimen first, a component kit second.
-          </p>
-          <div class="tv-foot__links">
-            <a href={`${B}/tavola-brandkit.png`} download>Brand Board (PNG)</a>
-            <a href={`${B}/mark.svg`} download>Download Mark (SVG)</a>
-            <a href={`${B}/tavola-tokens.css`} download>tavola-tokens.css</a>
-            <a href={`${B}/DESIGN.md`} download>DESIGN.md</a>
-            <a href="/">All Cases →</a>
+        <div class="tv-wrap tv-foot__stage-inner">
+          <dl class="tv-foot__readout">
+            <div class="tv-foot__cell">
+              <dt>Surface Tactility</dt>
+              <dd>Woven Linen &amp; Sea Glass</dd>
+            </div>
+            <div class="tv-foot__cell">
+              <dt>Spatial Density</dt>
+              <dd>Editorial Balanced · 64ch</dd>
+            </div>
+            <div class="tv-foot__cell">
+              <dt>Corner Physics</dt>
+              <dd>Concentric · 18 / 10px</dd>
+            </div>
+            <div class="tv-foot__cell">
+              <dt>Mark Geometry</dt>
+              <dd>Kuwayama 64-Unit Grid</dd>
+            </div>
+          </dl>
+          <div class="tv-foot__stage-foot">
+            <p class="tv-foot__fig">Fig. 07 · final state — 4 specs held, 14.8:1 reading contrast</p>
+            <p class="tv-foot__still">Motion halted · 40.633°N 14.602°E · 14:30 hold</p>
           </div>
         </div>
       </div>
 
-      <div class="tv-foot__bar">
-        <div class="tv-wrap tv-foot__bar-inner">
-          <img src={`${B}/lockup-reverse.svg`} width="165" height="33" alt="Tavola" />
-          <div style="display: flex; gap: 1.5rem;">
-            <a href="#top">Back to Top ↑</a>
-            <a href={`${B}/tokens.json`}>tokens.json</a>
-            <span>Sunnyside Brand System Engine v4.2</span>
+      <div class="tv-foot__colophon">
+        <div class="tv-wrap tv-foot__colophon-inner">
+          <div class="tv-foot__identity">
+            <img src={`${B}/lockup.svg`} width="165" height="33" alt="Tavola Mare & Terrazza" />
+            <p class="tv-foot__statement">The page ends at the table.</p>
           </div>
+          <nav class="tv-foot__links" aria-label="Tavola case files">
+            <a href={`${B}/tavola-brandkit.png`} download>Brand Board (PNG)</a>
+            <a href={`${B}/mark.svg`} download>Mark (SVG)</a>
+            <a href={`${B}/tavola-tokens.css`} download>tavola-tokens.css</a>
+            <a href={`${B}/DESIGN.md`} download>DESIGN.md</a>
+          </nav>
+        </div>
+        <div class="tv-wrap tv-foot__prov">
+          <span>Tavola Mare &amp; Terrazza · Amalfi Coast · 2026 · v4.2 Coastal Edition</span>
+          <a class="tv-foot__back" href="/">All cases →</a>
         </div>
       </div>
     </footer>

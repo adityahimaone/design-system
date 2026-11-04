@@ -33,6 +33,7 @@ export type DesignCase = {
     | 'arete'
     | 'quieta'
     | 'manifest'
+    | 'daybook'
 }
 
 export const SUNNYSIDE_URL =
@@ -65,6 +66,23 @@ export const DESIGN_CASES: readonly DesignCase[] = [
     tone: 'sunnyside',
   },
   {
+    slug: 'daybook',
+    number: '20',
+    name: 'Daybook',
+    href: '/design-system/daybook',
+    tagline: 'The work is the record.',
+    description:
+      'An office-consultancy identity built from the three supplied photographs: a desk laid out before the work starts, two people reading one screen, and the room where the decision gets made. Uncoated report stock, form ink and one rubber seal. The mark is a nine-cell 64-unit matrix with one client standing outside it, with a separate 16px drawing and six companion cast marks on the same cut line. Ten primitives, a day and a night scope over shared primitives, eight explored surfaces (five shipped, three rejected), a ruled ledger with tabular figures, and a contrast table that publishes the four pairs it fails.',
+    status: 'Shipped · 2026',
+    role: 'Identity · design system · parametric mark · paper surfaces · engagement kit · docs',
+    material: 'Uncoated report stock + form ink + rubber seal',
+    cover: '/brand/daybook/daybook-brandkit.png',
+    coverAlt:
+      'The Daybook 6-panel brand board: a loft-office plate with the reverse lockup, the nine-cell mark and its Daybook wordmark, ten OKLCH primitives, three type voices, six companion cast marks, and the four laws.',
+    tags: ['Consulting', 'Paper', 'Ledger', 'Matrix'],
+    tone: 'daybook',
+  },
+  {
     slug: 'manifest',
     number: '19',
     name: 'Manifest',
@@ -88,13 +106,13 @@ export const DESIGN_CASES: readonly DesignCase[] = [
     href: '/design-system/arete',
     tagline: 'Paper-cut alpine · every layer is a cut.',
     description:
-      'An alpine cartography atelier built from two papers: ivory cartridge stock and one ultramarine ink. Sculptural ridges are stacked rather than rendered — the supplied torn-paper collage (white peak, grey layer, black ridge, one cobalt seam) rebuilt as a floating ribbon over a grounded mass, parted by a single 5-unit seam. Four named surfaces (cut sheet, lifted layer, vellum overlay, deckle edge), a snow-capped Kuwayama mark with a separate 16px massif, and a contrast ledger that publishes the three pairs it fails.',
+      'An alpine cartography atelier built from two papers: ivory cartridge stock and one ultramarine ink. The hero is the range itself — the photograph full-bleed, type set straight onto the paper-white sky, no panel and no card anywhere in it. Five named surfaces (cut sheet, lifted layer, vellum overlay, deckle edge, register mark) carry the depth; ridges are stacked rather than rendered, parted by a single 5-unit seam. Twelve primitives, a snow-capped Kuwayama mark with a separate 16px massif, a dual scope that turns the same sheet over into ultramarine dusk, and a contrast ledger that publishes the three pairs it fails.',
     status: 'Shipped · 2026',
     role: 'Identity · design system · parametric mark · paper surfaces · interactive route workbench · docs',
     material: 'Ivory cartridge stock + ultramarine ink + one oxide blaze',
     cover: '/brand/arete/arete-brandkit.png',
     coverAlt:
-      'The Arête 6-panel brand board: the supplied paper-cut alpine collage with reverse lockup, the layered-ridge Kuwayama mark and its ARÊTE wordmark, seven OKLCH primitives, three voices, six companion cut marks, and the paper laws.',
+      'The Arête 6-panel brand board: the traversed ridge photograph with the paper lockup plate, the layered-ridge Kuwayama mark with its ARÊTE lockup and 96/48/24/16 scale strip, twelve OKLCH primitives, three type voices, six companion cut marks, and the four paper laws.',
     tags: ['Paper-cut', 'Alpine', 'Ultramarine', 'Cartography'],
     tone: 'arete',
   },

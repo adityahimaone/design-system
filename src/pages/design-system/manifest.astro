@@ -251,47 +251,35 @@ const ledgerRows = [
 
     <main id="main">
       {/* ── Hero · unnumbered · Variant B ──────────────────────────────── */}
-      <section class="mf-hero">
-        <div class="mf-shell">
-          <div class="mf-hero__grid">
-            <div>
-              <div class="mf-eyebrow mf-mono">
-                <span>Case 19</span><hr /><span>Identity · design system</span>
-              </div>
-              <h1>Every parcel leaves a <em>paper trail.</em></h1>
-              <p class="mf-hero__lede">
-                Manifest is a shipping identity built from three materials in the photographs that opened the brief:
-                corrugated kraft, brick oxide, and the chambray indigo of a work shirt. The mark is one
-                carton with the outbound arrow carved out of it. Everything else is a rule, a seam, or
-                a line of tabular figures.
-              </p>
-              <div class="mf-pills">
-                <span class="mf-pill"><b>10</b> primitives</span>
-                <span class="mf-pill"><b>6.25:1</b> chalk on brick</span>
-                <span class="mf-pill"><b>6</b> cast marks</span>
-                <span class="mf-pill"><b>64</b> unit grid</span>
-              </div>
-            </div>
-
-            <div class="mf-hero__media">
-              <div class="mf-hero__frame">
-                <span class="mf-hero__stamp">Outbound · 2.4 kg</span>
-                <img src={`${B}/hero-parcel.jpg`} alt="A person in a chambray shirt holding a corrugated carton against a red brick wall." width="925" height="617" />
-                <div class="mf-hero__pane">
-                  <img src={`${B}/lockup-reverse.svg`} alt="Manifest lockup" width="288" height="64" />
-                  <span>One carton<br />one cut arrow</span>
-                </div>
-              </div>
-            </div>
+      <section class="mf-hero" aria-labelledby="mf-hero-h">
+        <div class="mf-hero__copy">
+          <h1 id="mf-hero-h">Every parcel leaves a paper trail.</h1>
+          <p class="mf-hero__lede">
+            A shipping identity built from the three materials already in the photographs: corrugated
+            kraft, brick oxide, and the chambray blue of a work shirt. One carton for a mark, one rule
+            for everything else.
+          </p>
+          <div class="mf-hero__act">
+            <a class="mf-btn mf-btn--signal" href="#idea">Read the system</a>
+            <a class="mf-hero__more" href="#kit">See the mark</a>
           </div>
-
-          <dl class="mf-stats">
-            <div><dt class="mf-mono">Surface</dt><dd>Kraft + stock</dd></div>
-            <div><dt class="mf-mono">Signal</dt><dd>Brick oxide</dd></div>
-            <div><dt class="mf-mono">Physics</dt><dd>0px · 1px rule</dd></div>
-            <div><dt class="mf-mono">Scope</dt><dd>Daylight only</dd></div>
+          <dl class="mf-hero__facts">
+            <div><dt>Gross weight</dt><dd>2.4 kg</dd></div>
+            <div><dt>Dimensions</dt><dd>340 × 260 × 180</dd></div>
+            <div><dt>Routing</dt><dd>Depot → handoff</dd></div>
+            <div><dt>Signal</dt><dd>Brick oxide</dd></div>
           </dl>
         </div>
+        <figure class="mf-hero__plate">
+          <img
+            src={`${B}/hero-parcel.jpg`}
+            alt="A man in a chambray work shirt holding a taped kraft carton against a red brick wall."
+            width="925"
+            height="617"
+            decoding="async"
+          />
+          <figcaption>Plate 01 · the handoff</figcaption>
+        </figure>
       </section>
 
       {/* ── Contents rail + 7 sections ─────────────────────────────────── */}
@@ -426,6 +414,22 @@ const ledgerRows = [
                 <svg viewBox="0 0 64 64" width="16" height="16" fill="currentColor" aria-label="Glyph at 16 pixels"><Fragment set:html={GLYPH_PATH} /></svg>
                 <figcaption>16px · glyph</figcaption>
               </figure>
+            </div>
+
+            <div class="mf-castin">
+              <div class="mf-castin__head">
+                <b id="mf-cast-h">The cast · six nouns, one cut line</b>
+                <span>64-unit grid · fill only</span>
+              </div>
+              <div class="mf-castin__grid">
+                {CAST.map((c) => (
+                  <div class="mf-castin__cell">
+                    <svg viewBox="0 0 64 64" fill="currentColor" aria-hidden="true"><Fragment set:html={c.path} /></svg>
+                    <b>{c.name}</b>
+                    <span>{c.note}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <dl class="mf-rules">
@@ -677,35 +681,56 @@ const ledgerRows = [
       </div>
     </main>
 
-    {/* ── Closing cast band ──────────────────────────────────────────────── */}
-    <section class="mf-cast" aria-labelledby="mf-cast-h">
-      <div class="mf-cast__band">
-        <img src={`${B}/pallet-run.jpg`} alt="A hand truck stacked with corrugated cartons in front of a red brick wall." loading="lazy" width="925" height="617" />
-        <div class="mf-cast__bandin">
-          <img src={`${B}/lockup-reverse.svg`} alt="Manifest reverse lockup" width="288" height="64" />
-          <span>Plate 03 · the run<br />Every parcel leaves a paper trail.</span>
-        </div>
-      </div>
-      <div class="mf-shell">
-        <div class="mf-cast__head">
-          <b id="mf-cast-h" class="mf-mono" style="font-weight:500;letter-spacing:0.14em">Companion cast · 6 marks · one cut line</b>
-          <span>64-unit grid · fill only</span>
-        </div>
-        <div class="mf-cast__grid">
-          {CAST.map((c) => (
-            <div class="mf-cast__cell">
-              <svg viewBox="0 0 64 64" fill="currentColor" aria-hidden="true"><Fragment set:html={c.path} /></svg>
-              <b>{c.name}</b>
-              <span>{c.note}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
+    {/* footer: F4 · torn receipt — the waybill comes back as a torn-off strip */}
+    <footer class="mf-foot">
+      <div class="mf-foot__strip">
+        {/* footer: F4 · torn receipt — the waybill is torn off and kept. The
+            strip is the photographed moment the receipt records, edge to edge,
+            then the printed matter sits on kraft underneath in three columns so
+            nothing floats in open space. */}
+        <figure class="mf-foot__plate">
+          <img
+            src={`${B}/signoff.jpg`}
+            alt="Hands receiving a corrugated carton while a second pair of hands signs for it on a tablet."
+            width="925"
+            height="617"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption class="mf-foot__plate-cap mf-mono">Plate 02 · the receipt, signed at the threshold</figcaption>
+        </figure>
 
-    <footer class="mf-foot mf-shell">
-      <span>Manifest · case 19 · sunnyside engine</span>
-      <span><a href="/">Back to the shelf</a></span>
+        <div class="mf-foot__in">
+          <div class="mf-foot__id">
+            <img class="mf-foot__lockup" src={`${B}/lockup.svg`} alt="Manifest lockup" width="288" height="64" />
+            <p class="mf-foot__sign">Ship it, stamp it,<br />keep the paper.</p>
+          </div>
+
+          <dl class="mf-foot__rec mf-mono">
+            <div><dt>Received in</dt><dd>Good order</dd></div>
+            <div><dt>Gross weight</dt><dd>2.4 kg</dd></div>
+            <div><dt>Signed at</dt><dd>Depot → threshold</dd></div>
+          </dl>
+
+          <div class="mf-foot__stamp">
+            <img src={`${B}/mark.svg`} alt="" width="40" height="40" aria-hidden="true" />
+            <span class="mf-mono">1 of 1</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mf-foot__bar">
+        <div class="mf-shell mf-foot__barin mf-mono">
+          <span>Manifest · case 19</span>
+          <nav aria-label="Footer">
+            <a href="#mark">Mark</a>
+            <a href="#tokens">Tokens</a>
+            <a href="/brand/manifest/manifest-brandkit.png">Brand kit</a>
+          </nav>
+          <span>Jakarta · 2026 · V1.1</span>
+          <a class="mf-foot__back" href="/">Back to the shelf</a>
+        </div>
+      </div>
     </footer>
   </div>
 

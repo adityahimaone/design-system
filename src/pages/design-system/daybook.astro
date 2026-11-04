@@ -1,0 +1,878 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import tokens from '@/features/daybook/tokens.json'
+import { CAST, GLYPH_PATH, MARK_PATH, COMPACT_PATH } from '@/features/daybook/daybook-data'
+import '@/features/daybook/daybook-tokens.css'
+import '@/features/daybook/daybook-page.css'
+
+const B = '/brand/daybook'
+const primitives = tokens.primitives
+const contrast = tokens.contrast
+const fails = contrast.filter((c) => !c.pass)
+
+const NAV = [
+  ['premise', 'Premise'],
+  ['mark', 'Mark'],
+  ['ink', 'Ink'],
+  ['surfaces', 'Surfaces'],
+  ['type', 'Type'],
+  ['kit', 'Kit'],
+  ['tokens', 'Tokens'],
+] as const
+
+const PLATES = [
+  {
+    file: 'desk-flatlay.jpg',
+    tag: 'Plate 01 · the desk',
+    note: 'A phone in one hand, an invoice on a clipboard, a calculator and a newspaper. Four records of the same job, and the identity has to hold all of them.',
+    alt: 'Overhead view of a desk: hands holding a phone, a calculator, a clipboard invoice, a newspaper and an open laptop.',
+  },
+  {
+    file: 'table-session.jpg',
+    tag: 'Plate 02 · the session',
+    note: 'Two open notebooks, printed charts, and one pair of hands on the keyboard. The work happens in the room; the page is what survives it.',
+    alt: 'Hands typing on a laptop at a table with open notebooks, printed charts and a glass of water.',
+  },
+  {
+    file: 'loft-office.jpg',
+    tag: 'Plate 03 · the floor',
+    note: 'Three people around one laptop in a white room with glass boards behind them. The hero plate, because a consultancy is a room before it is a deck.',
+    alt: 'Three women gathered around a laptop in a bright office with glass whiteboards on the wall.',
+  },
+]
+
+const PREMISE = [
+  {
+    k: 'Belief',
+    v: 'Advice is only worth what gets written down. The deliverable is not the meeting — it is the page that survives it, and the page is the brand.',
+  },
+  {
+    k: 'Enemy',
+    v: 'The consultancy deck that photographs well and decides nothing. Slides that restate the brief, arrows that imply causation, a footer with three logos.',
+  },
+  {
+    k: 'Material',
+    v: 'Frosted glass over daylight: a translucent pane, an 18px blur, a 16px radius, one white highlight on the top edge. Nothing in the system is opaque — the photograph is the only thing you cannot see through, and everything else is something you see through it.',
+  },
+  {
+    k: 'Reject it when',
+    v: 'The work is measured in impressions rather than decisions — an ad agency, a growth shop, anything whose output is reach.',
+  },
+]
+
+const DECISIONS = [
+  {
+    title: 'The mark is a matrix, not a shape',
+    decision:
+      'Nine cells on a 64-unit grid, and the last one steps out of line — it sits at 50,50 instead of 34,34, with a full 4-unit gutter on both axes.',
+    because:
+      'A grid of identical squares is a stock icon. One client that does not fit the matrix is the entire argument of the firm, and it survives at 16px because the break is a whole cell, not a hairline.',
+    notWhen: 'A single-colour foil stamp under 12mm, where the escapee merges with the field. Use the glyph there.',
+    breaksNext: 'Adding a tenth cell to “balance it” — the mark becomes a checkerboard and the argument disappears.',
+  },
+  {
+    title: 'Glass is the material, not a treatment',
+    decision:
+      'Every panel is a real pane: a translucent white fill, backdrop-filter blur(18px) saturate(1.35), radius 16px, and one 1px white highlight on the top edge. No panel in the system is an opaque fill with a shadow standing in for glass.',
+    because:
+      'Blur is only honest if something is behind it, so the page carries a fixed light field — three soft blooms and a gradient — and every pane samples it. That is why two panels stacked on each other look deeper than one, and why the hero plate can sit on a photograph and still be legible.',
+    notWhen: 'Print, or any surface without a live compositor: a 12% white fill with no blur reads as grey plastic. There, ship the photographic plate alone.',
+    breaksNext: 'Filling a pane opaque “for contrast” — the blur disappears, the light field stops mattering, and the system becomes cards with rounded corners.',
+  },
+  {
+    title: 'One signal, and it is a tint',
+    decision:
+      'Glass tint (#2E5C8A) carries every signal in the day scope: chips, links, the hero stamp, the selected row. Sun (#C0813C) is the daylight in the photograph and appears as a fill only. At night the signal lifts to glow (#9FC2DA), because the tint is 2.4:1 on deep.',
+    because:
+      'A frosted system has no room for a second loud colour — the blur is already the loudest thing on the page. One tint at 6.4:1 on frost does all the pointing, and the warm accent stays where it came from: the light in the room.',
+    notWhen: 'Sun as type anywhere. At 2.79:1 on frost it is a fill, a 1px edge or a 7px dot, and nothing else.',
+    breaksNext: 'Using the tint for a large filled button — it turns the whole page blue-grey and the panes stop reading as glass.',
+  },
+  {
+    title: 'Two scopes, one room',
+    decision:
+      'Day is daylight through a window; night is the same room after dark. Primitives never flip — only the semantic layer does, and the glass recipe is re-expressed per scope rather than inverted.',
+    because:
+      'White at 58% over a pale ground is frost; white at 8% over a dark ground is the same frost at night. Keeping the recipe symbolic means the toggle changes eight values, not a second stylesheet.',
+    notWhen: 'A print deliverable, where only the day scope exists and the toggle must not be drawn at all.',
+    breaksNext: 'Adding a third scope for “focus mode” — two is a room, three is a theme picker.',
+  },
+]
+
+const SURFACES = [
+  {
+    id: 'frost',
+    title: 'Frosted pane',
+    verdict: 'Shipped — every panel',
+    note: 'Translucent white, 18px blur, 16px radius, one highlight on the top edge. It is the whole system in one recipe, and it is the only surface that samples the light field behind it.',
+    demo: 'frost',
+  },
+  {
+    id: 'glare',
+    title: 'Specular band',
+    verdict: 'Shipped — hero + closing',
+    note: 'A single diagonal highlight crossing a pane at 104°. Used twice per page so it still reads as light hitting an edge rather than a gradient someone liked.',
+    demo: 'glare',
+  },
+  {
+    id: 'stack',
+    title: 'Stacked panes',
+    verdict: 'Shipped — depth without shadow',
+    note: 'Three panes at 20/30/40% fill, offset by 15%. Depth comes from accumulated transmission, never from a drop shadow — the shadow is only ever the pane’s own contact edge.',
+    demo: 'stack',
+  },
+  {
+    id: 'photo',
+    title: 'Photographic plate',
+    verdict: 'Shipped — hero + closing band',
+    note: 'The one opaque surface in the system. A photograph is what the glass is in front of; without it the blur has nothing to sample. The three supplied plates are the only imagery allowed.',
+    demo: 'photo',
+  },
+  {
+    id: 'sticker',
+    title: 'Sticker note',
+    verdict: 'Rejected',
+    note: 'Tried for annotations. A saturated sticker is opaque by definition, so it punched a hole in the light field and became the loudest object on a page whose whole argument is transmission.',
+    demo: 'sticker',
+    rejected: true,
+  },
+  {
+    id: 'flat',
+    title: 'Opaque fill faking the blur',
+    verdict: 'Rejected',
+    note: '72% white at 2px radius, no backdrop-filter. It survives a screenshot and dies the moment anything moves behind it — the surface’s own rule is that faked blur fails.',
+    demo: 'flat',
+    rejected: true,
+  },
+  {
+    id: 'card',
+    title: 'Opaque card on a shadow',
+    verdict: 'Rejected',
+    note: 'A white card with a 44px shadow. It reads as a dashboard widget sitting on the page rather than a pane inside it, and the shadow does the work the blur was supposed to do.',
+    demo: 'card',
+    rejected: true,
+  },
+  {
+    id: 'paper',
+    title: 'Ruled paper sheet',
+    verdict: 'Rejected',
+    note: 'The previous version of this system. Warm stock and 1px rules are a fine material, but they are opaque, and a page cannot be both a document and a window.',
+    demo: 'paper',
+    rejected: true,
+  },
+]
+
+const TYPE_SCALE = [
+  { role: 'Display / 01', face: 'Inter 300', size: 'clamp(38–68)', lead: '1.02', track: '-0.028em', sample: 'Daybook', cls: 'db-t-display', px: 68 },
+  { role: 'Display / 02', face: 'Inter 300', size: 'clamp(26–38)', lead: '1.1', track: '-0.024em', sample: 'Section headings', cls: 'db-t-display', px: 38 },
+  { role: 'Display / 03', face: 'Inter 300', size: '24px', lead: '1.15', track: '-0.02em', sample: 'A number worth a page', cls: 'db-t-display', px: 24 },
+  { role: 'Reading / 01', face: 'Inter 400', size: '16.5px', lead: '1.62', track: '0', sample: 'The engagement ends when the work is written down.', cls: 'db-t-reading', px: 16.5 },
+  { role: 'Reading / 02', face: 'Inter 500', size: '13px', lead: '1.5', track: '0.01em', sample: 'Labels, chips and row heads carry weight, never size.', cls: 'db-t-reading', px: 13 },
+  { role: 'Mono / 01', face: 'DM Mono 400', size: '11px', lead: '1.7', track: '0.13em', sample: 'DB-2204 · ENGAGEMENT · 14 WK', cls: 'db-t-mono', px: 11 },
+]
+
+const GAPS = [
+  { k: 'Verified', v: '16 contrast pairs computed from hex, 4 published failures, 10 primitives, a 64-unit mark with a separate 16px drawing, and 6 cast marks on the same cut line.' },
+  { k: 'Verified', v: 'Every pane is a real backdrop-filter over a fixed light field — checked by scrolling a pane across a photograph and confirming the content behind it moves under the blur rather than being covered.' },
+  { k: 'Verified', v: 'Dual scope is real: primitives never flip, the night ground is cool deep rather than black, the toggle has two states that resolve to different colours, and Section 07 renders five token sheets — day and night both present.' },
+  { k: 'Not verified', v: 'Blur cost on low-end Android. backdrop-filter on six or more stacked panes is the expensive case, so a production build would need a fallback: solid glass-fill-strong with no blur below a device check. This page does not ship that fallback.' },
+  { k: 'Known gap', v: 'No form validation library, no i18n for the ledger, and no motion spec beyond the 260ms state transition — the system stops at the component.' },
+  { k: 'Open', v: 'The mark has not been tested at 12px on the night ground. Below 24px it must swap to mark-compact, and that swap is a manual rule, not a token.' },
+]
+
+const TOKENS_CSS = `/* 1 · primitive — the material, named once */
+.db-scope {
+  --db-frost: #E9EEF3;   /* daylight through a window */
+  --db-haze: #F7FAFC;    /* light bloom behind a pane */
+  --db-veil: #FFFFFF;    /* the pane itself — always translucent */
+  --db-ink: #131C25;     /* type on glass */
+  --db-slate: #4C5F72;   /* captions */
+  --db-tint: #2E5C8A;    /* the one signal */
+  --db-sun: #C0813C;     /* daylight in the photograph */
+  --db-glow: #9FC2DA;    /* specular edge, and the night signal */
+  --db-deep: #0B1218;    /* the room after dark */
+  --db-deep-plate: #131E28;
+}`
+const TOKENS_DAY = `.db-scope {
+  --db-surface-page: var(--db-frost);
+  --db-surface-plate: var(--db-haze);
+  --db-text-primary: var(--db-ink);
+  --db-text-secondary: var(--db-slate);
+  --db-signal: var(--db-tint);
+
+  --db-glass-fill: color-mix(in srgb, var(--db-veil) 58%, transparent);
+  --db-glass-fill-strong: color-mix(in srgb, var(--db-veil) 78%, transparent);
+  --db-glass-edge: color-mix(in srgb, var(--db-veil) 88%, transparent);
+  --db-glass-rim: color-mix(in srgb, var(--db-ink) 10%, transparent);
+  --db-glass-blur: blur(18px) saturate(1.35);
+}`
+const TOKENS_NIGHT = `.db-scope[data-db-theme='night'] {
+  --db-surface-page: var(--db-deep);
+  --db-surface-plate: var(--db-deep-plate);
+  --db-text-primary: var(--db-haze);
+  --db-signal: var(--db-glow);   /* the tint is 2.4:1 on deep */
+
+  --db-glass-fill: color-mix(in srgb, var(--db-veil) 8%, transparent);
+  --db-glass-fill-strong: color-mix(in srgb, var(--db-veil) 14%, transparent);
+  --db-glass-edge: color-mix(in srgb, var(--db-veil) 24%, transparent);
+  --db-glass-rim: color-mix(in srgb, var(--db-veil) 22%, transparent);
+  --db-glass-blur: blur(18px) saturate(1.35);   /* same recipe, new ground */
+}`
+const TOKENS_COMP = `.db-btn {
+  background: var(--db-btn-bg);        /* ink */
+  color: var(--db-btn-text);           /* haze */
+  border-radius: var(--db-radius);
+}
+.db-btn--ghost {
+  background: var(--db-glass-fill);    /* the pane, as a control */
+  -webkit-backdrop-filter: var(--db-glass-blur);
+  backdrop-filter: var(--db-glass-blur);
+}
+.db-chip { border: var(--db-hair) solid var(--db-chip-border); }`
+const TOKENS_PHYS = `/* 5 · physics — cast light, not printed ink */
+--db-radius: 16px;   /* every pane */
+--db-radius-sm: 10px;
+--db-hair: 1px;
+--db-seam: 14px;     /* the gap a pane needs to read as separate */
+--db-ease: cubic-bezier(0.16, 0.84, 0.44, 1);
+--db-dur: 260ms;     /* slower than ink: glass settles */`
+
+const title = 'Daybook — Case 20 | Office consultant identity & design system'
+const description =
+  'Daybook: an office-consultancy identity built from frosted glass over daylight. A nine-cell mark with one client that does not fit the matrix, real 18px backdrop blur on every pane, ten primitives, two scopes, six cast marks, and a contrast ledger that publishes the four pairs it fails.'
+
+const ledgerRows = [
+  ['DB-2204', 'Discovery', '14 wk', 'Signed'],
+  ['DB-2203', 'Operating model', '9 wk', 'Delivered'],
+  ['DB-2201', 'Cost review', '6 wk', 'Held'],
+  ['DB-2198', 'Board pack', '3 wk', 'Overdue'],
+]
+---
+
+<Layout title={title} description={description} canonical="/design-system/daybook" image={`${B}/daybook-brandkit.png`}>
+  <link rel="icon" type="image/svg+xml" href={`${B}/icon.svg`} />
+  <link rel="apple-touch-icon" href={`${B}/icon.svg`} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,200..600;1,14..32,300..500&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <div class="db-root db-scope" data-db-theme="day" id="top">
+    <a class="db-skip" href="#main">Skip to the system</a>
+
+    <header class="db-top">
+      <div class="db-shell db-top__in">
+        <a class="db-top__brand" href="#top" aria-label="Daybook — top">
+          <svg viewBox="0 0 64 64" aria-hidden="true" fill="currentColor"><Fragment set:html={MARK_PATH} /></svg>
+          <b>Daybook</b>
+        </a>
+        <nav class="db-top__nav" aria-label="Sections">
+          {NAV.map(([id, label]) => <a href={`#${id}`}>{label}</a>)}
+        </nav>
+        <button class="db-toggle" type="button" data-theme-toggle aria-pressed="false">
+          <i aria-hidden="true"></i><span data-theme-label>Day</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main">
+      {/* ── Hero · unnumbered · Variant E ──────────────────────────────── */}
+      <section class="db-hero">
+        <img
+          class="db-hero__bg"
+          src={`${B}/loft-office.jpg`}
+          alt="Three women gathered around a laptop in a bright office with glass whiteboards on the wall."
+          width="2508"
+          height="1672"
+        />
+        <div class="db-hero__scrim" aria-hidden="true"></div>
+
+        <div class="db-shell db-hero__in">
+          <div class="db-hero__copy">
+            <span class="db-hero__kicker">Engagement · 14 weeks · DB-2204</span>
+            <h1>The work is <em>the record.</em></h1>
+            <p class="db-hero__lede">
+              Daybook is an office-consultancy identity built from the three photographs that opened
+              the brief: printed numbers worked through by hand, two people over one laptop, and a
+              room where the decision actually gets made. Frosted glass over that daylight — a
+              translucent pane, an 18px blur, a 16px radius — and a mark that is nine cells with one
+              client standing outside the matrix.
+            </p>
+          </div>
+        </div>
+
+        <div class="db-hero__readout">
+          <div class="db-shell db-hero__readout-in">
+            <span class="db-hero__readout-h"><b>DB-2204</b> Operating model</span>
+            <dl>
+              <div><dt>Elapsed</dt><dd>9 / 14 wk</dd></div>
+              <div><dt>Decisions logged</dt><dd>41</dd></div>
+              <div><dt>Open questions</dt><dd>6</dd></div>
+              <div><dt>Next session</dt><dd>Tue 09:30</dd></div>
+            </dl>
+            <span class="db-hero__readout-foot">
+              <i aria-hidden="true"></i>Held
+              <em class="db-scope-label" data-day="Day scope" data-night="Night scope">Day scope</em>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Rail A · 176px sticky column inside every section ──────────── */}
+      <section class="db-sec" id="premise">
+        <div class="wrap">
+          <div class="db-rail">
+            <span class="n">01</span>
+            <span class="lbl">Premise</span>
+            <span class="note">What the firm believes, and what it refuses to make.</span>
+          </div>
+          <div class="db-body">
+            <h2>Advice is only worth what gets written down.</h2>
+            <p class="big">
+              A consultancy sells judgement, and judgement evaporates unless it lands on a page.
+              Daybook builds that page out of glass: a lit room, panes you can see through, and one
+              tint doing all the pointing. Nothing is opaque except the photograph the room is in, and
+              the slide grammar consulting usually wears never appears.
+            </p>
+
+            <dl class="db-two">
+              {PREMISE.map((p) => (
+                <div class="db-cell"><dt class="db-mono">{p.k}</dt><dd>{p.v}</dd></div>
+              ))}
+            </dl>
+
+            <div class="db-decs">
+              {DECISIONS.map((d) => {
+                const [lead, ...rest] = d.breaksNext.split(': ')
+                return (
+                  <article class="db-dec">
+                    <h3>{d.title}</h3>
+                    <dl>
+                      <dt>Decision</dt><dd>{d.decision}</dd>
+                      <dt>Because</dt><dd>{d.because}</dd>
+                      <dt>Not when</dt><dd>{d.notWhen}</dd>
+                      <dt>Breaks next</dt>
+                      <dd>{rest.length ? <><em>{lead}:</em> {rest.join(': ')}</> : d.breaksNext}</dd>
+                    </dl>
+                  </article>
+                )
+              })}
+            </div>
+
+            <div class="db-source">
+              {PLATES.map((p) => (
+                <figure>
+                  <div class="db-source__img">
+                    <img src={`${B}/${p.file}`} alt={p.alt} width="1200" height="800" loading="lazy" />
+                  </div>
+                  <figcaption>
+                    <b>{p.tag}</b>
+                    <span>{p.note}</span>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 02 · Mark */}
+      <section class="db-sec" id="mark">
+        <div class="wrap">
+          <div class="db-rail">
+            <span class="n">02</span>
+            <span class="lbl">Mark</span>
+            <span class="note">Nine cells, one escapee, one cut line.</span>
+          </div>
+          <div class="db-body">
+            <h2>Nine cells, and one that does not fit.</h2>
+            <p class="big">
+              A 64-unit matrix of 12-unit cells at 2, 18 and 34 on both axes — except the last slot,
+              which is empty, and a cell that reappears at 50,50. Fill only, no strokes, no rotation.
+              The gap is a full 4-unit gutter on each axis, so the break still reads at 96px and the
+              arrow of meaning never depends on a hairline.
+            </p>
+
+            <div class="db-marks">
+              <div class="db-mark">
+                <span>Primary</span>
+                <svg viewBox="0 0 64 64" fill="currentColor" aria-label="Daybook primary mark"><Fragment set:html={MARK_PATH} /></svg>
+              </div>
+              <div class="db-mark db-mark--ink">
+                <span>Reverse</span>
+                <img src={`${B}/mark-reverse.svg`} alt="Daybook reverse mark on ink" width="64" height="64" />
+              </div>
+              <div class="db-mark db-mark--field">
+                <span>Mono</span>
+                <img src={`${B}/mark-mono.svg`} alt="Daybook one-colour mark" width="64" height="64" />
+              </div>
+              <div class="db-mark">
+                <span>Compact</span>
+                <svg viewBox="0 0 64 64" fill="currentColor" aria-label="Daybook compact mark"><Fragment set:html={COMPACT_PATH} /></svg>
+              </div>
+              <div class="db-mark db-mark--ink">
+                <span>Compact rev.</span>
+                <img src={`${B}/mark-compact-reverse.svg`} alt="Daybook compact reverse mark" width="64" height="64" />
+              </div>
+              <div class="db-mark db-mark--signal">
+                <span>Glyph</span>
+                <svg viewBox="0 0 64 64" fill="currentColor" aria-label="Daybook glyph"><Fragment set:html={GLYPH_PATH} /></svg>
+              </div>
+            </div>
+
+            <div class="db-wordmark">
+              <div class="db-wordmark__row">
+                <img src={`${B}/wordmark.svg`} alt="Daybook wordmark, Inter Light outlined" width="298" height="98" />
+                <span>Outlined Inter 300 · no live type</span>
+              </div>
+              <div class="db-wordmark__row db-wordmark__row--rev">
+                <img src={`${B}/wordmark-reverse.svg`} alt="Daybook reverse wordmark on deep" width="298" height="98" />
+                <span>Reverse · deep ground only</span>
+              </div>
+            </div>
+
+            <div class="db-lock">
+              <div class="db-lock__row">
+                <img src={`${B}/lockup.svg`} alt="Daybook horizontal lockup" width="170" height="64" />
+                <span>Horizontal · 64u cap</span>
+              </div>
+              <div class="db-lock__row db-lock__row--rev">
+                <img src={`${B}/lockup-reverse.svg`} alt="Daybook reverse lockup on ink" width="170" height="64" />
+                <span>Reverse</span>
+              </div>
+              <div class="db-lock__row db-lock__row--stack">
+                <img src={`${B}/lockup-stacked.svg`} alt="Daybook stacked lockup" width="240" height="168" />
+                <span>Stacked · square formats only</span>
+              </div>
+            </div>
+
+            <div class="db-scale">
+              {[96, 48, 32, 24, 16].map((s) => (
+                <figure>
+                  <svg viewBox="0 0 64 64" width={s} height={s} fill="currentColor" aria-label={`Mark at ${s} pixels`}>
+                    <Fragment set:html={s <= 16 ? COMPACT_PATH : MARK_PATH} />
+                  </svg>
+                  <figcaption>{s}px{s <= 16 ? ' · compact' : ''}</figcaption>
+                </figure>
+              ))}
+              <figure>
+                <svg viewBox="0 0 64 64" width="16" height="16" fill="currentColor" aria-label="Glyph at 16 pixels"><Fragment set:html={GLYPH_PATH} /></svg>
+                <figcaption>16px · glyph</figcaption>
+              </figure>
+            </div>
+
+            <div class="db-castin">
+              <div class="db-castin__head">
+                <b id="db-cast-h">The cast · six nouns, one cut line</b>
+                <span>64-unit grid · fill only</span>
+              </div>
+              <div class="db-castin__grid">
+                {CAST.map((c) => (
+                  <div class="db-castin__cell">
+                    <svg viewBox="0 0 64 64" fill="currentColor" aria-hidden="true"><Fragment set:html={c.path} /></svg>
+                    <b>{c.name}</b>
+                    <span>{c.note}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <dl class="db-rules">
+              <div><dt class="db-mono">Clear space</dt><dd>One cell (12 units) on all four sides, measured from the escapee as well as the matrix. Nothing enters that band.</dd></div>
+              <div><dt class="db-mono">Never</dt><dd>No stroke around the cells, no gradient inside a cell, no rotation, no second colour, and never two escapees.</dd></div>
+              <div><dt class="db-mono">Below 24px</dt><dd>Swap to <code>mark-compact</code>: three fat cells plus one wider escapee, so the gap survives anti-aliasing.</dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      {/* 03 · Ink */}
+      <section class="db-sec" id="ink">
+        <div class="wrap">
+          <div class="db-rail">
+            <span class="n">03</span>
+            <span class="lbl">Ink</span>
+            <span class="note">Ten primitives, four published failures.</span>
+          </div>
+          <div class="db-body">
+            <h2>One signal, and it is a tint.</h2>
+            <p class="big">
+              Ten primitives sampled from the three photographs. Primitives never flip between scopes —
+              only the semantic layer does, which is why the signal lifts from tint to glow at night
+              instead of turning into a different brand. Click any chip to copy its token.
+            </p>
+
+            <div class="db-swatch-grid">
+              {primitives.map((p) => (
+                <button class="db-sw" type="button" data-copy={`--db-${p.name}: ${p.value};`} title={`${p.name} — ${p.role}`}>
+                  <span class="db-sw__chip" style={`background:${p.value}`}></span>
+                  <span class="db-sw__meta">
+                    <span class="db-sw__name">{p.name}</span>
+                    <span class="db-sw__hex">{p.value}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            <div class="db-pairs">
+              {contrast.map((c) => {
+                const a = primitives.find((p) => p.name === c.a)!
+                const b = primitives.find((p) => p.name === c.b)!
+                return (
+                  <div class:list={['db-pair', !c.pass && 'db-pair--fail']}>
+                    <span class="db-pair__chips">
+                      <i style={`background:${a.value}`}></i><i style={`background:${b.value}`}></i>
+                    </span>
+                    <span class="db-pair__name">
+                      {c.a} on {c.b}
+                      <small>{c.note}</small>
+                    </span>
+                    <span class="db-pair__ratio">{c.ratio}:1 {c.pass ? '' : '· fail'}</span>
+                    <span class="db-pair__job">{c.job}</span>
+                  </div>
+                )
+              })}
+            </div>
+            <p class="db-sub" style="margin-top:14px">
+              {fails.length} pairs fail 4.5:1 and are published rather than nudged. Sun on frost at
+              2.79:1 is a fill and a 1px edge, never type; glow on frost at 1.61:1 is a specular
+              highlight; veil on frost at 1.17:1 is the pane seam itself; deep-plate on deep at 1.12:1
+              is a pane lifted one step off the night ground.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 04 · Surfaces */}
+      <section class="db-sec" id="surfaces">
+        <div class="wrap">
+          <div class="db-rail">
+            <span class="n">04</span>
+            <span class="lbl">Surfaces</span>
+            <span class="note">Eight tried, four kept.</span>
+          </div>
+          <div class="db-body">
+            <h2>Eight surfaces were tried. Four survived.</h2>
+            <p class="big">
+              Glass &amp; light is a material, not a filter, so each surface below had to earn its place
+              by carrying a real job on a real page. The four rejected ones all failed the same test:
+              they were opaque, and an opaque panel on this page is a hole in the light.
+            </p>
+            <div class="db-surf">
+              {SURFACES.map((s) => (
+                <article class:list={['db-sc', s.rejected && 'db-sc--rej']}>
+                  <div class:list={['db-sc__demo', `db-demo-${s.demo}`]}>
+                    {s.demo === 'frost' && <div>Glass · 18px</div>}
+                    {s.demo === 'glare' && (
+                      <>
+                        <i></i>
+                        <b>Specular</b>
+                      </>
+                    )}
+                    {s.demo === 'stack' && (
+                      <>
+                        <i></i><i></i><i></i>
+                      </>
+                    )}
+                    {s.demo === 'photo' && (
+                      <>
+                        <img src={`${B}/table-session.jpg`} alt="Hands typing on a laptop at a table with open notebooks, printed charts and a glass of water." loading="lazy" width="2508" height="1672" />
+                        <span>Plate 02</span>
+                      </>
+                    )}
+                    {s.demo === 'sticker' && <b>Follow up on the cost base</b>}
+                    {s.demo === 'flat' && <div></div>}
+                    {s.demo === 'card' && <b>Follow up on the cost base</b>}
+                    {s.demo === 'paper' && (
+                      <>
+                        <b>The work is the record</b>
+                        <i></i><i></i><i></i><i></i>
+                      </>
+                    )}
+                  </div>
+                  <div class="db-sc__txt">
+                    <div class="db-sc__head">
+                      <b>{s.title}</b>
+                      <span class="db-sc__verdict">{s.verdict}</span>
+                    </div>
+                    <p>{s.note}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 05 · Type */}
+      <section class="db-sec" id="type">
+        <div class="wrap">
+          <div class="db-rail">
+            <span class="n">05</span>
+            <span class="lbl">Type</span>
+            <span class="note">One sans for everything, mono for the machine.</span>
+          </div>
+          <div class="db-body">
+            <h2>Two voices, and no serif.</h2>
+            <p class="big">
+              Inter carries everything — headings at weight 300, reading at 400, labels at 500. A
+              frosted surface has no serif: a serif at any size makes the pane look like a document
+              printed on glass, which is the one thing this material cannot be. DM Mono carries
+              anything a machine wrote, and figures are always tabular.
+            </p>
+
+            <div class="db-tscale">
+              {TYPE_SCALE.map((t) => (
+                <div class="db-tscale__row">
+                  <div class="db-tscale__meta">
+                    <b>{t.role}</b>
+                    {t.face}<br />{t.size} / {t.lead}<br />{t.track}
+                  </div>
+                  <div class={t.cls} style={`font-size:${t.px}px`}>{t.sample}</div>
+                </div>
+              ))}
+            </div>
+
+            <div class="db-specs">
+              <div class="db-spec">
+                <h3>Display</h3>
+                <p class="db-t-display" style="font-size:34px;line-height:1.02">
+                  Nine cells.<br />One does not fit.
+                </p>
+              </div>
+              <div class="db-spec">
+                <h3>Reading · 62ch</h3>
+                <p>
+                  The engagement opened with four interviews and closed with one page. Everything
+                  between those two events is in the ledger, dated, attributed, and open to being
+                  contradicted by the next session.
+                </p>
+              </div>
+              <div class="db-spec">
+                <h3>Figures</h3>
+                <table class="db-figures">
+                  <thead><tr><th>Phase</th><th>Weeks</th><th>Days</th></tr></thead>
+                  <tbody>
+                    <tr><td>Discovery</td><td>4</td><td>26.5</td></tr>
+                    <tr><td>Model</td><td>6</td><td>41.0</td></tr>
+                    <tr><td>Handover</td><td>4</td><td>18.5</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="db-spec">
+                <h3>Labels</h3>
+                <p class="db-t-mono" style="line-height:2.1">
+                  DB-2204 · SIGNED<br />SESSION 07 · 09:30<br />OPEN · COST BASE
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 06 · Kit */}
+      <section class="db-sec" id="kit">
+        <div class="wrap">
+          <div class="db-rail">
+            <span class="n">06</span>
+            <span class="lbl">Kit</span>
+            <span class="note">Four controls, cut from the pane.</span>
+          </div>
+          <div class="db-body">
+            <h2>Four pressed controls.</h2>
+            <p class="big">
+              16px radius, 1px glass rim, 260ms state changes. A control is cut from the same pane as
+              everything else — the ghost button is literally the pane with a label in it, so the
+              material never changes under your finger.
+            </p>
+
+            <div class="db-kit">
+              <div>
+                <h3>Buttons</h3>
+                <div class="db-btns">
+                  <button class="db-btn" type="button"><i aria-hidden="true"></i>Book a session</button>
+                  <button class="db-btn db-btn--ghost" type="button">Export the ledger</button>
+                  <button class="db-btn db-btn--sm" type="button">Copy DB-2204</button>
+                  <button class="db-btn" type="button" aria-disabled="true">Close engagement</button>
+                </div>
+              </div>
+              <div>
+                <h3>Chips</h3>
+                <div class="db-chips">
+                  <span class="db-chip db-chip--move"><i aria-hidden="true"></i>In progress</span>
+                  <span class="db-chip db-chip--done"><i aria-hidden="true"></i>Delivered</span>
+                  <span class="db-chip db-chip--held"><i aria-hidden="true"></i>Held</span>
+                  <span class="db-chip db-chip--bad"><i aria-hidden="true"></i>Overdue</span>
+                </div>
+                <div class="db-chips db-chips--filters">
+                  <span class="db-chip db-chip--on">All · 12</span>
+                  <span class="db-chip">Mine · 4</span>
+                  <span class="db-chip">Overdue · 1</span>
+                </div>
+                <p class="db-kitnote">
+                  Status chips carry a dot because colour alone is not a label. Filter chips carry a
+                  count because a filter that hides rows has to say how many.
+                </p>
+              </div>
+              <div>
+                <h3>Fields</h3>
+                <div class="db-fieldset">
+                  <label class="db-label" for="db-eng">Engagement reference</label>
+                  <input class="db-input" id="db-eng" value="DB-2204" aria-invalid="true" aria-describedby="db-err" />
+                  <div class="db-err" id="db-err" role="alert">
+                    <b>2 problems</b>
+                    <span>Reference must be 7 characters.</span>
+                    <span>A partner name is required before sign-off.</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h3>Ledger rows</h3>
+                <table class="db-rows">
+                  <caption>Four rows, one selected. Rows are keyboard reachable and carry aria-selected.</caption>
+                  <thead><tr><th scope="col">Ref</th><th scope="col">Phase</th><th scope="col">Length</th><th scope="col">Status</th></tr></thead>
+                  <tbody>
+                    {ledgerRows.map((r, i) => (
+                      <tr tabindex="0" aria-selected={i === 0 ? 'true' : 'false'} data-row>
+                        {r.map((cell) => <td>{cell}</td>)}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 07 · Tokens */}
+      <section class="db-sec" id="tokens">
+        <div class="wrap">
+          <div class="db-rail">
+            <span class="n">07</span>
+            <span class="lbl">Tokens</span>
+            <span class="note">Five layers, because there are two scopes.</span>
+          </div>
+          <div class="db-body">
+            <h2>Five layers, two scopes.</h2>
+            <p class="big">
+              Primitives named for the material, a day scope and a night scope over the same
+              primitives, component recipes that are the only place a control knows its own colours,
+              and the physics — 16px radius, 1px glass rim, a 14px seam between panes, 260ms.
+            </p>
+
+            <div class="db-sheets">
+              {[
+                ['1 · Primitives', TOKENS_CSS],
+                ['2 · Day scope', TOKENS_DAY],
+                ['3 · Night scope', TOKENS_NIGHT],
+                ['4 · Component tokens', TOKENS_COMP],
+                ['5 · Physics', TOKENS_PHYS],
+              ].map(([label, code]) => (
+                <div class="db-sheet">
+                  <div class="db-sheet__h">
+                    <span>{label}</span>
+                    <button class="db-copy" type="button" data-copy={code as string}>Copy</button>
+                  </div>
+                  <pre><code>{code}</code></pre>
+                </div>
+              ))}
+            </div>
+
+            <h3 class="db-mono" style="margin:32px 0 0;color:var(--db-signal)">Audit &amp; known gaps</h3>
+            <dl class="db-gaps">
+              {GAPS.map((g) => (
+                <div class:list={['db-gap', g.k === 'Open' && 'db-gap--open']}>
+                  <dt class="db-mono">{g.k}</dt><dd>{g.v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    {/* footer: F2 · reversed split — the framed plate returns on the left */}
+    <footer class="db-foot">
+      <div class="db-foot__split">
+        <figure class="db-foot__plate">
+          <img src={`${B}/desk-flatlay.jpg`} alt="A phone in one hand above an invoice on a clipboard, a calculator and a newspaper." width="2771" height="1513" loading="lazy" />
+          <figcaption>Plate 01 · the receipt</figcaption>
+        </figure>
+
+        <div class="db-foot__say">
+          <span class="db-foot__eyebrow">Closing note</span>
+          <p class="db-foot__sign">The meeting ends.<br />The notes stay.</p>
+          <p class="db-foot__sub">
+            Every decision in this system was written down once, in one place, and never
+            reconstructed from memory afterwards.
+          </p>
+          <nav class="db-foot__links" aria-label="Footer">
+            <a href="#mark">The mark</a>
+            <a href="#tokens">Tokens</a>
+            <a href="/brand/daybook/daybook-brandkit.png">Brand kit</a>
+            <a href="/">All cases</a>
+          </nav>
+        </div>
+      </div>
+
+      <div class="db-foot__bar">
+        <div class="db-shell db-foot__barin">
+          <span>Daybook · case 20</span>
+          <span>Jakarta · 2026 · V1.1</span>
+          <a href="/">Back to the shelf</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const root = document.querySelector('.db-root') as HTMLElement | null
+    const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]')
+    const label = document.querySelector<HTMLElement>('[data-theme-label]')
+    const scopeLabel = document.querySelector<HTMLElement>('.db-scope-label')
+
+    const apply = (mode: 'day' | 'night') => {
+      root?.setAttribute('data-db-theme', mode)
+      toggle?.setAttribute('data-mode', mode)
+      toggle?.setAttribute('aria-pressed', String(mode === 'night'))
+      if (label) label.textContent = mode === 'night' ? 'Night' : 'Day'
+      if (scopeLabel) scopeLabel.textContent = mode === 'night' ? 'Night scope' : 'Day scope'
+    }
+    toggle?.addEventListener('click', () => {
+      const next = root?.getAttribute('data-db-theme') === 'night' ? 'day' : 'night'
+      apply(next)
+    })
+    apply('day')
+
+    document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((el) => {
+      el.addEventListener('click', async () => {
+        const text = el.dataset.copy || ''
+        try {
+          await navigator.clipboard.writeText(text)
+          const prev = el.textContent
+          el.textContent = 'Copied'
+          setTimeout(() => (el.textContent = prev), 1100)
+        } catch {
+          /* clipboard blocked — the text is still selectable */
+        }
+      })
+    })
+
+    document.querySelectorAll<HTMLTableRowElement>('[data-row]').forEach((row) => {
+      const select = () => {
+        document.querySelectorAll('[data-row]').forEach((r) => r.setAttribute('aria-selected', 'false'))
+        row.setAttribute('aria-selected', 'true')
+      }
+      row.addEventListener('click', select)
+      row.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          select()
+        }
+      })
+    })
+  </script>
+</Layout>

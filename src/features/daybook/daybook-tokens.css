@@ -1,0 +1,83 @@
+/* Daybook — case 20. Surface: Glass & light.
+   Layer 1 primitives never flip; layer 2 is the scope. A pane is always
+   translucent + blurred, never a flat fill pretending to be glass. */
+.db-scope {
+  --db-frost: #E9EEF3; /* oklch(0.937 0.008 240) */
+  --db-haze: #F7FAFC; /* oklch(0.980 0.005 235) */
+  --db-veil: #FFFFFF; /* oklch(1 0 0) */
+  --db-ink: #131C25; /* oklch(0.218 0.020 245) */
+  --db-slate: #4C5F72; /* oklch(0.466 0.032 245) */
+  --db-tint: #2E5C8A; /* oklch(0.462 0.086 253) */
+  --db-sun: #C0813C; /* oklch(0.628 0.098 68) */
+  --db-glow: #9FC2DA; /* oklch(0.800 0.042 240) */
+  --db-deep: #0B1218; /* oklch(0.170 0.014 245) */
+  --db-deep-plate: #131E28; /* oklch(0.232 0.020 245) */
+
+  /* 2 · semantic scope — daylight through glass is the default */
+  --db-surface-page: var(--db-frost);
+  --db-surface-plate: var(--db-haze);
+  --db-surface-invert: var(--db-deep);
+  --db-text-primary: var(--db-ink);
+  --db-text-secondary: var(--db-slate);
+  --db-text-invert: var(--db-haze);
+  --db-signal: var(--db-tint);
+  --db-signal-deep: color-mix(in srgb, var(--db-tint) 74%, var(--db-ink));
+  --db-form-ink: var(--db-tint);
+  --db-line-strong: color-mix(in srgb, var(--db-ink) 26%, transparent);
+  --db-line-subtle: color-mix(in srgb, var(--db-ink) 11%, transparent);
+
+  /* glass — the material, expressed once */
+  --db-glass-fill: color-mix(in srgb, var(--db-veil) 58%, transparent);
+  --db-glass-fill-strong: color-mix(in srgb, var(--db-veil) 78%, transparent);
+  --db-glass-edge: color-mix(in srgb, var(--db-veil) 88%, transparent);
+  --db-glass-rim: color-mix(in srgb, var(--db-ink) 10%, transparent);
+  --db-glass-blur: blur(18px) saturate(1.35);
+  --db-glass-shadow: 0 1px 0 0 var(--db-glass-edge) inset, 0 18px 40px -24px color-mix(in srgb, var(--db-ink) 34%, transparent);
+  --db-field-field: color-mix(in srgb, var(--db-veil) 62%, transparent);
+
+  /* 3 · component tokens — the only layer that knows a recipe */
+  --db-btn-bg: var(--db-ink);
+  --db-btn-text: var(--db-haze);
+  --db-btn-bg-hover: var(--db-tint);
+  --db-chip-border: var(--db-glass-rim);
+  --db-field-border: color-mix(in srgb, var(--db-ink) 22%, transparent);
+  --db-field-bg: var(--db-field-field);
+
+  /* type — neutral sans only. Glass has no serif. */
+  --db-font-display: 'Inter', system-ui, sans-serif;
+  --db-font-reading: 'Inter', system-ui, sans-serif;
+  --db-font-mono: 'DM Mono', ui-monospace, monospace;
+
+  /* physics — cast light, not printed ink */
+  --db-radius: 16px;
+  --db-radius-sm: 10px;
+  --db-hair: 1px;
+  --db-seam: 14px;
+  --db-ease: cubic-bezier(0.16, 0.84, 0.44, 1);
+  --db-dur: 260ms;
+}
+
+/* night scope — the same room after dark, same primitives, opposite ground */
+.db-scope[data-db-theme='night'] {
+  --db-surface-page: var(--db-deep);
+  --db-surface-plate: var(--db-deep-plate);
+  --db-surface-invert: var(--db-haze);
+  --db-text-primary: var(--db-haze);
+  --db-text-secondary: color-mix(in srgb, var(--db-haze) 64%, var(--db-deep));
+  --db-text-invert: var(--db-ink);
+  --db-signal: var(--db-glow); /* the tint is 2.4:1 on deep — light replaces it */
+  --db-signal-deep: color-mix(in srgb, var(--db-glow) 72%, var(--db-deep));
+  --db-form-ink: var(--db-glow);
+  --db-line-strong: color-mix(in srgb, var(--db-haze) 30%, transparent);
+  --db-line-subtle: color-mix(in srgb, var(--db-haze) 13%, transparent);
+  --db-glass-fill: color-mix(in srgb, var(--db-veil) 8%, transparent);
+  --db-glass-fill-strong: color-mix(in srgb, var(--db-veil) 14%, transparent);
+  --db-glass-edge: color-mix(in srgb, var(--db-veil) 24%, transparent);
+  --db-glass-rim: color-mix(in srgb, var(--db-veil) 22%, transparent);
+  --db-glass-shadow: 0 1px 0 0 var(--db-glass-edge) inset, 0 22px 50px -26px rgba(0, 0, 0, 0.72);
+  --db-field-field: color-mix(in srgb, var(--db-veil) 7%, transparent);
+  --db-btn-bg: var(--db-haze);
+  --db-btn-text: var(--db-deep);
+  --db-btn-bg-hover: var(--db-glow);
+  --db-field-border: color-mix(in srgb, var(--db-haze) 28%, transparent);
+}

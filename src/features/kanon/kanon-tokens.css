@@ -1,0 +1,50 @@
+/* ============================================================================
+   KANON · house tokens
+   ----------------------------------------------------------------------------
+   Kanon is the studio; Serenica is its flagship case. The house system is
+   therefore Serenica's system, imported rather than re-mixed — one sheet of
+   primitives, one semantic layer, one night scope, one accent. Nothing in
+   kanon-page.css invents a colour that is not already a --sr-* token, so the
+   studio and its case can never drift apart.
+
+   What Kanon adds on top is only vocabulary: a --kn-* alias layer so page
+   rules read in the studio's own words while the values stay single-sourced.
+   ========================================================================== */
+
+@import '../serenica/serenica-tokens.css';
+
+:root {
+  /* ── surfaces ─────────────────────────────────────────────────────────── */
+  --kn-paper: var(--sr-bg-canvas);
+  --kn-plate: var(--sr-bg-plate);
+  --kn-band: var(--sr-bg-band);
+  --kn-loud: var(--sr-bg-loud);
+
+  /* ── ink ──────────────────────────────────────────────────────────────── */
+  --kn-ink: var(--sr-ink-primary);
+  --kn-ink-2: var(--sr-ink-secondary);
+  --kn-ink-rev: var(--sr-ink-reverse);
+
+  /* ── rule ─────────────────────────────────────────────────────────────── */
+  --kn-rule: var(--sr-line-strong);
+  --kn-hair: var(--sr-line-subtle);
+
+  /* ── the one accent ───────────────────────────────────────────────────── */
+  --kn-accent: var(--sr-accent);
+  --kn-accent-ink: var(--sr-accent-ink);
+
+  /* ── faces ────────────────────────────────────────────────────────────── */
+  --kn-display: var(--sr-font-display);
+  --kn-read: var(--sr-font-reading);
+  --kn-mono: var(--sr-font-mono);
+
+  /* ── physics ──────────────────────────────────────────────────────────── */
+  --kn-r: var(--sr-radius);
+  --kn-wrap: 1240px;
+  --kn-gutter: clamp(20px, 4vw, 56px);
+  --kn-ease: var(--sr-ease);
+  --kn-t: var(--sr-transition);
+
+  /* ── the shelf's own measure ──────────────────────────────────────────── */
+  --kn-bar-h: 65px; /* the bar's height including its 1px rule */
+}

@@ -1,23 +1,84 @@
 ---
 import Layout from '@/layouts/Layout.astro'
-import tokens from '@/features/halation/tokens.json'
-import '@/features/halation/halation-tokens.css'
-import '@/features/halation/halation-page.css'
-import '@/features/halation/halation-gallery.css'
-import { CaseGallery } from '@/components/case-gallery'
+import serenicaTokens from '@/features/serenica/tokens.json'
+import '@/features/kanon/kanon-tokens.css'
+import '@/features/kanon/kanon-page.css'
+import { KanonHome } from '@/components/kanon-home'
+import MeadowRiseFooter from '@/components/ui/meadow-rise-footer.tsx'
 
-/* the landing states its own system's numbers, read from the token file rather than typed */
+/* The studio's own numbers, read from the token file rather than typed. Kanon's
+   house system *is* the Serenica system, so the ledger on this page and the
+   ledger on Case 23 can never disagree. */
 const facts = {
-  primitives: tokens.primitives.length,
-  pairs: tokens.contrast.length,
-  fails: tokens.contrast.filter((c) => !c.pass).length,
+  primitives: serenicaTokens.primitives.length,
+  pairs: serenicaTokens.contrast.length,
+  fails: serenicaTokens.contrast.filter((c) => !c.pass).length,
 }
+
+const title = 'Kanon — design systems, written by six skills'
+const description =
+  'Kanon is a studio of six skills that write a brandkit and a design system: marks on one grid, tokens in three layers, and a contrast ledger that publishes its own failures. Twenty-three cases on the shelf.'
 ---
 
-<Layout
-  title="Halation — design systems & case library · Aditya Himawan"
-  description="Eighteen design systems held in one glass frame. Each entry states its own primitives, mark family, and the contrast pair it fails."
-  canonical="/"
->
-  <CaseGallery facts={facts} client:load />
+<Layout title={title} description={description} canonical="/" image="/brand/kanon/kanon-og.png">
+  <KanonHome facts={facts} client:load />
+
+  <div class="kn-tail">
+    <div class="kn-wrap">
+      <div class="kn-foot__cap">
+        <span>Fig. 24 · the same six ridges that opened case 23, closing the studio</span>
+        <span>seed 3 · six ridges · 1:1</span>
+      </div>
+    </div>
+
+    <MeadowRiseFooter
+      client:visible
+      preset="auto"
+      seed={3}
+      name="Kanon"
+      brandHref="#top"
+      heading={'A design system is a *rule*\nthat survives being repeated.'}
+      subheading="Six skills, twenty-three cases, one token sheet. The board you open today still matches the board from case 04."
+      cta={{ label: 'Install the six', href: '#install' }}
+      tagline="A studio of skills, not a folder of templates."
+      newsletter={false}
+      columns={[
+        {
+          title: 'The studio',
+          links: [
+            { label: 'Install', href: '#install' },
+            { label: 'The canon', href: '#shelf' },
+            { label: 'Method', href: '#method' },
+          ],
+        },
+        {
+          title: 'The canon',
+          links: [
+            { label: 'Case 23 · Serenica', href: '/design-system/serenica' },
+            { label: 'Case 22 · Mullion', href: '/design-system/mullion' },
+            { label: 'Case 21 · Causeway', href: '/design-system/causeway' },
+            { label: 'All twenty-three', href: '#shelf' },
+          ],
+        },
+        {
+          title: 'Elsewhere',
+          links: [
+            { label: 'The studio site', href: 'https://adityahimaone.space' },
+            { label: 'Case API', href: '/api/cases.json' },
+            { label: 'The house system', href: '/design-system/serenica' },
+          ],
+        },
+      ]}
+      socialTitle=""
+      socials={[]}
+      copyright="© 2026 Kanon. Twenty-three cases, one method."
+      legal={[
+        { label: 'Design tokens', href: '/design-system/serenica' },
+        { label: 'Case API', href: '/api/cases.json' },
+      ]}
+      height="900px"
+      heroHeight="clamp(420px, 46svh, 520px)"
+      maxWidth="1240px"
+    />
+  </div>
 </Layout>

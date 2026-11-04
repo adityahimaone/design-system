@@ -1,0 +1,943 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import tokens from '@/features/serenica/tokens.json'
+import '@/features/serenica/serenica-tokens.css'
+import '@/features/serenica/serenica-page.css'
+import SerenicaField from '@/components/ui/serenica-field.tsx'
+import MeadowRiseFooter from '@/components/ui/meadow-rise-footer.tsx'
+
+const B = '/brand/serenica'
+const title = 'Serenica — Case 23 | Confidential support · Live field above the type'
+const description =
+  'Serenica: a listening service printed like a field journal. Six flat ridge inks, a petal rosette cut from one disc, one marigold accent, a live painted field over the type, and a contrast ledger that publishes the three pairs it fails.'
+
+const NAV = [
+  { id: 'premise', label: 'Premise' },
+  { id: 'mark', label: 'Mark' },
+  { id: 'ink', label: 'Ink' },
+  { id: 'surfaces', label: 'Surfaces' },
+  { id: 'type', label: 'Type' },
+  { id: 'kit', label: 'Kit' },
+  { id: 'tokens', label: 'Tokens' },
+]
+
+const CAST = [
+  { id: 'ridge', name: 'Ridge', note: 'Six bands of depth, read front to back' },
+  { id: 'petal', name: 'Petal', note: 'The unit the mark is counted in' },
+  { id: 'stem', name: 'Stem', note: 'One line up, two leaves off it' },
+  { id: 'mist', name: 'Mist', note: 'Haze between two ridges' },
+  { id: 'hour', name: 'Hour', note: 'A session, cut out of the day' },
+  { id: 'hold', name: 'Hold', note: 'Two sides keeping a space open' },
+]
+
+const PREMISE = [
+  {
+    h: 'Belief',
+    p: 'Help should arrive the way weather does — without paperwork, without a queue, and without asking anyone to explain themselves twice.',
+  },
+  {
+    h: 'Enemy',
+    p: 'Triage chrome: risk-score meters, a waiting-room counter, a chatbot with a face, and a “how are you feeling, one to five” scale at the door.',
+  },
+  {
+    h: 'Material',
+    p: 'Uncoated stock #F4F2E9, six ridge inks from sage to ground, one marigold #D99A2B, Instrument Serif at 400, Inter Tight for anything read at speed.',
+  },
+  {
+    h: 'The rejection test',
+    p: 'If a surface makes the service look clinical, or the page look busy, reject it. Calm is a layout decision before it is a colour.',
+    loud: true,
+  },
+]
+
+const DECISIONS = [
+  {
+    title: 'The field is painted, not photographed',
+    decision:
+      'Six ridges are drawn per pixel from one seed and composited. The hero and the footer are the same range at the same seed; the hero is live, the footer is held.',
+    because:
+      'A stock photograph of hills puts a real place behind a confidential service, and every competitor can license the same frame. A drawn range belongs to the brand and survives any width without a crop.',
+    notWhen: 'A campaign names a real location — then it is photography, and it sits in a plate, never behind the headline.',
+    breaksNext: 'Someone swaps in a stock meadow “for warmth” and the footer stops matching the hero.',
+  },
+  {
+    title: 'Six ridges, never five',
+    decision:
+      'The range is always six bands, farthest to nearest, sage to ground. The count is the composition: five reads as a hill, seven reads as a texture.',
+    because:
+      'Depth is what makes the scene read as distance rather than decoration, and six is the smallest count where aerial haze can work between two adjacent bands.',
+    notWhen: 'The mark and the cast. They are flat, one ink, and carry no depth at all.',
+    breaksNext: 'Adding a seventh “for richness” and losing the crease between bands three and four.',
+  },
+  {
+    title: 'Marigold is the action, and nothing else',
+    decision:
+      'The accent appears on the primary action and on the footer’s action. It measures 2.18:1 on stock, so it can never be type; it is a fill that carries ink at 8.4:1.',
+    because:
+      'The palette is six greens. A second green accent would vanish into the ridges; a warm accent is the one flower in the field, and it only ever means “this is the way in”.',
+    notWhen: 'Charts, status dots, links, headings. A marigold link is a broken promise about where to click.',
+    breaksNext: 'Using marigold for a hover state, which teaches the eye that the accent means “somewhere” rather than “here”.',
+  },
+  {
+    title: 'Day and night are one sheet, not two brands',
+    decision:
+      'The night scope drops the paper to #0F1611 and lifts the ink to #E7EBE1. Every primitive keeps its value; only the semantic layer moves. Marigold survives both scopes untouched.',
+    because:
+      'A service reached at three in the morning cannot be a different product from the one reached at noon. The scope is a lamp, not a redesign.',
+    notWhen: 'Print, favicons and the brand board — they are always the daylight sheet.',
+    breaksNext: 'Re-mixing the greens for night until the ridges stop reading as the same range.',
+  },
+]
+
+const SURFACES = [
+  {
+    title: 'Flat stock',
+    verdict: 'Shipped — the page',
+    p: 'One solid ground, edge to edge, and a single hairline where a rule is genuinely a rule. The whole page is this surface; the other three are moments inside it.',
+    demo: 'stock',
+  },
+  {
+    title: 'Six-ridge band',
+    verdict: 'Shipped — hero and footer',
+    p: 'Six flat inks, farthest to nearest, with the light fixed at one angle. The same seed opens and closes the page, which is the only “imagery” the brand owns.',
+    demo: 'ridge',
+  },
+  {
+    title: 'Printed grain',
+    verdict: 'Shipped — the field',
+    p: 'A per-pixel pass adds mottle, clump and grain, so a flat fill reads as ink on stock rather than a vector rectangle. At 100% it is invisible; at 200% it is the material.',
+    demo: 'grain',
+  },
+  {
+    title: 'Hard ground edge',
+    verdict: 'Shipped — the footer seam',
+    p: 'The nearest ridge stops dead against the footer ground instead of fading into it. One line, no gradient: the point where the field becomes the page you can read on.',
+    demo: 'seam',
+  },
+  {
+    title: 'Sky wash',
+    verdict: 'Rejected',
+    p: 'The source component’s atmospheric sky — a soft vertical gradient with a glow that follows the pointer. It photographs beautifully and prints badly: it needs a screen to exist, and it made every headline look like a landing page.',
+    demo: 'wash',
+    rejected: true,
+  },
+  {
+    title: 'Frosted plate',
+    verdict: 'Rejected',
+    p: 'A blurred pane over the field, carrying the reading text. Legible, expensive, and the exact glass card the house rules ban — the field became wallpaper behind a rectangle instead of the thing you are standing in.',
+    demo: 'glass',
+    rejected: true,
+  },
+]
+
+const GAPS = [
+  {
+    h: 'Verified — contrast',
+    p: `${tokens.contrast.length} pairs computed from hex in the build script, not asserted. ${tokens.meta.failingPairs} fail 4.5:1 and are published in §03 with a job that is not type.`,
+  },
+  {
+    h: 'Verified — the field',
+    p: 'Painted at 1×, 1.25× and 1.5× device density, six ridges, at widths from 390 to 1920. The footer repaints on resize rather than scaling a bitmap.',
+  },
+  {
+    h: 'Not verified — the service',
+    p: 'No session data from the real product. The hero’s four figures are illustrative of the brand, not a measurement of Serenica, which does not exist.',
+  },
+  {
+    h: 'Known gap — night field',
+    p: 'In the night scope the six ridge inks sit within 1.4:1 of one another, so the range reads as one dark mass at low screen brightness. The daylight sheet is the reference; night is a lamp on it.',
+  },
+]
+
+const LISTENERS = [
+  { name: 'Ada O.', lang: 'English · Yoruba', wait: '3m 40s', open: true },
+  { name: 'Mira K.', lang: 'English · Polish', wait: '5m 10s', open: true },
+  { name: 'Tomas R.', lang: 'Portuguese · English', wait: '—', open: false },
+  { name: 'Ines L.', lang: 'Spanish · Catalan', open: true, wait: '2m 55s' },
+]
+
+const sizeLabel = (v: string) => {
+  const m = v.match(/([\d.]+)px/g)
+  if (!m) return v
+  const nums = m.map((x) => x.replace('px', ''))
+  return nums.length > 1 ? `${nums[1]} → ${nums[0]}` : `${nums[0]}px`
+}
+
+const cssPrimitives = `/* 1 · primitive — the material, named once */
+:root {
+${tokens.primitives
+  .map((p) => `  --sr-${p.name}: ${p.value}; /* ${p.oklch} */`)
+  .join('\n')}
+}`
+
+const cssDay = `/* 2 · semantic · daylight field (default) */
+:root {
+  --sr-bg-canvas: var(--sr-paper);
+  --sr-bg-plate: var(--sr-chalk);
+  --sr-bg-band: var(--sr-haze);
+  --sr-ink-primary: var(--sr-ink);
+  --sr-ink-secondary: var(--sr-umber);
+  --sr-line-strong: rgba(17, 20, 13, 0.28);
+  --sr-line-subtle: rgba(17, 20, 13, 0.12);
+  --sr-accent: var(--sr-marigold);
+}`
+
+const cssNight = `/* 3 · semantic · night field — a lamp, not a redesign */
+[data-sr='night'] {
+  --sr-bg-canvas: #0F1611;
+  --sr-bg-plate: #18211A;
+  --sr-bg-band: #1F2A20;
+  --sr-ink-primary: #E7EBE1;
+  --sr-ink-secondary: #A9B49C;
+  --sr-line-strong: rgba(231, 235, 225, 0.16);
+  --sr-line-subtle: rgba(231, 235, 225, 0.09);
+  --sr-accent: var(--sr-marigold);
+}`
+
+const cssComponent = `/* 4 · component — the action carries the one accent */
+.sr-btn {
+  height: 46px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 0;
+  background: var(--sr-accent);
+  color: var(--sr-accent-ink);
+  font-family: var(--sr-font-reading);
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.sr-sheet { background: var(--sr-bg-loud); color: var(--sr-ink-reverse); }`
+
+const cssPhysics = `/* 5 · physics — printed matter */
+:root {
+  --sr-radius: 0px;
+  --sr-rule: 1px;
+  --sr-wrap: 1200px;
+  --sr-gutter: clamp(20px, 4vw, 56px);
+  --sr-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --sr-transition: 260ms var(--sr-ease);
+}
+/* no shadow at rest, anywhere. a printed sheet casts nothing. */`
+---
+
+<Layout title={title} description={description} canonical="/design-system/serenica" image={`${B}/serenica-brandkit.png`}>
+  <div class="sr" id="top" data-sr="day">
+    <script is:inline>
+      try {
+        if (localStorage.getItem('sr-theme') === 'night') {
+          document.querySelector('.sr')?.setAttribute('data-sr', 'night')
+          document.documentElement.classList.add('dark')
+        }
+      } catch (e) {}
+    </script>
+
+    <!-- nav: mark, name, word-only section links, one scope toggle. no numbers. -->
+    <header class="sr-bar">
+      <div class="sr-wrap sr-bar__in">
+        <a class="sr-bar__brand" href="#top" aria-label="Serenica, back to top">
+          <img src={`${B}/mark.svg`} width="22" height="22" alt="" />
+          <span class="sr-bar__name">Serenica</span>
+          <span class="sr-bar__case">Case 23</span>
+        </a>
+        <nav class="sr-bar__nav" aria-label="Serenica sections">
+          {NAV.map((n) => <a href={`#${n.id}`} data-nav={n.id}>{n.label}</a>)}
+        </nav>
+        <button class="sr-theme" id="srTheme" type="button" aria-pressed="false">
+          <span class="sr-theme__dot" aria-hidden="true"></span>
+          <span id="srThemeLabel">Daylight</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- ===============================================================
+           HERO · C · relation below — the live field runs first, full
+           width; the type sits underneath it on the page ground.
+           =============================================================== -->
+      <section class="sr-stage" aria-label="The field">
+        <SerenicaField client:load theme="auto" seed={3} height="clamp(300px, 44vh, 440px)" stamp="Field 01 · six ridges · seed 3 · 1:1" />
+        <span class="sr-stage__edge">the same object closes the page</span>
+      </section>
+
+      <section class="sr-open">
+        <div class="sr-wrap sr-open__grid">
+          <div>
+            <h1>Some hours are heavier than the day can hold.</h1>
+            <p class="sr-lede">
+              Serenica is a listening service for the hours that will not lift on their own. One
+              conversation with a trained listener, no case file, nothing kept after you close the tab.
+            </p>
+            <div class="sr-acts">
+              <a class="sr-btn" href="#kit">
+                Start a conversation
+                <span class="sr-btn__arw" aria-hidden="true">↗</span>
+              </a>
+              <a class="sr-btn sr-btn--ghost" href="#premise">Read the premise →</a>
+            </div>
+          </div>
+          <dl class="sr-facts">
+            <div><dt>Median wait</dt><dd>4 min 10 s</dd></div>
+            <div><dt>Trained listeners</dt><dd>240</dd></div>
+            <div><dt>Kept after a session</dt><dd>Nothing</dd></div>
+            <div><dt>Languages</dt><dd>11</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <div class="sr-wrap">
+        <div class="sr-shell">
+          <!-- Rail B · one contents list for the whole page -->
+          <nav class="sr-contents" aria-label="Contents">
+            <ol>
+              {NAV.map((n, i) => (
+                <li>
+                  <a href={`#${n.id}`} data-spy={n.id}>
+                    <span class="n">{String(i + 1).padStart(2, '0')}</span>
+                    <span class="lbl">{n.label}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+            <p class="sr-contents__foot">
+              Six ridges, twelve primitives, one accent. Printed on uncoated stock.
+            </p>
+          </nav>
+
+          <div class="sr-sections">
+            <!-- 01 ───────────────────────────────────────────────────── -->
+            <section id="premise" class="sr-sec">
+              <div class="sr-head">
+                <h2>A support brand should feel like weather, not a form.</h2>
+                <p>
+                  The page is printed, not rendered: uncoated stock, six flat inks, one marigold, and
+                  no shadow anywhere — a printed sheet casts nothing, and someone in a hard hour does
+                  not need a product performing at them.
+                </p>
+              </div>
+
+              <div class="sr-cells">
+                {PREMISE.map((c) => (
+                  <div class={`sr-cell${c.loud ? ' sr-cell--loud' : ''}`}>
+                    <h3>{c.h}</h3>
+                    <p>{c.p}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div class="sr-decs">
+                {DECISIONS.map((d) => (
+                  <article class="sr-dec">
+                    <h4>{d.title}</h4>
+                    <dl>
+                      <dt>Decision</dt>
+                      <dd>{d.decision}</dd>
+                      <dt>Because</dt>
+                      <dd>{d.because}</dd>
+                      <dt>Not when</dt>
+                      <dd>{d.notWhen}</dd>
+                      <dt>Breaks next</dt>
+                      <dd><em>Breaks when:</em> {d.breaksNext}</dd>
+                    </dl>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <!-- 02 ───────────────────────────────────────────────────── -->
+            <section id="mark" class="sr-sec">
+              <div class="sr-head">
+                <h2>A ring, a disc, eight petals cut out of it.</h2>
+                <p>
+                  The rosette in the source component was eight ellipses and a circle drawn in a thin
+                  stroke. Redrawn on the 64 grid it becomes one solid disc with eight petal-shaped
+                  holes, a 4.6-unit ring outside it, and a 2.2-unit eye. One fill, no strokes, no
+                  illustration: a disc that has been cut eight times.
+                </p>
+              </div>
+
+              <div class="sr-logos">
+                <div class="sr-logo">
+                  <img src={`${B}/mark.svg`} width="84" height="84" alt="Serenica primary mark" />
+                  <span>Primary · 64 grid</span>
+                </div>
+                <div class="sr-logo sr-logo--loud">
+                  <img src={`${B}/mark-reverse.svg`} width="84" height="84" alt="Serenica reverse mark on the ground" />
+                  <span>Reverse · on ground</span>
+                </div>
+                <div class="sr-logo">
+                  <img src={`${B}/mark-compact.svg`} width="84" height="84" alt="Serenica compact mark, four wide cuts" />
+                  <span>Compact · 16–24px</span>
+                </div>
+                <div class="sr-logo sr-logo--glyph">
+                  <img src={`${B}/glyph.svg`} width="96" height="96" alt="Serenica glyph, the rosette without its ring" />
+                  <span>Glyph · pattern</span>
+                </div>
+              </div>
+
+              <div class="sr-scale">
+                <figure>
+                  <img src={`${B}/mark.svg`} width="96" height="96" alt="" />
+                  <figcaption>96 · full</figcaption>
+                </figure>
+                <figure>
+                  <img src={`${B}/mark.svg`} width="48" height="48" alt="" />
+                  <figcaption>48 · full</figcaption>
+                </figure>
+                <figure>
+                  <img src={`${B}/mark.svg`} width="32" height="32" alt="" />
+                  <figcaption>32 · full</figcaption>
+                </figure>
+                <figure>
+                  <img src={`${B}/mark-compact.svg`} width="24" height="24" alt="" />
+                  <figcaption>24 · compact</figcaption>
+                </figure>
+                <figure>
+                  <img src={`${B}/mark-compact.svg`} width="16" height="16" alt="" />
+                  <figcaption>16 · compact</figcaption>
+                </figure>
+                <figure>
+                  <img src={`${B}/glyph.svg`} width="16" height="16" alt="" />
+                  <figcaption>16 · glyph</figcaption>
+                </figure>
+              </div>
+
+              <div class="sr-locks">
+                <div class="sr-lock">
+                  <p>Horizontal lockup · mark 64, wordmark 40 cap, 16u gap</p>
+                  <div class="sr-lock__art">
+                    <img src={`${B}/lockup.svg`} height="34" alt="Serenica horizontal lockup" />
+                  </div>
+                </div>
+                <div class="sr-lock">
+                  <p>Reverse lockup · on the ground</p>
+                  <div class="sr-lock__art" style="background: var(--sr-bg-loud); padding: 18px 22px; display:inline-flex; width:fit-content;">
+                    <img src={`${B}/lockup-reverse.svg`} height="34" alt="Serenica reverse lockup" />
+                  </div>
+                </div>
+                <div class="sr-lock">
+                  <p>Stacked lockup · square placements and covers</p>
+                  <div class="sr-lock__art">
+                    <img class="sr-lock--tall" src={`${B}/lockup-stacked.svg`} height="96" alt="Serenica stacked lockup" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="sr-rules">
+                <div>
+                  <h4>Clear space</h4>
+                  <p>Eight units on every side, measured from the ring. Nothing enters it — not a rule, not a caption, not the edge of a photograph.</p>
+                </div>
+                <div>
+                  <h4>Never</h4>
+                  <p>No outline version, no rotation, no second colour, no petals added or removed. The mark is a cut, not a drawing, so it cannot be “adjusted”.</p>
+                </div>
+                <div>
+                  <h4>Below 24px</h4>
+                  <p>Swap to the compact file. It is a separate drawing: a thicker ring, four wide cuts, no eye. Scaling the 64px master down turns the petals into a smudge.</p>
+                </div>
+              </div>
+
+              <!-- the cast belongs to the mark argument, not to the end of the page -->
+              <div class="sr-cast">
+                <div class="sr-cast__head">
+                  <h3>The companion cast</h3>
+                  <p>Six nouns from the service’s own vocabulary · one cut line, one flat fill, one job each</p>
+                </div>
+                <div class="sr-cast__grid">
+                  {CAST.map((c) => (
+                    <div class="sr-cast__cell">
+                      <img src={`${B}/cast/${c.id}.svg`} width="26" height="26" alt="" />
+                      <b>{c.name}</b>
+                      <span>{c.note}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <!-- 03 ───────────────────────────────────────────────────── -->
+            <section id="ink" class="sr-sec">
+              <div class="sr-head">
+                <h2>Six greens, one marigold, and the three pairs that fail.</h2>
+                <p>
+                  Twelve primitives, each named for the material it stands for. The ledger below is
+                  computed from hex, not asserted. Three pairs do not reach 4.5:1, they are published
+                  here, and each is assigned a job that is not type. Click any swatch to copy its hex.
+                </p>
+              </div>
+
+              <div class="sr-swatches">
+                {tokens.primitives.map((p) => (
+                  <button class="sr-swatch" type="button" data-hex={p.value} aria-label={`Copy ${p.name} ${p.value}`}>
+                    <span class="sr-swatch__chip" style={`background:${p.value}`}></span>
+                    <span class="sr-swatch__body">
+                      <span class="sr-swatch__name">{p.name}</span>
+                      <span class="sr-swatch__hex">{p.value} · {p.oklch}</span>
+                      <span class="sr-swatch__role">{p.role}</span>
+                    </span>
+                    <span class="sr-swatch__copied">copied</span>
+                  </button>
+                ))}
+              </div>
+
+              <div class="sr-ledger">
+                <h3>Measured contrast</h3>
+                <p>
+                  WCAG 2.1, computed from sRGB hex. Fails are not nudged into mud to fake a pass —
+                  they are given a graphic-only job and printed here.
+                </p>
+                <div class="sr-ledger__rows">
+                  {tokens.contrast.map((c) => (
+                    <div class="sr-pair" data-pass={String(c.pass)}>
+                      <span class="sr-pair__chips" aria-hidden="true">
+                        <i style={`background:${c.fgHex}`}></i>
+                        <i style={`background:${c.bgHex}`}></i>
+                      </span>
+                      <span class="sr-pair__name">{c.fg} on {c.bg}</span>
+                      <span class="sr-pair__job">{c.job}</span>
+                      <span class="sr-pair__ratio">
+                        <b>{c.ratio}:1</b>
+                        {!c.pass && <span class="sr-pair__flag">fail</span>}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <!-- 04 ───────────────────────────────────────────────────── -->
+            <section id="surfaces" class="sr-sec">
+              <div class="sr-head">
+                <h2>Six surfaces were tried. Four survived.</h2>
+                <p>
+                  Each card is the treatment itself, live, not a screenshot. The two rejected cards
+                  are the two most tempting ones: an atmospheric sky wash, and a frosted plate over
+                  the field. Both are named so nobody proposes them again in six months.
+                </p>
+              </div>
+
+              <div class="sr-surfs">
+                {SURFACES.map((s) => (
+                  <article class="sr-sc" data-rejected={String(!!s.rejected)}>
+                    <div class="sr-sc__demo">
+                      {s.demo === 'stock' && (
+                        <div class="sr-demo-stock"><b>Heavier hours</b></div>
+                      )}
+                      {s.demo === 'ridge' && (
+                        <div class="sr-demo-ridge">
+                          <span style="bottom:0;height:46%;left:-18%;right:24%;background:#c4cdb8"></span>
+                          <span style="bottom:0;height:40%;left:12%;right:-26%;background:#9dae84"></span>
+                          <span style="bottom:0;height:33%;left:-14%;right:8%;background:#7d8f63"></span>
+                          <span style="bottom:0;height:27%;left:22%;right:-18%;background:#5e7440"></span>
+                          <span style="bottom:0;height:21%;left:-24%;right:16%;background:#415325"></span>
+                          <span style="bottom:0;height:15%;left:6%;right:-12%;background:#2c3b1b"></span>
+                        </div>
+                      )}
+                      {s.demo === 'grain' && <div class="sr-demo-grain"></div>}
+                      {s.demo === 'seam' && <div class="sr-demo-seam"><b>the ground, read on</b></div>}
+                      {s.demo === 'wash' && <div class="sr-demo-wash"></div>}
+                      {s.demo === 'glass' && <div class="sr-demo-glass"></div>}
+                    </div>
+                    <div class="sr-sc__txt">
+                      <div class="sr-sc__top">
+                        <b>{s.title}</b>
+                        <span>{s.verdict}</span>
+                      </div>
+                      <p>{s.p}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <!-- 05 ───────────────────────────────────────────────────── -->
+            <section id="type" class="sr-sec">
+              <div class="sr-head">
+                <h2>A serif that breathes, a grotesque that files.</h2>
+                <p>
+                  Instrument Serif carries the headlines and the italic accent the source component
+                  already used. Inter Tight carries everything read at speed, at 17px on 1.62 with a
+                  46-character measure. Geist Mono appears in four places only: the rail number, the
+                  field stamp, tabular figures, and these sheets.
+                </p>
+              </div>
+
+              <div class="sr-tscale">
+                {tokens.type.map((t) => (
+                  <div class="sr-trow">
+                    <div class="sr-trow__meta">
+                      <b>{t.role}</b>
+                      {t.face}<br />
+                      {t.weight} · {sizeLabel(t.size)}<br />
+                      lh {t.leading} · tr {t.tracking}
+                    </div>
+                    <div
+                      class="sr-trow__sample"
+                      style={`font-family:${
+                        t.role === 'Display' || t.role === 'Headline'
+                          ? 'var(--sr-font-display)'
+                          : t.role === 'Data'
+                            ? 'var(--sr-font-mono)'
+                            : 'var(--sr-font-reading)'
+                      };font-size:${t.size};line-height:${t.leading};letter-spacing:${t.tracking};font-weight:${t.weight};`}
+                    >
+                      {t.sample}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div class="sr-specs">
+                <div class="sr-spec">
+                  <h4>Display · Instrument Serif</h4>
+                  <p class="sr-fig">
+                    Nothing you say<br />
+                    is <em>kept</em> after<br />
+                    you close the tab.
+                  </p>
+                  <p>
+                    The italic is not decoration: it is the one place the brand’s voice rises. It
+                    appears once per composition, on the phrase that carries the promise.
+                  </p>
+                </div>
+                <div class="sr-spec">
+                  <h4>Reading · Inter Tight 17 / 1.62</h4>
+                  <p>
+                    A conversation is not a form. Serenica opens with a person, not a questionnaire —
+                    no risk score, no drop-down for what is wrong, no “reason for your visit”. You
+                    arrive, someone says hello by name, and the hour belongs to you.
+                  </p>
+                  <p>
+                    Everything a listener needs is held in the session and destroyed with it. There is
+                    no case file to inherit, no note that follows you to a second conversation, and no
+                    transcript in an inbox somewhere.
+                  </p>
+                  <p class="sr-lbl">
+                    Labels are sentence case, 12.5px, second ink, no letter-spacing, no uppercase, no
+                    monospace. If a label needs tracking to be legible, it is the wrong label.
+                  </p>
+                </div>
+                <div class="sr-spec">
+                  <h4>Figures · tabular, right-aligned</h4>
+                  <table>
+                    <thead>
+                      <tr><th>Week</th><th class="num">Sessions</th><th class="num">Median wait</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>12 Oct</td><td class="num">1,842</td><td class="num">4m 02s</td></tr>
+                      <tr><td>19 Oct</td><td class="num">1,977</td><td class="num">4m 18s</td></tr>
+                      <tr><td>26 Oct</td><td class="num">2,104</td><td class="num">4m 10s</td></tr>
+                      <tr><td>02 Nov</td><td class="num">1,918</td><td class="num">3m 55s</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="sr-spec">
+                  <h4>The field stamp</h4>
+                  <p style="font-family: var(--sr-font-mono); font-size: 11.5px; line-height: 1.9;">
+                    Field 01 · six ridges · seed 3 · 1:1<br />
+                    14 primitives · 3 published fails<br />
+                    Case 23 · v1.0 · 2026
+                  </p>
+                  <p class="sr-lbl">
+                    Mono is legal in exactly four places on this page. It is never a hero label, a nav
+                    link or a colophon — those are set in the reading face at a size someone reads.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <!-- 06 ───────────────────────────────────────────────────── -->
+            <section id="kit" class="sr-sec">
+              <div class="sr-head">
+                <h2>Controls printed, not rendered.</h2>
+                <p>
+                  Four controls, each a step in tone rather than a border. Buttons are 0-radius
+                  blocks; a field is a single 1px rule that goes solid ink on focus; rows are ruled,
+                  hoverable and selectable, with the figures in tabular numerals.
+                </p>
+              </div>
+
+              <div class="sr-kit">
+                <div class="sr-kc">
+                  <h3>Buttons</h3>
+                  <div class="sr-kc__row">
+                    <button class="sr-btn" type="button">Start a conversation <span class="sr-btn__arw" aria-hidden="true">↗</span></button>
+                    <button class="sr-btn sr-btn--ghost" type="button">How it works →</button>
+                  </div>
+                  <div class="sr-kc__row">
+                    <button class="sr-btn sr-btn--sm" type="button">Book a listener</button>
+                    <button class="sr-btn sr-btn--sm" type="button" disabled>Unavailable</button>
+                  </div>
+                  <div class="sr-kc__row">
+                    <button class="sr-btn sr-btn--ghost" type="button" disabled>Disabled link</button>
+                  </div>
+                </div>
+
+                <div class="sr-kc">
+                  <h3>Status, without a badge</h3>
+                  <div class="sr-kc__row">
+                    <span class="sr-chip sr-chip--live"><i></i>Listening now</span>
+                    <span class="sr-chip sr-chip--wait"><i></i>2 in the queue</span>
+                    <span class="sr-chip sr-chip--off"><i></i>Closed · opens 07:00</span>
+                  </div>
+                  <div class="sr-kc__row" style="margin-top:18px">
+                    <span class="sr-chip sr-chip--live"><i></i>English</span>
+                    <span class="sr-chip sr-chip--live"><i></i>Español</span>
+                    <span class="sr-chip sr-chip--live"><i></i>Polski</span>
+                    <span class="sr-chip sr-chip--off"><i></i>+8 more</span>
+                  </div>
+                  <p class="sr-note">
+                    A status is a 6px square and a sentence. No outlined pill, no emoji, no coloured
+                    badge with a count in it.
+                  </p>
+                </div>
+
+                <div class="sr-kc">
+                  <h3>Field · one rule, two states</h3>
+                  <div class="sr-field-row">
+                    <label for="sr-email">Where should we reach you?</label>
+                    <input class="sr-input" id="sr-email" type="email" placeholder="you@somewhere.com" aria-invalid="true" aria-describedby="sr-email-err" />
+                    <p class="sr-field-err" id="sr-email-err">
+                      This address is missing an @. Nothing is sent until a listener has replied.
+                    </p>
+                  </div>
+                  <div class="sr-field-row" style="margin-bottom:0">
+                    <label for="sr-email-ok">A field at rest</label>
+                    <input class="sr-input" id="sr-email-ok" type="email" placeholder="you@somewhere.com" />
+                  </div>
+                </div>
+
+                <div class="sr-kc">
+                  <h3>Listeners · select a row</h3>
+                  <table class="sr-rows">
+                    <thead>
+                      <tr>
+                        <th>Listener</th>
+                        <th>Languages</th>
+                        <th class="num">Wait</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {LISTENERS.map((l) => (
+                        <tr tabindex="0" aria-selected={String(l.open)}>
+                          <td><b>{l.name}</b></td>
+                          <td>{l.lang}</td>
+                          <td class="num">{l.wait}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <!-- 07 ───────────────────────────────────────────────────── -->
+            <section id="tokens" class="sr-sec">
+              <div class="sr-head">
+                <h2>Five sheets and the audit that goes with them.</h2>
+                <p>
+                  Two scopes over one set of primitives. The daylight sheet is the default; the night
+                  sheet is a lamp on it, not a second palette. Copy any sheet — every value here is
+                  the value the page is rendering.
+                </p>
+              </div>
+
+              <div class="sr-sheets">
+                <div class="sr-sheet">
+                  <div class="sr-sheet__top">
+                    <b>1 · Primitives</b>
+                    <button class="sr-sheet__copy" type="button" data-copy={cssPrimitives}>Copy</button>
+                  </div>
+                  <pre><code>{cssPrimitives}</code></pre>
+                </div>
+                <div class="sr-sheet">
+                  <div class="sr-sheet__top">
+                    <b>2 · Daylight scope</b>
+                    <button class="sr-sheet__copy" type="button" data-copy={cssDay}>Copy</button>
+                  </div>
+                  <pre><code>{cssDay}</code></pre>
+                </div>
+                <div class="sr-sheet">
+                  <div class="sr-sheet__top">
+                    <b>3 · Night scope</b>
+                    <button class="sr-sheet__copy" type="button" data-copy={cssNight}>Copy</button>
+                  </div>
+                  <pre><code>{cssNight}</code></pre>
+                </div>
+                <div class="sr-sheet">
+                  <div class="sr-sheet__top">
+                    <b>4 · Component</b>
+                    <button class="sr-sheet__copy" type="button" data-copy={cssComponent}>Copy</button>
+                  </div>
+                  <pre><code>{cssComponent}</code></pre>
+                </div>
+                <div class="sr-sheet">
+                  <div class="sr-sheet__top">
+                    <b>5 · Physics</b>
+                    <button class="sr-sheet__copy" type="button" data-copy={cssPhysics}>Copy</button>
+                  </div>
+                  <pre><code>{cssPhysics}</code></pre>
+                </div>
+                <div class="sr-sheet">
+                  <div class="sr-sheet__top">
+                    <b>Audit &amp; known gaps</b>
+                    <span style="font-size:11px;opacity:.55">v1.0</span>
+                  </div>
+                  <div style="padding:16px">
+                    <p style="margin:0 0 14px;font-size:12.5px;line-height:1.6;opacity:.78">
+                      What is verified, and what is not. A ledger that only lists its passes is a
+                      brochure.
+                    </p>
+                    <dl style="margin:0;display:grid;grid-template-columns:auto 1fr;gap:7px 16px;font-size:12px;line-height:1.5;">
+                      <dt style="opacity:.55">Primitives</dt><dd style="margin:0">{tokens.primitives.length}</dd>
+                      <dt style="opacity:.55">Contrast pairs</dt><dd style="margin:0">{tokens.contrast.length} · {tokens.meta.failingPairs} fail</dd>
+                      <dt style="opacity:.55">Scopes</dt><dd style="margin:0">2 · daylight, night</dd>
+                      <dt style="opacity:.55">Cast</dt><dd style="margin:0">6 marks · 64 grid</dd>
+                      <dt style="opacity:.55">Accents</dt><dd style="margin:0">1 · marigold, action only</dd>
+                      <dt style="opacity:.55">Mark files</dt><dd style="margin:0">9 svg · 1 compact drawing</dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+
+              <div class="sr-gaps">
+                {GAPS.map((g) => (
+                  <div class="sr-gap">
+                    <h4>{g.h}</h4>
+                    <p>{g.p}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ===============================================================
+         FOOTER · F3 · frozen specimen — the field at seed 3, held. The
+         live range opened the page; this is the same range stopped.
+         =============================================================== -->
+    <div class="sr-foot">
+      <div class="sr-foot__cap">
+        <span>Fig. 23 · the field at seed 3, held · closing band, F3</span>
+        <span>seed 3 · six ridges · 1:1</span>
+      </div>
+      <MeadowRiseFooter
+        client:visible
+        preset="auto"
+        seed={3}
+        name="Serenica"
+        brandHref="#top"
+        heading={"Nothing you say is *kept*\nafter you close the tab."}
+        subheading="Two hundred and forty trained listeners, eleven languages, and no transcript at the end of it."
+        cta={{ label: "Start a conversation", href: "#kit" }}
+        tagline="A listening service, not a clinical one."
+        newsletter={false}
+        columns={[
+          {
+            title: "The service",
+            links: [
+              { label: "How a session works", href: "#premise" },
+              { label: "Meet the listeners", href: "#kit" },
+              { label: "What we keep", href: "#tokens" },
+              { label: "Languages", href: "#kit" },
+            ],
+          },
+        ]}
+        socialTitle=""
+        socials={[]}
+        copyright="© 2026 Serenica. Case 23 of the Sunnyside shelf."
+        legal={[
+          { label: "Design tokens", href: "#tokens" },
+          { label: "Back to the shelf", href: "/" },
+        ]}
+        height="900px"
+        heroHeight="clamp(500px, 62svh, 640px)"
+        maxWidth="1200px"
+      />
+    </div>
+
+    <script>
+      // scope toggle — writes the attribute the CSS and both canvases read
+      const root = document.querySelector('.sr')
+      const btn = document.getElementById('srTheme')
+      const label = document.getElementById('srThemeLabel')
+      const apply = (night: boolean) => {
+        root?.setAttribute('data-sr', night ? 'night' : 'day')
+        document.documentElement.classList.toggle('dark', night)
+        btn?.setAttribute('aria-pressed', String(night))
+        if (label) label.textContent = night ? 'Night' : 'Daylight'
+        try {
+          localStorage.setItem('sr-theme', night ? 'night' : 'day')
+        } catch (e) {}
+      }
+      if (root?.getAttribute('data-sr') === 'night') {
+        btn?.setAttribute('aria-pressed', 'true')
+        if (label) label.textContent = 'Night'
+      }
+      btn?.addEventListener('click', () => apply(root?.getAttribute('data-sr') !== 'night'))
+
+      // scroll spy — contents list and nav share one observer
+      const links = [...document.querySelectorAll('[data-spy]')]
+      const navLinks = [...document.querySelectorAll('[data-nav]')]
+      const secs = links
+        .map((a) => document.getElementById(a.getAttribute('data-spy') || ''))
+        .filter(Boolean)
+      const spy = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue
+            const id = e.target.id
+            links.forEach((a) => a.setAttribute('aria-current', String(a.getAttribute('data-spy') === id)))
+            navLinks.forEach((a) => a.setAttribute('aria-current', String(a.getAttribute('data-nav') === id)))
+          }
+        },
+        { rootMargin: '-25% 0px -60% 0px', threshold: 0 },
+      )
+      secs.forEach((s) => spy.observe(s))
+
+      // click-to-copy swatches
+      document.querySelectorAll('.sr-swatch').forEach((el) => {
+        el.addEventListener('click', async () => {
+          const hex = el.getAttribute('data-hex') || ''
+          try {
+            await navigator.clipboard.writeText(hex)
+          } catch (e) {}
+          el.setAttribute('data-copied', 'true')
+          window.setTimeout(() => el.removeAttribute('data-copied'), 1100)
+        })
+      })
+
+      // copy buttons on the token sheets
+      document.querySelectorAll('.sr-sheet__copy').forEach((el) => {
+        el.addEventListener('click', async () => {
+          const text = el.getAttribute('data-copy') || ''
+          try {
+            await navigator.clipboard.writeText(text)
+          } catch (e) {}
+          const prev = el.textContent
+          el.textContent = 'Copied'
+          window.setTimeout(() => {
+            el.textContent = prev
+          }, 1200)
+        })
+      })
+
+      // row selection in the kit
+      document.querySelectorAll('.sr-rows tbody tr').forEach((tr) => {
+        const toggle = () => {
+          const on = tr.getAttribute('aria-selected') === 'true'
+          tr.setAttribute('aria-selected', String(!on))
+        }
+        tr.addEventListener('click', toggle)
+        tr.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            toggle()
+          }
+        })
+      })
+    </script>
+  </div>
+</Layout>

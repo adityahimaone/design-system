@@ -45,6 +45,95 @@
   font-display: swap;
 }
 
+/* ── shadcn/ui · Kanon bridge ──────────────────────────────────────────────
+   shadcn's semantic tokens are wired straight into the Kanon design system
+   (the Serenica primitives). Nothing here invents a new colour: every value
+   resolves to a --sr-* token, so a shadcn Input, Select or Command inherits
+   paper, ink, the single marigold accent and the 0px radius automatically.
+
+   The night scope re-declares the block rather than inheriting it, because a
+   custom property's var() references are substituted where it is *declared* —
+   an inherited --background would stay pinned to the day value.            */
+@custom-variant dark (&:where([data-sr='night'], [data-sr='night'] *));
+
+:root {
+  --background: var(--sr-bg-canvas, #F4F2E9);
+  --foreground: var(--sr-ink-primary, #11140D);
+  --card: var(--sr-bg-plate, #E9ECE3);
+  --card-foreground: var(--sr-ink-primary, #11140D);
+  --popover: var(--sr-bg-plate, #E9ECE3);
+  --popover-foreground: var(--sr-ink-primary, #11140D);
+  --primary: var(--sr-ink-primary, #11140D);
+  --primary-foreground: var(--sr-ink-reverse, #F4F2E9);
+  --secondary: var(--sr-bg-band, #DCE2D3);
+  --secondary-foreground: var(--sr-ink-primary, #11140D);
+  --muted: var(--sr-bg-band, #DCE2D3);
+  --muted-foreground: var(--sr-ink-secondary, #3B4234);
+  --accent: var(--sr-accent, #D99A2B);
+  --accent-foreground: var(--sr-accent-ink, #11140D);
+  --destructive: #9C3A22;
+  --border: var(--sr-line-strong, rgba(17, 20, 13, 0.28));
+  --input: var(--sr-line-strong, rgba(17, 20, 13, 0.28));
+  --ring: var(--sr-focus-ring, #11140D);
+  --radius: var(--sr-radius, 0px);
+}
+
+[data-sr='night'] {
+  --background: #0F1611;
+  --foreground: #E7EBE1;
+  --card: #18211A;
+  --card-foreground: #E7EBE1;
+  --popover: #18211A;
+  --popover-foreground: #E7EBE1;
+  --primary: #E7EBE1;
+  --primary-foreground: #0F1611;
+  --secondary: #1F2A20;
+  --secondary-foreground: #E7EBE1;
+  --muted: #1F2A20;
+  --muted-foreground: #A9B49C;
+  --accent: var(--sr-marigold, #D99A2B);
+  --accent-foreground: #0F1611;
+  --destructive: #C4654A;
+  --border: rgba(231, 235, 225, 0.16);
+  --input: rgba(231, 235, 225, 0.16);
+  --ring: #E7EBE1;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: var(--radius);
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius);
+  --radius-xl: var(--radius);
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-border);
+  }
+}
+
 :root {
   --font-display: 'Fraunces', serif;
   --font-reading: 'Archivo', sans-serif;

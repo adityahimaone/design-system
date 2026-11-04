@@ -36,6 +36,7 @@ export type DesignCase = {
     | 'daybook'
     | 'causeway'
     | 'mullion'
+    | 'serenica'
 }
 
 export const SUNNYSIDE_URL =
@@ -50,6 +51,23 @@ export const SUNNYSIDE_URL =
  * `number` is the case's permanent identity (its own brand docs and tokens quote it).
  */
 export const DESIGN_CASES: readonly DesignCase[] = [
+  {
+    slug: 'serenica',
+    number: '23',
+    name: 'Serenica',
+    href: '/design-system/serenica',
+    tagline: 'Some hours are heavier than the day can hold.',
+    description:
+      'A confidential listening service, printed like a field journal. Uncoated stock #F4F2E9, six flat ridge inks from sage to ground, one marigold accent that only ever appears on the action, zero radius and no shadow at rest. The mark takes the source component\'s eight-petal rosette and redraws it as one solid disc with eight petal-shaped holes, a 4.6-unit ring and a 2.2-unit eye, plus a separate 16px compact with four wide cuts and six cast marks. A live painted field opens the page and the same range at the same seed is held still in the footer; twelve primitives, a daylight and a night scope over shared primitives, six explored surfaces (four shipped, two rejected), a reading ledger with tabular figures, and a contrast table that publishes the three pairs it fails — including the accent itself at 2.18:1.',
+    status: 'Shipped · 2026',
+    role: 'Identity · design system · parametric mark · printed surfaces · live canvas · docs',
+    material: 'Uncoated stock + six ridge inks + one marigold',
+    cover: '/brand/serenica/serenica-brandkit.png',
+    coverAlt:
+      'The Serenica 6-panel brand board: the printed six-ridge field with the ink lockup and the headline, the petal rosette at four sizes, twelve primitives, three type voices, six cast marks, and the law that a printed sheet casts nothing.',
+    tags: ['Support', 'Print', 'Meadow', 'Canvas'],
+    tone: 'serenica',
+  },
   {
     slug: 'mullion',
     number: '22',

@@ -1,0 +1,163 @@
+/**
+ * Kanon · brand asset build
+ * Reuses the Serenica rosette (the house mark) and casts it against the
+ * "Kanon" wordmark. One deterministic pass, no live <text>.
+ *
+ *   node scripts/build-kanon.mjs
+ */
+import { readFile, writeFile, mkdir, cp } from 'node:fs/promises'
+import path from 'node:path'
+
+const ROOT = process.cwd()
+const OUT = path.join(ROOT, 'public/brand/kanon')
+const SRC = path.join(ROOT, 'public/brand/serenica')
+
+const INK = '#11140D'
+const PAPER = '#F4F0E6'
+
+await mkdir(path.join(OUT, 'cast'), { recursive: true })
+
+/* ── 01 · harvest the mark geometry ─────────────────────────────────────── */
+const readD = async (file) => {
+  const raw = await readFile(path.join(SRC, file), 'utf8')
+  return [...raw.matchAll(/<path[^>]*\sd="([^"]+)"/g)].map((m) => m[1])
+}
+const MARK_D = (await readD('mark.svg'))[0]
+const COMPACT_D = (await readD('mark-compact.svg'))[0]
+
+/* ── 02 · harvest the wordmark glyph transforms ─────────────────────────── */
+const wmRaw = await readFile(path.join(OUT, 'wordmark.svg'), 'utf8')
+const WM_GLYPHS = [...wmRaw.matchAll(/<path transform="([^"]+)" d="([^"]+)"/g)].map((m) => ({
+  t: m[1],
+  d: m[2],
+}))
+const WM_VIEW = wmRaw.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/)
+const WM_W = +WM_VIEW[1]
+const WM_H = +WM_VIEW[2]
+
+/* ── 03 · svg writer ────────────────────────────────────────────────────── */
+const svg = (vb, body, label, w, h) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="${w}" height="${h}" role="img" aria-label="${label}">${body}</svg>\n`
+
+const mark = (fill, label) =>
+  svg('0 0 64 64', `<path fill="${fill}" fill-rule="evenodd" d="${MARK_D}"/>`, label, 64, 64)
+
+const compact = (fill, label) =>
+  svg(
+    '0 0 64 64',
+    `<path fill="${fill}" fill-rule="evenodd" d="${COMPACT_D}"/>`,
+    label,
+    64,
+    64,
+  )
+
+const wmBody = (fill, scale = 1) =>
+  `<g fill="${fill}" transform="scale(${scale})">${WM_GLYPHS.map(
+    (g) => `<path transform="${g.t}" d="${g.d}"/>`,
+  ).join('')}</g>`
+
+const wordmark = (fill, label, w) =>
+  svg(
+    `0 0 ${WM_W} ${WM_H}`,
+    wmBody(fill),
+    label,
+    w,
+    +(w * WM_H / WM_W).toFixed(2),
+  )
+
+/* Horizontal lockup: mark 64u, wordmark optically matched to the mark's
+   cap band. Wordmark ink height = WM_H units; target ≈ 33u so it reads as
+   a caption weight beside the 64u mark, matching the Serenica ratio. */
+const WM_SCALE = 33 / WM_H
+const GAP = 17
+const LK_W = 64 + GAP + WM_W * WM_SCALE
+const LK_H = 64
+const lkBody = (fill) =>
+  `<g transform="translate(0 0)"><path fill="${fill}" fill-rule="evenodd" d="${MARK_D}"/></g>` +
+  `<g transform="translate(${(64 + GAP).toFixed(2)} ${((64 - WM_H * WM_SCALE) / 2).toFixed(2)})">${wmBody(
+    fill,
+    WM_SCALE,
+  )}</g>`
+
+const lockup = (fill, label, w) =>
+  svg(
+    `0 0 ${LK_W.toFixed(2)} ${LK_H}`,
+    lkBody(fill),
+    label,
+    w,
+    +(w * LK_H / LK_W).toFixed(2),
+  )
+
+/* Stacked lockup: mark over wordmark, both centred. The mark is scaled to the
+   wordmark's width so it reads as a crest, not a speck — the Serenica stacked
+   lockup keeps the mark at ~0.30 of the wordmark width. */
+const ST_SCALE = 0.34
+const ST_WM_W = WM_W * ST_SCALE
+const ST_MARK = ST_WM_W * 0.30
+const ST_MARK_S = ST_MARK / 64
+const ST_W = ST_WM_W
+const ST_GAP = 26
+const ST_H = ST_MARK + ST_GAP + WM_H * ST_SCALE
+const stBody = (fill) =>
+  `<g transform="translate(${((ST_W - ST_MARK) / 2).toFixed(2)} 0) scale(${ST_MARK_S.toFixed(4)})"><path fill="${fill}" fill-rule="evenodd" d="${MARK_D}"/></g>` +
+  `<g transform="translate(0 ${(ST_MARK + ST_GAP).toFixed(2)})">${wmBody(fill, ST_SCALE)}</g>`
+
+const stacked = (fill, label, w) =>
+  svg(
+    `0 0 ${ST_W.toFixed(2)} ${ST_H.toFixed(2)}`,
+    stBody(fill),
+    label,
+    w,
+    +(w * ST_H / ST_W).toFixed(2),
+  )
+
+/* ── 04 · write ─────────────────────────────────────────────────────────── */
+const files = {
+  'mark.svg': mark(INK, 'Kanon mark'),
+  'mark-reverse.svg': mark(PAPER, 'Kanon mark, reverse'),
+  'mark-compact.svg': compact(INK, 'Kanon compact mark'),
+  'mark-compact-reverse.svg': compact(PAPER, 'Kanon compact mark, reverse'),
+  'wordmark.svg': wordmark(INK, 'Kanon', 260),
+  'wordmark-reverse.svg': wordmark(PAPER, 'Kanon, reverse', 260),
+  'lockup.svg': lockup(INK, 'Kanon', 320),
+  'lockup-reverse.svg': lockup(PAPER, 'Kanon, reverse', 320),
+  'lockup-stacked.svg': stacked(INK, 'Kanon, stacked', 190),
+  'lockup-stacked-reverse.svg': stacked(PAPER, 'Kanon, stacked, reverse', 190),
+}
+
+for (const [name, body] of Object.entries(files)) {
+  await writeFile(path.join(OUT, name), body)
+}
+
+/* ── 05 · carry the cast + fonts across ─────────────────────────────────── */
+await cp(path.join(SRC, 'cast'), path.join(OUT, 'cast'), { recursive: true }).catch(() => {})
+
+/* ── 06 · inline path data for components that need currentColor ────────── */
+await mkdir(path.join(ROOT, 'src/features/kanon'), { recursive: true })
+await writeFile(
+  path.join(ROOT, 'src/features/kanon/wordmark-path.ts'),
+  `// generated by scripts/build-kanon.mjs — do not edit
+export const KANON_MARK_PATH = ${JSON.stringify(MARK_D)}
+
+export const KANON_COMPACT_PATH = ${JSON.stringify(COMPACT_D)}
+
+export const KANON_WORDMARK = [
+${WM_GLYPHS.map((g) => `  { t: ${JSON.stringify(g.t)}, d: ${JSON.stringify(g.d)} },`).join('\n')}
+] as const
+
+export const KANON_WORDMARK_BOX = { w: ${WM_W}, h: ${WM_H} } as const
+`,
+)
+
+console.log(
+  JSON.stringify(
+    {
+      written: Object.keys(files),
+      wordmark: { w: WM_W, h: WM_H, scale: +WM_SCALE.toFixed(4) },
+      lockup: { w: +LK_W.toFixed(2), h: LK_H },
+      stacked: { w: +ST_W.toFixed(2), h: +ST_H.toFixed(2) },
+    },
+    null,
+    2,
+  ),
+)

@@ -1,0 +1,129 @@
+/* ==========================================================================
+   SERENICA · TOKENS (v1.0 · Case 23)
+   Confidential support · Paper & ink · Rail B · Hero C
+   Layer 1 primitives never flip. Only the semantic scope moves at night.
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url('/brand/serenica/fonts/InstrumentSerif-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url('/brand/serenica/fonts/InstrumentSerif-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter Tight';
+  src: url('/brand/serenica/fonts/InterTight-400.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter Tight';
+  src: url('/brand/serenica/fonts/InterTight-500.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter Tight';
+  src: url('/brand/serenica/fonts/InterTight-600.woff2') format('woff2');
+  font-weight: 600;
+  font-display: swap;
+}
+
+:root {
+  /* 1 · primitives — the material, named once */
+  --sr-paper: #F4F2E9;
+  --sr-chalk: #E9ECE3;
+  --sr-haze: #DCE2D3;
+  --sr-sage: #B7C2AB;
+  --sr-moss: #7D8F63;
+  --sr-clover: #556A33;
+  --sr-deep: #415325;
+  --sr-ground: #253019;
+  --sr-ink: #11140D;
+  --sr-umber: #3B4234;
+  --sr-marigold: #D99A2B;
+  --sr-glow: #FFFBEF;
+
+  /* 1b · perceptual strings (oklch) */
+  --sr-oklch-paper: oklch(0.960 0.012 96.4);
+  --sr-oklch-chalk: oklch(0.938 0.012 121.7);
+  --sr-oklch-haze: oklch(0.904 0.021 124.7);
+  --sr-oklch-sage: oklch(0.799 0.034 128.1);
+  --sr-oklch-moss: oklch(0.624 0.066 126.3);
+  --sr-oklch-clover: oklch(0.494 0.084 126.5);
+  --sr-oklch-deep: oklch(0.415 0.073 127.0);
+  --sr-oklch-ground: oklch(0.292 0.042 129.5);
+  --sr-oklch-ink: oklch(0.185 0.015 126.6);
+  --sr-oklch-umber: oklch(0.368 0.025 129.2);
+  --sr-oklch-marigold: oklch(0.730 0.140 76.3);
+  --sr-oklch-glow: oklch(0.988 0.016 91.5);
+
+  /* 2 · semantic — daylight field (default scope) */
+  --sr-bg-canvas: var(--sr-paper);
+  --sr-bg-plate: var(--sr-chalk);
+  --sr-bg-band: var(--sr-haze);
+  --sr-bg-loud: var(--sr-ground);
+  --sr-ink-primary: var(--sr-ink);
+  --sr-ink-secondary: var(--sr-umber);
+  --sr-ink-reverse: var(--sr-paper);
+  --sr-line-strong: rgba(17, 20, 13, 0.28);
+  --sr-line-subtle: rgba(17, 20, 13, 0.12);
+  --sr-accent: var(--sr-marigold);
+  --sr-accent-ink: var(--sr-ink);
+  --sr-graphic-wash: var(--sr-glow);
+
+  /* 3 · typography */
+  --sr-font-display: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+  --sr-font-reading: 'Inter Tight', 'Instrument Sans', system-ui, sans-serif;
+  --sr-font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* 4 · physics — printed matter */
+  --sr-radius: 0px;
+  --sr-rule: 1px;
+  --sr-wrap: 1200px;
+  --sr-gutter: clamp(20px, 4vw, 56px);
+  --sr-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --sr-transition: 260ms var(--sr-ease);
+
+  /* 5 · component recipes */
+  --sr-button-bg: var(--sr-accent);
+  --sr-button-ink: var(--sr-accent-ink);
+  --sr-button-ghost-ink: var(--sr-ink);
+  --sr-field-rule: var(--sr-line-strong);
+  --sr-chip-bg: transparent;
+  --sr-chip-ink: var(--sr-umber);
+  --sr-focus-ring: var(--sr-ink);
+}
+
+/* 2 · semantic — night scope (the moonlit preset the component already carries) */
+[data-sr='night'] {
+  --sr-bg-canvas: #0F1611;
+  --sr-bg-plate: #18211A;
+  --sr-bg-band: #1F2A20;
+  --sr-bg-loud: var(--sr-paper);
+  --sr-ink-primary: #E7EBE1;
+  --sr-ink-secondary: #A9B49C;
+  --sr-ink-reverse: var(--sr-ground);
+  --sr-line-strong: rgba(231, 235, 225, 0.16);
+  --sr-line-subtle: rgba(231, 235, 225, 0.09);
+  --sr-accent: var(--sr-marigold);
+  --sr-accent-ink: #0F1611;
+  --sr-graphic-wash: #18211A;
+  --sr-field-rule: rgba(231, 235, 225, 0.16);
+  --sr-chip-ink: #A9B49C;
+  --sr-focus-ring: #E7EBE1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --sr-transition: 0ms linear;
+  }
+}

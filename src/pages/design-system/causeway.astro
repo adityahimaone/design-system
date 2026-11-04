@@ -1,0 +1,834 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import tokens from '@/features/causeway/tokens.json'
+import { CAST, GLYPH_PATH, MARK_PATH, COMPACT_PATH } from '@/features/causeway/causeway-data'
+import '@/features/causeway/causeway-tokens.css'
+import '@/features/causeway/causeway-page.css'
+
+const B = '/brand/causeway'
+const primitives = tokens.primitives
+const contrast = tokens.contrast
+const fails = contrast.filter((c) => !c.pass)
+
+const NAV = [
+  ['premise', 'Premise'],
+  ['mark', 'Mark'],
+  ['colour', 'Colour'],
+  ['surfaces', 'Surfaces'],
+  ['type', 'Type'],
+  ['kit', 'Kit'],
+  ['tokens', 'Tokens'],
+] as const
+
+const PREMISE = [
+  {
+    k: 'Belief',
+    v: 'The bike you actually ride is the one already at the door. Not the fastest and not the lightest — the one with the mudguards fitted and a rack that was there on the first morning.',
+  },
+  {
+    k: 'Enemy',
+    v: 'The weekend bike sold as a commuter. Carbon, 25 mm tyres, no rack mounts, and a geometry that puts your hands below your hips at every red light.',
+  },
+  {
+    k: 'Material',
+    v: 'Kraft tan outside the box, galvanised grey inside it, 1px cold rules, zero radius. The only colour that is not cardboard is the frame’s own green — #51D933, sampled from the top tube in the photograph.',
+  },
+  {
+    k: 'Reject it when',
+    v: 'The buyer wants a bike for a sport rather than a street — a crit racer, a loaded tourer, anything whose value is measured in watts.',
+  },
+]
+
+const DECISIONS = [
+  {
+    title: 'One green, taken off the frame',
+    decision:
+      'The signal is the frame colour, sampled from the photograph at #51D933. It fills buttons, tags and the active marker, and it never sets type on kraft.',
+    because:
+      'A brand that sells one green bicycle should not invent a second green for its website. Sampling the product means the page and the object cannot drift, so the mark, the carton and the button are printed in the same ink.',
+    notWhen:
+      'Anything set at body size on kraft. Green on kraft reads 1.05:1 — the two colours sit at the same value, so the green is a hue and not a highlight. Type there is moss or ink.',
+    breaksNext:
+      'Darkening the green until it passes on kraft. You get a second green, and the bike stops matching the page it is sold on.',
+  },
+  {
+    title: 'Zero radius, because board has no soft corners',
+    decision:
+      'Every panel, button, input and tag is 0px. Panels are separated by a 1px rule, never by a shadow.',
+    because:
+      'The material is a die-cut sheet. A rounded corner on a carton is a manufacturing error, and a shadow under a sheet of board is a lie about depth. The rule does the separating, because the rule is what the die actually leaves behind.',
+    notWhen: 'A screen-only product with no physical counterpart, where the radius is a choice rather than a constraint.',
+    breaksNext:
+      'Rounding the inputs “just for the form”. Once one corner rounds, the whole sheet reads as a web card again.',
+  },
+  {
+    title: 'The carton is the first page',
+    decision:
+      'The site opens on the photograph of the bike by the water, full-bleed, with the copy printed over it in chalk on the carton’s own black plate. No card, no panel, no scrim in a colour the brand does not own.',
+    because:
+      'The box is the only place a direct-sale bicycle is ever seen before it is assembled. If the identity cannot survive being printed on a carton, it is a website, not a brand.',
+    notWhen: 'Retail, where the first surface is a shop floor and the carton is never seen.',
+    breaksNext:
+      'Putting the headline in a white rounded panel over the photograph. The photograph becomes wallpaper and the carton disappears.',
+  },
+  {
+    title: 'Only numbers are set in mono',
+    decision:
+      'IBM Plex Mono carries order references, frame sizes, weights and the contrast ratios. Archivo carries every word — 700 for display, 400 for reading.',
+    because:
+      'A waybill is the one document this brand actually ships. Tabular figures are how a rider checks a frame size against their height at a glance, and setting them in the reading face makes them decorative.',
+    notWhen: 'A sentence. Mono in a sentence slows reading and buys nothing.',
+    breaksNext:
+      'Using mono for labels and eyebrows. Once mono is a label, the figures stop being the only thing on the page that looks measured.',
+  },
+]
+
+const SURFACES = [
+  {
+    id: 'kraft',
+    title: 'Kraft ground',
+    verdict: 'Shipped — the page',
+    note: 'Kraft tan at 5.5% grain, built from one fixed feTurbulence overlay so it prints over photographs too. The ground every other surface is judged against, and the reason the green can be as loud as it is.',
+    demo: 'kraft',
+  },
+  {
+    id: 'steel',
+    title: 'Galvanised plate',
+    verdict: 'Shipped — tables and panels',
+    note: 'Cool grey at the same value as the kraft (1.03:1 apart), which is why every kraft-to-steel boundary carries a 1px rule. A 2px head rule on tables is the one place a heavier weight is allowed.',
+    demo: 'steel',
+  },
+  {
+    id: 'flute',
+    title: 'Fluted band',
+    verdict: 'Shipped — closing plate',
+    note: '7px repeating flutes, the corrugation you see when a carton is cut. Used twice on the page and nowhere near type, because a texture that reaches the reading column stops being a material.',
+    demo: 'flute',
+  },
+  {
+    id: 'photo',
+    title: 'Photographic plate',
+    verdict: 'Shipped — hero and footer',
+    note: 'The only surface with no cardboard in it. Photographs are material here: the hero is printed on the carton’s black plate, and the closing band is printed on the raw flute.',
+    demo: 'photo',
+  },
+  {
+    id: 'radius',
+    title: 'Soft radius card',
+    verdict: 'Rejected',
+    note: 'Tried for the order summary. A 14px radius on a kraft ground reads as a web card dropped onto a shipping document — the corners are the exact place where the material stops being board.',
+    demo: 'radius',
+    rejected: true,
+  },
+  {
+    id: 'shadow',
+    title: 'Shadow lift',
+    verdict: 'Rejected',
+    note: 'A 40px drop shadow under a steel panel. It invented a second light source on a page whose whole argument is flat print, and it made the panel look stacked instead of cut.',
+    demo: 'shadow',
+    rejected: true,
+  },
+]
+
+const TYPE_SCALE = [
+  { role: 'Display / 01', face: 'Archivo 700', size: 'clamp(46–88)', lead: '0.92', track: '-0.04em', sample: 'The commute', cls: 'cw-t-display', px: 72 },
+  { role: 'Display / 02', face: 'Archivo 700', size: 'clamp(29–44)', lead: '1.04', track: '-0.032em', sample: 'One bar, one arch', cls: 'cw-t-display', px: 40 },
+  { role: 'Display / 03', face: 'Archivo 600', size: '18px', lead: '1.3', track: '-0.01em', sample: 'A heading inside a panel', cls: 'cw-t-display', px: 18 },
+  { role: 'Reading / 01', face: 'Archivo 400', size: '18px', lead: '1.56', track: '0', sample: 'It is the only hour of the day nobody else has a claim on.', cls: 'cw-t-reading', px: 18 },
+  { role: 'Reading / 02', face: 'Archivo 400', size: '16.5px', lead: '1.62', track: '0', sample: 'A green steel frame, 32 mm tyres, eight gears inside the hub.', cls: 'cw-t-reading', px: 16.5 },
+  { role: 'Mono / 01', face: 'IBM Plex Mono 400', size: '11.5px', lead: '1.7', track: '0.06em', sample: 'CW-0021 · 54CM · 11.4 KG', cls: 'cw-t-mono', px: 11.5 },
+]
+
+const ORDERS = [
+  ['CW-0021', 'Commuter', '54 cm', 'In carton'],
+  ['CW-0020', 'Commuter', '51 cm', 'Dispatched'],
+  ['CW-0018', 'Commuter', '58 cm', 'Assembled'],
+  ['CW-0016', 'Commuter', '48 cm', 'Awaiting frame'],
+]
+
+const GAPS = [
+  { k: 'Verified', v: '15 contrast pairs computed from the same hex values the CSS uses, 4 published failures, 10 primitives, a 64-unit mark with a separate 16px drawing, and 6 cast marks on the same cut weight.' },
+  { k: 'Verified', v: 'Zero radius is enforced, not intended: no border-radius above 0px exists on the page except inside the two rejected surface demos, which exist to show what fails.' },
+  { k: 'Verified', v: 'Dual scope is real. Primitives never flip, the night ground is the depot rather than black, and Section 07 renders five token sheets — kraft day and depot night both present.' },
+  { k: 'Not verified', v: 'The grain overlay is a fixed element with mix-blend-mode: multiply. On a low-end GPU a full-viewport blend can cost a frame during scroll; a production build would bake the grain into the ground as a tiled PNG instead.' },
+  { k: 'Known gap', v: 'No print spec. The identity was designed for a carton and has not been proofed on a flexographic press — the green will shift under CMYK and would need a spot.' },
+  { k: 'Open', v: 'The mark has not been tested below 12px. At 16px it must swap to mark-compact, and that swap is a manual rule, not a token.' },
+]
+
+const TOKENS_PRIM = `/* 1 · primitive — the material, named once */
+.cw-scope {
+  --cw-kraft: #CFC1A8;      /* kraft tan — the ground */
+  --cw-carton: #E8E1D3;     /* bleached inner face */
+  --cw-steel: #C2C7C2;      /* galvanised sheet — the plate */
+  --cw-graphite: #444944;   /* secondary text */
+  --cw-ink: #17181A;        /* print black, tyres */
+  --cw-green: #51D933;      /* the frame, sampled */
+  --cw-moss: #175A0C;       /* the frame as type */
+  --cw-chalk: #F5F2E9;      /* waybill white */
+  --cw-night: #141713;      /* the depot after dark */
+  --cw-night-plate: #1E221D;
+}`
+const TOKENS_DAY = `.cw-scope {
+  --cw-surface-page: var(--cw-kraft);
+  --cw-surface-plate: var(--cw-steel);
+  --cw-text-primary: var(--cw-ink);
+  --cw-text-secondary: var(--cw-graphite);
+  --cw-signal: var(--cw-moss);
+  --cw-signal-fill: var(--cw-green);
+
+  --cw-line-strong: color-mix(in srgb, var(--cw-ink) 42%, transparent);
+  --cw-line-subtle: color-mix(in srgb, var(--cw-ink) 16%, transparent);
+  --cw-grain: 0.055;
+}`
+const TOKENS_NIGHT = `.cw-scope[data-cw-theme='night'] {
+  --cw-surface-page: var(--cw-night);
+  --cw-surface-plate: var(--cw-night-plate);
+  --cw-text-primary: var(--cw-chalk);
+  --cw-signal: var(--cw-green);   /* moss reads 2.6:1 here */
+
+  --cw-line-strong: color-mix(in srgb, var(--cw-chalk) 40%, transparent);
+  --cw-line-subtle: color-mix(in srgb, var(--cw-chalk) 15%, transparent);
+  --cw-grain: 0.038;
+}`
+const TOKENS_COMP = `.cw-btn {
+  background: var(--cw-btn-bg);      /* the frame green */
+  color: var(--cw-btn-text);         /* ink, 9.86:1 */
+  border-radius: 0;
+}
+.cw-btn--ghost {
+  background: var(--cw-btn-ghost);
+  box-shadow: inset 0 0 0 1px var(--cw-line-strong);
+}
+.cw-tag {
+  border: 1px solid var(--cw-tag-line);
+  border-radius: 0;
+}
+.cw-input {
+  background: var(--cw-field-bg);
+  border: 1px solid var(--cw-field-line);
+}`
+const TOKENS_PHYS = `/* 5 · physics — a die-cut sheet */
+--cw-radius: 0px;      /* every corner */
+--cw-hair: 1px;        /* every separation */
+--cw-grain: 0.055;     /* kraft grain, fixed overlay */
+--cw-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+--cw-dur: 140ms;       /* board does not settle */`
+
+const title = 'Causeway — Case 21 | Commuter bicycle identity & design system'
+const description =
+  'Causeway: a commuter bicycle brand sold in one carton. Kraft ground, galvanised plate, zero radius, 1px rules, and one green sampled off the frame. A bar-and-arch mark, six cast marks, ten primitives, two scopes, and a contrast ledger that publishes the four pairs it fails.'
+---
+
+<Layout title={title} description={description} canonical="/design-system/causeway" image={`${B}/causeway-brandkit.png`}>
+  <link rel="icon" type="image/svg+xml" href={`${B}/icon.svg`} />
+  <link rel="apple-touch-icon" href={`${B}/icon.svg`} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <div class="cw-root cw-scope" data-cw-theme="day" id="top">
+    <a class="cw-skip" href="#main">Skip to the system</a>
+
+    <header class="cw-top">
+      <div class="cw-shell cw-top__in">
+        <a class="cw-top__brand" href="#top" aria-label="Causeway — top">
+          <svg viewBox="0 0 64 64" aria-hidden="true" fill="currentColor"><Fragment set:html={MARK_PATH} /></svg>
+          <b>Causeway</b>
+        </a>
+        <nav class="cw-top__nav" aria-label="Sections">
+          {NAV.map(([id, label]) => <a href={`#${id}`}>{label}</a>)}
+        </nav>
+        <button class="cw-toggle" type="button" data-theme-toggle aria-pressed="false">
+          <i aria-hidden="true"></i><span data-theme-label>Kraft</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main">
+      {/* ── Hero · unnumbered · E · relation on · scrim 90deg ink → transparent ── */}
+      <section class="cw-hero">
+        <img
+          class="cw-hero__bg"
+          src={`${B}/hero-bike-by-water.jpg`}
+          alt="A bright green bicycle leaning against a fence post on a coastal path, the sea and a distant headland behind it."
+          width="1920"
+          height="1279"
+        />
+        <div class="cw-hero__scrim" aria-hidden="true"></div>
+
+        <div class="cw-shell cw-hero__in">
+          <div class="cw-hero__copy">
+            <h1>The commute is the ride.</h1>
+            <p class="cw-hero__lede">
+              One bicycle for the hour nobody else has a claim on. A green steel frame, 32&nbsp;mm
+              tyres, eight gears inside the hub, and a rack that takes a week of groceries — shipped
+              flat in a single carton and built at your door in twenty minutes.
+            </p>
+            <div class="cw-hero__acts">
+              <a class="cw-btn" href="#kit"><i aria-hidden="true"></i>Build this bike</a>
+              <a class="cw-hero__link" href="#mark">See the mark →</a>
+            </div>
+            <dl class="cw-hero__facts">
+              <div><dt>Frame</dt><dd>4130 chromoly</dd></div>
+              <div><dt>Tyres</dt><dd>32 mm</dd></div>
+              <div><dt>Gears</dt><dd>8, internal</dd></div>
+              <div><dt>In the carton</dt><dd>11.4 kg</dd></div>
+            </dl>
+          </div>
+        </div>
+
+        <span class="cw-hero__stamp">Plate 01 · the causeway · 06:40</span>
+      </section>
+
+      <div class="cw-shell cw-layout">
+        {/* ── Rail B · one 200px contents list for the whole page ────────── */}
+        <nav class="cw-contents" aria-label="Contents">
+          <div class="cw-contents__h">Contents</div>
+          <ol>
+            {NAV.map(([id, label], i) => (
+              <li>
+                <a href={`#${id}`} data-nav={id}>
+                  <span class="n">{String(i + 1).padStart(2, '0')}</span>
+                  <span>{label}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+
+        <div>
+          {/* 01 · Premise */}
+          <section class="cw-sec" id="premise">
+            <h2>A commute is not a gap between two places.</h2>
+            <p class="big">
+              It is the only hour of the day nobody else has a claim on. Causeway builds one bicycle
+              for that hour — a steel frame, eight gears inside the hub, a rack that was fitted on
+              day one — and sells it in the carton it was designed in. Kraft outside, galvanised
+              inside, one green taken off the top tube.
+            </p>
+
+            <dl class="cw-two">
+              {PREMISE.map((p) => (
+                <div><dt>{p.k}</dt><dd>{p.v}</dd></div>
+              ))}
+            </dl>
+
+            <div class="cw-decs">
+              {DECISIONS.map((d) => (
+                <article class="cw-dec">
+                  <h3>{d.title}</h3>
+                  <dl>
+                    <dt>Decision</dt><dd>{d.decision}</dd>
+                    <dt>Because</dt><dd>{d.because}</dd>
+                    <dt>Not when</dt><dd>{d.notWhen}</dd>
+                    <dt>Breaks next</dt><dd>{d.breaksNext}</dd>
+                  </dl>
+                </article>
+              ))}
+            </div>
+
+            <figure class="cw-plate">
+              <div class="cw-plate__img" style="height:420px">
+                <img
+                  src={`${B}/frame-from-above.jpg`}
+                  alt="Seen from above, a rider in black walks a bright green bicycle out through a stone colonnade onto a tiled walkway."
+                  width="1920"
+                  height="1279"
+                  loading="lazy"
+                  style="object-position:center 52%"
+                />
+              </div>
+              <figcaption>
+                <b>Plate 02 · the frame, from the rider’s hand</b>
+                <span>
+                  Wheeled out through the colonnade at the start of the day. The green is the only
+                  saturated thing in the frame, which is the whole argument for using it once.
+                </span>
+              </figcaption>
+            </figure>
+          </section>
+
+          {/* 02 · Mark */}
+          <section class="cw-sec" id="mark">
+            <h2>One bar, one arch, and the water underneath.</h2>
+            <p class="big">
+              A causeway is a road carried across water. The mark is that road — a 4-unit bar running
+              the full 60 units — with a 9-unit arch standing on it: the wheel that rides it and the
+              span that holds it up. Two shapes, fill only, no stroke anywhere. The void under the
+              arch is the only hole in the identity.
+            </p>
+
+            <div class="cw-marks">
+              <div class="cw-mark">
+                <span>Primary</span>
+                <svg viewBox="0 0 64 64" fill="currentColor" aria-label="Causeway primary mark"><Fragment set:html={MARK_PATH} /></svg>
+              </div>
+              <div class="cw-mark cw-mark--ink">
+                <span>Reverse</span>
+                <img src={`${B}/mark-reverse.svg`} alt="Causeway reverse mark on ink" width="64" height="64" />
+              </div>
+              <div class="cw-mark cw-mark--field">
+                <span>Field</span>
+                <img src={`${B}/mark.svg`} alt="Causeway mark printed on the frame green" width="64" height="64" />
+              </div>
+              <div class="cw-mark">
+                <span>Compact · 16–24px</span>
+                <svg viewBox="0 0 64 64" fill="currentColor" aria-label="Causeway compact mark"><Fragment set:html={COMPACT_PATH} /></svg>
+              </div>
+              <div class="cw-mark cw-mark--ink">
+                <span>Compact reverse</span>
+                <img src={`${B}/mark-compact-reverse.svg`} alt="Causeway compact reverse mark" width="64" height="64" />
+              </div>
+              <div class="cw-mark">
+                <span>Glyph · favicon</span>
+                <svg viewBox="0 0 64 64" fill="currentColor" aria-label="Causeway glyph"><Fragment set:html={GLYPH_PATH} /></svg>
+              </div>
+            </div>
+
+            <div class="cw-wordmark">
+              <div class="cw-wordmark__row">
+                <img src={`${B}/wordmark.svg`} alt="Causeway wordmark, Archivo 700 outlined" width="300" height="58" />
+                <span>Outlined Archivo 700 · −0.035em · no live type</span>
+              </div>
+              <div class="cw-wordmark__row cw-wordmark__row--rev">
+                <img src={`${B}/wordmark-reverse.svg`} alt="Causeway reverse wordmark on ink" width="300" height="58" />
+                <span>Reverse · ink ground only</span>
+              </div>
+            </div>
+
+            <div class="cw-lock">
+              <div class="cw-lock__row">
+                <img src={`${B}/lockup.svg`} alt="Causeway horizontal lockup" width="208" height="64" />
+                <span>Horizontal · mark 48u, 14u gap, cap height 22u</span>
+              </div>
+              <div class="cw-lock__row cw-lock__row--rev">
+                <img src={`${B}/lockup-reverse.svg`} alt="Causeway reverse lockup on ink" width="208" height="64" />
+                <span>Reverse · the one lockup used on a photograph</span>
+              </div>
+              <div class="cw-lock__row cw-lock__row--stack">
+                <img src={`${B}/lockup-stacked.svg`} alt="Causeway stacked lockup" width="204" height="116" />
+                <span>Stacked · square formats only, never on the carton flap</span>
+              </div>
+            </div>
+
+            <div class="cw-scale">
+              {[96, 48, 32, 24, 16].map((s) => (
+                <figure>
+                  <svg viewBox="0 0 64 64" width={s} height={s} fill="currentColor" aria-label={`Mark at ${s} pixels`}>
+                    <Fragment set:html={s <= 16 ? COMPACT_PATH : MARK_PATH} />
+                  </svg>
+                  <figcaption>{s}px{s <= 16 ? ' · compact' : ''}</figcaption>
+                </figure>
+              ))}
+              <figure>
+                <svg viewBox="0 0 64 64" width="16" height="16" fill="currentColor" aria-label="Glyph at 16 pixels"><Fragment set:html={GLYPH_PATH} /></svg>
+                <figcaption>16px · glyph</figcaption>
+              </figure>
+            </div>
+
+            <div class="cw-castin">
+              <div class="cw-castin__head">
+                <b>The cast · six nouns off the workshop floor</b>
+                <span>64-unit grid · fill only</span>
+              </div>
+              <div class="cw-castin__grid">
+                {CAST.map((c) => (
+                  <div class="cw-castin__cell">
+                    <svg viewBox="0 0 64 64" fill="currentColor" aria-hidden="true"><Fragment set:html={c.path} /></svg>
+                    <b>{c.name}</b>
+                    <span>{c.note}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <dl class="cw-rules">
+              <div><dt>Clear space</dt><dd>2 units on all four sides, measured from the bar’s ends as well as the arch. Nothing enters that band, including the carton’s own trim line.</dd></div>
+              <div><dt>Never</dt><dd>No second arch, no stroke, no rotation, no gradient inside the void, and never a version where the bar is shortened to make the mark square.</dd></div>
+              <div><dt>Below 24px</dt><dd>Swap to <code>mark-compact</code>: a 6-unit bar and a 14-unit arch band, so the void survives anti-aliasing instead of filling in.</dd></div>
+            </dl>
+          </section>
+
+          {/* 03 · Colour */}
+          <section class="cw-sec" id="colour">
+            <h2>Ten primitives, four published failures.</h2>
+            <p class="big">
+              Kraft, carton, galvanised steel, graphite, ink — then the frame’s green with a moss dark
+              enough to set type. Nothing here was nudged into mud to fake a pass. The four pairs that
+              fail are printed below with the job they are still allowed to do, and every ratio is
+              computed from the same hex the CSS loads.
+            </p>
+
+            <div class="cw-swatch-grid">
+              {primitives.map((p) => (
+                <button class="cw-sw" type="button" data-copy={`--cw-${p.name}: ${p.value};`} title={`${p.name} — ${p.role}`}>
+                  <span class="cw-sw__chip" style={`background:${p.value}`}></span>
+                  <span class="cw-sw__meta">
+                    <span class="cw-sw__name">{p.name}</span>
+                    <span class="cw-sw__hex">{p.value}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            <div class="cw-pairs">
+              {contrast.map((c) => {
+                const a = primitives.find((p) => p.name === c.a)!
+                const b = primitives.find((p) => p.name === c.b)!
+                return (
+                  <div class:list={['cw-pair', !c.pass && 'cw-pair--fail']}>
+                    <span class="cw-pair__chips">
+                      <i style={`background:${a.value}`}></i><i style={`background:${b.value}`}></i>
+                    </span>
+                    <span class="cw-pair__name">
+                      {c.a} on {c.b}
+                      <small>{c.note}</small>
+                    </span>
+                    <span class="cw-pair__ratio">{c.ratio}:1 {c.pass ? '' : '· fail'}</span>
+                    <span class="cw-pair__job">{c.job}</span>
+                  </div>
+                )
+              })}
+            </div>
+            <p class="cw-sub" style="margin-top:16px">
+              {fails.length} pairs fail and are published rather than corrected. Green on kraft is
+              1.05:1 because the frame and the board sit at the same value — the green is a hue, not a
+              highlight, so it fills and rules and never sets type there. Kraft against steel is
+              1.03:1, which is exactly why every kraft-to-steel boundary carries a 1px rule. Chalk on
+              steel is label print, and graphite on ink is the pair that forces the night scope to
+              lift its secondary text to kraft.
+            </p>
+          </section>
+
+          {/* 04 · Surfaces */}
+          <section class="cw-sec" id="surfaces">
+            <h2>Six surfaces were tried. Four survived.</h2>
+            <p class="big">
+              Cardboard &amp; steel is a material, not a filter. Each surface below had to do a real
+              job on this page — carry the ground, hold a table, cut a band, or print a photograph.
+              The two rejected ones failed the same test: they invented a depth that a die-cut sheet
+              does not have.
+            </p>
+            <div class="cw-surf">
+              {SURFACES.map((s) => (
+                <article class:list={['cw-sc', s.rejected && 'cw-sc--rej']}>
+                  <div class:list={['cw-sc__demo', `cw-demo-${s.demo}`]}>
+                    {s.demo === 'kraft' && (
+                      <>
+                        <b>Kraft · 5.5% grain</b>
+                        <span>Ground · every section</span>
+                      </>
+                    )}
+                    {s.demo === 'steel' && (
+                      <table>
+                        <thead><tr><th>Ref</th><th>Size</th><th>kg</th></tr></thead>
+                        <tbody>
+                          <tr><td>CW-0021</td><td>54</td><td>11.4</td></tr>
+                          <tr><td>CW-0020</td><td>51</td><td>11.2</td></tr>
+                          <tr><td>CW-0018</td><td>58</td><td>11.6</td></tr>
+                        </tbody>
+                      </table>
+                    )}
+                    {s.demo === 'flute' && <b>7px flute · cut edge</b>}
+                    {s.demo === 'photo' && (
+                      <>
+                        <img src={`${B}/hero-bike-by-water.jpg`} alt="The green bicycle by the water, cropped to the frame and the sea." loading="lazy" width="1920" height="1279" />
+                        <span>Plate 01 · cropped</span>
+                      </>
+                    )}
+                    {s.demo === 'radius' && <b>Order summary · 14px</b>}
+                    {s.demo === 'shadow' && <b>Order summary · 40px lift</b>}
+                  </div>
+                  <div class="cw-sc__txt">
+                    <div class="cw-sc__head">
+                      <b>{s.title}</b>
+                      <span class="cw-sc__verdict">{s.verdict}</span>
+                    </div>
+                    <p>{s.note}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          {/* 05 · Type */}
+          <section class="cw-sec" id="type">
+            <h2>One grotesque, two weights, and a mono for what is counted.</h2>
+            <p class="big">
+              Archivo at 700 is the display voice: tight, wide-shouldered, and still legible at 88px
+              over a photograph. At 400 it is the reading voice on a 64-character measure. IBM Plex
+              Mono is reserved for figures, because the waybill is the one document this brand
+              actually ships.
+            </p>
+
+            <div class="cw-tscale">
+              {TYPE_SCALE.map((t) => (
+                <div class="cw-tscale__row">
+                  <div class="cw-tscale__meta">
+                    <b>{t.role}</b>
+                    {t.face}<br />{t.size} / {t.lead}<br />{t.track}
+                  </div>
+                  <div class={t.cls} style={`font-size:${t.px}px`}>{t.sample}</div>
+                </div>
+              ))}
+            </div>
+
+            <div class="cw-specs">
+              <div class="cw-spec">
+                <h3>Display</h3>
+                <p class="cw-t-display" style="font-size:34px;line-height:0.98">
+                  A road across<br />the water.
+                </p>
+              </div>
+              <div class="cw-spec">
+                <h3>Reading · 64ch</h3>
+                <p>
+                  The frame is 4130 chromoly, welded in one shop, and painted in one green. The rack
+                  is bolted to the dropouts before the bike is boxed, because a rack in a separate bag
+                  is a rack that never gets fitted.
+                </p>
+              </div>
+              <div class="cw-spec">
+                <h3>Figures</h3>
+                <table class="cw-figures">
+                  <thead><tr><th>Size</th><th>Rider</th><th>Weight</th></tr></thead>
+                  <tbody>
+                    <tr><td>48 cm</td><td>1.52–1.60</td><td>11.1</td></tr>
+                    <tr><td>54 cm</td><td>1.68–1.76</td><td>11.4</td></tr>
+                    <tr><td>58 cm</td><td>1.80–1.88</td><td>11.6</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="cw-spec">
+                <h3>Labels</h3>
+                <p class="cw-t-mono" style="line-height:2.1;font-size:11px">
+                  CW-0021 · 54CM · IN CARTON<br />PLATE 01 · 06:40<br />GREEN · #51D933
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* 06 · Kit */}
+          <section class="cw-sec" id="kit">
+            <h2>Four pressed controls, cut from the same sheet.</h2>
+            <p class="big">
+              Buttons are green fills with ink type at 9.86:1. Tags are 1px outlines with a square
+              marker, because a circle would be the only curve on the page. Fields sit on the
+              carton’s bleached face, and order rows are tabular and selectable. Nothing has a radius
+              and nothing floats.
+            </p>
+
+            <div class="cw-kit">
+              <div>
+                <h3>Buttons</h3>
+                <div class="cw-btns">
+                  <button class="cw-btn" type="button"><i aria-hidden="true"></i>Build this bike</button>
+                  <button class="cw-btn cw-btn--ghost" type="button">Add to carton</button>
+                  <button class="cw-btn cw-btn--sm" type="button">Copy CW-0021</button>
+                  <button class="cw-btn" type="button" aria-disabled="true">58 cm · out of stock</button>
+                </div>
+                <p class="cw-kitnote">
+                  One accent, and it is on the action. The ghost button is the page ground with a rule
+                  around it, so the material never changes under your finger.
+                </p>
+              </div>
+
+              <div>
+                <h3>Tags</h3>
+                <div class="cw-tags">
+                  <span class="cw-tag cw-tag--live"><i aria-hidden="true"></i>In carton</span>
+                  <span class="cw-tag cw-tag--done"><i aria-hidden="true"></i>Dispatched</span>
+                  <span class="cw-tag"><i aria-hidden="true"></i>Assembled</span>
+                  <span class="cw-tag cw-tag--wait"><i aria-hidden="true"></i>Awaiting frame</span>
+                </div>
+                <div class="cw-tags" style="margin-top:12px">
+                  <span class="cw-tag cw-tag--on">All · 6</span>
+                  <span class="cw-tag">54 cm · 2</span>
+                  <span class="cw-tag">In stock · 4</span>
+                </div>
+                <p class="cw-kitnote">
+                  Status tags carry a square because colour alone is not a label. Filter tags carry a
+                  count because a filter that hides rows has to say how many.
+                </p>
+              </div>
+
+              <div>
+                <h3>Fields</h3>
+                <div class="cw-fieldset">
+                  <label class="cw-label" for="cw-order">Order reference</label>
+                  <input class="cw-input" id="cw-order" value="CW-21" aria-invalid="true" aria-describedby="cw-err" />
+                  <div class="cw-err" id="cw-err" role="alert">
+                    <b>2 problems</b>
+                    <span>Reference must be six characters after the dash.</span>
+                    <span>A frame size is required before the carton is sealed.</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3>Order rows</h3>
+                <table class="cw-rows">
+                  <caption>Four orders, one selected. Rows are keyboard reachable and carry aria-selected.</caption>
+                  <thead>
+                    <tr><th scope="col">Ref</th><th scope="col">Model</th><th scope="col">Size</th><th scope="col">Status</th></tr>
+                  </thead>
+                  <tbody>
+                    {ORDERS.map((r, i) => (
+                      <tr tabindex="0" aria-selected={i === 0 ? 'true' : 'false'} data-row>
+                        {r.map((cell) => <td>{cell}</td>)}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          {/* 07 · Tokens */}
+          <section class="cw-sec" id="tokens">
+            <h2>Five sheets, two scopes.</h2>
+            <p class="big">
+              Primitives named for the material, a kraft day scope, a depot night scope over the same
+              primitives, component recipes that are the only place a control knows its own colours,
+              and the physics: 0px, 1px, 5.5% grain, 140ms.
+            </p>
+
+            <div class="cw-sheets">
+              {[
+                ['1 · Primitives', TOKENS_PRIM],
+                ['2 · Kraft scope', TOKENS_DAY],
+                ['3 · Depot scope', TOKENS_NIGHT],
+                ['4 · Component tokens', TOKENS_COMP],
+                ['5 · Physics', TOKENS_PHYS],
+              ].map(([label, code]) => (
+                <div class="cw-sheet">
+                  <div class="cw-sheet__h">
+                    <span>{label}</span>
+                    <button class="cw-copy" type="button" data-copy={code as string}>Copy</button>
+                  </div>
+                  <pre><code>{code}</code></pre>
+                </div>
+              ))}
+            </div>
+
+            <h3 style="color:var(--cw-signal);margin-bottom:12px">Audit &amp; known gaps</h3>
+            <dl class="cw-gaps">
+              {GAPS.map((g) => (
+                <div class:list={['cw-gap', g.k === 'Open' && 'cw-gap--open']}>
+                  <dt>{g.k}</dt><dd>{g.v}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    {/* footer · F2 · reversed split — statement on the board, the street on the right.
+          Case 20 shipped photo-left, and two consecutive cases may not share the variation. */}
+    <footer class="cw-foot">
+      <div class="cw-foot__split">
+        <div class="cw-foot__say">
+          <p class="cw-foot__sign">The long way home is still the short way.</p>
+          <p class="cw-foot__sub">
+            One frame, one green, one carton. Everything after that is the route you choose — and the
+            route is the only part of the day nobody can schedule for you.
+          </p>
+          <nav class="cw-foot__links" aria-label="Footer">
+            <a href="#mark">The mark</a>
+            <a href="#colour">Colour ledger</a>
+            <a href={`${B}/causeway-brandkit.png`}>Brand kit</a>
+            <a href="/">All cases</a>
+          </nav>
+        </div>
+
+        <figure class="cw-foot__art">
+          <img
+            src={`${B}/city-street.jpg`}
+            alt="A rider on a bright green bicycle heading away down a narrow stone street in the early morning."
+            width="1279"
+            height="1920"
+            loading="lazy"
+          />
+          <figcaption>Plate 03 · the street, 08:10</figcaption>
+          <img class="cw-foot__lock" src={`${B}/lockup-reverse.svg`} alt="Causeway lockup" width="208" height="64" loading="lazy" />
+        </figure>
+      </div>
+
+      <div class="cw-foot__bar">
+        <div class="cw-shell cw-foot__barin">
+          <span>Causeway · case 21 · commuter bicycle</span>
+          <span>Rotterdam · 2026 · V1.0</span>
+          <a href="/">Back to the shelf</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const root = document.querySelector('.cw-root') as HTMLElement | null
+    const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]')
+    const label = document.querySelector<HTMLElement>('[data-theme-label]')
+
+    const apply = (mode: 'day' | 'night') => {
+      root?.setAttribute('data-cw-theme', mode)
+      toggle?.setAttribute('data-mode', mode)
+      toggle?.setAttribute('aria-pressed', String(mode === 'night'))
+      if (label) label.textContent = mode === 'night' ? 'Depot' : 'Kraft'
+    }
+    toggle?.addEventListener('click', () => {
+      apply(root?.getAttribute('data-cw-theme') === 'night' ? 'day' : 'night')
+    })
+    apply('day')
+
+    document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((el) => {
+      el.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(el.dataset.copy || '')
+          const prev = el.textContent
+          el.textContent = 'Copied'
+          setTimeout(() => (el.textContent = prev), 1100)
+        } catch {
+          /* clipboard blocked — the value is still selectable */
+        }
+      })
+    })
+
+    document.querySelectorAll<HTMLTableRowElement>('[data-row]').forEach((row) => {
+      const select = () => {
+        document.querySelectorAll('[data-row]').forEach((r) => r.setAttribute('aria-selected', 'false'))
+        row.setAttribute('aria-selected', 'true')
+      }
+      row.addEventListener('click', select)
+      row.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          select()
+        }
+      })
+    })
+
+    // contents list follows the reader
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-nav]')]
+    const secs = links
+      .map((a) => document.getElementById(a.dataset.nav || ''))
+      .filter((el): el is HTMLElement => Boolean(el))
+
+    const mark = () => {
+      let active = 0
+      secs.forEach((s, i) => {
+        if (s.getBoundingClientRect().top <= 140) active = i
+      })
+      links.forEach((a, i) => {
+        if (i === active) a.setAttribute('aria-current', 'true')
+        else a.removeAttribute('aria-current')
+      })
+    }
+    mark()
+    window.addEventListener('scroll', mark, { passive: true })
+    window.addEventListener('resize', mark)
+  </script>
+</Layout>

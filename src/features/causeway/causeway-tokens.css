@@ -1,0 +1,71 @@
+/* Causeway — case 21. Surface: Cardboard & steel.
+   Layer 1 primitives never flip. Layer 2 is the scope. Zero radius, 1px cold
+   rules, kraft grain at 5.5%, flute lines on large panels, 140ms. */
+.cw-scope {
+  --cw-kraft: #CFC1A8; /* oklch(0.800 0.031 79) */
+  --cw-carton: #E8E1D3; /* oklch(0.901 0.017 84) */
+  --cw-steel: #C2C7C2; /* oklch(0.804 0.007 145) */
+  --cw-graphite: #444944; /* oklch(0.383 0.007 145) */
+  --cw-ink: #17181A; /* oklch(0.205 0.003 265) */
+  --cw-green: #51D933; /* oklch(0.800 0.223 138) */
+  --cw-moss: #175A0C; /* oklch(0.398 0.130 143) */
+  --cw-chalk: #F5F2E9; /* oklch(0.956 0.010 90) */
+  --cw-night: #141713; /* oklch(0.187 0.008 145) */
+  --cw-night-plate: #1E221D; /* oklch(0.240 0.010 145) */
+
+  /* 2 · semantic scope — kraft by daylight is the default */
+  --cw-surface-page: var(--cw-kraft);
+  --cw-surface-plate: var(--cw-steel);
+  --cw-surface-label: var(--cw-carton);
+  --cw-surface-invert: var(--cw-ink);
+  --cw-text-primary: var(--cw-ink);
+  --cw-text-secondary: var(--cw-graphite);
+  --cw-text-invert: var(--cw-chalk);
+  --cw-signal: var(--cw-moss);
+  --cw-signal-fill: var(--cw-green);
+  --cw-line-strong: color-mix(in srgb, var(--cw-ink) 42%, transparent);
+  --cw-line-subtle: color-mix(in srgb, var(--cw-ink) 16%, transparent);
+  --cw-grain: 0.055;
+
+  /* 3 · component tokens — the only layer that knows a recipe */
+  --cw-btn-bg: var(--cw-green);
+  --cw-btn-text: var(--cw-ink);
+  --cw-btn-ghost: color-mix(in srgb, var(--cw-ink) 6%, transparent);
+  --cw-tag-line: color-mix(in srgb, var(--cw-ink) 30%, transparent);
+  --cw-field-bg: color-mix(in srgb, var(--cw-carton) 62%, transparent);
+  --cw-field-line: color-mix(in srgb, var(--cw-ink) 34%, transparent);
+
+  /* type — one grotesque for display and reading, mono for anything counted */
+  --cw-font-display: 'Archivo', 'Helvetica Neue', system-ui, sans-serif;
+  --cw-font-reading: 'Archivo', 'Helvetica Neue', system-ui, sans-serif;
+  --cw-font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  /* physics — corrugated board does not have soft corners */
+  --cw-radius: 0px;
+  --cw-hair: 1px;
+  --cw-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --cw-dur: 140ms;
+  --cw-wrap: 1320px;
+  --cw-gutter: clamp(20px, 4vw, 56px);
+}
+
+/* night scope — the depot after dark, same primitives, opposite ground */
+.cw-scope[data-cw-theme='night'] {
+  --cw-surface-page: var(--cw-night);
+  --cw-surface-plate: var(--cw-night-plate);
+  --cw-surface-label: var(--cw-night-plate);
+  --cw-surface-invert: var(--cw-chalk);
+  --cw-text-primary: var(--cw-chalk);
+  --cw-text-secondary: color-mix(in srgb, var(--cw-kraft) 74%, var(--cw-night));
+  --cw-text-invert: var(--cw-ink);
+  --cw-signal: var(--cw-green); /* moss is 2.6:1 on night — the frame colour carries it */
+  --cw-line-strong: color-mix(in srgb, var(--cw-chalk) 40%, transparent);
+  --cw-line-subtle: color-mix(in srgb, var(--cw-chalk) 15%, transparent);
+  --cw-grain: 0.038;
+  --cw-btn-bg: var(--cw-green);
+  --cw-btn-text: var(--cw-ink);
+  --cw-btn-ghost: color-mix(in srgb, var(--cw-chalk) 8%, transparent);
+  --cw-tag-line: color-mix(in srgb, var(--cw-chalk) 34%, transparent);
+  --cw-field-bg: color-mix(in srgb, var(--cw-chalk) 7%, transparent);
+  --cw-field-line: color-mix(in srgb, var(--cw-chalk) 32%, transparent);
+}

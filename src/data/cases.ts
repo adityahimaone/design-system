@@ -34,6 +34,7 @@ export type DesignCase = {
     | 'quieta'
     | 'manifest'
     | 'daybook'
+    | 'causeway'
 }
 
 export const SUNNYSIDE_URL =
@@ -48,6 +49,23 @@ export const SUNNYSIDE_URL =
  * `number` is the case's permanent identity (its own brand docs and tokens quote it).
  */
 export const DESIGN_CASES: readonly DesignCase[] = [
+  {
+    slug: 'causeway',
+    number: '21',
+    name: 'Causeway',
+    href: '/design-system/causeway',
+    tagline: 'The commute is the ride.',
+    description:
+      'A commuter bicycle sold in one carton. Kraft tan ground, galvanised plate, 1px cold rules, zero radius and one green sampled off the frame at #51D933. The mark is a 4-unit bar with a 9-unit arch standing on it — a causeway with a wheel riding it — with a separate 16px drawing and six cast marks cut from the workshop floor. Ten primitives, a kraft day scope and a depot night scope over shared primitives, six explored surfaces (four shipped, two rejected), a waybill ledger with tabular figures, and a contrast table that publishes the four pairs it fails.',
+    status: 'Shipped · 2026',
+    role: 'Identity · design system · parametric mark · carton surfaces · waybill kit · docs',
+    material: 'Kraft board + galvanised steel + frame green',
+    cover: '/brand/causeway/causeway-brandkit.png',
+    coverAlt:
+      'The Causeway 6-panel brand board: the green bicycle by the water with the reverse lockup and the headline, the bar-and-arch mark at four sizes, ten primitives, three type voices, six cast marks, and the four laws.',
+    tags: ['Bicycle', 'Kraft', 'Waybill', 'Commuter'],
+    tone: 'causeway',
+  },
   {
     slug: 'sunnyside',
     number: '01',

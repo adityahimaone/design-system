@@ -37,6 +37,7 @@ export type DesignCase = {
     | 'causeway'
     | 'mullion'
     | 'serenica'
+    | 'setout'
 }
 
 export const SUNNYSIDE_URL =
@@ -44,13 +45,30 @@ export const SUNNYSIDE_URL =
   'https://adityahimaone.space'
 
 /**
- * The documented design-system cases. Sunnyside anchors the shelf at index 0;
- * everything after it runs newest first.
+ * The documented design-system cases. The array order is the display order for
+ * both the gallery and the landing-page shelf: newest cases lead, Sunnyside is
+ * pinned near the front, and the remaining cases run in descending case number.
  *
- * The array order is the display order for both the gallery and the landing-page shelf.
  * `number` is the case's permanent identity (its own brand docs and tokens quote it).
  */
 export const DESIGN_CASES: readonly DesignCase[] = [
+  {
+    slug: 'setout',
+    number: '24',
+    name: 'Setout',
+    href: '/design-system/setout',
+    tagline: 'The drawing becomes a line on the ground.',
+    description:
+      'A construction setting-out practice built as a #4 Blueprint grid: deep blueprint blue #071E46, a 24px white SVG grid, 1px rules, 0px radius, 160ms linear motion, and one hi-vis orange on the primary action. The mark is two offset blocks with a 6-unit channel, a separate 16px compact drawing and six site cast marks. Twelve OKLCH primitives, thirteen measured contrast pairs with three published failures, six explored surfaces (four shipped, two rejected), four token sheets and one daylight scope.',
+    status: 'Shipped · 2026',
+    role: 'Identity · design system · parametric mark · blueprint surfaces · setout kit · docs',
+    material: 'Blueprint blue + 24px grid + one hi-vis orange',
+    cover: '/brand/setout/setout-brandkit.png',
+    coverAlt:
+      'The Setout 6-panel brand board: a construction worker setting out a roof beneath the reverse lockup, the two-offset-block mark, twelve primitives, three type voices, six site cast marks and four architectural laws.',
+    tags: ['Construction', 'Blueprint', 'Grid', 'Setting out'],
+    tone: 'setout',
+  },
   {
     slug: 'serenica',
     number: '23',

@@ -44,12 +44,12 @@ import { COLLECTIONS, collectionOf } from '../data/collections'
 
 /* Thumbnails: the shelf paints a ≤420px card, a band tile is a 190px facet, and
    neither ever needs the 3000×2250 board behind it. Two sizes, from
-   `node scripts/build-covers.mjs`: 1200×900 for the shelf (1.2 MB for all 23),
-   560×420 for the band (344 KB for all 23) — against 32 MB of PNG. */
+   `node scripts/build-covers.mjs`: 1200×900 for the shelf and 560×420 for the
+   band — two WebPs per case instead of the full PNG boards. */
 const thumbOf = (c: DesignCase) => `/brand/thumbs/${c.slug}.webp`
 const bandThumbOf = (c: DesignCase) => `/brand/thumbs/${c.slug}-sm.webp`
 
-/* All 23 boards ride the band, one per tile. It is the canon itself going past,
+/* All 24 boards ride the band, one per tile. It is the canon itself going past,
    which is the one thing the hero can say that the shelf below cannot. */
 const BAND = DESIGN_CASES.map((c) => ({ src: bandThumbOf(c), alt: '' }))
 
@@ -484,7 +484,7 @@ export function KanonHome({ facts }: { facts: SystemFacts }) {
           <div className="kn-wrap">
             <div className="kn-head">
               <span className="kn-head__num">02 · The canon</span>
-              <h2 id="kn-shelf-title">Twenty-three systems, one method.</h2>
+              <h2 id="kn-shelf-title">Twenty-four systems, one method.</h2>
               <p className="kn-head__note">
                 Search a material or a hue, or narrow by what the brand is made of. Every cover is
                 the case's own board — <b>nothing is restyled</b> to match the shelf.

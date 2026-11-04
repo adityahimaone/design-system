@@ -19,7 +19,7 @@ export const COLLECTIONS: readonly Collection[] = [
   { name: 'glass', label: 'Glass & light', cases: ['vitrine', 'cove', 'wildflower-wind', 'halation', 'mullion'] },
   { name: 'survey', label: 'Chart & sea', cases: ['hachure', 'bluewater'] },
   { name: 'stone', label: 'Stone & earth', cases: ['porphyry', 'strand', 'clearing', 'quieta', 'tavola'] },
-  { name: 'system', label: 'Grids & cities', cases: ['ledger', 'jakarta'] },
+  { name: 'system', label: 'Grids & cities', cases: ['setout', 'ledger', 'jakarta'] },
   { name: 'freight', label: 'Board & freight', cases: ['causeway', 'manifest'] },
 ]
 

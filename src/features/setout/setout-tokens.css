@@ -1,0 +1,51 @@
+/* Setout — case 24. Surface: #4 Blueprint grid.
+   Layer 1 primitives never flip. Layer 2 is one daylight scope: the deep blue
+   is the drawing paper, not a night mode. Layer 3 knows the controls. */
+.so-scope {
+  --so-blueprint: #071E46; /* oklch(0.245 0.081 260.5) */
+  --so-plate: #0D2C5C; /* oklch(0.301 0.094 259.2) */
+  --so-chalk: #F4F7FF; /* oklch(0.976 0.011 269.6) */
+  --so-grid: #FFFFFF; /* oklch(1.000 0.000 89.9) */
+  --so-signal: #2D6BFF; /* oklch(0.580 0.229 263.6) */
+  --so-hivis: #FF6B1A; /* oklch(0.703 0.198 43.4) */
+  --so-lime: #C8F000; /* oklch(0.894 0.215 121.1) */
+  --so-concrete: #8C949E; /* oklch(0.663 0.017 254.0) */
+  --so-graphite: #121826; /* oklch(0.210 0.029 266.1) */
+  --so-kraft: #C8A46A; /* oklch(0.738 0.087 78.7) */
+  --so-steel: #6E7C8C; /* oklch(0.580 0.030 251.8) */
+  --so-ink: #06152F; /* oklch(0.200 0.056 260.0) */
+
+  /* 2 · semantic scope — one scope, no night block, no toggle */
+  --so-surface-page: var(--so-blueprint);
+  --so-surface-plate: var(--so-plate);
+  --so-surface-invert: var(--so-chalk);
+  --so-text-primary: var(--so-chalk);
+  --so-text-secondary: color-mix(in srgb, var(--so-chalk) 72%, var(--so-blueprint));
+  --so-text-invert: var(--so-ink);
+  --so-signal: var(--so-hivis);
+  --so-grid-ink: color-mix(in srgb, var(--so-grid) 10%, transparent);
+  --so-line-strong: color-mix(in srgb, var(--so-grid) 22%, transparent);
+  --so-line-subtle: color-mix(in srgb, var(--so-grid) 12%, transparent);
+
+  /* 3 · component tokens — the only layer that knows a recipe */
+  --so-btn-bg: var(--so-hivis);
+  --so-btn-text: var(--so-ink);
+  --so-btn-bg-hover: var(--so-lime);
+  --so-field-bg: var(--so-plate);
+  --so-field-border: var(--so-line-strong);
+  --so-row-active: color-mix(in srgb, var(--so-hivis) 14%, transparent);
+
+  /* type */
+  --so-font-display: 'Space Grotesk', system-ui, sans-serif;
+  --so-font-reading: 'Archivo', system-ui, sans-serif;
+  --so-font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  /* physics */
+  --so-radius: 0px;
+  --so-hair: 1px;
+  --so-grid-size: 24px;
+  --so-dur: 160ms;
+  --so-ease: linear;
+  --so-wrap: 1280px;
+  --so-gutter: clamp(20px, 4vw, 56px);
+}

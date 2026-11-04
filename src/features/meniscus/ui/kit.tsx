@@ -161,7 +161,7 @@ export function Kit() {
             { id: 'marks', label: 'Marks', count: 3 },
             { id: 'inks', label: 'Inks', count: 12 },
             { id: 'voice', label: 'Voice', count: 7 },
-            { id: 'index', label: 'Index', count: 14 },
+            { id: 'index', label: 'Index', count: 24 },
           ]}
         />
         <div style={{ paddingTop: 16 }}>
@@ -194,7 +194,7 @@ export function Kit() {
 
       <EmptyState
         title="No case matches that"
-        body="Fifteen cases, five collections. Try a material — paper, glass, stone, emerald, cobalt — or clear the filter."
+        body="Twenty-four cases, six collections. Try a material — paper, glass, stone, blueprint, cobalt — or clear the filter."
         action={
           <Button size="sm" onClick={() => setSearch('')}>
             Clear filters

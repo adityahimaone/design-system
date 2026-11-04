@@ -1,0 +1,797 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import tokens from '@/features/setout/tokens.json'
+import { CAST, GLYPH_PATH, MARK_PATH, COMPACT_PATH } from '@/features/setout/setout-data'
+import '@/features/setout/setout-tokens.css'
+import '@/features/setout/setout-page.css'
+
+const B = '/brand/setout'
+const primitives = tokens.primitives
+const contrast = tokens.contrast
+const fails = contrast.filter((c) => !c.pass)
+
+const NAV = [
+  ['premise', 'Premise', 'The drawing, not the render'],
+  ['mark', 'Mark', 'Two offset blocks'],
+  ['colour', 'Colour', 'Twelve primitives, three failures'],
+  ['surfaces', 'Surfaces', 'Six tried, four shipped'],
+  ['type', 'Type', 'Three voices, one measure'],
+  ['kit', 'Kit', 'Four controls, one rule'],
+  ['tokens', 'Tokens', 'Four sheets, one scope'],
+] as const
+
+const PREMISE = [
+  {
+    k: 'Belief',
+    v: 'A building starts when a line on a drawing is checked against a point on the ground. Everything before that is an intention.',
+  },
+  {
+    k: 'Enemy',
+    v: 'The hero render. A finished tower floating above an empty site, with no datum, no level and no one holding the plan.',
+  },
+  {
+    k: 'Material',
+    v: 'Deep blueprint blue #071E46, a 24px white grid, 1px rules, 0px corners, and one hi-vis orange #FF6B1A taken from the vest in the first photograph. The three supplied images are the argument.',
+  },
+  {
+    k: 'Reject it when',
+    v: 'The job is a finished interior or a hospitality brand. Setting-out ink belongs to a site that is still being measured, not a room already dressed.',
+  },
+]
+
+const DECISIONS = [
+  {
+    title: 'One 24px grid, not a decorative pattern',
+    decision:
+      'The page ground carries a 24px white SVG grid. Every section, rail and table reads off that same measure, and the only variation is which dimension ticks are drawn on top of it.',
+    because:
+      'A blueprint is a measuring surface before it is a colour. If the grid changes pitch between sections, the page stops being a drawing and becomes wallpaper.',
+    notWhen:
+      'A dense data table that already owns its own row rhythm. There the grid falls away and the 1px row rules do the measuring.',
+    breaksNext:
+      'Dropping the grid behind body copy. At 24px it is a texture; under a paragraph it becomes a readability problem.',
+  },
+  {
+    title: 'The photograph is a field, not a card',
+    decision:
+      'The hero image bleeds to the viewport edge with one directional deep-blue scrim. The type sits on the photograph; no panel, no rounded card and no second floating readout.',
+    because:
+      'The worker kneeling over a nail is the moment of setting out. Putting a card over it would turn the evidence into decoration.',
+    notWhen:
+      'A photograph with a bright sky on the left. Then the scrim direction has to follow the luminance, not a formula.',
+    breaksNext:
+      'Adding a second scrim or a black wash. The surface colour is blueprint blue, not neutral black.',
+  },
+  {
+    title: 'Zero radius and one 1px rule',
+    decision:
+      'Every plate, button, field and cell is square-cornered and separated by a single 1px white rule at 22% opacity.',
+    because:
+      'A drawing sheet has no soft corners. Radius would import a product-card language that the site never uses.',
+    notWhen:
+      'A native control that the platform refuses to restyle. Accept the platform edge there, and keep every authored surface square.',
+    breaksNext:
+      'Adding a shadow to lift a plate. The separation is the rule; a shadow would invent a second material.',
+  },
+  {
+    title: 'One hi-vis accent, on the action only',
+    decision:
+      '#FF6B1A fills the primary button and nowhere else in the first screen. The button text is #06152F ink at 6.38:1.',
+    because:
+      'Orange is the one warm object common to all three photographs. Chalk on hi-vis is only 2.66:1, so the accent cannot carry text.',
+    notWhen:
+      'A warning state. The same orange used for both action and alarm stops meaning either one.',
+    breaksNext:
+      'Using the orange for a heading word, a chip or a rule. Then the first screen has two accents and no primary action.',
+  },
+]
+
+type SurfaceCard = { id: string; title: string; verdict: string; note: string; demo: string; rejected?: boolean }
+const SURFACES: SurfaceCard[] = [
+  {
+    id: 'grid',
+    title: 'Blueprint grid',
+    verdict: 'Shipped — the page',
+    note: 'A 24px white SVG grid over #071E46, with white dimension ticks. This is the ground and the argument at once.',
+    demo: 'grid',
+  },
+  {
+    id: 'photo',
+    title: 'Site plate',
+    verdict: 'Shipped — hero and section field',
+    note: 'One construction photograph under a solid blueprint wash, not a gradient stack. The image is material, not wallpaper.',
+    demo: 'photo',
+  },
+  {
+    id: 'sheet',
+    title: 'Ruled setout sheet',
+    verdict: 'Shipped — tables and rows',
+    note: '1px white rules, tabular figures, no boxes. The row is the only structure a setting-out sheet needs.',
+    demo: 'sheet',
+  },
+  {
+    id: 'rail',
+    title: 'Dimension rail',
+    verdict: 'Shipped — Rail A',
+    note: 'A 176px sticky column inside every section, with the number in mono and the label in sentence case.',
+    demo: 'rail',
+  },
+  {
+    id: 'frost',
+    title: 'Frosted pane',
+    verdict: 'Rejected',
+    note: 'Breaks 0px radius and the blur / glass ban. Plate on blueprint is 1.19:1, so the pane edge cannot separate itself from the ground.',
+    demo: 'frost',
+    rejected: true,
+  },
+  {
+    id: 'aurora',
+    title: 'Aurora mesh',
+    verdict: 'Rejected',
+    note: 'Breaks the no-gradient rule: #4 has no scoped mesh override, and text on a mesh would have no measured contrast pair.',
+    demo: 'aurora',
+    rejected: true,
+  },
+]
+
+const TYPE_SCALE = [
+  { role: 'Display / 01', face: 'Space Grotesk 600', size: 'clamp(50–104)', lead: '0.94', track: '-0.045em', sample: 'The drawing', font: 'var(--so-font-display)', px: 72 },
+  { role: 'Display / 02', face: 'Space Grotesk 600', size: 'clamp(28–42)', lead: '1.06', track: '-0.03em', sample: 'One line on the ground', font: 'var(--so-font-display)', px: 38 },
+  { role: 'Display / 03', face: 'Space Grotesk 600', size: '15.5px', lead: '1.30', track: '-0.01em', sample: 'A heading inside a sheet', font: 'var(--so-font-display)', px: 15.5 },
+  { role: 'Reading / 01', face: 'Archivo 400', size: '17.5px', lead: '1.60', track: '0', sample: 'Set the datum, check the level, then mark the pin.', font: 'var(--so-font-reading)', px: 17.5 },
+  { role: 'Reading / 02', face: 'Archivo 400', size: '15px', lead: '1.58', track: '0', sample: 'The grid is 24px, the rule is 1px, the radius is zero.', font: 'var(--so-font-reading)', px: 15 },
+  { role: 'Mono / 01', face: 'IBM Plex Mono 400', size: '10.5px', lead: '1.70', track: '0', sample: 'SO-24 · GRID 24 · 1:100', font: 'var(--so-font-mono)', px: 10.5 },
+]
+
+const FLOORS = [
+  ['SO-24', '1:100', 'A1', 'Set out'],
+  ['SO-25', '1:50', 'A2', 'Checked'],
+  ['SO-26', '1:50', 'B1', 'Checked'],
+  ['SO-27', '1:20', 'C3', 'Held'],
+]
+
+const GAPS = [
+  { k: 'Verified', v: `${contrast.length} contrast pairs computed from the same hex the CSS loads, ${fails.length} published failures, ${primitives.length} primitives, a 64-unit mark with a separate 16px drawing, and 6 cast marks on one cut weight.` },
+  { k: 'Verified', v: 'One scope. There is no second scope control, no second token block, no second token sheet and no second set of audit rows. The deep blue is the drawing paper.' },
+  { k: 'Not verified', v: 'Browser frame measurements were skipped because browser tests were skipped. The 1440 / 1024 / 390 widths and scrollWidth === clientWidth were not checked in a headless browser.' },
+  { k: 'Known gap', v: 'The 24px grid is a data-URI SVG pattern. A strict content security policy that blocks data URIs would need the same pattern inlined as an SVG element.' },
+]
+
+const TOKENS_PRIM = `/* 1 · primitive — the site, named once */
+.so-scope {
+  --so-blueprint: #071E46;
+  --so-plate:     #0D2C5C;
+  --so-chalk:     #F4F7FF;
+  --so-grid:      #FFFFFF;
+  --so-signal:    #2D6BFF;
+  --so-hivis:     #FF6B1A;
+  --so-lime:      #C8F000;
+  --so-concrete:  #8C949E;
+  --so-graphite:  #121826;
+  --so-kraft:     #C8A46A;
+  --so-steel:     #6E7C8C;
+  --so-ink:       #06152F;
+}`
+const TOKENS_DAY = `/* 2 · single daylight scope */
+.so-scope {
+  --so-surface-page:   var(--so-blueprint);
+  --so-surface-plate:  var(--so-plate);
+  --so-text-primary:   var(--so-chalk);
+  --so-text-secondary: color-mix(in srgb, var(--so-chalk) 72%, var(--so-blueprint));
+  --so-signal:         var(--so-hivis);
+  --so-line-strong:    color-mix(in srgb, var(--so-grid) 22%, transparent);
+  --so-line-subtle:    color-mix(in srgb, var(--so-grid) 12%, transparent);
+}`
+const TOKENS_COMP = `/* 3 · component tokens */
+.so-btn {
+  background: var(--so-btn-bg);        /* hi-vis */
+  color: var(--so-btn-text);           /* ink, 6.38:1 */
+  border: 1px solid var(--so-btn-bg);
+}
+.so-input {
+  background: var(--so-field-bg);
+  border: 1px solid var(--so-field-border);
+}
+.so-rows tbody tr[aria-selected="true"] {
+  background: var(--so-row-active);
+}`
+const TOKENS_PHYS = `/* 4 · physics */
+--so-radius:     0px;
+--so-hair:       1px;
+--so-grid-size:  24px;
+--so-dur:        160ms;
+--so-ease:       linear;
+--so-wrap:       1280px;
+--so-gutter:     clamp(20px, 4vw, 56px);`
+
+const SHEETS: [string, string][] = [
+  ['1 · Primitives', TOKENS_PRIM],
+  ['2 · Day scope', TOKENS_DAY],
+  ['3 · Component tokens', TOKENS_COMP],
+  ['4 · Physics', TOKENS_PHYS],
+]
+
+const title = 'Setout — Case 24 | Blueprint grid construction design system'
+const description =
+  'Setout turns a construction drawing into measured points, grids and levels on a live site. A #4 Blueprint grid design system: deep blueprint blue, a 24px white grid, 1px rules, zero radius, 160ms linear motion, one hi-vis accent, a two-offset-block mark, six cast marks, twelve primitives and three published contrast failures.'
+---
+
+<Layout title={title} description={description} canonical="/design-system/setout" image={`${B}/setout-brandkit.png`}>
+  <link rel="icon" type="image/svg+xml" href={`${B}/icon.svg`} />
+  <link rel="apple-touch-icon" href={`${B}/icon.svg`} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&family=Archivo:wght@400..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <div class="so-root so-scope" id="top">
+    <a class="so-skip" href="#main">Skip to the system</a>
+
+    <header class="so-top">
+      <div class="so-shell so-top__in">
+        <a class="so-top__brand" href="#top" aria-label="Setout — top">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><Fragment set:html={MARK_PATH} /></svg>
+          <b>Setout</b>
+        </a>
+        <nav class="so-top__nav" aria-label="Sections">
+          {NAV.map(([id, label]) => <a href={`#${id}`}>{label}</a>)}
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      {/* hero: E · relation on · scrim 90deg blueprint → transparent · type on image · recipe R8 */}
+      <section class="so-hero">
+        <img
+          class="so-hero__img"
+          src={`${B}/hero-roof-setout.jpg`}
+          alt="A construction worker in a blue hard hat and orange hi-vis vest kneels on a green roof deck, driving a nail with a hammer beside a white rope."
+          width="1824"
+          height="1215"
+        />
+        <div class="so-hero__scrim" aria-hidden="true"></div>
+        <svg class="so-hero__grid" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="so-hero-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+              <path d="M24 0H0V24" fill="none" stroke="#F4F7FF" stroke-opacity="0.12" stroke-width="1" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#so-hero-grid)" />
+        </svg>
+
+        <div class="so-shell so-hero__in">
+          <div class="so-hero__copy">
+            <h1>The drawing becomes<br />a line on the ground.</h1>
+            <p class="so-hero__lede">
+              Setout turns a construction drawing into measured points, grids and levels on a live
+              site. The building starts from a datum everyone can check, not from a render nobody
+              can.
+            </p>
+            <div class="so-hero__acts">
+              <a class="so-btn" href="#surfaces"><i aria-hidden="true"></i>See the grid</a>
+              <a class="so-link" href="#mark">See the mark →</a>
+            </div>
+            <dl class="so-hero__facts">
+              <div><dt>Surface</dt><dd>#4 Blueprint grid</dd></div>
+              <div><dt>Rail / Hero</dt><dd>A · E, relation on</dd></div>
+              <div><dt>Physics</dt><dd>0px · 1px · 24px</dd></div>
+              <div><dt>Scope</dt><dd>One daylight scope</dd></div>
+            </dl>
+          </div>
+
+          <div class="so-hero__foot">
+            <span>Plate 01 · roof setout · measured 38% 42%</span>
+            <span class="so-hero__stamp">SO-24 · 1:100 · GRID 24</span>
+            <span>Three plates · one site</span>
+          </div>
+        </div>
+      </section>
+
+      {/* 01 · Premise · Rail A · 176px sticky column inside every section */}
+      <section class="so-sec" id="premise">
+        <div class="so-shell so-sec__wrap">
+          <div class="so-rail">
+            <span class="so-rail__n">01</span>
+            <span class="so-rail__lbl">Premise</span>
+            <span class="so-rail__note">The drawing, not the render</span>
+          </div>
+          <div class="so-body">
+            <h2>A line is only real once someone can check it.</h2>
+            <p class="so-big">
+              Setout is the moment a plan stops being a document and becomes a point, a level and a
+              grid on a live site. The identity is built from that transfer: deep blueprint blue, a
+              24px measuring grid, 1px rules and one hi-vis orange taken from the worker's vest.
+            </p>
+
+            <dl class="so-two">
+              {PREMISE.map((p) => (
+                <div><dt>{p.k}</dt><dd>{p.v}</dd></div>
+              ))}
+            </dl>
+
+            <div class="so-decs">
+              {DECISIONS.map((d) => (
+                <article class="so-dec">
+                  <h3>{d.title}</h3>
+                  <dl>
+                    <dt>Decision</dt><dd>{d.decision}</dd>
+                    <dt>Because</dt><dd>{d.because}</dd>
+                    <dt>Not when</dt><dd>{d.notWhen}</dd>
+                    <dt>Breaks next</dt><dd>{d.breaksNext}</dd>
+                  </dl>
+                </article>
+              ))}
+            </div>
+
+            <figure class="so-plate">
+              <div class="so-plate__img">
+                <img
+                  src={`${B}/plate-scaffold.jpg`}
+                  alt="A site worker in an orange hi-vis vest stands under a lattice of steel scaffolding and looks up toward a raw concrete soffit."
+                  width="1920"
+                  height="1279"
+                  loading="lazy"
+                />
+              </div>
+              <figcaption>
+                <b>Plate 02 · the scaffold as a drawn grid</b>
+                <span>Measured object-position 50% 44% · no lockup, no caption card</span>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      {/* 02 · The Mark */}
+      <section class="so-sec" id="mark">
+        <div class="so-shell so-sec__wrap">
+          <div class="so-rail">
+            <span class="so-rail__n">02</span>
+            <span class="so-rail__lbl">Mark</span>
+            <span class="so-rail__note">Two offset blocks</span>
+          </div>
+          <div class="so-body">
+            <h2>Two blocks, one channel, nothing drawn in between.</h2>
+            <p class="so-big">
+              A 22×26 upper mass and a 22×28 lower mass stand on the same 64-unit grid, offset by a
+              6-unit channel. The gap is the setting-out line. Fill only: no stroke, no outline, no
+              third mass, and never two blocks of the same size.
+            </p>
+
+            <div class="so-marks">
+              <div class="so-mark so-mark--dark">
+                <span>Primary · on blueprint</span>
+                <svg viewBox="0 0 64 64" fill="currentColor" aria-label="Setout primary mark"><Fragment set:html={MARK_PATH} /></svg>
+              </div>
+              <div class="so-mark so-mark--light">
+                <span>Reverse · on paper</span>
+                <img src={`${B}/mark.svg`} alt="Setout mark in ink on paper" width="72" height="72" />
+              </div>
+              <div class="so-mark so-mark--dark">
+                <span>Compact · 16–24px</span>
+                <svg viewBox="0 0 64 64" fill="currentColor" aria-label="Setout compact mark"><Fragment set:html={COMPACT_PATH} /></svg>
+              </div>
+              <div class="so-mark so-mark--light">
+                <span>Glyph · favicon</span>
+                <svg viewBox="0 0 64 64" fill="currentColor" aria-label="Setout glyph"><Fragment set:html={GLYPH_PATH} /></svg>
+              </div>
+            </div>
+
+            <div class="so-wordmark">
+              <div class="so-wordmark__row">
+                <img src={`${B}/wordmark-reverse.svg`} alt="Setout wordmark in chalk on blueprint" width="232" height="56" />
+                <span>Outlined 5×7 path · zero live text</span>
+              </div>
+              <div class="so-wordmark__row so-wordmark__row--light">
+                <img src={`${B}/wordmark.svg`} alt="Setout wordmark in ink on paper" width="232" height="56" />
+                <span>Reverse · paper ground only</span>
+              </div>
+            </div>
+
+            <div class="so-lock">
+              <div class="so-lock__row so-lock__row--light">
+                <img src={`${B}/lockup.svg`} alt="Setout horizontal lockup on paper" width="175" height="64" />
+                <span>Horizontal · ink on paper</span>
+              </div>
+              <div class="so-lock__row">
+                <img src={`${B}/lockup-reverse.svg`} alt="Setout reverse lockup on blueprint" width="175" height="64" />
+                <span>Reverse · the one lockup used on a photograph</span>
+              </div>
+              <div class="so-lock__row so-lock__row--stack">
+                <img src={`${B}/lockup-stacked.svg`} alt="Setout stacked lockup" width="204" height="118" />
+                <span>Stacked · square formats only</span>
+              </div>
+            </div>
+
+            <div class="so-scale">
+              {[96, 48, 32, 24, 16].map((s) => (
+                <figure>
+                  <svg viewBox="0 0 64 64" width={s} height={s} fill="currentColor" aria-label={`Mark at ${s} pixels`}>
+                    <Fragment set:html={s <= 16 ? COMPACT_PATH : MARK_PATH} />
+                  </svg>
+                  <figcaption>{s}px{s <= 16 ? ' · compact' : ''}</figcaption>
+                </figure>
+              ))}
+              <figure>
+                <svg viewBox="0 0 64 64" width="16" height="16" fill="currentColor" aria-label="Glyph at 16 pixels"><Fragment set:html={GLYPH_PATH} /></svg>
+                <figcaption>16px · glyph</figcaption>
+              </figure>
+            </div>
+
+            <div class="so-castin">
+              <div class="so-castin__head">
+                <b>The cast · six nouns off the site</b>
+                <span>64-unit grid · fill only</span>
+              </div>
+              <div class="so-castin__grid">
+                {CAST.map((c) => (
+                  <div class="so-castin__cell">
+                    <svg viewBox="0 0 64 64" fill="currentColor" aria-hidden="true"><Fragment set:html={c.path} /></svg>
+                    <b>{c.name}</b>
+                    <span>{c.note}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <dl class="so-rules">
+              <div><dt>Clear space</dt><dd>3 units on all four sides, measured from the outer blocks. The 6-unit channel inside the mark is not clear space.</dd></div>
+              <div><dt>Never</dt><dd>No third mass, no stroke, no perspective, no gradient behind the grid, no equal-height blocks.</dd></div>
+              <div><dt>Below 24px</dt><dd>Swap to the compact drawing: the arms grow and the channel widens so the gap survives a 16-pixel raster.</dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      {/* 03 · Colour */}
+      <section class="so-sec" id="colour">
+        <div class="so-shell so-sec__wrap">
+          <div class="so-rail">
+            <span class="so-rail__n">03</span>
+            <span class="so-rail__lbl">Colour</span>
+            <span class="so-rail__note">Twelve primitives, three failures</span>
+          </div>
+          <div class="so-body">
+            <h2>Twelve primitives, three failures.</h2>
+            <p class="so-big">
+              The palette is sampled from the three photographs: blueprint blue, hard-hat blue,
+              hi-vis orange and lime, concrete, kraft and scaffold steel. {contrast.length} pairs are
+              computed from the same hex the CSS loads; {fails.length} fail and are published with
+              the job each one is still allowed to do.
+            </p>
+
+            <div class="so-sw-grid">
+              {primitives.map((p) => (
+                <button class="so-sw" type="button" data-copy={`--so-${p.name}: ${p.value};`} title={`${p.name} — ${p.role}`}>
+                  <span class="so-sw__chip" style={`background:${p.value}`}></span>
+                  <span class="so-sw__meta">
+                    <span class="so-sw__name">{p.name}</span>
+                    <span class="so-sw__hex">{p.value}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            <div class="so-pairs">
+              {contrast.map((c) => {
+                const a = primitives.find((p) => p.name === c.a)!
+                const b = primitives.find((p) => p.name === c.b)!
+                return (
+                  <div class:list={['so-pair', !c.pass && 'so-pair--fail']}>
+                    <span class="so-pair__chips">
+                      <i style={`background:${a.value}`}></i><i style={`background:${b.value}`}></i>
+                    </span>
+                    <span class="so-pair__name">
+                      {c.a} on {c.b}
+                      <small>{c.note}</small>
+                    </span>
+                    <span class="so-pair__ratio">{c.ratio}:1 {c.pass ? '' : '· fail'}</span>
+                    <span class="so-pair__job">{c.job}</span>
+                  </div>
+                )
+              })}
+            </div>
+            <p class="so-sub">
+              {fails.length} pairs fail and are published rather than corrected. Chalk on hi-vis at
+              2.66:1 is why the button uses ink, the blue hard hat at 3.63:1 stays a dimension tick,
+              and a plate at 1.19:1 needs its 1px rule to exist at all.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 04 · Surfaces */}
+      <section class="so-sec" id="surfaces">
+        <div class="so-shell so-sec__wrap">
+          <div class="so-rail">
+            <span class="so-rail__n">04</span>
+            <span class="so-rail__lbl">Surfaces</span>
+            <span class="so-rail__note">Six tried, four shipped</span>
+          </div>
+          <div class="so-body">
+            <h2>Six surfaces were tried. Four survived.</h2>
+            <p class="so-big">
+              Blueprint grid is a material, not a filter. Each surface had to do a real job on this
+              page: hold the hero, carry a table, sit under a photograph, divide a rail. The two
+              rejected idioms failed the house rules rather than the brief.
+            </p>
+
+            <div class="so-surf">
+              {SURFACES.map((s) => (
+                <article class:list={['so-sc', s.rejected && 'so-sc--rej']}>
+                  <div class:list={['so-sc__demo', `so-demo--${s.demo}`]}>
+                    {s.demo === 'grid' && (
+                      <>
+                        <span class="tick" aria-hidden="true"></span>
+                        <span class="dim">24 000 mm</span>
+                      </>
+                    )}
+                    {s.demo === 'photo' && (
+                      <>
+                        <img src={`${B}/plate-scaffold.jpg`} alt="Steel scaffolding on a construction site." loading="lazy" width="1920" height="1279" />
+                        <span class="so-sc__cap">Plate 02 · field, not wallpaper</span>
+                      </>
+                    )}
+                    {s.demo === 'sheet' && (
+                      <>
+                        <span class="row"><b>SO-24</b><b>1:100</b><b>A1</b></span>
+                        <span class="row"><b>SO-25</b><b>1:50</b><b>A2</b></span>
+                        <span class="row"><b>SO-26</b><b>1:50</b><b>B1</b></span>
+                      </>
+                    )}
+                    {s.demo === 'rail' && (
+                      <>
+                        <span class="rail" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                        <span class="body">01 / Premise</span>
+                      </>
+                    )}
+                    {s.demo === 'frost' && <span class="pane">74% white · 40px blur</span>}
+                    {s.demo === 'aurora' && <><i aria-hidden="true"></i><i aria-hidden="true"></i><b>Mesh glow</b></>}
+                  </div>
+                  <div class="so-sc__txt">
+                    <div class="so-sc__head">
+                      <b>{s.title}</b>
+                      <span class="so-sc__verdict">{s.verdict}</span>
+                    </div>
+                    <p>{s.note}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 05 · Type */}
+      <section class="so-sec" id="type">
+        <div class="so-shell so-sec__wrap">
+          <div class="so-rail">
+            <span class="so-rail__n">05</span>
+            <span class="so-rail__lbl">Type</span>
+            <span class="so-rail__note">Three voices, one measure</span>
+          </div>
+          <div class="so-body">
+            <h2>One display face, one reading face, one mono.</h2>
+            <p class="so-big">
+              Space Grotesk carries the headline because its geometry reads like a drawn letter.
+              Archivo carries reading on a 66-character measure. IBM Plex Mono carries every figure:
+              grid pitch, ratios, plate stamps and drawing numbers.
+            </p>
+
+            <div class="so-tscale">
+              {TYPE_SCALE.map((t) => (
+                <div class="so-tscale__row">
+                  <div class="so-tscale__meta">
+                    <b>{t.role}</b>
+                    {t.face}<br />{t.size} / {t.lead}<br />{t.track}
+                  </div>
+                  <div class="so-tscale__sample" style={`font-family:${t.font};font-size:${t.px}px;line-height:${t.lead};letter-spacing:${t.track}`}>{t.sample}</div>
+                </div>
+              ))}
+            </div>
+
+            <div class="so-specs">
+              <div class="so-spec">
+                <h3>Display</h3>
+                <p style="font-family:var(--so-font-display);font-size:30px;line-height:1;letter-spacing:-.03em">Two blocks,<br />one channel.</p>
+              </div>
+              <div class="so-spec">
+                <h3>Reading · 66ch</h3>
+                <p>The drawing is checked at 1:100, the level is read twice, and the pin is driven where the two lines cross. Nothing on the site is assumed from the render.</p>
+              </div>
+              <div class="so-spec">
+                <h3>Figures</h3>
+                <table>
+                  <thead><tr><th>Ref</th><th>Scale</th><th>Bay</th></tr></thead>
+                  <tbody>
+                    <tr><td>24</td><td>1:100</td><td>A1</td></tr>
+                    <tr><td>25</td><td>1:50</td><td>A2</td></tr>
+                    <tr><td>26</td><td>1:50</td><td>B1</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="so-spec">
+                <h3>Labels</h3>
+                <p style="font-family:var(--so-font-mono);font-size:10.5px;line-height:2.1">SO-24 · GRID 24 · 1:100<br />PLATE 01 · ROOF SETOUT<br />HIVIS · #FF6B1A</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 06 · Kit */}
+      <section class="so-sec" id="kit">
+        <div class="so-shell so-sec__wrap">
+          <div class="so-rail">
+            <span class="so-rail__n">06</span>
+            <span class="so-rail__lbl">Kit</span>
+            <span class="so-rail__note">Four controls, one rule</span>
+          </div>
+          <div class="so-body">
+            <h2>Four controls, all of them square.</h2>
+            <p class="so-big">
+              The kit is the page material at component scale: solid plates, 1px rules, zero radius,
+              one hi-vis action. Every state is visible without relying on colour alone.
+            </p>
+
+            <div class="so-kit">
+              <div>
+                <h3>Buttons</h3>
+                <div class="so-btns">
+                  <button class="so-btn" type="button"><i aria-hidden="true"></i>Set out point</button>
+                  <button class="so-btn so-btn--ghost" type="button">Download the grid</button>
+                  <button class="so-btn so-btn--ghost so-btn--sm" type="button">Copy SO-24</button>
+                  <button class="so-btn" type="button" aria-disabled="true">Bay C3 · held</button>
+                </div>
+                <p class="so-kitnote">One accent-filled control, and it is the action. Disabled keeps its value and label.</p>
+              </div>
+
+              <div>
+                <h3>Chips</h3>
+                <div class="so-tags">
+                  <span class="so-tag so-tag--live"><i aria-hidden="true"></i>Set out</span>
+                  <span class="so-tag so-tag--done"><i aria-hidden="true"></i>Checked</span>
+                  <span class="so-tag"><i aria-hidden="true"></i>Held</span>
+                </div>
+                <p class="so-kitnote">Solid status blocks with a 6px marker. No outline, no pill, no count without a real row behind it.</p>
+              </div>
+
+              <div>
+                <h3>Fields</h3>
+                <div class="so-fieldset">
+                  <label class="so-label" for="so-ref">Drawing reference</label>
+                  <input class="so-input" id="so-ref" value="SO-2" aria-invalid="true" aria-describedby="so-err" />
+                  <div class="so-err" id="so-err" role="alert">
+                    <b>2 problems</b>
+                    <span>Reference must be four characters after the dash.</span>
+                    <span>A scale is required before the sheet can be issued.</span>
+                  </div>
+                </div>
+                <p class="so-kitnote">The field keeps a visible border in every state; the error carries text and a glyph, not colour alone.</p>
+              </div>
+
+              <div>
+                <h3>Drawing rows</h3>
+                <table class="so-rows">
+                  <caption>Four sheets, one selected. Rows are keyboard reachable and carry aria-selected.</caption>
+                  <thead><tr><th scope="col">Ref</th><th scope="col">Scale</th><th scope="col">Bay</th><th scope="col">Status</th></tr></thead>
+                  <tbody>
+                    {FLOORS.map((r, i) => (
+                      <tr tabindex="0" aria-selected={i === 0 ? 'true' : 'false'} data-row>
+                        {r.map((cell) => <td>{cell}</td>)}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p class="so-kitnote">Tabular figures, 1px row rules, one selected row. No hairline boxes around the table.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 07 · Tokens */}
+      <section class="so-sec" id="tokens">
+        <div class="so-shell so-sec__wrap">
+          <div class="so-rail">
+            <span class="so-rail__n">07</span>
+            <span class="so-rail__lbl">Tokens</span>
+            <span class="so-rail__note">Four sheets, one scope</span>
+          </div>
+          <div class="so-body">
+            <h2>Four sheets, one scope.</h2>
+            <p class="so-big">
+              A blueprint is a daylight document; a dark one is a different product. This build ships
+              one scope, so there is no second scope control, no second token sheet and no second set of audit rows.
+              Primitives never flip; component recipes are the only place a control knows its colours.
+            </p>
+
+            <div class="so-sheets">
+              {SHEETS.map(([label, code]) => (
+                <div class="so-sheet">
+                  <div class="so-sheet__h">
+                    <span>{label}</span>
+                    <button class="so-copy" type="button" data-copy={code}>Copy</button>
+                  </div>
+                  <pre><code>{code}</code></pre>
+                </div>
+              ))}
+            </div>
+
+            <h3 style="color:var(--so-signal);margin-top:40px;margin-bottom:12px">Audit &amp; known gaps</h3>
+            <dl class="so-gaps">
+              {GAPS.map((g) => (
+                <div class="so-gap"><dt>{g.k}</dt><dd>{g.v}</dd></div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    {/* footer · F2 · split — the drawing on the left, the statement on the right;
+        variation: 38/62 columns, top scrim, lockup at the upper-right of the plate.
+        Cases 21/22 used bottom/left lockups and bottom scrims; this one does not share the variation. */}
+    <footer class="so-foot">
+      <div class="so-foot__split">
+        <figure class="so-foot__art">
+          <img
+            class="so-foot__photo"
+            src={`${B}/plate-blueprint.jpg`}
+            alt="A site worker in a white hard hat and lime hi-vis vest holds a large printed floor plan against pink insulation and steel studs."
+            width="1920"
+            height="1279"
+            loading="lazy"
+          />
+          <div class="so-foot__scrim" aria-hidden="true"></div>
+          <figcaption class="so-foot__cap">Plate 03 · the plan, checked on site</figcaption>
+          <img class="so-foot__lock" src={`${B}/lockup-reverse.svg`} alt="Setout lockup" width="175" height="64" loading="lazy" />
+        </figure>
+
+        <div class="so-foot__say">
+          <span class="so-foot__tag">Setout · case 24 · setting out</span>
+          <div>
+            <p class="so-foot__sign">The plan is finished when the site agrees with it.</p>
+            <p class="so-foot__sub">
+              Drawings are revised, levels are re-checked and names on the door change. The datum,
+              the grid and the 1px rule are the parts that stay measurable after everyone has gone
+              home.
+            </p>
+            <nav class="so-foot__links" aria-label="Footer">
+              <a href="#mark">The mark</a>
+              <a href="#colour">Contrast ledger</a>
+              <a href={`${B}/setout-brandkit.png`}>Brand kit</a>
+              <a href="/">All cases</a>
+            </nav>
+          </div>
+          <div class="so-foot__prov">
+            <span>Setout · 2026 · case 24 · single scope</span>
+            <span class="so-foot__back"><a href="#top">Back to top ↑</a></span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    document.querySelectorAll('[data-copy]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const text = btn.getAttribute('data-copy') || ''
+        if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {})
+      })
+    })
+    const rows = document.querySelectorAll('[data-row]')
+    const select = (row) => {
+      rows.forEach((r) => r.setAttribute('aria-selected', 'false'))
+      row.setAttribute('aria-selected', 'true')
+    }
+    rows.forEach((row) => {
+      row.addEventListener('click', () => select(row))
+      row.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          select(row)
+        }
+      })
+    })
+  </script>
+</Layout>

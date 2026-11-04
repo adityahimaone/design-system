@@ -59,6 +59,7 @@ const readSvgInner = (file) => {
 const markSvg = readSvgInner('mark-reverse.svg') || readSvgInner('mark.svg')
 const compactSvg = readSvgInner('mark-compact-reverse.svg') || readSvgInner('mark-compact.svg') || markSvg
 const lockupRevSvg = readSvgInner('lockup-reverse.svg') || readSvgInner('lockup.svg')
+const lockupSvg = readSvgInner('lockup.svg') || lockupRevSvg
 
 // Auto-discover hero surface image if not passed explicitly
 let heroFile = heroArg
@@ -126,8 +127,15 @@ const html = `<!doctype html>
   }
   .panel svg { display: block; }
   .p-hero__bottom svg { height: 34px; width: auto; }
-  .p-mark svg { height: 92px; width: auto; }
+  .p-mark svg { height: auto; width: auto; }
+  .p-mark__stage { display: flex; flex-direction: column; gap: 18px; margin: auto 0; }
+  .p-mark__lockup { display: flex; align-items: center; }
+  .p-mark__lockup svg { width: 100%; height: auto; max-height: 74px; }
+  .p-mark__scale { display: flex; align-items: flex-end; gap: 18px; padding-top: 16px; border-top: 1px solid rgba(243,238,227,0.16); }
+  .p-mark__scale > div { display: flex; align-items: flex-end; }
+  .p-mark__scale svg { width: 100%; height: 100%; }
   .p-cast__grid svg { width: 100%; height: 100%; }
+  .p-cast__grid svg path, .p-cast__grid svg g { fill: #101229; }
   .mono {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
@@ -177,12 +185,12 @@ const html = `<!doctype html>
     justify-content: space-between;
   }
   .p-pal { padding: 20px 24px; display: flex; flex-direction: column; justify-content: space-between; }
-  .p-pal__grid { display: grid; grid-template-columns: repeat(${Math.min(boardPrims.length, 7)}, 1fr); gap: 10px; }
+  .p-pal__grid { display: grid; grid-template-columns: repeat(${Math.max(boardPrims.length, 1)}, 1fr); gap: 6px; }
   .swatch { border-radius: 2px; overflow: hidden; border: 1px solid rgba(16,18,41,0.16); background: ${ground}; }
-  .swatch__color { height: 104px; }
-  .swatch__meta { padding: 8px 9px; }
-  .swatch__name { font-size: 11px; font-weight: 700; display: block; color: #191a2e; }
-  .swatch__hex { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; color: #555; }
+  .swatch__color { height: 92px; }
+  .swatch__meta { padding: 7px 6px; }
+  .swatch__name { font-size: 9px; font-weight: 700; display: block; color: #191a2e; }
+  .swatch__hex { font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: #555; }
   .p-type { padding: 20px 26px; display: flex; flex-direction: column; justify-content: space-between; }
   .p-cast { padding: 20px 24px; display: flex; flex-direction: column; justify-content: space-between; }
   .p-cast__grid { display: grid; grid-template-columns: repeat(${Math.max(castItems.length, 1)}, 1fr); gap: 12px; align-items: center; }
@@ -198,12 +206,12 @@ const html = `<!doctype html>
       ${heroDataUri ? `<img class="p-hero__img" src="${heroDataUri}" alt="" />` : ''}
       <div class="p-hero__scrim"></div>
       <div class="p-hero__top">
-        <span class="mono">BRAND KIT · ${meta.version || 'V4.2'} · ${(meta.slug || slug).toUpperCase()}</span>
+        <span class="mono">BRAND KIT · ${meta.version || 'V4.2'} · ${(meta.slug || slug).toUpperCase().replace('ARETE','ARÊTE')}</span>
         <span class="mono">${(meta.track || 'CONSTRUCTED').toUpperCase()} TRACK · 64 GRID</span>
       </div>
       <div class="p-hero__bottom">
-        <div style="display:inline-flex;padding:10px 16px;border-radius:12px;background:rgba(0,0,0,0.52);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.2);">
-          <div style="height:36px;display:flex;align-items:center;">${lockupRevSvg}</div>
+        <div style="display:inline-flex;padding:11px 18px;border-radius:0;background:#F2EDE3;border:1px solid rgba(16,18,41,0.34);box-shadow:4px 4px 0 rgba(16,18,41,0.28);">
+          <div style="height:30px;display:flex;align-items:center;">${lockupSvg}</div>
         </div>
         <h1 class="p-hero__title">${meta.essence || meta.name || slug}</h1>
         <p class="p-hero__sub">${meta.promise || meta.oneSentence || ''}</p>
@@ -214,11 +222,17 @@ const html = `<!doctype html>
         <span>LOGO / 01 · KUWAYAMA 64 GRID</span>
         <span style="text-align:right;">GRID 64<br/>CLEARSPACE 8</span>
       </div>
-      <div style="display:flex;align-items:center;justify-content:center;margin:auto 0;">
-        <div style="transform:scale(1.45);">${lockupRevSvg || markSvg}</div>
+      <div class="p-mark__stage">
+        <div class="p-mark__lockup">${lockupRevSvg || markSvg}</div>
+        <div class="p-mark__scale">
+          <div style="width:96px;height:96px;">${markSvg}</div>
+          <div style="width:48px;height:48px;">${markSvg}</div>
+          <div style="width:24px;height:24px;">${compactSvg}</div>
+          <div style="width:16px;height:16px;">${compactSvg}</div>
+        </div>
       </div>
-      <div style="border-top:1px solid rgba(255,255,255,0.14);padding-top:16px;display:flex;justify-content:space-between;align-items:flex-end;" class="mono">
-        <span>64 · 32 · 16 COMPACT</span>
+      <div style="border-top:1px solid rgba(255,255,255,0.14);padding-top:14px;display:flex;justify-content:space-between;align-items:flex-end;" class="mono">
+        <span>96 · 48 · 24 COMPACT · 16 GLYPH</span>
         <span>SEPARATE 16PX DRAWING</span>
       </div>
     </div>
@@ -229,7 +243,6 @@ const html = `<!doctype html>
       </div>
       <div class="p-pal__grid">
         ${boardPrims
-          .slice(0, 7)
           .map(
             (p) => `<div class="swatch"><div class="swatch__color" style="background:${p.value};"></div><div class="swatch__meta"><span class="swatch__name">${p.name}</span><span class="swatch__hex">${p.value}</span></div></div>`
           )
@@ -263,17 +276,17 @@ const html = `<!doctype html>
     <div class="panel p-rules">
       <div style="display:flex;justify-content:space-between;opacity:0.5;" class="mono">
         <span>ARCHITECTURAL LAWS</span>
-        <span>GATE V4.2</span>
+        <span>GATE V4.6</span>
       </div>
       <ul>
-        <li><b>Field + Reading Plate.</b> Imagery carries display &amp; mark; body copy sits on solid/blurred plates.</li>
-        <li><b>Separate 16px compact.</b> Favicons swap to a simplified bold vector drawing below 24px.</li>
-        <li><b>Honest contrast ledger.</b> Failing pairs are assigned graphic-only jobs and published.</li>
-        <li><b>3-Point Surface Continuity.</b> Hero, mid-page refraction stage, and footer share the material.</li>
+        <li><b>Two papers, five surfaces.</b> Ivory stock is the canvas, ultramarine the ink. Depth comes from a named surface with one job, never from a new shadow.</li>
+        <li><b>The 5-unit seam is the only ornament.</b> Mark aperture, card seams, rules and the wordmark baseline all quote one knife.</li>
+        <li><b>Hard shadows, zero blur.</b> Sheets lift 4px with a 1px edge. The vellum plate over artwork is the single exception.</li>
+        <li><b>Oxide is a blaze, never a label.</b> 4.2:1 is a rule and a survey mark, not a caption.</li>
       </ul>
       <div style="display:flex;justify-content:space-between;opacity:0.45;" class="mono">
-        <span>${(meta.name || slug).toUpperCase()}</span>
-        <span>SUNNYSIDE ENGINE V4.2</span>
+        <span>${(meta.name || slug).toUpperCase()} · CASE ${meta.case || '18'}</span>
+        <span>SUNNYSIDE ENGINE V4.6 · ${(meta.heroShape || 'E · ON').toUpperCase()}</span>
       </div>
     </div>
   </div>

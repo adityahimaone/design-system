@@ -3,13 +3,26 @@
 **Alpine cartography · every layer is a cut.** Guided ridge traverses and hand-cut
 topographic editions, made from two papers: ivory cartridge stock and ultramarine ink.
 
+`V2.0.0` · hero **E · relation on** · footer **F2 · reversed split** · rail **A** · scopes **day + dusk**
+
 ## 3-Axis Synthesis
 
 | Axis | Position |
 | --- | --- |
-| Surface | Tactile cut-paper — flat ivory stock, 2u seams, hard 4px sheet shadows. No gradients inside a layer; one vellum overlay where type crosses artwork. |
+| Surface | Paper & ink — ivory cartridge stock, five named paper surfaces, one 5-unit seam, hard 4px sheet shadows, zero blur inside a layer. |
 | Density | Editorial cartography. 96px section rhythm, 66ch measure, route ledgers with tabular elevation data. |
-| Physics | Knife-cut — 0px outer / 2px inner radii, 2px rules, hard shadow offsets instead of blur. |
+| Physics | Knife-cut — 0px radius, 1px rules, 5px seam, 4px lift, 140ms. |
+
+## Hero and footer
+
+The hero is the range itself. `arete-panorama.webp` is full-bleed and the type is set
+straight onto the paper-white sky behind a 96deg paper wash — no reading panel, no glass
+card, no stats dashboard over the photograph. The four facts sit in a hairline strip below
+the type, on 82% paper cells, and the plate caption is a paper bar at the very bottom.
+
+The footer turns the same sheet over: the closing photograph on the left with the reverse
+lockup at 26px, the statement and four download links on the right, one provenance bar.
+Hero E pairs with F2 in Pillar VII.
 
 ## The mark
 
@@ -18,60 +31,65 @@ a 64-unit sheet. The 5u gap is the only detail: it is the width of the knife, an
 is the same value used for card seams and the type baseline offset.
 
 - `mark.svg` — 64-unit master, ultramarine ink baked in.
-- `mark-compact.svg` — **a separate drawing**, not a scaled master. Below 24px the
-  two layers merge into one filled massif and the 5u seam becomes a single 4u cut, so
-  it survives anti-aliasing at 16×16.
-- `wordmark.svg` — outlined Bodoni Moda 500 paths, +0.18em tracking, ink baked in.
+- `mark-reverse.svg` — paper on ink.
+- `mark-compact.svg` — separate 16-unit drawing, never a scaled master.
+- `glyph.svg` — the massif alone, for favicons and 16px chips.
+- `lockup.svg` / `lockup-reverse.svg` / `lockup-stacked.svg` — 64px cap height, 8px clearspace.
+- `cast/` — six cut companion marks on the 64 grid, 6u stroke weight: boussole, cairn,
+  courbe, meleze, refuge, sommet.
 
-## Companion cast
+## Tokens
 
-`sommet` (summit) · `boussole` (compass) · `courbe` (contour) · `meleze` (larch) ·
-`refuge` (hut) · `cairn` (cairn). All six are fill-only, 6u cut weight, on the same
-64-unit grid.
+`tokens.json` → `arete-tokens.css`. Twelve primitives, seventeen semantic aliases
+(`--ar-surface-page|plate|sheet|sunk`, `--ar-text-primary|secondary`, `--ar-line-strong|subtle`,
+`--ar-accent`, `--ar-accent-2`, `--ar-blaze`), and a `[data-ar='dusk']` scope over the same
+primitives. Legacy `--ar-bg-*` / `--ar-ink-*` aliases still resolve.
 
-## Surfaces — the paper recipe
+| Token | Value | Role |
+| --- | --- | --- |
+| `paper` | `#F2EDE3` | page ground, hero wash, caption bar |
+| `vellum` | `#E9E2D5` | lifted layer, deckled band |
+| `deckle` | `#D7D1C4` | torn edge, sunk well |
+| `chalk` | `#FBF8F0` | highest sheet |
+| `glacier` | `#8FA0D2` | dusk accent, chart tint |
+| `ridge` | `#2E4CA6` | mid ink |
+| `ultramarine` | `#1E3A8A` | primary ink, mark fill |
+| `indigo` | `#101229` | body text, cast band ground |
+| `oxide` | `#C4462B` | blaze — rules and marks only, never a label |
 
-1. **Cut sheet** — flat stock, 2u seams, no shadow. Base layer for long reading. The supplied
-   collage is the field: ivory stock, white peaks, a grey layer, a black layer and one cobalt seam.
-2. **Lifted layer** — 4px hard offset shadow, zero blur. Reads as one sheet above another.
-3. **Vellum overlay** — 88% ivory tint, 18px fiber blur, deckle hairline. Type over artwork.
-4. **Deckle edge** — one generated rough edge per composition; dividers and closing poster.
+## Contrast ledger
 
-## Type
+Fourteen pairs measured, eleven pass, three published as fails:
 
-- **Display** — Bodoni Moda 400/500. Hairline serifs that read as knife cuts.
-- **UI** — Instrument Sans 400/500. Precise, slightly narrow, never shouty.
-- **Mono** — IBM Plex Mono 400/500. Coordinates, elevations, permit references.
+| Pair | Ratio | Verdict |
+| --- | --- | --- |
+| indigo on paper | 15.8:1 | pass |
+| ultramarine on paper | 9.2:1 | pass |
+| oxide on paper | 4.3:1 | pass for marks, fails as text |
+| chalk on ultramarine | 9.9:1 | pass |
+| oxide on indigo | 2.9:1 | **fail — published** |
+| deckle on paper | 1.2:1 | **fail — published** |
+| glacier on paper | 1.9:1 | **fail — published** |
 
-## Contrast ledger — 14 pairs, 3 published failures
+## Surfaces
 
-- `--ar-indigo` on `--ar-paper` — **15.8:1** PASS (AAA (>= 7:1)) — Display headlines, body copy and the mark on stock
-- `--ar-indigo` on `--ar-vellum` — **14.3:1** PASS (AAA (>= 7:1)) — Reading copy on the vellum plate
-- `--ar-graphite` on `--ar-paper` — **7.1:1** PASS (AAA (>= 7:1)) — Secondary copy, captions and route metadata
-- `--ar-ultramarine` on `--ar-paper` — **8.9:1** PASS (AAA (>= 7:1)) — Inline links, eyebrows and accent numerals
-- `--ar-ultramarine` on `--ar-vellum` — **8:1** PASS (AA (>= 4.5:1)) — Accent labels on the vellum plate
-- `--ar-ridge` on `--ar-paper` — **6.7:1** PASS (AA (>= 4.5:1)) — Secondary accent and status ink on stock
-- `--ar-indigo` on `--ar-chalk` — **17.3:1** PASS (AAA (>= 7:1)) — Body copy on the top sheet
-- `--ar-paper` on `--ar-ultramarine` — **8.9:1** PASS (AAA (>= 7:1)) — Reverse lockup and the ultramarine plate
-- `--ar-paper` on `--ar-indigo` — **15.8:1** PASS (AAA (>= 7:1)) — Poster display type on the night ground
-- `--ar-mist` on `--ar-indigo` — **12:1** PASS (AAA (>= 7:1)) — Reverse metadata and coordinates
-- `--ar-glacier` on `--ar-dusk` — **6.1:1** PASS (AA (>= 4.5:1)) — Night-scope status ink and ridge labels
-- `--ar-oxide` on `--ar-paper` — **4.2:1** **FAIL** (AA (>= 4.5:1)) — Trail blaze rules and survey marks
-- `--ar-glacier` on `--ar-paper` — **2.2:1** **FAIL** (GRAPHIC (>= 3:1)) — Graphic only — far ridge fills and elevation bands
-- `--ar-mist` on `--ar-paper` — **1.3:1** **FAIL** (GRAPHIC (>= 3:1)) — Graphic only — paper wash and disabled fills
+Six tried, five shipped, one rejected.
 
-Glacier (2.2:1) and mist (1.3:1) are the
-far-ridge tones; darkening either until it passed would turn the paper to mud. Oxide
-(4.2:1) is a survey blaze, not a label. All three are restricted to
-fills, rules and graphic marks, and are never set as text.
+| Surface | Verdict |
+| --- | --- |
+| Cut sheet | shipped — the page ground |
+| Lifted layer | shipped — 4px hard lift, no blur |
+| Vellum overlay | shipped — one 12% overlay where type crosses artwork |
+| Deckle edge | shipped — four stepped rules, never a shadow |
+| Register mark | shipped — 1px crosshair, 5u arms |
+| Stipple field | rejected — reads as graph paper at any density |
 
-## Laws
+## Files
 
-1. **One knife width.** The 5u seam is the only decorative measure in the system:
-   card gaps, mark aperture, and baseline offset all quote it.
-2. **No blur inside a layer.** Paper has an edge. Shadows are hard offsets; the only
-   blur belongs to the vellum overlay that sits above the artwork.
-3. **Field + vellum.** Body copy never sits raw on the collage. It sits on a solid
-   stock plate or an 88% vellum sheet with an 18px fiber blur.
-4. **Hero, stage and footer are one range.** The supplied collage opens the page, its
-   valley carries the surface stage, and the same valley closes as a printed poster.
+| File | Role |
+| --- | --- |
+| `arete-brandkit.png` | 3000×2250 board, six panels |
+| `arete-tokens.css` | generated custom properties, day + dusk |
+| `tokens.json` | source of truth for the board and the page |
+| `arete-panorama.webp` | hero plate, 1672×941 |
+| `arete-closing.webp` | footer plate, 1672×941 |

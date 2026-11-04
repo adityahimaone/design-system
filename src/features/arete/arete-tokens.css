@@ -1,7 +1,7 @@
 /* ==========================================================================
-   ARÊTE DESIGN SYSTEM · TOKENS (v1.0 · Case 18)
-   Paper-cut alpine · every layer is a cut
-   Layer 1 primitives never flip. Only the semantic scope moves at dusk.
+   ARÊTE DESIGN SYSTEM · TOKENS (v2.0 · Case 18)
+   Paper & ink · every layer is a cut
+   Layer 1 primitives never move between scopes. Only the semantic scope does.
    ========================================================================== */
 
 :root {
@@ -19,12 +19,12 @@
   --ar-oxide: #C4462B;
   --ar-dusk: #1A1F4A;
 
-  /* 1b · Perceptual strings (oklch) */
+  /* 1b · Perceptual strings */
   --ar-oklch-paper: oklch(0.947 0.014 84.6);
   --ar-oklch-vellum: oklch(0.915 0.019 83.1);
   --ar-oklch-deckle: oklch(0.862 0.019 86.2);
   --ar-oklch-chalk: oklch(0.979 0.011 89.7);
-  --ar-oklch-mist: oklch(0.861 0.040 274.4);
+  --ar-oklch-mist: oklch(0.861 0.04 274.4);
   --ar-oklch-glacier: oklch(0.711 0.076 269.9);
   --ar-oklch-ridge: oklch(0.447 0.149 266.4);
   --ar-oklch-ultramarine: oklch(0.379 0.138 265.5);
@@ -33,75 +33,66 @@
   --ar-oklch-oxide: oklch(0.565 0.166 33.7);
   --ar-oklch-dusk: oklch(0.262 0.079 274.6);
 
-  /* 2 · Semantic — ivory stock scope (default) */
-  --ar-bg-canvas: var(--ar-paper);
-  --ar-bg-surface: var(--ar-vellum);
-  --ar-bg-elevated: var(--ar-chalk);
-  --ar-bg-sunk: var(--ar-deckle);
-  --ar-ink-primary: var(--ar-indigo);
-  --ar-ink-secondary: var(--ar-graphite);
-  --ar-ink-tertiary: var(--ar-deckle);
-  --ar-ink-reverse: var(--ar-paper);
-  --ar-border-subtle: rgba(16, 18, 41, 0.16);
-  --ar-border-strong: rgba(16, 18, 41, 0.34);
-  --ar-border-focus: var(--ar-ultramarine);
-  --ar-accent-primary: var(--ar-ultramarine);
-  --ar-accent-secondary: var(--ar-ridge);
-  --ar-accent-light: var(--ar-glacier);
+  /* 2 · Semantic — ivory stock (day scope, default) */
+  --ar-surface-page: var(--ar-paper);
+  --ar-surface-plate: var(--ar-chalk);
+  --ar-surface-sheet: var(--ar-vellum);
+  --ar-surface-sunk: var(--ar-deckle);
+  --ar-text-primary: var(--ar-indigo);
+  --ar-text-secondary: var(--ar-graphite);
+  --ar-line-strong: rgba(16, 18, 41, 0.34);
+  --ar-line-subtle: rgba(16, 18, 41, 0.14);
+  --ar-accent: var(--ar-ultramarine);
+  --ar-accent-2: var(--ar-ridge);
   --ar-blaze: var(--ar-oxide);
 
-  /* 3 · Typography */
+  /* legacy aliases kept so older sections of the page keep resolving */
+  --ar-bg-canvas: var(--ar-surface-page);
+  --ar-bg-surface: var(--ar-surface-sheet);
+  --ar-bg-elevated: var(--ar-surface-plate);
+  --ar-ink-primary: var(--ar-text-primary);
+  --ar-ink-secondary: var(--ar-text-secondary);
+  --ar-accent-primary: var(--ar-accent);
+  --ar-accent-secondary: var(--ar-accent-2);
+
+  /* 3 · Typography — three voices, no fourth */
   --ar-font-display: 'Bodoni Moda', 'Didot', Georgia, serif;
   --ar-font-sans: 'Instrument Sans', system-ui, -apple-system, sans-serif;
   --ar-font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
 
-  /* 4 · Physics & tactility — knife-cut, never rounded */
-  --ar-radius-0: 0px;
-  --ar-radius-xs: 2px;
-  --ar-radius-sm: 4px;
-  --ar-radius-pill: 999px;
+  /* 4 · Physics — the knife */
+  --ar-radius: 0px;
+  --ar-radius-plate: 0px;
+  --ar-rule: 1px;
   --ar-seam: 5px;
-  --ar-shadow-sheet: 4px 4px 0 rgba(16, 18, 41, 0.12);
-  --ar-shadow-lift: 8px 8px 0 rgba(16, 18, 41, 0.14);
-  --ar-shadow-plate: 0 1px 0 rgba(16, 18, 41, 0.08), 10px 14px 0 -6px rgba(16, 18, 41, 0.1);
-  --ar-ease-cut: cubic-bezier(0.2, 0.9, 0.2, 1);
-  --ar-transition: 260ms var(--ar-ease-cut);
-
-  /* 5 · Paper surfaces (component layer) */
-  --ar-vellum-tint: 88%;
-  --ar-vellum-blur: 18px;
-  --ar-sheet-offset: 5px;
-  --ar-sheet-shadow: 4px;
+  --ar-lift: 4px;
+  --ar-dur: 140ms;
+  --ar-ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --ar-shadow-lift: 4px 4px 0 rgba(16, 18, 41, 0.12);
+  --ar-shadow-plate: 8px 8px 0 rgba(16, 18, 41, 0.1);
 }
 
-/* 2 · Semantic — ultramarine dusk scope */
-[data-ar='dusk'],
-.ar[data-ar='dusk'] {
-  --ar-bg-canvas: #0C0E22;
-  --ar-bg-surface: #141733;
-  --ar-bg-elevated: #1D2144;
-  --ar-bg-sunk: #080A1A;
-  --ar-ink-primary: #F3EEE3;
-  --ar-ink-secondary: #B9BFDD;
-  --ar-ink-tertiary: #59608C;
-  --ar-ink-reverse: #0C0E22;
-  --ar-border-subtle: rgba(243, 238, 227, 0.18);
-  --ar-border-strong: rgba(243, 238, 227, 0.36);
-  --ar-accent-primary: #8C9CE0;
-  --ar-accent-secondary: #C6CDF1;
-  --ar-blaze: #E0664A;
-  --ar-shadow-sheet: 4px 4px 0 rgba(0, 0, 0, 0.4);
-  --ar-shadow-lift: 8px 8px 0 rgba(0, 0, 0, 0.48);
-  --ar-shadow-plate: 0 1px 0 rgba(0, 0, 0, 0.4), 10px 14px 0 -6px rgba(0, 0, 0, 0.36);
-}
+/* 2 · Semantic — ultramarine dusk. A scope, never a second palette. */
+[data-ar='dusk'] {
+  --ar-surface-page: #0C0E22;
+  --ar-surface-plate: #141733;
+  --ar-surface-sheet: #1D2144;
+  --ar-surface-sunk: #090B1A;
+  --ar-text-primary: #F3EEE3;
+  --ar-text-secondary: #B9BFDD;
+  --ar-line-strong: rgba(243, 238, 227, 0.34);
+  --ar-line-subtle: rgba(243, 238, 227, 0.14);
+  --ar-accent: #8C9CE0;
+  --ar-accent-2: #C6CDF1;
+  --ar-blaze: #E0654A;
 
-/* 6 · Type scale */
-:root {
-  --ar-t-hero: clamp(3rem, 5.4vw + 1rem, 5.4rem);
-  --ar-t-h1: clamp(2.1rem, 3.3vw + 0.5rem, 3.25rem);
-  --ar-t-h2: clamp(1.4rem, 1.9vw + 0.25rem, 1.95rem);
-  --ar-t-lead: clamp(1.12rem, 1.25vw, 1.32rem);
-  --ar-t-body: 1rem (16px);
-  --ar-t-small: 0.86rem (13.8px);
-  --ar-t-micro: 0.6875rem (11px);
+  --ar-bg-canvas: var(--ar-surface-page);
+  --ar-bg-surface: var(--ar-surface-sheet);
+  --ar-bg-elevated: var(--ar-surface-plate);
+  --ar-ink-primary: var(--ar-text-primary);
+  --ar-ink-secondary: var(--ar-text-secondary);
+  --ar-accent-primary: var(--ar-accent);
+  --ar-accent-secondary: var(--ar-accent-2);
+  --ar-shadow-lift: 4px 4px 0 rgba(0, 0, 0, 0.42);
+  --ar-shadow-plate: 8px 8px 0 rgba(0, 0, 0, 0.36);
 }

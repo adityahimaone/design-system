@@ -1,0 +1,938 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import tokens from '@/features/mullion/tokens.json'
+import { CAST, GLYPH_PATH, MARK_PATH, COMPACT_PATH } from '@/features/mullion/mullion-data'
+import '@/features/mullion/mullion-tokens.css'
+import '@/features/mullion/mullion-page.css'
+
+const B = '/brand/mullion'
+const primitives = tokens.primitives
+const contrast = tokens.contrast
+const fails = contrast.filter((c) => !c.pass)
+
+const NAV = [
+  ['premise', 'Premise', 'The light, not the floor area'],
+  ['mark', 'Mark', 'Two masses, one street'],
+  ['colour', 'Colour', 'Twelve primitives, five failures'],
+  ['surfaces', 'Surfaces', 'Four shipped, two rejected'],
+  ['type', 'Type', 'Sora, Schibsted, Geist Mono'],
+  ['kit', 'Kit', 'Four controls, all panes'],
+  ['tokens', 'Tokens', 'Five sheets, two scopes'],
+] as const
+
+const PREMISE = [
+  {
+    k: 'Belief',
+    v: 'The glass is the product. A tenant is not buying a view — they are buying the light that arrives through the pane at a specific hour, and every decision after that is about not getting in its way.',
+  },
+  {
+    k: 'Enemy',
+    v: 'The curtain-wall render. A tower sold from a CGI where every floor is empty, every pane is the same blue, and the lobby has a tree in it that has never been watered.',
+  },
+  {
+    k: 'Material',
+    v: 'Hazy sky #DEE1E6, a pane at 16% white with a real 26px backdrop blur, a 1px rim that catches the light, a 22px squircle, and one red — #B01B26, sampled from 26,437 pixels of the bus in the second photograph, the only warm object in all three.',
+  },
+  {
+    k: 'Reject it when',
+    v: 'The buyer needs a building to look heavy — a bank, a courthouse, a headquarters that has to outlive its lease. Glass is a bad material for permanence, and this identity does not argue otherwise.',
+  },
+]
+
+const DECISIONS = [
+  {
+    title: 'The pane is 16% white, and that is the whole argument',
+    decision:
+      'Every panel, rail, chip and control is a translucent fill with a real backdrop blur behind it — backdrop-filter: blur(26px) saturate(1.8) — never an opaque card with a picture of glass on it.',
+    because:
+      'The photographs are the argument. If a pane is opaque the city stops moving behind it, and the page becomes a set of pale cards. The blur is the only thing here that cannot be faked in a screenshot, so it has to be real everywhere it appears.',
+    notWhen:
+      'Print, or any surface where the field behind the pane is a flat colour. A pane over a flat field is a lighter rectangle, and the blur costs a frame for nothing.',
+    breaksNext:
+      'Raising the fill to 60% so the type is easier to read. At that point it is a card, and the tower behind it is gone.',
+  },
+  {
+    title: 'A pane is an edge, not a shape',
+    decision:
+      'The fill is never asked to separate anything. Every pane carries an inset 1px rim of ink at 9%, and every division inside a pane is a 1px mullion drawn with an outset shadow — never a gap.',
+    because:
+      'The pane edge is 1.31:1 against the sky, which is published as a failure in the ledger below. Glass has no contrast of its own; it borrows the field behind it. So the rim does the work and the mullions are the frame — exactly as they are on the building.',
+    notWhen:
+      'A field dark enough that the fill separates on its own. Even then the rim stays, because the rim is the brand.',
+    breaksNext:
+      'Replacing a mullion with a gap and an opaque filler. The filler is a card, and the glass becomes a picture of glass.',
+  },
+  {
+    title: 'One red, taken off the bus',
+    decision:
+      'The only chromatic colour in the system is #B01B26, sampled from the bus that drives under the glass in the second photograph. It marks the active row, the failing contrast pair, the signal text, and the pressed state of every control.',
+    because:
+      'Two of the three photographs are blue-grey and hazy, and a brand built only on haze has no way to say here. The bus is the one warm object in the set, so the accent is documentary rather than decorative — it is already in the city the brand is selling.',
+    notWhen:
+      'On the night ground, where the bus reads 2.76:1 and cannot carry type. After dark the signal moves to the specular glow of the glass edge.',
+    breaksNext:
+      'Adding a second warm colour for warnings. One red used for the active state is legible; one red used for both action and alarm is not.',
+  },
+  {
+    title: 'The rail is a mullion',
+    decision:
+      'Each section is set into a 176px rail carrying a glass plate with its number, name and note, and the rail’s right edge is a 1px vertical line running the full height of the section.',
+    because:
+      'A mullion is the vertical bar between two panes. Making the navigation the same object as the frame is the cheapest way to prove the identity is structural rather than painted on — and it holds the reading column at 66 characters instead of letting it drift with the viewport.',
+    notWhen: 'A page with more than nine sections, where a rail per section becomes a list of rails.',
+    breaksNext:
+      'Letting the rail scroll with the content. Then it is a caption, and the page has no frame at all.',
+  },
+]
+
+const SURFACES = [
+  {
+    id: 'pane',
+    title: 'Glass pane',
+    verdict: 'Shipped — the page',
+    note: '16% white over a painted field, 26px blur at 1.8 saturation, 1px ink rim, 22px squircle. The default for every panel, rail and control — and the reason type is ink rather than white: a pane over a pale sky is a pale surface.',
+    demo: 'pane',
+  },
+  {
+    id: 'plate',
+    title: 'Night pane',
+    verdict: 'Shipped — footer and reverse artwork',
+    note: 'The same recipe over the deep ground with the fill dropped to 7% and the rim lifted to 20% white. The fill has to fall because the ground is already dark; the rim has to rise because 1.11:1 is all the separation there is.',
+    demo: 'plate',
+  },
+  {
+    id: 'bays',
+    title: 'Bay grid',
+    verdict: 'Shipped — tables and card grids',
+    note: 'One pane divided by 1px mullions drawn as outset shadows and clipped at the rim. No gap and no opaque filler, so the glass stays continuous across the whole grid instead of becoming four separate cards.',
+    demo: 'bays',
+  },
+  {
+    id: 'photo',
+    title: 'Photographic field',
+    verdict: 'Shipped — hero and footer',
+    note: 'The field itself with no pane on it: a full-screen plate under a 90° scrim, and a portrait plate carrying the reverse lockup. The only surface on the page that is not glass, which is what makes the glass visible.',
+    demo: 'photo',
+  },
+  {
+    id: 'frost',
+    title: 'Frosted pane',
+    verdict: 'Rejected',
+    note: '74% white at 40px blur. It made the type trivially legible and turned the towers behind it into grey noise — the photograph stopped being a place. Glass at this weight is a wall with a window printed on it.',
+    demo: 'frost',
+    rejected: true,
+  },
+  {
+    id: 'glow',
+    title: 'Neon bloom',
+    verdict: 'Rejected',
+    note: 'A blurred red bloom behind a pane, the stock move of every glassmorphism tutorial. It invented a light source that none of the three photographs contain, and it made the bus — the one real red in the set — look like a render.',
+    demo: 'glow',
+    rejected: true,
+  },
+]
+
+const TYPE_SCALE = [
+  { role: 'Display / 01', face: 'Sora 500', size: 'clamp(46–92)', lead: '0.90', track: '−0.045em', sample: 'The city,', cls: 'ml-t-display', px: 72 },
+  { role: 'Display / 02', face: 'Sora 500', size: 'clamp(28–42)', lead: '1.06', track: '−0.036em', sample: 'One floor up', cls: 'ml-t-display', px: 38 },
+  { role: 'Display / 03', face: 'Sora 500', size: '15.5px', lead: '1.30', track: '−0.014em', sample: 'A heading inside a pane', cls: 'ml-t-display', px: 15.5 },
+  { role: 'Reading / 01', face: 'Schibsted Grotesk 400', size: '17.5px', lead: '1.60', track: '0', sample: 'The light is the only tenant that never moves out.', cls: 'ml-t-reading', px: 17.5 },
+  { role: 'Reading / 02', face: 'Schibsted Grotesk 400', size: '15px', lead: '1.58', track: '0', sample: '1,240 m², twelve bays, handed over fitted in week one.', cls: 'ml-t-reading', px: 15 },
+  { role: 'Mono / 01', face: 'Geist Mono 400', size: '10.5px', lead: '1.70', track: '0.10em', sample: 'ML-22 · FL 08 · 1,240 M²', cls: 'ml-t-mono', px: 10.5 },
+]
+
+const FLOORS = [
+  ['ML-08', '1,240', '12', 'Available'],
+  ['ML-11', '980', '9', 'Fitted'],
+  ['ML-14', '1,240', '12', 'Fitted'],
+  ['ML-05', '760', '7', 'Reserved'],
+]
+
+const GAPS = [
+  { k: 'Verified', v: '15 contrast pairs computed from the same hex values the CSS loads, 5 published failures, 12 primitives, a 64-unit mark with a separate 16px drawing, and 6 cast marks on one cut weight.' },
+  { k: 'Verified', v: 'Every pane on this page has a painted field behind it — a photograph or a gradient — so the blur samples something real. There is no opaque card pretending to be glass anywhere in the page stylesheet.' },
+  { k: 'Verified', v: 'Dual scope is real. Primitives never flip, the night ground is the city at 03:00 rather than black, the signal moves from the bus to the glow because 2.76:1 cannot carry type, and Section 07 renders five sheets with both scopes present.' },
+  { k: 'Not verified', v: 'Backdrop blur is not free. This page paints 22 panes, and on a low-end phone a full-page backdrop-filter pass can cost frames during scroll. A production build would drop to four panes and pre-blur the rest into the field.' },
+  { k: 'Known gap', v: 'There is no fallback for backdrop-filter: none. Without it the panes become 16% white rectangles and the surface collapses, because the fill is too weak to survive on its own. That is the honest cost of the material.' },
+  { k: 'Open', v: 'The mark has not been tested below 12px. At 16px it swaps to mark-compact by hand, and that swap is a rule in the docs rather than a token.' },
+]
+
+const TOKENS_PRIM = `/* 1 · primitive — the city, named once */
+.ml-scope {
+  --ml-sky: #DEE1E6;      /* hazy sky — the day ground */
+  --ml-haze: #F4F6F9;     /* light bloom behind a pane */
+  --ml-veil: #FFFFFF;     /* the pane — always translucent */
+  --ml-mist: #C9D4DF;     /* the blue in the glass */
+  --ml-steel: #7C8B9C;    /* the mullion frame */
+  --ml-slate: #4B5866;    /* secondary text */
+  --ml-ink: #0E1620;      /* type on glass, never black */
+  --ml-bus: #B01B26;      /* the bus, sampled at 26,437 px */
+  --ml-flare: #E23B3B;    /* the lit bus panel */
+  --ml-glow: #A8CDEA;     /* specular edge, night signal */
+  --ml-deep: #08101A;     /* the city at 03:00 */
+  --ml-deep-plate: #111C28;
+}`
+const TOKENS_DAY = `.ml-scope {
+  --ml-surface-page: var(--ml-sky);
+  --ml-surface-plate: var(--ml-haze);
+  --ml-text-primary: var(--ml-ink);
+  --ml-text-secondary: var(--ml-slate);
+  --ml-signal: var(--ml-bus);
+
+  --ml-glass-fill: color-mix(in srgb, var(--ml-veil) 16%, transparent);
+  --ml-glass-edge: color-mix(in srgb, var(--ml-veil) 62%, transparent);
+  --ml-glass-rim: color-mix(in srgb, var(--ml-ink) 9%, transparent);
+  --ml-glass-blur: blur(26px) saturate(1.8);
+}`
+const TOKENS_NIGHT = `.ml-scope[data-ml-theme='night'] {
+  --ml-surface-page: var(--ml-deep);
+  --ml-surface-plate: var(--ml-deep-plate);
+  --ml-text-primary: var(--ml-haze);
+  --ml-signal: var(--ml-glow);   /* the bus reads 2.76:1 here */
+
+  --ml-glass-fill: color-mix(in srgb, var(--ml-veil) 7%, transparent);
+  --ml-glass-edge: color-mix(in srgb, var(--ml-veil) 26%, transparent);
+  --ml-glass-rim: color-mix(in srgb, var(--ml-veil) 20%, transparent);
+}`
+const TOKENS_COMP = `.ml-pane {
+  background: var(--ml-glass-sheen), var(--ml-glass-fill);
+  backdrop-filter: var(--ml-glass-blur);      /* 26px, 1.8 */
+  border-radius: var(--ml-radius);            /* 22px */
+  box-shadow: var(--ml-glass-shadow),
+              inset 0 0 0 1px var(--ml-glass-rim);
+}
+.ml-bay {                                     /* the mullion */
+  box-shadow: 1px 0 0 var(--ml-line-subtle),
+              0 1px 0 var(--ml-line-subtle);
+}
+.ml-btn {
+  background: var(--ml-btn-bg);               /* ink — the one opaque object */
+  color: var(--ml-btn-text);                  /* haze, 17.6:1 */
+  border-radius: var(--ml-radius-sm);
+}`
+const TOKENS_PHYS = `/* 5 · physics — light settles, it does not snap */
+--ml-radius: 22px;     /* every pane */
+--ml-radius-sm: 12px;  /* every control */
+--ml-hair: 1px;        /* every rim and every mullion */
+--ml-seam: 16px;
+--ml-ease: cubic-bezier(0.16, 0.84, 0.44, 1);
+--ml-dur: 260ms;`
+
+const title = 'Mullion — Case 22 | Glass tower floors & liquid glass design system'
+const description =
+  'Mullion: whole floors in glass towers, handed over fitted. A hazy sky ground, panes at 16% white with a real 26px backdrop blur, 1px rims and 1px mullions, a 22px squircle, and one red sampled off the bus in the second photograph. A two-mass mark, six cast marks, twelve primitives, two scopes, and a contrast ledger that publishes the five pairs it fails.'
+---
+
+<Layout title={title} description={description} canonical="/design-system/mullion" image={`${B}/mullion-brandkit.png`}>
+  <link rel="icon" type="image/svg+xml" href={`${B}/icon.svg`} />
+  <link rel="apple-touch-icon" href={`${B}/icon.svg`} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300..700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet" />
+
+  <div class="ml-root ml-scope" data-ml-theme="day" id="top">
+    <a class="ml-skip" href="#main">Skip to the system</a>
+
+    <header class="ml-top">
+      <div class="ml-shell ml-top__in">
+        <a class="ml-top__brand" href="#top" aria-label="Mullion — top">
+          <svg viewBox="0 0 64 64" aria-hidden="true" fill="currentColor"><Fragment set:html={MARK_PATH} /></svg>
+          <b>Mullion</b>
+        </a>
+        <nav class="ml-top__nav" aria-label="Sections">
+          {NAV.map(([id, label]) => <a href={`#${id}`}>{label}</a>)}
+        </nav>
+        <button class="ml-toggle" type="button" data-theme-toggle aria-pressed="false">
+          <i aria-hidden="true"></i><span data-theme-label>Day</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main">
+      {/* ── Hero · E · full-screen plate · 90deg deep scrim · glass directory ── */}
+      <section class="ml-hero">
+        <img
+          class="ml-hero__bg"
+          src={`${B}/towers-up.jpg`}
+          alt="Looking straight up from the pavement: four glass towers converge on a pale, hazy sky, and one dark grid on the right has its windows lit amber."
+          width="1824"
+          height="1216"
+        />
+        <div class="ml-hero__scrim" aria-hidden="true"></div>
+
+        <div class="ml-shell ml-hero__in">
+          <div class="ml-hero__top">
+            <div class="ml-hero__copy">
+              <h1>The city,<br />one floor up.</h1>
+              <p class="ml-hero__lede">
+                Mullion lets whole floors in glass towers and hands them over fitted — partitions,
+                cabling, kitchen, the lot — so a company can move in on a Monday and be working by
+                ten. You are not buying square metres. You are buying the twenty minutes when the low
+                sun comes through the pane and the floor is the brightest thing in the district.
+              </p>
+              <div class="ml-hero__acts">
+                <a class="ml-btn" href="#kit"><i aria-hidden="true"></i>See floor 08</a>
+                <a class="ml-hero__link" href="#mark">See the mark →</a>
+              </div>
+            </div>
+
+            <aside class="ml-hero__dir" aria-label="Floor 08 at a glance">
+              <span class="cap">Floor 08 · available</span>
+              <dl>
+                <div><dt>Area</dt><dd>1,240 m²</dd></div>
+                <div><dt>Bays</dt><dd>12 at 7.2 m</dd></div>
+                <div><dt>Ceiling</dt><dd>3.2 m clear</dd></div>
+                <div><dt>Glazing</dt><dd>Triple, low-iron</dd></div>
+                <div><dt>Handover</dt><dd>Fitted, week 1</dd></div>
+              </dl>
+            </aside>
+          </div>
+
+          <div class="ml-hero__foot">
+            <span>Plate 01 · looking up · 08:20</span>
+            <span><b>Three plates</b> · two towers, one bus</span>
+            <span>51.52° N · 0.08° W</span>
+          </div>
+        </div>
+      </section>
+
+      {/* 01 · Premise */}
+      <section class="ml-sec" id="premise">
+        <div class="ml-sec__wrap">
+          <div class="ml-rail">
+            <div class="ml-rail__pane ml-pane">
+              <span class="n">01</span>
+              <span class="lbl">Premise</span>
+              <span class="note">The light, not the floor area</span>
+              <span class="tick" aria-hidden="true">{NAV.map((_, i) => <i class={i === 0 ? 'on' : ''} />)}</span>
+            </div>
+          </div>
+
+          <div class="ml-body">
+            <h2>A floor is not square metres. It is the hour the light arrives.</h2>
+            <p class="big">
+              Mullion takes whole floors in glass towers and hands them over fitted. The product is
+              not the tower and it is not the view — it is the twenty minutes at 08:20 when the low
+              sun comes through the pane and the floor is the brightest thing in the district. Every
+              decision in this system is about not getting in the way of that, which is why the
+              surface is glass and the type is ink.
+            </p>
+
+            <dl class="ml-two">
+              {PREMISE.map((p) => (
+                <div><dt>{p.k}</dt><dd>{p.v}</dd></div>
+              ))}
+            </dl>
+
+            <div class="ml-decs">
+              {DECISIONS.map((d) => (
+                <article class="ml-dec">
+                  <h3>{d.title}</h3>
+                  <dl>
+                    <dt>Decision</dt><dd>{d.decision}</dd>
+                    <dt>Because</dt><dd>{d.because}</dd>
+                    <dt>Not when</dt><dd>{d.notWhen}</dd>
+                    <dt>Breaks next</dt><dd>{d.breaksNext}</dd>
+                  </dl>
+                </article>
+              ))}
+            </div>
+
+            <figure class="ml-plate">
+              <div class="ml-plate__img" style="height:420px">
+                <img
+                  src={`${B}/city-expanse.jpg`}
+                  alt="From a high vantage above Shenzhen, a dense field of housing gives way to glass towers — one with a tapered spire — and then to water and a low ridge, all of it softened by haze."
+                  width="1920"
+                  height="1280"
+                  loading="lazy"
+                  style="object-position:center 58%"
+                />
+              </div>
+              <figcaption>
+                <b>Plate 02 · the field the panes are set into</b>
+                <span>
+                  Housing, then towers, then water, then haze. The sky in the upper third of this
+                  frame is where the day ground comes from — #DEE1E6, sampled at half the image
+                  height, not invented in a picker.
+                </span>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      {/* 02 · Mark */}
+      <section class="ml-sec" id="mark">
+        <div class="ml-sec__wrap">
+          <div class="ml-rail">
+            <div class="ml-rail__pane ml-pane">
+              <span class="n">02</span>
+              <span class="lbl">Mark</span>
+              <span class="note">Two masses, one street</span>
+              <span class="tick" aria-hidden="true">{NAV.map((_, i) => <i class={i === 1 ? 'on' : ''} />)}</span>
+            </div>
+          </div>
+
+          <div class="ml-body">
+            <h2>Two masses, one street, and nothing drawn in between.</h2>
+            <p class="big">
+              The mark is massing, not silhouette. A 22-unit shaft and a 16-unit mass standing on one
+              baseline, with an 8-unit street between them — the pair sits from 9 to 55 across a
+              64-unit box, so the mark is optically centred and the street is the only void in the
+              identity. Fill only. No stroke, no outline, no third tower, and never two masses of the
+              same height: the difference between them is the skyline.
+            </p>
+
+            <div class="ml-marks">
+              <div class="ml-mark">
+                <span>Primary</span>
+                <svg viewBox="0 0 64 64" fill="currentColor" aria-label="Mullion primary mark"><Fragment set:html={MARK_PATH} /></svg>
+              </div>
+              <div class="ml-mark ml-mark--ink">
+                <span>Reverse</span>
+                <img src={`${B}/mark-reverse.svg`} alt="Mullion reverse mark on deep" width="64" height="64" />
+              </div>
+              <div class="ml-mark ml-mark--field">
+                <span>Field</span>
+                <img src={`${B}/mark.svg`} alt="Mullion mark printed on the specular glow" width="64" height="64" />
+              </div>
+              <div class="ml-mark">
+                <span>Compact · 16–24px</span>
+                <svg viewBox="0 0 64 64" fill="currentColor" aria-label="Mullion compact mark"><Fragment set:html={COMPACT_PATH} /></svg>
+              </div>
+              <div class="ml-mark ml-mark--ink">
+                <span>Compact reverse</span>
+                <img src={`${B}/mark-compact-reverse.svg`} alt="Mullion compact reverse mark" width="64" height="64" />
+              </div>
+              <div class="ml-mark">
+                <span>Glyph · favicon</span>
+                <svg viewBox="0 0 64 64" fill="currentColor" aria-label="Mullion glyph"><Fragment set:html={GLYPH_PATH} /></svg>
+              </div>
+            </div>
+
+            <div class="ml-wordmark">
+              <div class="ml-wordmark__row">
+                <img src={`${B}/wordmark.svg`} alt="Mullion wordmark, Sora 500 outlined" width="232" height="52" />
+                <span>Outlined Sora 500 · −0.028em · no live type</span>
+              </div>
+              <div class="ml-wordmark__row ml-wordmark__row--rev">
+                <img src={`${B}/wordmark-reverse.svg`} alt="Mullion reverse wordmark on the deep ground" width="232" height="52" />
+                <span>Reverse · deep ground only</span>
+              </div>
+            </div>
+
+            <div class="ml-lock">
+              <div class="ml-lock__row">
+                <img src={`${B}/lockup.svg`} alt="Mullion horizontal lockup" width="175" height="64" />
+                <span>Horizontal · mark 40u, street 13u, cap height 21u</span>
+              </div>
+              <div class="ml-lock__row ml-lock__row--rev">
+                <img src={`${B}/lockup-reverse.svg`} alt="Mullion reverse lockup on the deep ground" width="175" height="64" />
+                <span>Reverse · the one lockup used on a photograph</span>
+              </div>
+              <div class="ml-lock__row ml-lock__row--stack">
+                <img src={`${B}/lockup-stacked.svg`} alt="Mullion stacked lockup" width="204" height="118" />
+                <span>Stacked · square formats only, never on a hoarding</span>
+              </div>
+            </div>
+
+            <div class="ml-scale">
+              {[96, 48, 32, 24, 16].map((s) => (
+                <figure>
+                  <svg viewBox="0 0 64 64" width={s} height={s} fill="currentColor" aria-label={`Mark at ${s} pixels`}>
+                    <Fragment set:html={s <= 16 ? COMPACT_PATH : MARK_PATH} />
+                  </svg>
+                  <figcaption>{s}px{s <= 16 ? ' · compact' : ''}</figcaption>
+                </figure>
+              ))}
+              <figure>
+                <svg viewBox="0 0 64 64" width="16" height="16" fill="currentColor" aria-label="Glyph at 16 pixels"><Fragment set:html={GLYPH_PATH} /></svg>
+                <figcaption>16px · glyph</figcaption>
+              </figure>
+            </div>
+
+            <div class="ml-castin">
+              <div class="ml-castin__head">
+                <b>The cast · six nouns off the building</b>
+                <span>64-unit grid · fill only</span>
+              </div>
+              <div class="ml-castin__grid">
+                {CAST.map((c) => (
+                  <div class="ml-castin__cell">
+                    <svg viewBox="0 0 64 64" fill="currentColor" aria-hidden="true"><Fragment set:html={c.path} /></svg>
+                    <b>{c.name}</b>
+                    <span>{c.note}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <dl class="ml-rules">
+              <div><dt>Clear space</dt><dd>3 units on all four sides, measured from the taller mass and from the baseline. The street inside the mark is 8 units and the clear space outside it is 3, so the gap can never be read as part of the mark.</dd></div>
+              <div><dt>Never</dt><dd>No third mass, no stroke, no perspective, no gradient behind the panes, and never two masses of equal height — the height difference is the skyline and the skyline is the mark.</dd></div>
+              <div><dt>Below 24px</dt><dd>Swap to <code>mark-compact</code>: the street widens to 10 units and both masses grow, so the gap survives a 16-pixel raster instead of closing into one block.</dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      {/* 03 · Colour */}
+      <section class="ml-sec" id="colour">
+        <div class="ml-sec__wrap">
+          <div class="ml-rail">
+            <div class="ml-rail__pane ml-pane">
+              <span class="n">03</span>
+              <span class="lbl">Colour</span>
+              <span class="note">Twelve primitives, five failures</span>
+              <span class="tick" aria-hidden="true">{NAV.map((_, i) => <i class={i === 2 ? 'on' : ''} />)}</span>
+            </div>
+          </div>
+
+          <div class="ml-body">
+            <h2>Twelve primitives, five published failures.</h2>
+            <p class="big">
+              Two greys sampled from the sky and the haze, the pane itself, the blue in the glass, the
+              mullion frame, ink, and the bus. Five of the fifteen pairs fail, and four of those
+              failures are the same fact said four ways: glass has no contrast of its own. They are
+              printed here with the job each one is still allowed to do, and every ratio is computed
+              from the same hex the CSS loads.
+            </p>
+
+            <div class="ml-swatch-grid">
+              {primitives.map((p) => (
+                <button class="ml-sw" type="button" data-copy={`--ml-${p.name}: ${p.value};`} title={`${p.name} — ${p.role}`}>
+                  <span class="ml-sw__chip" style={`background:${p.value}`}></span>
+                  <span class="ml-sw__meta">
+                    <span class="ml-sw__name">{p.name}</span>
+                    <span class="ml-sw__hex">{p.value}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            <div class="ml-pairs">
+              {contrast.map((c) => {
+                const a = primitives.find((p) => p.name === c.a)!
+                const b = primitives.find((p) => p.name === c.b)!
+                return (
+                  <div class:list={['ml-pair', !c.pass && 'ml-pair--fail']}>
+                    <span class="ml-pair__chips">
+                      <i style={`background:${a.value}`}></i><i style={`background:${b.value}`}></i>
+                    </span>
+                    <span class="ml-pair__name">
+                      {c.a} on {c.b}
+                      <small>{c.note}</small>
+                    </span>
+                    <span class="ml-pair__ratio">{c.ratio}:1 {c.pass ? '' : '· fail'}</span>
+                    <span class="ml-pair__job">{c.job}</span>
+                  </div>
+                )
+              })}
+            </div>
+            <p class="ml-sub">
+              {fails.length} pairs fail and are published rather than corrected. Veil on sky at
+              1.31:1 is the important one — the pane edge cannot separate itself from the day ground,
+              so every pane carries an ink rim at 9% and the rim, not the fill, is what you see.
+              Steel on sky at 2.66:1 makes the mullion frame graphic only. Mist on sky at 1.15:1 keeps
+              the blue in the glass as fill. Bus on deep at 2.76:1 is why the night scope hands the
+              signal to the glow. And deep-plate on deep at 1.11:1 means a night pane needs its rim
+              more than a day pane does.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 04 · Surfaces */}
+      <section class="ml-sec" id="surfaces">
+        <div class="ml-sec__wrap">
+          <div class="ml-rail">
+            <div class="ml-rail__pane ml-pane">
+              <span class="n">04</span>
+              <span class="lbl">Surfaces</span>
+              <span class="note">Four shipped, two rejected</span>
+              <span class="tick" aria-hidden="true">{NAV.map((_, i) => <i class={i === 3 ? 'on' : ''} />)}</span>
+            </div>
+          </div>
+
+          <div class="ml-body">
+            <h2>Six surfaces were tried. Four survived.</h2>
+            <p class="big">
+              Glass &amp; light is a material, not a filter. Each surface below had to do a real job
+              on this page — hold the hero, carry a table, sit over a photograph, divide a grid. The
+              two rejected ones failed the same test: they used glass to hide the city, and a pane
+              that hides what is behind it is a wall.
+            </p>
+
+            <div class="ml-surf">
+              {SURFACES.map((s) => (
+                <article class:list={['ml-sc', s.rejected && 'ml-sc--rej']}>
+                  <div class:list={['ml-sc__demo', `ml-demo-${s.demo}`]}>
+                    {s.demo === 'pane' && (
+                      <>
+                        <img class="ml-sc__field ml-sc__field--towers" src={`${B}/towers-up.jpg`} alt="The glass towers, seen from below." loading="lazy" width="1824" height="1216" />
+                        <span class="ml-sc__glass"><b>Floor 08</b>1,240 m² · 12 bays</span>
+                      </>
+                    )}
+                    {s.demo === 'plate' && (
+                      <span class="ml-sc__glass"><b>After dark</b>fill 7% · rim 20%</span>
+                    )}
+                    {s.demo === 'bays' && (
+                      <span class="ml-sc__glass ml-bays" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+                        <span class="ml-bay">ML-08</span><span class="ml-bay">1,240 m²</span>
+                        <span class="ml-bay">12 bays</span><span class="ml-bay">Fitted</span>
+                      </span>
+                    )}
+                    {s.demo === 'photo' && (
+                      <>
+                        <img class="ml-sc__field ml-sc__field--expanse" src={`${B}/city-expanse.jpg`} alt="The city from the ridge, softened by haze." loading="lazy" width="1920" height="1280" />
+                        <span class="ml-sc__cap">Plate 02 · no pane</span>
+                      </>
+                    )}
+                    {s.demo === 'frost' && (
+                      <>
+                        <img class="ml-sc__field ml-sc__field--bus" src={`${B}/bus-under-glass.jpg`} alt="The red bus under the faceted glass towers." loading="lazy" width="1266" height="1824" />
+                        <span class="ml-sc__glass"><b>74% white</b>40px blur</span>
+                      </>
+                    )}
+                    {s.demo === 'glow' && (
+                      <>
+                        <img class="ml-sc__field ml-sc__field--bus" src={`${B}/bus-under-glass.jpg`} alt="The red bus under the faceted glass towers." loading="lazy" width="1266" height="1824" />
+                        <span class="ml-sc__glass"><b>Neon bloom</b>invented light</span>
+                      </>
+                    )}
+                  </div>
+                  <div class="ml-sc__txt">
+                    <div class="ml-sc__head">
+                      <b>{s.title}</b>
+                      <span class="ml-sc__verdict">{s.verdict}</span>
+                    </div>
+                    <p>{s.note}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div class="ml-law">
+              <span class="tag">Law 01</span>
+              <p>
+                Glass has no contrast of its own. It borrows the field behind it, so every pane is
+                held by a <b>rim</b> and every division inside it is a <b>mullion</b>. Take the rim
+                away and the pane disappears; take the mullion away and the pane becomes a card.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 05 · Type */}
+      <section class="ml-sec" id="type">
+        <div class="ml-sec__wrap">
+          <div class="ml-rail">
+            <div class="ml-rail__pane ml-pane">
+              <span class="n">05</span>
+              <span class="lbl">Type</span>
+              <span class="note">Sora, Schibsted, Geist Mono</span>
+              <span class="tick" aria-hidden="true">{NAV.map((_, i) => <i class={i === 4 ? 'on' : ''} />)}</span>
+            </div>
+          </div>
+
+          <div class="ml-body">
+            <h2>One geometric sans, one grotesque, one mono.</h2>
+            <p class="big">
+              Sora carries display — a closed, architectural face whose counters read as windows at
+              92px. Schibsted Grotesk carries reading on a 66-character measure, because Sora’s
+              geometry is tiring at 16px and a floor plan needs to be read rather than admired. Geist
+              Mono carries every figure: areas, bay counts, contrast ratios, plate stamps.
+            </p>
+
+            <div class="ml-tscale">
+              {TYPE_SCALE.map((t) => (
+                <div class="ml-tscale__row">
+                  <div class="ml-tscale__meta">
+                    <b>{t.role}</b>
+                    {t.face}<br />{t.size} / {t.lead}<br />{t.track}
+                  </div>
+                  <div class={t.cls} style={`font-size:${t.px}px`}>{t.sample}</div>
+                </div>
+              ))}
+            </div>
+
+            <div class="ml-specs">
+              <div class="ml-spec">
+                <h3>Display</h3>
+                <p class="ml-t-display" style="font-size:30px;line-height:0.98">
+                  Two masses,<br />one street.
+                </p>
+              </div>
+              <div class="ml-spec">
+                <h3>Reading · 66ch</h3>
+                <p>
+                  The floor is handed over fitted: partitions set, cabling pulled, kitchen in, and
+                  the lights already on a sensor. The only thing a tenant brings is furniture and a
+                  name for the door, and the name is the part we cannot help with.
+                </p>
+              </div>
+              <div class="ml-spec">
+                <h3>Figures</h3>
+                <table>
+                  <thead><tr><th>Floor</th><th>m²</th><th>Bays</th></tr></thead>
+                  <tbody>
+                    <tr><td>08</td><td>1,240</td><td>12</td></tr>
+                    <tr><td>11</td><td>980</td><td>9</td></tr>
+                    <tr><td>14</td><td>1,240</td><td>12</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="ml-spec">
+                <h3>Labels</h3>
+                <p class="ml-t-mono" style="line-height:2.1;font-size:10.5px">
+                  ML-22 · FL 08 · 1,240 M²<br />PLATE 01 · LOOKING UP · 08:20<br />BUS · #B01B26
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 06 · Kit */}
+      <section class="ml-sec" id="kit">
+        <div class="ml-sec__wrap">
+          <div class="ml-rail">
+            <div class="ml-rail__pane ml-pane">
+              <span class="n">06</span>
+              <span class="lbl">Kit</span>
+              <span class="note">Four controls, all panes</span>
+              <span class="tick" aria-hidden="true">{NAV.map((_, i) => <i class={i === 5 ? 'on' : ''} />)}</span>
+            </div>
+          </div>
+
+          <div class="ml-body">
+            <h2>Four controls, all of them panes.</h2>
+            <p class="big">
+              Every control on this page is the same material as the page: a translucent fill, a 1px
+              rim, a 12px squircle. The primary button is the only opaque object in the kit — it is
+              ink, because an action on glass has to be the one thing that is not glass. Status chips
+              carry a lit window, because colour on its own is not a label.
+            </p>
+
+            <div class="ml-kit">
+              <div>
+                <h3>Buttons</h3>
+                <div class="ml-btns">
+                  <button class="ml-btn" type="button"><i aria-hidden="true"></i>Request floor 08</button>
+                  <button class="ml-btn ml-btn--glass" type="button">Download the fit-out spec</button>
+                  <button class="ml-btn ml-btn--glass ml-btn--sm" type="button">Copy ML-08</button>
+                  <button class="ml-btn" type="button" aria-disabled="true">Floor 14 · reserved</button>
+                </div>
+                <p class="ml-kitnote">
+                  One opaque control, and it is the action. The glass button is the page material with
+                  a rim around it, so nothing changes under your finger except the fill. On the hero’s
+                  dark plate the same button takes the specular glow instead — ink on ink is a hole,
+                  and an action on a photograph has to be the lit thing.
+                </p>
+              </div>
+
+              <div>
+                <h3>Chips</h3>
+                <div class="ml-tags">
+                  <span class="ml-tag ml-tag--live"><i aria-hidden="true"></i>Available</span>
+                  <span class="ml-tag ml-tag--done"><i aria-hidden="true"></i>Fitted</span>
+                  <span class="ml-tag"><i aria-hidden="true"></i>Reserved</span>
+                  <span class="ml-tag ml-tag--wait"><i aria-hidden="true"></i>Handover week 1</span>
+                </div>
+                <div class="ml-tags" style="margin-top:9px">
+                  <span class="ml-tag ml-tag--on">All · 4</span>
+                  <span class="ml-tag">Fitted · 2</span>
+                  <span class="ml-tag">900+ m² · 3</span>
+                </div>
+                <p class="ml-kitnote">
+                  The marker is a 6px window, lit or unlit. A filter chip carries a count, because a
+                  filter that hides rows has to say how many it hides.
+                </p>
+              </div>
+
+              <div>
+                <h3>Fields</h3>
+                <div class="ml-fieldset">
+                  <label class="ml-label" for="ml-ref">Floor reference</label>
+                  <input class="ml-input" id="ml-ref" value="ML-8" aria-invalid="true" aria-describedby="ml-err" />
+                  <div class="ml-err" id="ml-err" role="alert">
+                    <b>2 problems</b>
+                    <span>Reference must be four characters after the dash.</span>
+                    <span>A floor number is required before a handover date can be set.</span>
+                  </div>
+                </div>
+                <p class="ml-kitnote">
+                  The field sits at 52% white, which is the only place on the page a pane is allowed
+                  to be more than a third opaque — an input has to look like something you can write
+                  on.
+                </p>
+              </div>
+
+              <div>
+                <h3>Floor rows</h3>
+                <table class="ml-rows">
+                  <caption>Four floors, one selected. Rows are keyboard reachable and carry aria-selected.</caption>
+                  <thead>
+                    <tr><th scope="col">Ref</th><th scope="col">m²</th><th scope="col">Bays</th><th scope="col">Status</th></tr>
+                  </thead>
+                  <tbody>
+                    {FLOORS.map((r, i) => (
+                      <tr tabindex="0" aria-selected={i === 0 ? 'true' : 'false'} data-row>
+                        {r.map((cell) => <td>{cell}</td>)}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 07 · Tokens */}
+      <section class="ml-sec" id="tokens">
+        <div class="ml-sec__wrap">
+          <div class="ml-rail">
+            <div class="ml-rail__pane ml-pane">
+              <span class="n">07</span>
+              <span class="lbl">Tokens</span>
+              <span class="note">Five sheets, two scopes</span>
+              <span class="tick" aria-hidden="true">{NAV.map((_, i) => <i class={i === 6 ? 'on' : ''} />)}</span>
+            </div>
+          </div>
+
+          <div class="ml-body">
+            <h2>Five sheets, two scopes.</h2>
+            <p class="big">
+              Primitives named for what they are, a day scope where the pane sits over the sky, a
+              night scope over the same primitives with the fill dropped and the rim lifted, component
+              recipes that are the only place a control knows its own colours, and the physics: 22px,
+              1px, 26px, 260ms.
+            </p>
+
+            <div class="ml-sheets">
+              {[
+                ['1 · Primitives', TOKENS_PRIM],
+                ['2 · Day scope', TOKENS_DAY],
+                ['3 · Night scope', TOKENS_NIGHT],
+                ['4 · Component tokens', TOKENS_COMP],
+                ['5 · Physics', TOKENS_PHYS],
+              ].map(([label, code]) => (
+                <div class="ml-sheet">
+                  <div class="ml-sheet__h">
+                    <span>{label}</span>
+                    <button class="ml-copy" type="button" data-copy={code as string}>Copy</button>
+                  </div>
+                  <pre><code>{code}</code></pre>
+                </div>
+              ))}
+            </div>
+
+            <h3 style="color:var(--ml-signal);margin-bottom:10px">Audit &amp; known gaps</h3>
+            <dl class="ml-gaps">
+              {GAPS.map((g) => (
+                <div class:list={['ml-gap', g.k === 'Open' && 'ml-gap--open']}>
+                  <dt>{g.k}</dt><dd>{g.v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    {/* footer · F2 · split — the bus on the left, the statement on the right.
+        Case 21 shipped photo-right, and two consecutive cases may not share the
+        variation. */}
+    <footer class="ml-foot">
+      <div class="ml-foot__split">
+        <figure class="ml-foot__art">
+          <img
+            class="ml-foot__photo"
+            src={`${B}/bus-under-glass.jpg`}
+            alt="A red double-decker bus on route 26 passing the faceted glass towers of Principal Place, the sky pale behind them."
+            width="1266"
+            height="1824"
+            loading="lazy"
+          />
+          <figcaption class="ml-foot__cap">Plate 03 · the bus, 08:26</figcaption>
+          <img class="ml-foot__lock" src={`${B}/lockup-reverse.svg`} alt="Mullion lockup" width="175" height="64" loading="lazy" />
+        </figure>
+
+        <div class="ml-foot__say">
+          <span class="ml-foot__tag">Mullion · case 22 · glass towers</span>
+          <div>
+            <p class="ml-foot__sign">The light is the only tenant that never moves out.</p>
+            <p class="ml-foot__sub">
+              Floors are let, fit-outs are replaced, and the name on the door changes every four
+              years. The sun still comes through the same pane at 08:20, and that is the part of the
+              building nobody can renegotiate.
+            </p>
+            <nav class="ml-foot__links" aria-label="Footer">
+              <a href="#mark">The mark</a>
+              <a href="#colour">Colour ledger</a>
+              <a href={`${B}/mullion-brandkit.png`}>Brand kit</a>
+              <a href="/">All cases</a>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="ml-foot__bar">
+        <div class="ml-shell ml-foot__barin">
+          <span>Mullion · case 22 · glass towers</span>
+          <span>London · 2026 · V1.0</span>
+          <a href="/">Back to the shelf</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const root = document.querySelector('.ml-root') as HTMLElement | null
+    const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]')
+    const label = document.querySelector<HTMLElement>('[data-theme-label]')
+
+    const apply = (mode: 'day' | 'night') => {
+      root?.setAttribute('data-ml-theme', mode)
+      toggle?.setAttribute('data-mode', mode)
+      toggle?.setAttribute('aria-pressed', String(mode === 'night'))
+      if (label) label.textContent = mode === 'night' ? 'Night' : 'Day'
+    }
+    toggle?.addEventListener('click', () => {
+      apply(root?.getAttribute('data-ml-theme') === 'night' ? 'day' : 'night')
+    })
+    apply('day')
+
+    document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((el) => {
+      el.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(el.dataset.copy || '')
+          const prev = el.textContent
+          el.textContent = 'Copied'
+          setTimeout(() => (el.textContent = prev), 1100)
+        } catch {
+          /* clipboard blocked — the value is still selectable */
+        }
+      })
+    })
+
+    document.querySelectorAll<HTMLTableRowElement>('[data-row]').forEach((row) => {
+      const select = () => {
+        document.querySelectorAll('[data-row]').forEach((r) => r.setAttribute('aria-selected', 'false'))
+        row.setAttribute('aria-selected', 'true')
+      }
+      row.addEventListener('click', select)
+      row.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          select()
+        }
+      })
+    })
+  </script>
+</Layout>

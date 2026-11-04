@@ -1,0 +1,85 @@
+/* Mullion — case 22. Surface: Glass & light.
+   Layer 1 primitives never flip. Layer 2 is the scope. A pane is always a real
+   translucent fill + backdrop blur over a lit field; never an opaque card. */
+.ml-scope {
+  --ml-sky: #DEE1E6; /* oklch(0.899 0.006 255) */
+  --ml-haze: #F4F6F9; /* oklch(0.972 0.004 247) */
+  --ml-veil: #FFFFFF; /* oklch(1 0 0) */
+  --ml-mist: #C9D4DF; /* oklch(0.860 0.015 246) */
+  --ml-steel: #7C8B9C; /* oklch(0.632 0.020 250) */
+  --ml-slate: #4B5866; /* oklch(0.456 0.019 250) */
+  --ml-ink: #0E1620; /* oklch(0.197 0.014 250) */
+  --ml-bus: #B01B26; /* oklch(0.452 0.176 27) */
+  --ml-flare: #E23B3B; /* oklch(0.596 0.190 27) */
+  --ml-glow: #A8CDEA; /* oklch(0.828 0.055 245) */
+  --ml-deep: #08101A; /* oklch(0.170 0.015 250) */
+  --ml-deep-plate: #111C28; /* oklch(0.238 0.019 250) */
+
+  /* 2 · semantic scope — glass over daylight is the default */
+  --ml-surface-page: var(--ml-sky);
+  --ml-surface-plate: var(--ml-haze);
+  --ml-surface-invert: var(--ml-deep);
+  --ml-text-primary: var(--ml-ink);
+  --ml-text-secondary: var(--ml-slate);
+  --ml-text-invert: var(--ml-haze);
+  --ml-signal: var(--ml-bus);
+
+  /* glass — the material, expressed once */
+  --ml-glass-fill: color-mix(in srgb, var(--ml-veil) 16%, transparent);
+  --ml-glass-fill-strong: color-mix(in srgb, var(--ml-veil) 34%, transparent);
+  --ml-glass-edge: color-mix(in srgb, var(--ml-veil) 62%, transparent);
+  --ml-glass-rim: color-mix(in srgb, var(--ml-ink) 9%, transparent);
+  --ml-glass-blur: blur(26px) saturate(1.8);
+  --ml-glass-sheen: linear-gradient(122deg, color-mix(in srgb, var(--ml-veil) 26%, transparent) 0%, transparent 46%);
+  --ml-glass-shadow: 0 1px 0 0 var(--ml-glass-edge) inset, 0 26px 60px -34px color-mix(in srgb, var(--ml-ink) 40%, transparent);
+
+  --ml-line-strong: color-mix(in srgb, var(--ml-ink) 24%, transparent);
+  --ml-line-subtle: color-mix(in srgb, var(--ml-ink) 10%, transparent);
+
+  /* 3 · component tokens — the only layer that knows a recipe */
+  --ml-btn-bg: var(--ml-ink);
+  --ml-btn-text: var(--ml-haze);
+  --ml-btn-bg-hover: var(--ml-signal);
+  --ml-chip-border: var(--ml-glass-rim);
+  --ml-field-bg: color-mix(in srgb, var(--ml-veil) 52%, transparent);
+  --ml-field-border: color-mix(in srgb, var(--ml-ink) 20%, transparent);
+
+  /* type — a neutral sans for display and reading, mono for anything counted */
+  --ml-font-display: 'Sora', system-ui, sans-serif;
+  --ml-font-reading: 'Schibsted Grotesk', system-ui, sans-serif;
+  --ml-font-mono: 'Geist Mono', ui-monospace, monospace;
+
+  /* physics — light settles, it does not snap */
+  --ml-radius: 22px;
+  --ml-radius-sm: 12px;
+  --ml-hair: 1px;
+  --ml-seam: 16px;
+  --ml-ease: cubic-bezier(0.16, 0.84, 0.44, 1);
+  --ml-dur: 260ms;
+  --ml-wrap: 1280px;
+  --ml-gutter: clamp(20px, 4vw, 56px);
+}
+
+/* night scope — the same glass over the city after dark, same primitives */
+.ml-scope[data-ml-theme='night'] {
+  --ml-surface-page: var(--ml-deep);
+  --ml-surface-plate: var(--ml-deep-plate);
+  --ml-surface-invert: var(--ml-haze);
+  --ml-text-primary: var(--ml-haze);
+  --ml-text-secondary: color-mix(in srgb, var(--ml-haze) 62%, var(--ml-deep));
+  --ml-text-invert: var(--ml-ink);
+  --ml-signal: var(--ml-glow); /* the bus red is 2.6:1 on deep — light replaces it */
+  --ml-glass-fill: color-mix(in srgb, var(--ml-veil) 7%, transparent);
+  --ml-glass-fill-strong: color-mix(in srgb, var(--ml-veil) 13%, transparent);
+  --ml-glass-edge: color-mix(in srgb, var(--ml-veil) 26%, transparent);
+  --ml-glass-rim: color-mix(in srgb, var(--ml-veil) 20%, transparent);
+  --ml-glass-sheen: linear-gradient(122deg, color-mix(in srgb, var(--ml-veil) 12%, transparent) 0%, transparent 46%);
+  --ml-glass-shadow: 0 1px 0 0 var(--ml-glass-edge) inset, 0 26px 70px -30px rgba(0, 0, 0, 0.72);
+  --ml-line-strong: color-mix(in srgb, var(--ml-haze) 26%, transparent);
+  --ml-line-subtle: color-mix(in srgb, var(--ml-haze) 11%, transparent);
+  --ml-btn-bg: var(--ml-haze);
+  --ml-btn-text: var(--ml-deep);
+  --ml-btn-bg-hover: var(--ml-glow);
+  --ml-field-bg: color-mix(in srgb, var(--ml-veil) 6%, transparent);
+  --ml-field-border: color-mix(in srgb, var(--ml-haze) 24%, transparent);
+}

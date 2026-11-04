@@ -35,6 +35,7 @@ export type DesignCase = {
     | 'manifest'
     | 'daybook'
     | 'causeway'
+    | 'mullion'
 }
 
 export const SUNNYSIDE_URL =
@@ -49,6 +50,23 @@ export const SUNNYSIDE_URL =
  * `number` is the case's permanent identity (its own brand docs and tokens quote it).
  */
 export const DESIGN_CASES: readonly DesignCase[] = [
+  {
+    slug: 'mullion',
+    number: '22',
+    name: 'Mullion',
+    href: '/design-system/mullion',
+    tagline: 'The city, one floor up.',
+    description:
+      'Whole floors in glass towers, handed over fitted. A hazy sky ground sampled off the first photograph, panes at 16% white with a real 26px backdrop blur, a 1px ink rim, 1px mullions instead of gaps, a 22px squircle, and one red sampled from 26,437 pixels of the bus in the second. The mark is massing rather than silhouette: a 22-unit shaft and a 16-unit mass on one baseline with an 8-unit street between them, plus a separate 16px drawing and six cast marks. Twelve primitives, a day and a night scope over shared primitives, six explored surfaces (four shipped, two rejected), a floor ledger with tabular figures, and a contrast table that publishes the five pairs it fails — including the pane itself.',
+    status: 'Shipped · 2026',
+    role: 'Identity · design system · parametric mark · glass surfaces · floor kit · docs',
+    material: 'Hazy sky + translucent pane + one bus red',
+    cover: '/brand/mullion/mullion-brandkit.png',
+    coverAlt:
+      'The Mullion 6-panel brand board: the glass towers seen from below with the reverse lockup, the two-mass mark at four sizes, twelve primitives, three type voices, six cast marks, and the law that glass has no contrast of its own.',
+    tags: ['Glass', 'Towers', 'Liquid glass', 'Workspace'],
+    tone: 'mullion',
+  },
   {
     slug: 'causeway',
     number: '21',

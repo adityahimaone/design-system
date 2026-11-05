@@ -280,7 +280,7 @@
   z-index: 3;
   margin-top: auto;
   margin-bottom: clamp(24px, 5vh, 48px);
-  height: clamp(186px, 23vh, 258px);
+  height: clamp(210px, 27vh, 312px);
   overflow: hidden;
 }
 
@@ -296,9 +296,8 @@
 }
 .kn-hero__band .tgh__tile { position: absolute; will-change: transform; }
 .kn-hero__band .tgh__slice { position: absolute; top: 0; overflow: hidden; }
-/* a hairline keeps two pale boards from bleeding into one another, and keeps
-   every cover off the ridges behind it */
-.kn-hero__band .tgh__slice { box-shadow: inset 0 0 0 1px var(--kn-hair); }
+/* No per-facet hairline: 16 slices × 1px read as a grid ruled over each cover.
+   Neighbouring boards are separated by the gap and by the fade instead. */
 
 /* ── figures ─────────────────────────────────────────────────────────────── */
 .kn-figures {
@@ -699,63 +698,127 @@
   max-width: 62ch;
 }
 
-/* the six, one cell each */
-.kn-skills {
-  list-style: none;
-  margin: clamp(16px, 2vw, 22px) 0 0;
-  padding: 0;
+/* One skill, shown as a delivery note: six numbered artefacts on the left, the
+   receipt for the run on the right. A catalogue of ids was the wrong shape —
+   the reader installs one skill, so the section only has to answer what comes
+   back and what it costs to get it. */
+.kn-once {
+  margin-top: clamp(18px, 2.2vw, 26px);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  gap: clamp(20px, 2.6vw, 30px);
+}
+.kn-returns {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
   gap: 0;
 }
-.kn-skill {
+/* One artefact, one line: number, name, what it is, the file. Short clauses so
+   nothing wraps — six rows of two lines was a page, not a spec sheet. */
+.kn-return {
   display: grid;
-  align-content: start;
-  gap: 5px;
-  padding: 13px 0 15px;
+  grid-template-columns: 20px minmax(0, 74px) minmax(0, 1fr) auto;
+  align-items: baseline;
+  column-gap: 11px;
+  row-gap: 1px;
+  padding: 8px 0;
   border-top: var(--sr-rule) solid var(--kn-hair);
 }
-.kn-skill__head {
-  display: flex;
-  align-items: baseline;
-  gap: 9px;
-}
-.kn-skill__n {
+.kn-return:first-child { border-top: 0; padding-top: 0; }
+.kn-return__n {
   font-family: var(--kn-mono);
-  font-size: 9.5px;
+  font-size: 9px;
   letter-spacing: 0.12em;
   color: var(--kn-ink-2);
   font-variant-numeric: tabular-nums;
 }
-.kn-skill__name {
+.kn-return__name {
   font-family: var(--kn-display);
-  font-size: 16px;
-  line-height: 1.2;
+  font-size: 14px;
+  line-height: 1.25;
   letter-spacing: -0.01em;
   font-weight: 500;
   color: var(--kn-ink);
+}
+.kn-return__says {
+  grid-column: 3;
+  grid-row: 1;
   margin: 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--kn-ink-2);
 }
-.kn-skill__id {
+.kn-return__file {
+  grid-column: 4;
+  grid-row: 1;
   font-family: var(--kn-mono);
-  font-size: 9.5px;
+  font-size: 9px;
   letter-spacing: 0.03em;
-  color: var(--kn-ink-2);
-  overflow-wrap: anywhere;
+  color: var(--kn-accent);
+  white-space: nowrap;
+  justify-self: end;
+  text-align: right;
 }
-.kn-skill__writes {
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--kn-ink-2);
-  max-width: 34ch;
+
+/* a phone can't hold four columns: name first, then what it is, then the file */
+@media (max-width: 719px) {
+  .kn-return {
+    grid-template-columns: 18px minmax(0, 1fr) auto;
+    row-gap: 2px;
+    padding: 9px 0;
+  }
+  .kn-return__name { grid-column: 2; grid-row: 1; }
+  .kn-return__file { grid-column: 3; grid-row: 1; }
+  .kn-return__says { grid-column: 2 / -1; grid-row: 2; }
 }
-.kn-skill__file {
+
+/* the receipt, pinned under the six */
+.kn-once__side {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding-top: clamp(4px, 1vw, 12px);
+}
+.kn-once__load {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  margin: 0;
+  font-family: var(--kn-mono);
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--kn-ink-2);
+}
+.kn-once__load b { color: var(--kn-ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+.kn-once__k { color: var(--kn-ink); }
+.kn-once__brief {
+  margin: 0;
+  font-family: var(--kn-read);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--kn-ink-2);
+  max-width: 44ch;
+}
+.kn-once__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  justify-self: start;
   font-family: var(--kn-mono);
   font-size: 9.5px;
-  letter-spacing: 0.05em;
-  color: var(--kn-accent);
-  margin-top: 1px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--kn-ink);
+  text-decoration: none;
+  padding-bottom: 3px;
+  border-bottom: var(--sr-rule) solid var(--kn-rule);
+  transition: border-color var(--kn-t), color var(--kn-t);
 }
+.kn-once__go:hover { border-color: var(--kn-accent); color: var(--kn-accent); }
 
 /* ── footer ──────────────────────────────────────────────────────────────── */
 /* The closing band lives outside the React island, so it carries the sheet
@@ -834,8 +897,9 @@
   .kn-method__col:last-child { border-right: 0; padding-right: 0; }
   .kn-method__col + .kn-method__col { padding-left: 24px; }
   .kn-method__col p { max-width: 46ch; }
-  /* six cells as a 2×3 sheet of hairlines, then a 3×2 one on a wide desk */
-  .kn-skills { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(24px, 3.2vw, 40px); }
+  /* the six artefacts run left, the receipt sits beside them on a wide desk */
+  .kn-once { grid-template-columns: minmax(0, 1.32fr) minmax(0, 0.68fr); column-gap: clamp(32px, 4vw, 64px); }
+  .kn-once__side { padding-top: 0; border-left: var(--sr-rule) solid var(--kn-rule); padding-left: clamp(24px, 2.6vw, 34px); }
   .kn-figures__in { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .kn-figure { border-bottom: 0; border-right: var(--sr-rule) solid var(--kn-hair); padding: 20px 0 20px 18px; }
   .kn-figure:first-child { padding-left: 0; }
@@ -844,7 +908,6 @@
 
 @media (min-width: 1120px) {
   .kn-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .kn-skills { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 /* ── reduced motion ──────────────────────────────────────────────────────── */

@@ -56,60 +56,26 @@ const BAND = DESIGN_CASES.map((c) => ({ src: bandThumbOf(c), alt: '' }))
 const INSTALL_CMD =
   'npx skills add adityahimaone/sunnyside --skill sunnyside-brand-system --full-depth'
 
-/* The six skills, named as they are published — `skills add` takes that id. A
-   skill is a verb and the artefact is the proof it ran, so each line states the
-   one thing it writes and the file you get. No preamble, no folder inventory. */
-const SKILLS = [
-  {
-    n: '01',
-    name: 'Brand system',
-    id: 'sunnyside-brand-system',
-    writes: 'Brief → mark, cast, board, tokens in two scopes.',
-    file: 'mark.svg · board',
-  },
-  {
-    n: '02',
-    name: 'Build',
-    id: 'implement-brand-system',
-    writes: 'That identity → a page: primitives, states, metadata.',
-    file: '<slug>.astro',
-  },
-  {
-    n: '03',
-    name: 'Dashboard',
-    id: 'sunnyside-dashboard-system',
-    writes: 'A product shell with tabular figures and an honest audit.',
-    file: 'shell · charts',
-  },
-  {
-    n: '04',
-    name: 'Print',
-    id: 'sunnyside-print',
-    writes: 'Sleeves and specimens drawn in code, not decorated.',
-    file: 'sleeve.webp',
-  },
-  {
-    n: '05',
-    name: 'Cover',
-    id: 'sunnyside-thumbnail',
-    writes: 'The sleeve for a case that has no screenshot.',
-    file: 'cover.svg',
-  },
-  {
-    n: '06',
-    name: 'Canvas',
-    id: 'openpencil-design-canvas',
-    writes: 'The finished system as an editable .fig, headless.',
-    file: '<slug>.fig',
-  },
+/* One skill, not a catalogue. `sunnyside-brand-system` is what every board on
+   this page came out of, so the section states its six returns and stops. The
+   counts below are read off the published skill tree. */
+const BRAND_SKILL = 'sunnyside-brand-system'
+
+const RETURNS = [
+  { n: '01', name: 'Mark', file: 'mark.svg', says: 'One evenodd path, legible at 16px.' },
+  { n: '02', name: 'Cast', file: 'cast/1–6.svg', says: 'Six companions from that same geometry.' },
+  { n: '03', name: 'Board', file: '1500×1125', says: 'Six panels: field, mark, type, palette, specimen, rules.' },
+  { n: '04', name: 'Surfaces', file: 'surface.html', says: 'The material grid it chose from, kept as evidence.' },
+  { n: '05', name: 'Tokens', file: 'tokens.css', says: 'OKLCH, one or two scopes, every pair checked.' },
+  { n: '06', name: 'Page', file: '<slug>.astro', says: 'Unnumbered hero and sections, from those tokens.' },
 ] as const
 
-/* What one `skills add` actually unpacks, counted from the published tree. */
+/* What one `skills add` unpacks, counted from the published tree. */
 const SKILL_LOAD = [
-  ['references', 9],
+  ['references', 10],
   ['templates', 10],
-  ['scripts', 25],
-  ['examples', 3],
+  ['scripts', 30],
+  ['examples', 6],
 ] as const
 
 const SORTS = [
@@ -274,7 +240,7 @@ export function KanonHome({ facts }: { facts: SystemFacts }) {
 
   const figures = [
     { n: DESIGN_CASES.length, l: 'Cases held' },
-    { n: SKILLS.length, l: 'Skills', pad: true },
+    { n: RETURNS.length, l: 'Artefacts', pad: true },
     { n: facts.primitives, l: 'Primitives' },
     { n: facts.pairs, l: 'Pairs measured' },
     { n: facts.fails, l: 'Published fails', pad: true, accent: true },
@@ -380,11 +346,11 @@ export function KanonHome({ facts }: { facts: SystemFacts }) {
             <TiltedGridHero
               images={BAND}
               speed={6}
-              tileHeight={66}
+              tileHeight={82}
               aspectRatio={4 / 3}
-              gap={5}
+              gap={8}
               axis={50}
-              curve={30}
+              curve={26}
               fade={18}
             />
           </div>
@@ -410,9 +376,11 @@ export function KanonHome({ facts }: { facts: SystemFacts }) {
           <div className="kn-wrap">
             <div className="kn-head">
               <span className="kn-head__num">01 · Install</span>
-              <h2 id="kn-install-title">Six skills, one command.</h2>
+              <h2 id="kn-install-title">One skill writes the brand.</h2>
               <p className="kn-head__note">
-                Six artefacts, in the order they get written — and one command that writes them.
+                Every board on this page came out of <code>{BRAND_SKILL}</code> — a brief in, six
+                artefacts out, one pass. The other five skills build on what it writes; this is
+                the one you install first.
               </p>
             </div>
 
@@ -442,39 +410,42 @@ export function KanonHome({ facts }: { facts: SystemFacts }) {
                 </span>
               </div>
 
-              {/* One line of proof that it is real: what lands on disk, and what
-                  a brief turns into. */}
-              <p className="kn-install__meta">
-                <span className="kn-install__load">
-                  <span className="kn-load__k">Unpacks</span>
-                  {SKILL_LOAD.map(([name, n]) => (
-                    <span key={name}>
-                      <b>{String(n).padStart(2, '0')}</b> {name}
-                    </span>
-                  ))}
-                </span>
-                <span className="kn-install__hand">
-                  Hand it one brief — “a dental studio in Bandung, warm, no blue” — and the six
-                  artefacts below come back in that order.
-                </span>
-              </p>
-
-              {/* The six, one compact cell each: verb, id, artefact. */}
-              <ol className="kn-skills">
-                {SKILLS.map((k) => (
-                  <li className="kn-skill" key={k.n}>
-                    <div className="kn-skill__head">
-                      <span className="kn-skill__n" aria-hidden="true">
-                        {k.n}
+              {/* Two columns: the six things one run returns, and the receipt
+                  for the run — what lands on disk plus what a brief looks like
+                  going in. No skill catalogue: the section is about this skill. */}
+              <div className="kn-once">
+                <ol className="kn-returns">
+                  {RETURNS.map((r) => (
+                    <li className="kn-return" key={r.n}>
+                      <span className="kn-return__n" aria-hidden="true">
+                        {r.n}
                       </span>
-                      <h3 className="kn-skill__name">{k.name}</h3>
-                    </div>
-                    <code className="kn-skill__id">{k.id}</code>
-                    <p className="kn-skill__writes">{k.writes}</p>
-                    <span className="kn-skill__file">{k.file}</span>
-                  </li>
-                ))}
-              </ol>
+                      <span className="kn-return__name">{r.name}</span>
+                      <code className="kn-return__file">{r.file}</code>
+                      <p className="kn-return__says">{r.says}</p>
+                    </li>
+                  ))}
+                </ol>
+
+                <aside className="kn-once__side" aria-label="What one run unpacks">
+                  <p className="kn-once__load">
+                    <span className="kn-once__k">Unpacks</span>
+                    {SKILL_LOAD.map(([name, n]) => (
+                      <span key={name}>
+                        <b>{String(n).padStart(2, '0')}</b> {name}
+                      </span>
+                    ))}
+                  </p>
+                  <p className="kn-once__brief">
+                    Hand it one line — <i>“a dental studio in Bandung, warm, no blue”</i> — and the
+                    six above come back in that order, no loops, no second pass.
+                  </p>
+                  <a className="kn-once__go" href="/design-system/serenica">
+                    Read one run end to end
+                    <ArrowRight size={13} aria-hidden="true" />
+                  </a>
+                </aside>
+              </div>
             </div>
           </div>
         </section>

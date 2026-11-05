@@ -52,11 +52,11 @@ const DECISIONS = [
       'Dropping the grid behind body copy. At 24px it is a texture; under a paragraph it becomes a readability problem.',
   },
   {
-    title: 'The photograph is a field, not a card',
+    title: 'Plate 01 holds the hero, plate 02 holds the premise',
     decision:
-      'The hero image bleeds to the viewport edge with one directional deep-blue scrim. The type sits on the photograph; no panel, no rounded card and no second floating readout.',
+      'The scaffold plate bleeds to the viewport edge under one 90° blueprint scrim, and the page\'s own 24px grid is printed over the photograph at 70%. Section 01 closes with the roof setout as plate 02, cropped to a 420px band. The two photographs trade places: the lattice reads first as drawing, the nailing reads second as proof.',
     because:
-      'The worker kneeling over a nail is the moment of setting out. Putting a card over it would turn the evidence into decoration.',
+      'Scaffolding is the grid in physical form, so it can carry the type and still argue the thesis; a worker setting out a nail argues the check. Matching each photograph to its clause is what keeps the hero from being decoration.',
     notWhen:
       'A photograph with a bright sky on the left. Then the scrim direction has to follow the luminance, not a formula.',
     breaksNext:
@@ -98,7 +98,7 @@ const SURFACES: SurfaceCard[] = [
   {
     id: 'photo',
     title: 'Site plate',
-    verdict: 'Shipped — hero and section field',
+    verdict: 'Shipped — plate 01, hero',
     note: 'One construction photograph under a solid blueprint wash, not a gradient stack. The image is material, not wallpaper.',
     demo: 'photo',
   },
@@ -228,9 +228,16 @@ const description =
 
     <header class="so-top">
       <div class="so-shell so-top__in">
+        {/* the drawn lockup, not a mark beside typeset text: the letters in the
+            wordmark are the same two-block construction as the mark */}
         <a class="so-top__brand" href="#top" aria-label="Setout — top">
-          <svg viewBox="0 0 64 64" aria-hidden="true"><Fragment set:html={MARK_PATH} /></svg>
-          <b>Setout</b>
+          <img
+            class="so-top__lock"
+            src={`${B}/lockup-reverse.svg`}
+            alt=""
+            width="220"
+            height="64"
+          />
         </a>
         <nav class="so-top__nav" aria-label="Sections">
           {NAV.map(([id, label]) => <a href={`#${id}`}>{label}</a>)}
@@ -240,22 +247,30 @@ const description =
 
     <main id="main">
       {/* hero: E · relation on · scrim 90deg blueprint → transparent · type on image · recipe R8 */}
+      {/* hero: E · relation on · scrim 90deg blueprint → transparent · type on
+          the plate. The scaffold is the drawn grid in physical form; the page's
+          own 24px grid is printed over it. Section 01 gets the roof plate. */}
       <section class="so-hero">
         <img
           class="so-hero__img"
-          src={`${B}/hero-roof-setout.jpg`}
-          alt="A construction worker in a blue hard hat and orange hi-vis vest kneels on a green roof deck, driving a nail with a hammer beside a white rope."
-          width="1824"
-          height="1215"
+          src={`${B}/plate-scaffold.jpg`}
+          alt="A site worker in an orange hi-vis vest stands under a lattice of steel scaffolding and looks up toward a raw concrete soffit."
+          width="1920"
+          height="1279"
+          fetchpriority="high"
         />
         <div class="so-hero__scrim" aria-hidden="true"></div>
         <svg class="so-hero__grid" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="so-hero-grid" width="24" height="24" patternUnits="userSpaceOnUse">
-              <path d="M24 0H0V24" fill="none" stroke="#F4F7FF" stroke-opacity="0.12" stroke-width="1" />
+              <path d="M24 0H0V24" fill="none" stroke="#F4F7FF" stroke-opacity="0.15" stroke-width="1" />
+            </pattern>
+            <pattern id="so-hero-major" width="120" height="120" patternUnits="userSpaceOnUse">
+              <path d="M120 0H0V120" fill="none" stroke="#F4F7FF" stroke-opacity="0.26" stroke-width="1" />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#so-hero-grid)" />
+          <rect width="100%" height="100%" fill="url(#so-hero-major)" />
         </svg>
 
         <div class="so-shell so-hero__in">
@@ -272,14 +287,14 @@ const description =
             </div>
             <dl class="so-hero__facts">
               <div><dt>Surface</dt><dd>#4 Blueprint grid</dd></div>
-              <div><dt>Rail / Hero</dt><dd>A · E, relation on</dd></div>
+              <div><dt>Rail / Hero</dt><dd>A · plate 01, scrim 90°</dd></div>
               <div><dt>Physics</dt><dd>0px · 1px · 24px</dd></div>
               <div><dt>Scope</dt><dd>One daylight scope</dd></div>
             </dl>
           </div>
 
           <div class="so-hero__foot">
-            <span>Plate 01 · roof setout · measured 38% 42%</span>
+            <span>Plate 01 · the scaffold as a drawn grid · type on the plate</span>
             <span class="so-hero__stamp">SO-24 · 1:100 · GRID 24</span>
             <span>Three plates · one site</span>
           </div>
@@ -325,16 +340,16 @@ const description =
             <figure class="so-plate">
               <div class="so-plate__img">
                 <img
-                  src={`${B}/plate-scaffold.jpg`}
-                  alt="A site worker in an orange hi-vis vest stands under a lattice of steel scaffolding and looks up toward a raw concrete soffit."
-                  width="1920"
-                  height="1279"
+                  src={`${B}/hero-roof-setout.jpg`}
+                  alt="A construction worker in a blue hard hat and orange hi-vis vest kneels on a green roof deck, driving a nail with a hammer beside a white rope."
+                  width="1824"
+                  height="1215"
                   loading="lazy"
                 />
               </div>
               <figcaption>
-                <b>Plate 02 · the scaffold as a drawn grid</b>
-                <span>Measured object-position 50% 44% · no lockup, no caption card</span>
+                <b>Plate 02 · the roof setout, checked on site</b>
+                <span>Measured object-position 50% 30% · no lockup, no caption card</span>
               </figcaption>
             </figure>
           </div>
@@ -528,7 +543,7 @@ const description =
                     {s.demo === 'photo' && (
                       <>
                         <img src={`${B}/plate-scaffold.jpg`} alt="Steel scaffolding on a construction site." loading="lazy" width="1920" height="1279" />
-                        <span class="so-sc__cap">Plate 02 · field, not wallpaper</span>
+                        <span class="so-sc__cap">Field, not wallpaper</span>
                       </>
                     )}
                     {s.demo === 'sheet' && (

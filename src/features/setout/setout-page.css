@@ -50,32 +50,73 @@
   border-bottom: 1px solid var(--so-line-subtle);
 }
 .so-top__in { min-height: 72px; display: flex; align-items: center; gap: 28px; }
-.so-top__brand { display: inline-flex; align-items: center; gap: 10px; font-family: var(--so-font-display); font-weight: 600; font-size: 17px; letter-spacing: -.02em; }
-.so-top__brand svg { width: 28px; height: 28px; fill: currentColor; flex: 0 0 auto; }
+.so-top__brand { display: inline-flex; align-items: center; }
+/* the lockup is drawn at 220×64 — mark 56 tall, letters 33.6. At 32px tall the
+   mark reads at 28px and the letters at 17px, which is the bar's type size. */
+.so-top__lock { display: block; height: 32px; width: auto; }
 .so-top__nav { margin-left: auto; display: flex; gap: 22px; }
 .so-top__nav a { font-size: 13.5px; color: var(--so-text-secondary); transition: color var(--so-dur) var(--so-ease); }
 .so-top__nav a:hover { color: var(--so-text-primary); }
 
-/* hero · E · relation on · type on image */
-.so-hero { position: relative; min-height: min(88vh, 820px); display: flex; isolation: isolate; }
+/* hero · the scaffold plate, blueprint scrim from the left, the page's own
+   24px grid printed over the photograph, type on top */
+.so-hero {
+  position: relative; isolation: isolate;
+  min-height: min(86vh, 800px);
+  display: flex;
+  border-bottom: 1px solid var(--so-line-strong);
+}
 .so-hero__img {
   position: absolute; inset: 0; z-index: 0;
-  width: 100%; height: 100%; object-fit: cover; object-position: 38% 42%;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  /* 0% vertical: the crop window sits at the top of the plate, which pushes the
+     worker down the frame — at 56% his head read as touching the sticky bar */
+  object-position: 68% 0%;
 }
+/* two layers: the horizontal scrim that carries the type, and a short bottom
+   fall so the sheet stamp keeps its 1px rule readable */
 .so-hero__scrim {
   position: absolute; inset: 0; z-index: 1;
-  background: linear-gradient(90deg, rgba(7,30,70,.97) 0%, rgba(7,30,70,.86) 26%, rgba(7,30,70,.28) 62%, rgba(7,30,70,0) 100%);
+  background:
+    linear-gradient(0deg, color-mix(in srgb, var(--so-blueprint) 82%, transparent) 0%, transparent 26%),
+    linear-gradient(90deg, rgba(7, 30, 70, 0.97) 0%, rgba(7, 30, 70, 0.92) 36%, rgba(7, 30, 70, 0.52) 68%, rgba(7, 30, 70, 0.06) 100%);
 }
-.so-hero__grid { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; color: var(--so-chalk); pointer-events: none; }
-.so-hero__in { position: relative; z-index: 2; width: 100%; padding-block: clamp(48px, 8vh, 92px) 34px; display: flex; flex-direction: column; justify-content: space-between; gap: 48px; }
-.so-hero__copy { margin-left: auto; max-width: min(640px, 56%); }
-.so-hero h1 { font-size: clamp(50px, 7vw, 104px); line-height: .94; letter-spacing: -.045em; max-width: 18ch; }
-.so-hero__lede { margin-top: 22px; font-size: 17px; line-height: 1.55; max-width: 46ch; color: var(--so-chalk); }
-.so-hero__acts { margin-top: 28px; display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
-.so-hero__facts { margin-top: 36px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 28px; max-width: 520px; }
+/* a 90° scrim only works when the copy is in one column; on a phone the type
+   spans the full width, so the wash goes flat instead of directional */
+@media (max-width: 719px) {
+  .so-hero__scrim {
+    background:
+      linear-gradient(0deg, color-mix(in srgb, var(--so-blueprint) 88%, transparent) 0%, transparent 24%),
+      linear-gradient(180deg, rgba(7, 30, 70, 0.95) 0%, rgba(7, 30, 70, 0.9) 58%, rgba(7, 30, 70, 0.78) 100%);
+  }
+}
+.so-hero__grid { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; pointer-events: none; opacity: .7; }
+/* the hero shell was `width:100%`, which cancelled .so-shell and left the h1
+   flush against the viewport edge — no gutter at all */
+.so-hero__in {
+  position: relative; z-index: 2;
+  width: min(var(--so-wrap), calc(100% - var(--so-gutter) * 2));
+  margin-inline: auto;
+  padding-block: clamp(64px, 11vh, 128px) clamp(26px, 4vh, 44px);
+  display: flex; flex-direction: column; justify-content: space-between;
+  gap: clamp(48px, 8vh, 96px);
+}
+.so-hero__copy { max-width: min(880px, 78%); }
+.so-hero h1 { font-size: clamp(44px, 5.2vw, 78px); line-height: .98; letter-spacing: -.045em; max-width: 22ch; text-wrap: balance; }
+.so-hero__lede { margin-top: clamp(20px, 2.4vh, 28px); font-size: 17px; line-height: 1.6; max-width: 50ch; color: var(--so-chalk); }
+.so-hero__acts { margin-top: clamp(26px, 3.4vh, 36px); display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+/* `.so-root dl { margin: 0 }` outranks a bare class, so the gap lives on a
+   compound selector or the facts row sits flush against the buttons */
+.so-root .so-hero__facts { margin-top: clamp(56px, 8vh, 88px); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 28px; max-width: 520px; }
 .so-hero__facts dt { font-size: 12px; color: color-mix(in srgb, var(--so-chalk) 64%, var(--so-blueprint)); }
 .so-hero__facts dd { margin-top: 2px; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.so-hero__foot { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; font-size: 12.5px; color: color-mix(in srgb, var(--so-chalk) 78%, var(--so-blueprint)); }
+.so-hero__foot {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 18px; flex-wrap: wrap;
+  padding-top: 14px; border-top: 1px solid var(--so-line-subtle);
+  font-size: 12.5px; color: color-mix(in srgb, var(--so-chalk) 78%, var(--so-blueprint));
+}
 .so-hero__stamp { font-family: var(--so-font-mono); font-variant-numeric: tabular-nums; }
 
 /* shared controls */
@@ -120,7 +161,8 @@
 .so-dec dd { font-size: 13.5px; line-height: 1.5; color: var(--so-text-secondary); }
 .so-plate { margin-top: 48px; }
 .so-plate__img { height: clamp(240px, 34vw, 420px); overflow: hidden; border: 1px solid var(--so-line-subtle); }
-.so-plate__img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 44%; display: block; }
+/* the roof setout sits high in its frame: the worker's vest is at 29% height */
+.so-plate__img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
 .so-plate figcaption { display: flex; justify-content: space-between; gap: 20px; padding-top: 12px; font-size: 12.5px; color: var(--so-text-secondary); }
 .so-plate figcaption b { color: var(--so-text-primary); font-weight: 600; }
 
@@ -300,9 +342,8 @@
   .so-sec__wrap { grid-template-columns: minmax(0, 1fr); }
   .so-rail { position: static; flex-direction: row; align-items: baseline; gap: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--so-line-subtle); }
   .so-rail__note { margin-left: auto; text-align: right; }
-  .so-hero { min-height: min(82vh, 720px); }
+  .so-hero { min-height: min(80vh, 700px); }
   .so-hero__copy { max-width: 100%; }
-  .so-hero__img { object-position: 34% 42%; }
   .so-two,
   .so-decs,
   .so-specs,

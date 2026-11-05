@@ -9,7 +9,10 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "figma:check": "node scripts/figma/figma-html.mjs --all --root . --check",
+    "figma:export": "node scripts/figma/figma-html.mjs --all --root .",
+    "figma:sunnyside": "node scripts/figma/figma-html.mjs --slug sunnyside --root . --tokens ../sunnyside/features/design-system/tokens.json"
   },
   "dependencies": {
     "@astrojs/react": "^7.1.2",

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>__BRAND__ — Figma replay</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 16px; font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #1F2937; background: #FFFFFF; }
+  h1 { font-size: 15px; font-weight: 600; margin: 0 0 4px; }
+  p { margin: 0 0 12px; color: #6B7280; font-size: 12px; }
+  textarea { width: 100%; height: 300px; padding: 10px; border: 1px solid #D1D5DB; border-radius: 8px; font: 11px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; resize: vertical; color: #111827; background: #F9FAFB; }
+  textarea:focus { outline: 2px solid #2563EB; outline-offset: -1px; }
+  .row { display: flex; gap: 8px; margin-top: 12px; }
+  button { flex: 1; padding: 9px 12px; border-radius: 8px; border: 1px solid #D1D5DB; background: #FFFFFF; color: #1F2937; font: 13px inherit; cursor: pointer; }
+  button.primary { background: #2563EB; border-color: #2563EB; color: #FFFFFF; font-weight: 600; }
+  button:hover { filter: brightness(0.97); }
+  #status { margin-top: 12px; padding: 9px 10px; border-radius: 8px; background: #F3F4F6; color: #4B5563; font-size: 12px; word-break: break-word; }
+  #status.ok { background: #ECFDF5; color: #065F46; }
+  #status.err { background: #FEF2F2; color: #991B1B; }
+  .opt { display: flex; align-items: center; gap: 7px; margin-top: 10px; font-size: 12px; color: #4B5563; }
+  .opt input { margin: 0; }
+  .hint { margin-top: 10px; font-size: 11px; color: #9CA3AF; }
+</style>
+</head>
+<body>
+  <h1>__BRAND__ — build in Figma</h1>
+  <p>Paste the manifest copied with <strong>Copy for Figma</strong> from the HTML sheet, then build. This creates native Auto Layout frames, variables, styles, vectors and components — no importer needed.</p>
+  <textarea id="manifest" spellcheck="false" placeholder="Paste sunnyside/figma-manifest JSON here"></textarea>
+  <label class="opt"><input type="checkbox" id="replace" checked /> Replace existing generated pages (safe re-import / migration)</label>
+  <label class="opt"><input type="checkbox" id="boost" checked /> Raise text below 12px to 12px so labels stay legible</label>
+  <label class="opt"><input type="checkbox" id="patterns" /> Include the patterns / token-sheet page (off: it is mostly CSS dumps)</label>
+  <div class="row">
+    <button class="primary" id="build">Build in Figma</button>
+    <button id="clear" style="flex:0 0 88px">Clear</button>
+  </div>
+  <div id="status">Waiting for a manifest.</div>
+  <div class="hint">The seed manifest generated alongside this plugin is loaded automatically when present.</div>
+
+  <script type="application/json" id="seed">__MANIFEST__</script>
+  <script>
+    var field = document.getElementById('manifest');
+    var status = document.getElementById('status');
+    try {
+      var seed = document.getElementById('seed').textContent.trim();
+      if (seed) {
+        field.value = seed;
+        status.textContent = 'Seed manifest loaded (' + seed.length.toLocaleString() + ' chars). Click Build in Figma.';
+      }
+    } catch (e) {}
+
+    document.getElementById('build').onclick = function () {
+      var text = field.value.trim();
+      if (!text) { status.className = 'err'; status.textContent = 'Paste a manifest first.'; return; }
+      try { JSON.parse(text); } catch (e) {
+        status.className = 'err';
+        status.textContent = 'Invalid JSON: ' + e.message;
+        return;
+      }
+      status.className = '';
+      status.textContent = 'Building…';
+      parent.postMessage({
+        pluginMessage: {
+          type: 'build',
+          json: text,
+          replace: document.getElementById('replace').checked,
+          minFontSize: document.getElementById('boost').checked ? 12 : 0,
+          includePatterns: document.getElementById('patterns').checked
+        }
+      }, '*');
+    };
+
+    document.getElementById('clear').onclick = function () {
+      field.value = '';
+      status.className = '';
+      status.textContent = 'Cleared.';
+    };
+
+    onmessage = function (event) {
+      var msg = event.data.pluginMessage;
+      if (!msg) return;
+      if (msg.type === 'done') { status.className = 'ok'; status.textContent = msg.summary; }
+      if (msg.type === 'error') { status.className = 'err'; status.textContent = msg.message; }
+    };
+  </script>
+</body>
+</html>

@@ -27,9 +27,12 @@
       --bg-banner: #FAFAFA;
       --border-subtle: #F1F5F9;
       --border-default: #E2E8F0;
-      --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
+      /* The sheet is brand documentation, so it is set in the brand's faces.
+       * The old defaults stay in the stack: a kit whose tokens name a face the
+       * browser or Figma cannot load still renders, and still reads. */
+      --font-sans: 'Geist Sans', 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Geist Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Geist Mono', 'JetBrains Mono', monospace;
       --brand-display: 'Geist Sans', var(--font-sans);
       --brand-reading: 'Geist Sans', var(--font-body);
       --brand-mono: 'Geist Mono', var(--font-mono);
@@ -236,6 +239,25 @@
       box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     }
 
+    /* Auto Layout inspector. Outlines only — no position, display or geometry
+       changes, so the inspected layout is the layout that gets imported. */
+    body.al-mode [data-figma-layout] {
+      outline: 2px solid #2563EB;
+      outline-offset: 1px;
+    }
+    body.al-mode [data-figma-warn] {
+      outline: 2px dashed #DC2626;
+      outline-offset: 1px;
+    }
+    body.al-mode [data-figma-layout][data-figma-warn] {
+      outline-color: #F59E0B;
+    }
+    button.active-al {
+      background: #DBEAFE;
+      border-color: #93C5FD;
+      color: #1D4ED8;
+    }
+
     /* =========================================================================
        3. FIGMA DOCUMENTATION SHEET ANATOMY
        ========================================================================= */
@@ -281,7 +303,7 @@
       justify-content: center;
       width: 32px;
       height: 32px;
-      border-radius: 8px;
+      border-radius: 50%;
       background: #111827;
       color: #FFFFFF;
       font-family: var(--font-mono);
@@ -943,6 +965,8 @@
 </head>
 <body id="top">
 
+  <script type="application/json" id="figma-tokens">{"brand":"Ledger","slug":"ledger","version":"1.1.0","namespace":"lg","palette":[{"name":"lg-harbor-000","hex":"#FFFFFF"},{"name":"lg-harbor-025","hex":"#FAFBFE"},{"name":"lg-harbor-050","hex":"#F3F5FB"},{"name":"lg-harbor-100","hex":"#EDF0F8"},{"name":"lg-harbor-150","hex":"#E7EBF6"},{"name":"lg-harbor-200","hex":"#DCE2F0"},{"name":"lg-harbor-300","hex":"#C3CCE0"},{"name":"lg-harbor-400","hex":"#97A3C0"},{"name":"lg-harbor-500","hex":"#5C6A8E"},{"name":"lg-harbor-600","hex":"#47547A"},{"name":"lg-harbor-700","hex":"#34406A"},{"name":"lg-harbor-800","hex":"#1F2A4E"},{"name":"lg-harbor-900","hex":"#0A1024"},{"name":"lg-harbor-950","hex":"#050A14"},{"name":"lg-harbor-deep","hex":"#001B3C"},{"name":"lg-indigo-100","hex":"#E2E9FB"},{"name":"lg-indigo-200","hex":"#B9C8EE"},{"name":"lg-indigo-300","hex":"#93AEE6"},{"name":"lg-indigo-400","hex":"#6A8DD8"},{"name":"lg-indigo-500","hex":"#3D5FB8"},{"name":"lg-indigo-600","hex":"#19398D"},{"name":"lg-indigo-700","hex":"#142E73"},{"name":"lg-indigo-ring","hex":"#324F9A"},{"name":"lg-teal-500","hex":"#119B8E"},{"name":"lg-teal-400","hex":"#2FB3A6"},{"name":"lg-crimson-600","hex":"#9B0033"}],"type":[],"space":[],"radius":[{"name":"base","value":"0.75rem"},{"name":"sm","value":"calc(0.75rem - 4px)"},{"name":"md","value":"calc(0.75rem - 2px)"},{"name":"lg","value":"0.75rem"},{"name":"xl","value":"calc(0.75rem + 4px)"},{"name":"2xl","value":"calc(0.75rem + 12px)"}]}</script>
+
   <!-- =========================================================================
        STICKY WORKSPACE CONTROL BAR (Hidden in Clean Export Mode / ?clean=1)
        ========================================================================= -->
@@ -977,6 +1001,18 @@
       <div class="topbar-actions">
         <button id="btn-spec" class="btn-tool" onclick="toggleSpecMode()" title="Toggle Figma component bounds">
           <span>❖ Figma Specs</span>
+        </button>
+        <button id="btn-autolayout" class="btn-tool" onclick="toggleAutoLayoutMode()" title="Inspect CSS flex/grid flow containers and flag absolute, transform or backdrop layers that will not import as Auto Layout">
+          <span>⇄ Auto Layout</span>
+        </button>
+        <button class="btn-tool" onclick="copyFigmaManifest()" title="Copy a machine-readable layout + token manifest for the Sunnyside replay plugin">
+          <span>⤓ Copy for Figma</span>
+        </button>
+        <button class="btn-tool" onclick="downloadFigmaManifest()" title="Download the layout + token manifest as JSON">
+          <span>⤓ Manifest</span>
+        </button>
+        <button class="btn-tool" onclick="downloadFigmaPlugin()" title="Download a ready-to-import Figma plugin (manifest.json + code.js + ui.html) with this sheet's manifest baked in">
+          <span>⤓ Plugin</span>
         </button>
         <button id="btn-grid" class="btn-tool" onclick="toggleGridMode()" title="Toggle 2-column Canvas Grid Mode (&lt; 10,000px for Doop / Figma)">
           <span>⊞ Canvas Grid</span>
@@ -1042,7 +1078,7 @@
             
             <div class="swatch-card" onclick="copyHex('#19398D', 'Lg-indigo-600 (--lg-lg-indigo-600)')">
               <div class="swatch-rect" style="background-color: #19398D;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Lg-indigo-600</p>
               <p class="swatch-sub">--lg-lg-indigo-600</p>
@@ -1050,7 +1086,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#9B0033', 'Lg-crimson-600 (--lg-lg-crimson-600)')">
               <div class="swatch-rect" style="background-color: #9B0033;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Lg-crimson-600</p>
               <p class="swatch-sub">--lg-lg-crimson-600</p>
@@ -1058,7 +1094,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#3D5FB8', 'Lg-indigo-500 (--lg-lg-indigo-500)')">
               <div class="swatch-rect" style="background-color: #3D5FB8;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Lg-indigo-500</p>
               <p class="swatch-sub">--lg-lg-indigo-500</p>
@@ -1079,7 +1115,7 @@
             
             <div class="swatch-card" onclick="copyHex('#FFFFFF', '--lg-lg-harbor-000')">
               <div class="swatch-rect" style="background-color: #FFFFFF; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-harbor-000</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1087,7 +1123,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#FAFBFE', '--lg-lg-harbor-025')">
               <div class="swatch-rect" style="background-color: #FAFBFE; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-harbor-025</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1095,7 +1131,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#F3F5FB', '--lg-lg-harbor-050')">
               <div class="swatch-rect" style="background-color: #F3F5FB; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-harbor-050</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1103,7 +1139,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#EDF0F8', '--lg-lg-harbor-100')">
               <div class="swatch-rect" style="background-color: #EDF0F8; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-harbor-100</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1111,7 +1147,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#E7EBF6', '--lg-lg-harbor-150')">
               <div class="swatch-rect" style="background-color: #E7EBF6; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-harbor-150</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1119,7 +1155,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#DCE2F0', '--lg-lg-harbor-200')">
               <div class="swatch-rect" style="background-color: #DCE2F0; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-harbor-200</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1127,7 +1163,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#C3CCE0', '--lg-lg-harbor-300')">
               <div class="swatch-rect" style="background-color: #C3CCE0; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-harbor-300</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1135,7 +1171,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#97A3C0', '--lg-lg-harbor-400')">
               <div class="swatch-rect" style="background-color: #97A3C0; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-harbor-400</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1143,7 +1179,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#5C6A8E', '--lg-lg-harbor-500')">
               <div class="swatch-rect" style="background-color: #5C6A8E; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-harbor-500</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1151,7 +1187,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#47547A', '--lg-lg-harbor-600')">
               <div class="swatch-rect" style="background-color: #47547A; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-harbor-600</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1159,7 +1195,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#34406A', '--lg-lg-harbor-700')">
               <div class="swatch-rect" style="background-color: #34406A; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-harbor-700</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1167,7 +1203,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#1F2A4E', '--lg-lg-harbor-800')">
               <div class="swatch-rect" style="background-color: #1F2A4E; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-harbor-800</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1175,7 +1211,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#0A1024', '--lg-lg-harbor-900')">
               <div class="swatch-rect" style="background-color: #0A1024; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-harbor-900</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1183,7 +1219,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#050A14', '--lg-lg-harbor-950')">
               <div class="swatch-rect" style="background-color: #050A14; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-harbor-950</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1191,7 +1227,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#001B3C', '--lg-lg-harbor-deep')">
               <div class="swatch-rect" style="background-color: #001B3C; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-harbor-deep</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1199,7 +1235,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#E2E9FB', '--lg-lg-indigo-100')">
               <div class="swatch-rect" style="background-color: #E2E9FB; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-indigo-100</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1207,7 +1243,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#B9C8EE', '--lg-lg-indigo-200')">
               <div class="swatch-rect" style="background-color: #B9C8EE; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-indigo-200</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1215,7 +1251,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#93AEE6', '--lg-lg-indigo-300')">
               <div class="swatch-rect" style="background-color: #93AEE6; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-indigo-300</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1223,7 +1259,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#6A8DD8', '--lg-lg-indigo-400')">
               <div class="swatch-rect" style="background-color: #6A8DD8; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-indigo-400</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1231,7 +1267,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#3D5FB8', '--lg-lg-indigo-500')">
               <div class="swatch-rect" style="background-color: #3D5FB8; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-indigo-500</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1239,7 +1275,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#19398D', '--lg-lg-indigo-600')">
               <div class="swatch-rect" style="background-color: #19398D; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-indigo-600</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1247,7 +1283,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#142E73', '--lg-lg-indigo-700')">
               <div class="swatch-rect" style="background-color: #142E73; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-indigo-700</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1255,7 +1291,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#324F9A', '--lg-lg-indigo-ring')">
               <div class="swatch-rect" style="background-color: #324F9A; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-indigo-ring</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1263,7 +1299,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#119B8E', '--lg-lg-teal-500')">
               <div class="swatch-rect" style="background-color: #119B8E; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-teal-500</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1271,7 +1307,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#2FB3A6', '--lg-lg-teal-400')">
               <div class="swatch-rect" style="background-color: #2FB3A6; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-teal-400</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1279,7 +1315,7 @@
             </div>
             <div class="swatch-card" onclick="copyHex('#9B0033', '--lg-lg-crimson-600')">
               <div class="swatch-rect" style="background-color: #9B0033; height: 112px;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">lg-crimson-600</p>
               <p class="swatch-sub">Brand primitive token</p>
@@ -1295,70 +1331,70 @@
             
             <div class="swatch-card" onclick="copyHex('#E6F0FF', 'Primary-10')">
               <div class="swatch-rect" style="background-color: #E6F0FF;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Primary-10</p>
               <p class="swatch-hex">#E6F0FF</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#CFE2FF', 'Primary-20')">
               <div class="swatch-rect" style="background-color: #CFE2FF;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Primary-20</p>
               <p class="swatch-hex">#CFE2FF</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#AFCAFF', 'Primary-30')">
               <div class="swatch-rect" style="background-color: #AFCAFF;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Primary-30</p>
               <p class="swatch-hex">#AFCAFF</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#8AADF6', 'Primary-40')">
               <div class="swatch-rect" style="background-color: #8AADF6;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Primary-40</p>
               <p class="swatch-hex">#8AADF6</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#668CE0', 'Primary-50')">
               <div class="swatch-rect" style="background-color: #668CE0;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Primary-50</p>
               <p class="swatch-hex">#668CE0</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#4970C9', 'Primary-60')">
               <div class="swatch-rect" style="background-color: #4970C9;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Primary-60</p>
               <p class="swatch-hex">#4970C9</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#19398D', 'Primary-70')">
               <div class="swatch-rect" style="background-color: #19398D;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Primary-70</p>
               <p class="swatch-hex">#19398D</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#22418E', 'Primary-80')">
               <div class="swatch-rect" style="background-color: #22418E;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Primary-80</p>
               <p class="swatch-hex">#22418E</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#142D6D', 'Primary-90')">
               <div class="swatch-rect" style="background-color: #142D6D;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Primary-90</p>
               <p class="swatch-hex">#142D6D</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#07194D', 'Primary-100')">
               <div class="swatch-rect" style="background-color: #07194D;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Primary-100</p>
               <p class="swatch-hex">#07194D</p>
@@ -1373,70 +1409,70 @@
             
             <div class="swatch-card" onclick="copyHex('#FFE6E8', 'Secondary-10')">
               <div class="swatch-rect" style="background-color: #FFE6E8;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Secondary-10</p>
               <p class="swatch-hex">#FFE6E8</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#FFD0D4', 'Secondary-20')">
               <div class="swatch-rect" style="background-color: #FFD0D4;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Secondary-20</p>
               <p class="swatch-hex">#FFD0D4</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#FFAFB6', 'Secondary-30')">
               <div class="swatch-rect" style="background-color: #FFAFB6;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Secondary-30</p>
               <p class="swatch-hex">#FFAFB6</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#F88793', 'Secondary-40')">
               <div class="swatch-rect" style="background-color: #F88793;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Secondary-40</p>
               <p class="swatch-hex">#F88793</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#DF5E70', 'Secondary-50')">
               <div class="swatch-rect" style="background-color: #DF5E70;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Secondary-50</p>
               <p class="swatch-hex">#DF5E70</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#9B0033', 'Secondary-60')">
               <div class="swatch-rect" style="background-color: #9B0033;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Secondary-60</p>
               <p class="swatch-hex">#9B0033</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#A91B3E', 'Secondary-70')">
               <div class="swatch-rect" style="background-color: #A91B3E;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Secondary-70</p>
               <p class="swatch-hex">#A91B3E</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#89002C', 'Secondary-80')">
               <div class="swatch-rect" style="background-color: #89002C;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Secondary-80</p>
               <p class="swatch-hex">#89002C</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#68001C', 'Secondary-90')">
               <div class="swatch-rect" style="background-color: #68001C;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Secondary-90</p>
               <p class="swatch-hex">#68001C</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#48000D', 'Secondary-100')">
               <div class="swatch-rect" style="background-color: #48000D;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Secondary-100</p>
               <p class="swatch-hex">#48000D</p>
@@ -1451,70 +1487,70 @@
             
             <div class="swatch-card" onclick="copyHex('#E6F0FF', 'Tertiary-10')">
               <div class="swatch-rect" style="background-color: #E6F0FF;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Tertiary-10</p>
               <p class="swatch-hex">#E6F0FF</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#D0E1FF', 'Tertiary-20')">
               <div class="swatch-rect" style="background-color: #D0E1FF;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Tertiary-20</p>
               <p class="swatch-hex">#D0E1FF</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#B0CAFF', 'Tertiary-30')">
               <div class="swatch-rect" style="background-color: #B0CAFF;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Tertiary-30</p>
               <p class="swatch-hex">#B0CAFF</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#8CACF6', 'Tertiary-40')">
               <div class="swatch-rect" style="background-color: #8CACF6;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Tertiary-40</p>
               <p class="swatch-hex">#8CACF6</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#3D5FB8', 'Tertiary-50')">
               <div class="swatch-rect" style="background-color: #3D5FB8;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Tertiary-50</p>
               <p class="swatch-hex">#3D5FB8</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#4B6FC9', 'Tertiary-60')">
               <div class="swatch-rect" style="background-color: #4B6FC9;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Tertiary-60</p>
               <p class="swatch-hex">#4B6FC9</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#3657AF', 'Tertiary-70')">
               <div class="swatch-rect" style="background-color: #3657AF;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Tertiary-70</p>
               <p class="swatch-hex">#3657AF</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#24418F', 'Tertiary-80')">
               <div class="swatch-rect" style="background-color: #24418F;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Tertiary-80</p>
               <p class="swatch-hex">#24418F</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#162C6D', 'Tertiary-90')">
               <div class="swatch-rect" style="background-color: #162C6D;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Tertiary-90</p>
               <p class="swatch-hex">#162C6D</p>
             </div>
             <div class="swatch-card" onclick="copyHex('#08194D', 'Tertiary-100')">
               <div class="swatch-rect" style="background-color: #08194D;">
-                <span class="swatch-copy-pill">Copy</span>
+                <span class="swatch-copy-pill" data-figma-ignore>Copy</span>
               </div>
               <p class="swatch-title">Tertiary-100</p>
               <p class="swatch-hex">#08194D</p>
@@ -3566,6 +3602,295 @@
       toastTimer = setTimeout(() => toast.classList.remove('visible'), 2400);
     }
 
+    /* ---- Auto Layout inspector + Figma manifest --------------------------
+       No HTML attribute can give Figma variables, components or auto layout.
+       An importer infers flow from computed CSS. These two controls do the only
+       two useful things a page can do: show where flow exists, and emit a
+       deterministic manifest the Sunnyside replay plugin rebuilds natively. */
+    function figmaNum(v) {
+      var n = parseFloat(v);
+      return isFinite(n) ? n : 0;
+    }
+
+    function figmaLayoutOf(el) {
+      var cs = window.getComputedStyle(el);
+      var d = String(cs.display || '').toLowerCase();
+      var mode = 'NONE';
+      if (d.indexOf('flex') !== -1) {
+        mode = String(cs.flexDirection || 'row').indexOf('row') === 0 ? 'HORIZONTAL' : 'VERTICAL';
+      } else if (d.indexOf('grid') !== -1) {
+        mode = 'GRID';
+      }
+      return {
+        mode: mode,
+        spacing: figmaNum(cs.columnGap || cs.gap),
+        counterSpacing: figmaNum(cs.rowGap || cs.gap),
+        padding: [figmaNum(cs.paddingTop), figmaNum(cs.paddingRight), figmaNum(cs.paddingBottom), figmaNum(cs.paddingLeft)],
+        align: cs.alignItems || 'stretch',
+        justify: cs.justifyContent || 'flex-start',
+        wrap: String(cs.flexWrap || 'nowrap') === 'nowrap' ? 'NO_WRAP' : 'WRAP',
+        grow: figmaNum(cs.flexGrow),
+        columns: cs.gridTemplateColumns || '',
+        positioning: (cs.position === 'absolute' || cs.position === 'fixed') ? 'ABSOLUTE' : 'AUTO'
+      };
+    }
+
+    function figmaStyleOf(el) {
+      var cs = window.getComputedStyle(el);
+      return {
+        fill: cs.backgroundColor,
+        color: cs.color,
+        radius: figmaNum(cs.borderTopLeftRadius),
+        stroke: figmaNum(cs.borderTopWidth) > 0 ? cs.borderTopColor : null,
+        strokeWidth: figmaNum(cs.borderTopWidth),
+        fontFamily: cs.fontFamily,
+        fontSize: figmaNum(cs.fontSize),
+        fontWeight: cs.fontWeight,
+        lineHeight: cs.lineHeight,
+        letterSpacing: cs.letterSpacing,
+        shadow: cs.boxShadow || 'none',
+        opacity: figmaNum(cs.opacity) || 1
+      };
+    }
+
+    function figmaSkip(el) {
+      if (!el || !el.tagName) return true;
+      var tag = el.tagName.toLowerCase();
+      if (tag === 'script' || tag === 'style' || tag === 'br') return true;
+      if (tag === 'button' && String(el.getAttribute('onclick') || '').indexOf('copy') !== -1) return true;
+      /* Browser-only chrome: copy pills, hover-only controls, the top bar and
+       * overlays. Anything marked data-figma-ignore never reaches Figma. */
+      if (el.closest && el.closest('[data-figma-ignore], .swatch-copy-pill, .section-copy-btn, .copy-btn, .workspace-topbar, .modal, .modal-overlay, .toast-notification')) return true;
+      var cs = window.getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return true;
+      if (parseFloat(cs.opacity) === 0) return true;
+      return false;
+    }
+
+    function buildFigmaManifest() {
+      var tokens = {};
+      var tokenEl = document.getElementById('figma-tokens');
+      if (tokenEl) { try { tokens = JSON.parse(tokenEl.textContent || '{}'); } catch (e) {} }
+      /* A shipped 8-sheet doc has ~1,150 elements across all sheets. The cap is
+         a guard against a runaway DOM, not a fidelity limit — leave headroom. */
+      var MAX_DEPTH = 9;
+      var MAX_NODES = 2000;
+      var count = 0;
+
+      function walk(el, depth) {
+        if (count >= MAX_NODES || figmaSkip(el)) return null;
+        var tag = el.tagName.toLowerCase();
+        var r = el.getBoundingClientRect();
+        var box = { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) };
+        if (tag === 'svg') {
+          count++;
+          return { name: el.getAttribute('aria-label') || 'vector', type: 'VECTOR', svg: el.outerHTML, box: box, children: [] };
+        }
+        count++;
+        var layout = figmaLayoutOf(el);
+        var style = figmaStyleOf(el);
+        var rawText = el.children.length === 0 ? String(el.textContent || '').trim() : '';
+        var isText = rawText.length > 0;
+        var label = el.getAttribute('data-figma-node') || (typeof el.className === 'string' && el.className.split(' ')[0]) || tag;
+        var node = {
+          name: label,
+          type: isText ? 'TEXT' : (layout.mode !== 'NONE' || el.children.length ? 'FRAME' : 'RECTANGLE'),
+          layout: layout,
+          style: style,
+          box: box,
+          component: el.getAttribute('data-figma-node'),
+          text: isText ? rawText.slice(0, 240) : null,
+          children: []
+        };
+        if (depth < MAX_DEPTH && !isText) {
+          for (var i = 0; i < el.children.length && count < MAX_NODES; i++) {
+            var child = walk(el.children[i], depth + 1);
+            if (child) node.children.push(child);
+          }
+        }
+        return node;
+      }
+
+      var sheets = [];
+      var sections = document.querySelectorAll('.figma-sheet');
+      for (var s = 0; s < sections.length; s++) {
+        var sec = sections[s];
+        if (sec.classList.contains('hidden-sheet')) continue;
+        var root = walk(sec, 0);
+        if (root) sheets.push({ name: sec.getAttribute('data-section') || sec.id, label: sec.id, node: root });
+      }
+      return {
+        version: 1,
+        kind: 'sunnyside/figma-manifest',
+        brand: tokens.brand || document.title.split(' ')[0],
+        slug: tokens.slug || '',
+        source: window.location.href,
+        viewport: window.innerWidth,
+        tokens: tokens,
+        sheets: sheets,
+        nodes: count
+      };
+    }
+
+    function toggleAutoLayoutMode(forceState) {
+      var on = forceState !== undefined ? forceState : !document.body.classList.contains('al-mode');
+      document.body.classList.toggle('al-mode', on);
+      var btn = document.getElementById('btn-autolayout');
+      if (btn) btn.classList.toggle('active-al', on);
+      var flow = 0;
+      var flagged = 0;
+      var all = document.querySelectorAll('.figma-sheet *');
+      for (var i = 0; i < all.length; i++) {
+        var el = all[i];
+        var cs = window.getComputedStyle(el);
+        var d = String(cs.display || '').toLowerCase();
+        var isFlow = d.indexOf('flex') !== -1 || d.indexOf('grid') !== -1;
+        if (isFlow && on) { el.setAttribute('data-figma-layout', d); flow++; } else { el.removeAttribute('data-figma-layout'); }
+        var risky = cs.position === 'absolute' || cs.position === 'fixed' || String(cs.transform || 'none') !== 'none' || String(cs.backdropFilter || 'none') !== 'none';
+        if (risky && on) { el.setAttribute('data-figma-warn', '1'); flagged++; } else { el.removeAttribute('data-figma-warn'); }
+      }
+      try {
+        var url = new URL(window.location.href);
+        if (on) url.searchParams.set('autolayout', '1'); else url.searchParams.delete('autolayout');
+        window.history.replaceState({}, '', url.toString());
+      } catch (e) {}
+      showToast((on ? 'Auto Layout inspector on' : 'Auto Layout inspector off') + ' · ' + flow + ' flow containers · ' + flagged + ' to review');
+    }
+
+    function copyFigmaManifest() {
+      var m = buildFigmaManifest();
+      copyToClipboard(JSON.stringify(m), 'Copied Figma manifest · ' + m.sheets.length + ' sheets · ' + m.nodes + ' nodes');
+      return m;
+    }
+
+    var REPLAY_CODE_B64="LyogPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQogKiBGaWdtYSBydW50aW1lIOKAlCBTdW5ueXNpZGUgbWFuaWZlc3QgcmVwbGF5LgogKgogKiBHZW5lcmF0ZWQgYnkgc2NyaXB0cy9maWdtYS1yZXBsYXkubWpzLiBUaGUgSFRNTCBzaGVldCBtZWFzdXJlcyBpdHMgb3duIERPTSBpbgogKiBhIHJlYWwgYnJvd3NlciAoZ2V0Q29tcHV0ZWRTdHlsZSArIGdldEJvdW5kaW5nQ2xpZW50UmVjdCkgYW5kIGVtaXRzIGEKICogZGV0ZXJtaW5pc3RpYyBtYW5pZmVzdC4gVGhpcyBwbHVnaW4gcmVwbGF5cyB0aGF0IG1hbmlmZXN0IG5hdGl2ZWx5OgogKgogKiAgIHZhcmlhYmxlIGNvbGxlY3Rpb25zICsgcGFpbnQgc3R5bGVzIGJvdW5kIHRvIHRoZW0KICogICB0ZXh0IHN0eWxlcyBmcm9tIHRoZSB0b2tlbiBmaWxlCiAqICAgZnJhbWVzIHdpdGggQXV0byBMYXlvdXQgKEhPUklaT05UQUwgLyBWRVJUSUNBTCAvIEdSSUQpLCBwYWRkaW5nLCBzcGFjaW5nLAogKiAgIGFsaWdubWVudCwgd3JhcCwgSFVHL0ZJTEwgYW5kIGFic29sdXRlIGNoaWxkcmVuCiAqICAgbGl2ZSB0ZXh0LCByZWN0YW5nbGVzLCBTVkcgdmVjdG9ycyBhbmQgbmFtZWQgY29tcG9uZW50cwogKgogKiBUaGlzIGlzIE5PVCBhIGdlbmVyYWwgSFRNTC10by1GaWdtYSBjb252ZXJ0ZXIuIEl0IHJlYWRzIGEga25vd24gc2NoZW1hIGZyb20gYQogKiBwYWdlIHdlIGdlbmVyYXRlIG91cnNlbHZlcywgc28gdGhlcmUgaXMgbm8gQ1NTIHBhcnNpbmcgYW5kIG5vIGd1ZXNzaW5nLgogKiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSovCgpjb25zdCByZXBvcnQgPSB7CiAgcGFnZXM6IDAsIGZyYW1lczogMCwgdGV4dHM6IDAsIHJlY3RzOiAwLCB2ZWN0b3JzOiAwLAogIHZhcmlhYmxlczogMCwgcGFpbnRTdHlsZXM6IDAsIHRleHRTdHlsZXM6IDAsIGNvbXBvbmVudHM6IDAsCiAgYXV0b0xheW91dDogMCwgcmVwbGFjZWQ6IDAsIHRleHRJbms6IDAsIHRleHRCb29zdGVkOiAwLAogIGZvbnRGYWxsYmFja3M6IDAsIHZlY3RvcnNTY2FsZWQ6IDAsIGVmZmVjdHM6IDAsIGNoaXBzOiAwLCBncm93bjogMCwgc2tpcHBlZFNoZWV0czogMCwgZXJyb3JzOiBbXSwKfTsKY29uc3QgZmFpbCA9ICh3aGVyZSwgZSkgPT4gcmVwb3J0LmVycm9ycy5wdXNoKHdoZXJlICsgJzogJyArICgoZSAmJiBlLm1lc3NhZ2UpIHx8IFN0cmluZyhlKSkpOwoKLyogVGhlIHJlcGxheSBtYW5pZmVzdCBkZWNsYXJlcyAiZG9jdW1lbnRBY2Nlc3MiOiAiZHluYW1pYy1wYWdlIiwgd2hpY2ggbWFrZXMKICogZmlnbWEuY3VycmVudFBhZ2UgcmVhZC1vbmx5LiBBc3NpZ25pbmcgdG8gaXQgdGhyb3dzICJDYW5ub3QgY2FsbCB3aXRoCiAqIGRvY3VtZW50QWNjZXNzOiBkeW5hbWljLXBhZ2UuIFVzZSBmaWdtYS5zZXRDdXJyZW50UGFnZUFzeW5jIGluc3RlYWQuIgogKiBUaGUgYXN5bmMgbWV0aG9kIGFsc28gbG9hZHMgdGhlIHBhZ2UncyBjaGlsZHJlbiBvbiBkZW1hbmQuICovCmFzeW5jIGZ1bmN0aW9uIHVzZVBhZ2UocGFnZSkgewogIGlmICh0eXBlb2YgZmlnbWEuc2V0Q3VycmVudFBhZ2VBc3luYyA9PT0gJ2Z1bmN0aW9uJykgewogICAgYXdhaXQgZmlnbWEuc2V0Q3VycmVudFBhZ2VBc3luYyhwYWdlKTsKICB9IGVsc2UgewogICAgZmlnbWEuY3VycmVudFBhZ2UgPSBwYWdlOwogIH0KfQoKLyog4pSA4pSAIGNvbG91ciDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgKi8KCmZ1bmN0aW9uIHBhcnNlQ29sb3Ioc3RyKSB7CiAgaWYgKCFzdHIgfHwgdHlwZW9mIHN0ciAhPT0gJ3N0cmluZycpIHJldHVybiBudWxsOwogIGNvbnN0IHMgPSBzdHIudHJpbSgpLnRvTG93ZXJDYXNlKCk7CiAgaWYgKHMgPT09ICd0cmFuc3BhcmVudCcgfHwgcyA9PT0gJ25vbmUnKSByZXR1cm4gbnVsbDsKICBpZiAocy5jaGFyQXQoMCkgPT09ICcjJykgewogICAgbGV0IGggPSBzLnNsaWNlKDEpOwogICAgaWYgKGgubGVuZ3RoID09PSAzKSBoID0gaFswXSArIGhbMF0gKyBoWzFdICsgaFsxXSArIGhbMl0gKyBoWzJdOwogICAgbGV0IGEgPSAxOwogICAgaWYgKGgubGVuZ3RoID09PSA4KSB7IGEgPSBwYXJzZUludChoLnNsaWNlKDYsIDgpLCAxNikgLyAyNTU7IGggPSBoLnNsaWNlKDAsIDYpOyB9CiAgICBpZiAoaC5sZW5ndGggIT09IDYpIHJldHVybiBudWxsOwogICAgY29uc3QgbiA9IHBhcnNlSW50KGgsIDE2KTsKICAgIGlmICghTnVtYmVyLmlzRmluaXRlKG4pKSByZXR1cm4gbnVsbDsKICAgIGlmIChhIDw9IDAuMDAxKSByZXR1cm4gbnVsbDsKICAgIHJldHVybiB7IHI6ICgobiA+PiAxNikgJiAyNTUpIC8gMjU1LCBnOiAoKG4gPj4gOCkgJiAyNTUpIC8gMjU1LCBiOiAobiAmIDI1NSkgLyAyNTUsIGEgfTsKICB9CiAgY29uc3QgbSA9IHMubWF0Y2goL3JnYmE/XCgoW14pXSspXCkvKTsKICBpZiAoIW0pIHJldHVybiBudWxsOwogIGNvbnN0IHAgPSBtWzFdLnNwbGl0KCcsJykubWFwKCh4KSA9PiBwYXJzZUZsb2F0KHgpKTsKICBpZiAocC5sZW5ndGggPCAzKSByZXR1cm4gbnVsbDsKICBjb25zdCBhID0gcC5sZW5ndGggPiAzID8gcFszXSA6IDE7CiAgaWYgKGEgPD0gMC4wMDEpIHJldHVybiBudWxsOwogIHJldHVybiB7IHI6IHBbMF0gLyAyNTUsIGc6IHBbMV0gLyAyNTUsIGI6IHBbMl0gLyAyNTUsIGEgfTsKfQoKY29uc3Qgc29saWQgPSAoYykgPT4gKHsgdHlwZTogJ1NPTElEJywgY29sb3I6IHsgcjogYy5yLCBnOiBjLmcsIGI6IGMuYiB9LCBvcGFjaXR5OiBjLmEgfSk7CmNvbnN0IGtleSA9IChjKSA9PiBbYy5yLCBjLmcsIGMuYl0ubWFwKCh2KSA9PiBNYXRoLnJvdW5kKHYgKiAxMDAwKSkuam9pbignLCcpOwoKLyog4pSA4pSAIGZvbnRzIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCAqLwoKY29uc3QgR0VORVJJQ19GQU1JTFkgPSAvXihtb25vc3BhY2V8c2Fucy1zZXJpZnxzZXJpZnxzeXN0ZW0tdWl8dWktW2Etei1dK3wtYXBwbGUtc3lzdGVtfGluaGVyaXR8aW5pdGlhbCkkL2k7CgpmdW5jdGlvbiBmaXJzdEZhbWlseShzdGFjaykgewogIGNvbnN0IHBhcnRzID0gU3RyaW5nKHN0YWNrIHx8ICcnKQogICAgLnNwbGl0KCcsJykKICAgIC5tYXAoKHApID0+IHAucmVwbGFjZSgvWyInXS9nLCAnJykudHJpbSgpKQogICAgLmZpbHRlcihCb29sZWFuKTsKICByZXR1cm4gcGFydHMuZmluZCgocCkgPT4gIUdFTkVSSUNfRkFNSUxZLnRlc3QocCkpIHx8ICdJbnRlcic7Cn0KCmZ1bmN0aW9uIHdlaWdodFN0eWxlKHcpIHsKICBjb25zdCBuID0gcGFyc2VJbnQoU3RyaW5nKHcgfHwgJzQwMCcpLCAxMCk7CiAgaWYgKCFOdW1iZXIuaXNGaW5pdGUobikpIHJldHVybiBTdHJpbmcodyB8fCAnUmVndWxhcicpOwogIGlmIChuIDw9IDMwMCkgcmV0dXJuICdMaWdodCc7CiAgaWYgKG4gPD0gNDAwKSByZXR1cm4gJ1JlZ3VsYXInOwogIGlmIChuIDw9IDUwMCkgcmV0dXJuICdNZWRpdW0nOwogIGlmIChuIDw9IDYwMCkgcmV0dXJuICdTZW1pIEJvbGQnOwogIHJldHVybiAnQm9sZCc7Cn0KCi8qIEdvb2dsZSBGb250cyBzaGlwIHdpdGggRmlnbWEsIHNvIEFyY2hpdm8gLyBETSBNb25vIC8gRnJhdW5jZXMgcmVzb2x2ZSBieSBuYW1lCiAqIHdpdGhvdXQgaW5zdGFsbGluZyBhbnl0aGluZyDigJQgYnV0IG9ubHkgdW5kZXIgdGhlIHN0eWxlIHNwZWxsaW5nIEZpZ21hIHVzZXMuCiAqICJTZW1pIEJvbGQiIGFuZCAiU2VtaUJvbGQiIGFyZSBkaWZmZXJlbnQgc3RyaW5ncywgYW5kIGEgbWlzcyBmYWxscyBiYWNrIHRvCiAqIEludGVyIHNpbGVudGx5LiBUcnkgZXZlcnkgc3BlbGxpbmcgYmVmb3JlIGdpdmluZyB1cC4gKi8KZnVuY3Rpb24gc3R5bGVDYW5kaWRhdGVzKHN0eWxlKSB7CiAgY29uc3QgbWFwID0gewogICAgJ1NlbWkgQm9sZCc6IFsnU2VtaUJvbGQnLCAnU2VtaSBCb2xkJywgJ0RlbWlCb2xkJywgJ0RlbWkgQm9sZCcsICdNZWRpdW0nLCAnQm9sZCddLAogICAgJ0V4dHJhIEJvbGQnOiBbJ0V4dHJhQm9sZCcsICdFeHRyYSBCb2xkJywgJ0JvbGQnXSwKICAgICdFeHRyYSBMaWdodCc6IFsnRXh0cmFMaWdodCcsICdFeHRyYSBMaWdodCcsICdMaWdodCddLAogICAgJ1VsdHJhIExpZ2h0JzogWydVbHRyYUxpZ2h0JywgJ1VsdHJhIExpZ2h0JywgJ1RoaW4nXSwKICAgICdIYWlybGluZSc6IFsnVGhpbicsICdFeHRyYUxpZ2h0JywgJ0xpZ2h0J10sCiAgfTsKICBjb25zdCBvdXQgPSBtYXBbc3R5bGVdIHx8IFtdOwogIHJldHVybiBbLi4ub3V0LCBzdHlsZSwgJ1JlZ3VsYXInLCAnTWVkaXVtJywgJ0JvbGQnXS5maWx0ZXIoKHMsIGksIGEpID0+IHMgJiYgYS5pbmRleE9mKHMpID09PSBpKTsKfQoKY29uc3QgZm9udENhY2hlID0gbmV3IE1hcCgpOwphc3luYyBmdW5jdGlvbiBsb2FkRm9udChmYW1pbHksIHdlaWdodCkgewogIGNvbnN0IGZhbSA9IGZpcnN0RmFtaWx5KGZhbWlseSk7CiAgY29uc3Qgc3R5bGUgPSB3ZWlnaHRTdHlsZSh3ZWlnaHQpOwogIGNvbnN0IGsgPSBmYW0gKyAnfCcgKyBzdHlsZTsKICBpZiAoZm9udENhY2hlLmhhcyhrKSkgcmV0dXJuIGZvbnRDYWNoZS5nZXQoayk7CiAgY29uc3QgdHJpZXMgPSBzdHlsZUNhbmRpZGF0ZXMoc3R5bGUpOwogIGZvciAoY29uc3QgcyBvZiB0cmllcykgewogICAgdHJ5IHsKICAgICAgY29uc3QgZiA9IHsgZmFtaWx5OiBmYW0sIHN0eWxlOiBzIH07CiAgICAgIGF3YWl0IGZpZ21hLmxvYWRGb250QXN5bmMoZik7CiAgICAgIGZvbnRDYWNoZS5zZXQoaywgZik7CiAgICAgIHJldHVybiBmOwogICAgfSBjYXRjaCAoZSkgeyAvKiB0cnkgdGhlIG5leHQgd2VpZ2h0ICovIH0KICB9CiAgcmVwb3J0LmZvbnRGYWxsYmFja3MrKzsKICB0cnkgeyBhd2FpdCBmaWdtYS5sb2FkRm9udEFzeW5jKHsgZmFtaWx5OiAnSW50ZXInLCBzdHlsZTogJ1JlZ3VsYXInIH0pOyB9IGNhdGNoIChlKSB7IC8qIGJ1bmRsZWQgKi8gfQogIGNvbnN0IGZhbGxiYWNrID0geyBmYW1pbHk6ICdJbnRlcicsIHN0eWxlOiAnUmVndWxhcicgfTsKICBmb250Q2FjaGUuc2V0KGssIGZhbGxiYWNrKTsKICByZXR1cm4gZmFsbGJhY2s7Cn0KCi8qIOKUgOKUgCB0aGUgc3lzdGVtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCAqLwoKYXN5bmMgZnVuY3Rpb24gYnVpbGRTeXN0ZW0odG9rZW5zKSB7CiAgY29uc3QgYnJhbmQgPSB0b2tlbnMuYnJhbmQgfHwgJ0JyYW5kJzsKICBjb25zdCBieVJnYiA9IG5ldyBNYXAoKTsKICBjb25zdCBwYWxldHRlID0gdG9rZW5zLnBhbGV0dGUgfHwgW107CiAgaWYgKHBhbGV0dGUubGVuZ3RoKSB7CiAgICBjb25zdCBjb2xsID0gZmlnbWEudmFyaWFibGVzLmNyZWF0ZVZhcmlhYmxlQ29sbGVjdGlvbihicmFuZCArICcgLyBDb2xvdXInKTsKICAgIGNvbnN0IG1vZGUgPSBjb2xsLm1vZGVzWzBdLm1vZGVJZDsKICAgIGNvbGwucmVuYW1lTW9kZShtb2RlLCAnTGlnaHQnKTsKICAgIGZvciAoY29uc3QgcCBvZiBwYWxldHRlKSB7CiAgICAgIGNvbnN0IGMgPSBwYXJzZUNvbG9yKHAuaGV4KTsKICAgICAgaWYgKCFjKSBjb250aW51ZTsKICAgICAgdHJ5IHsKICAgICAgICBjb25zdCB2ID0gZmlnbWEudmFyaWFibGVzLmNyZWF0ZVZhcmlhYmxlKFN0cmluZyhwLm5hbWUpLCBjb2xsLCAnQ09MT1InKTsKICAgICAgICB2LnNldFZhbHVlRm9yTW9kZShtb2RlLCBjKTsKICAgICAgICBieVJnYi5zZXQoa2V5KGMpLCB2KTsKICAgICAgICByZXBvcnQudmFyaWFibGVzKys7CiAgICAgICAgY29uc3Qgc3QgPSBmaWdtYS5jcmVhdGVQYWludFN0eWxlKCk7CiAgICAgICAgc3QubmFtZSA9ICdDb2xvdXIvJyArIHAubmFtZTsKICAgICAgICBzdC5wYWludHMgPSBbZmlnbWEudmFyaWFibGVzLnNldEJvdW5kVmFyaWFibGVGb3JQYWludChzb2xpZChjKSwgJ2NvbG9yJywgdildOwogICAgICAgIHJlcG9ydC5wYWludFN0eWxlcysrOwogICAgICB9IGNhdGNoIChlKSB7IGZhaWwoJ3ZhcmlhYmxlLycgKyBwLm5hbWUsIGUpOyB9CiAgICB9CiAgfQoKICBmb3IgKGNvbnN0IGdyb3VwIG9mIFtbJ1NwYWNpbmcnLCB0b2tlbnMuc3BhY2UgfHwgW11dLCBbJ1JhZGl1cycsIHRva2Vucy5yYWRpdXMgfHwgW11dXSkgewogICAgY29uc3QgbGlzdCA9IGdyb3VwWzFdOwogICAgaWYgKCFsaXN0Lmxlbmd0aCkgY29udGludWU7CiAgICBjb25zdCBjb2xsID0gZmlnbWEudmFyaWFibGVzLmNyZWF0ZVZhcmlhYmxlQ29sbGVjdGlvbihicmFuZCArICcgLyAnICsgZ3JvdXBbMF0pOwogICAgY29uc3QgbW9kZSA9IGNvbGwubW9kZXNbMF0ubW9kZUlkOwogICAgZm9yIChjb25zdCB0IG9mIGxpc3QpIHsKICAgICAgY29uc3QgbiA9IHBhcnNlRmxvYXQodC52YWx1ZSk7CiAgICAgIGlmICghTnVtYmVyLmlzRmluaXRlKG4pKSBjb250aW51ZTsKICAgICAgdHJ5IHsKICAgICAgICBjb25zdCB2ID0gZmlnbWEudmFyaWFibGVzLmNyZWF0ZVZhcmlhYmxlKFN0cmluZyh0Lm5hbWUpLCBjb2xsLCAnRkxPQVQnKTsKICAgICAgICB2LnNldFZhbHVlRm9yTW9kZShtb2RlLCBuKTsKICAgICAgICByZXBvcnQudmFyaWFibGVzKys7CiAgICAgIH0gY2F0Y2ggKGUpIHsgZmFpbChncm91cFswXSArICcvJyArIHQubmFtZSwgZSk7IH0KICAgIH0KICB9CgogIGZvciAoY29uc3QgdCBvZiB0b2tlbnMudHlwZSB8fCBbXSkgewogICAgY29uc3Qgc2l6ZSA9IE51bWJlcih0LnNpemUpOwogICAgaWYgKCFOdW1iZXIuaXNGaW5pdGUoc2l6ZSkgfHwgc2l6ZSA8PSAwKSBjb250aW51ZTsKICAgIHRyeSB7CiAgICAgIGNvbnN0IHN0ID0gZmlnbWEuY3JlYXRlVGV4dFN0eWxlKCk7CiAgICAgIHN0Lm5hbWUgPSAnVHlwZS8nICsgdC5uYW1lOwogICAgICBzdC5mb250TmFtZSA9IGF3YWl0IGxvYWRGb250KHQuZmFtaWx5LCB0LndlaWdodCk7CiAgICAgIHN0LmZvbnRTaXplID0gc2l6ZTsKICAgICAgaWYgKHQubGVhZGluZyAhPSBudWxsKSB7CiAgICAgICAgY29uc3QgbGggPSBOdW1iZXIodC5sZWFkaW5nKTsKICAgICAgICBpZiAoTnVtYmVyLmlzRmluaXRlKGxoKSAmJiBsaCA+IDApIHN0LmxpbmVIZWlnaHQgPSB7IHVuaXQ6ICdQRVJDRU5UJywgdmFsdWU6IE1hdGgucm91bmQoKGxoID4gMyA/IGxoIC8gc2l6ZSA6IGxoKSAqIDEwMCkgfTsKICAgICAgfQogICAgICBpZiAodC50cmFja2luZyAhPSBudWxsICYmIE51bWJlci5pc0Zpbml0ZShOdW1iZXIodC50cmFja2luZykpKSB7CiAgICAgICAgc3QubGV0dGVyU3BhY2luZyA9IHsgdW5pdDogJ1BJWEVMUycsIHZhbHVlOiArKE51bWJlcih0LnRyYWNraW5nKSAqIHNpemUpLnRvRml4ZWQoMikgfTsKICAgICAgfQogICAgICByZXBvcnQudGV4dFN0eWxlcysrOwogICAgfSBjYXRjaCAoZSkgeyBmYWlsKCd0ZXh0U3R5bGUvJyArIHQubmFtZSwgZSk7IH0KICB9CiAgcmV0dXJuIGJ5UmdiOwp9CgovKiDilIDilIAgbGF5b3V0IG1hcHBpbmcg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAICovCgpmdW5jdGlvbiBqdXN0aWZ5KHYpIHsKICBzd2l0Y2ggKFN0cmluZyh2IHx8ICcnKSkgewogICAgY2FzZSAnZmxleC1lbmQnOiBjYXNlICdlbmQnOiBjYXNlICdyaWdodCc6IHJldHVybiAnTUFYJzsKICAgIGNhc2UgJ2NlbnRlcic6IHJldHVybiAnQ0VOVEVSJzsKICAgIGNhc2UgJ3NwYWNlLWJldHdlZW4nOiByZXR1cm4gJ1NQQUNFX0JFVFdFRU4nOwogICAgY2FzZSAnc3BhY2UtYXJvdW5kJzogcmV0dXJuICdTUEFDRV9BUk9VTkQnOwogICAgY2FzZSAnc3BhY2UtZXZlbmx5JzogcmV0dXJuICdTUEFDRV9FVkVOTFknOwogICAgZGVmYXVsdDogcmV0dXJuICdNSU4nOwogIH0KfQpmdW5jdGlvbiBhbGlnbih2KSB7CiAgc3dpdGNoIChTdHJpbmcodiB8fCAnJykpIHsKICAgIGNhc2UgJ2ZsZXgtZW5kJzogY2FzZSAnZW5kJzogcmV0dXJuICdNQVgnOwogICAgY2FzZSAnY2VudGVyJzogcmV0dXJuICdDRU5URVInOwogICAgY2FzZSAnYmFzZWxpbmUnOiByZXR1cm4gJ0JBU0VMSU5FJzsKICAgIGRlZmF1bHQ6IHJldHVybiAnTUlOJzsKICB9Cn0KZnVuY3Rpb24gcGFkZGluZyhMLCBpKSB7CiAgY29uc3QgdiA9IEwgJiYgQXJyYXkuaXNBcnJheShMLnBhZGRpbmcpID8gTnVtYmVyKEwucGFkZGluZ1tpXSkgOiAwOwogIHJldHVybiBOdW1iZXIuaXNGaW5pdGUodikgJiYgdiA+IDAgPyB2IDogMDsKfQoKZnVuY3Rpb24gYXBwbHlMYXlvdXQoZnJhbWUsIEwsIGNoaWxkcmVuKSB7CiAgaWYgKCFMIHx8ICFMLm1vZGUgfHwgTC5tb2RlID09PSAnTk9ORScpIHJldHVybjsKICBjb25zdCBjaGlsZENvdW50ID0gQXJyYXkuaXNBcnJheShjaGlsZHJlbikgPyBjaGlsZHJlbi5sZW5ndGggOiAwOwogIGlmIChMLm1vZGUgPT09ICdIT1JJWk9OVEFMJyB8fCBMLm1vZGUgPT09ICdWRVJUSUNBTCcpIHsKICAgIC8qIEEgRklYRUQgcHJpbWFyeSBheGlzIGtlZXBzIHRoZSBicm93c2VyJ3MgZnVsbCBib3ggaGVpZ2h0LiBJbiBDU1MgdGhhdAogICAgICogaGVpZ2h0IG9mdGVuIGNvbWVzIGZyb20gbWluLWhlaWdodCBvciBncmlkIHRyYWNrczsgaW4gRmlnbWEgZmxvdyBpdCBqdXN0CiAgICAgKiBsZWF2ZXMgYSBodWdlIGJsYW5rIGFyZWEgdW5kZXIgdGhlIHN0YWNrZWQgY2hpbGRyZW4uIEh1ZyB0aGUgcHJpbWFyeQogICAgICogYXhpcyB1bmxlc3MgYSBjaGlsZCBhY3R1YWxseSBuZWVkcyBGSUxMLiAqLwogICAgY29uc3QgaGFzRmlsbENoaWxkID0gQXJyYXkuaXNBcnJheShjaGlsZHJlbikgJiYKICAgICAgY2hpbGRyZW4uc29tZSgoYykgPT4gYyAmJiBjLmxheW91dCAmJiBOdW1iZXIoYy5sYXlvdXQuZ3JvdykgPiAwKTsKICAgIC8qIGBzcGFjZS1iZXR3ZWVuYCBhbmQgZnJpZW5kcyBvbmx5IGV4aXN0IHJlbGF0aXZlIHRvIGEgZml4ZWQgbGVuZ3RoLiBIdWdnaW5nCiAgICAgKiBjb2xsYXBzZXMgdGhlbSwgd2hpY2ggaXMgd2h5IHRoZSBiYW5uZXIncyByaWdodCBibG9jayBzYXQgbmV4dCB0byB0aGUKICAgICAqIHRpdGxlIGluc3RlYWQgb2YgYXQgdGhlIGZhciBlZGdlLiAqLwogICAgY29uc3QgZGlzdHJpYnV0ZWQgPSBbJ1NQQUNFX0JFVFdFRU4nLCAnU1BBQ0VfQVJPVU5EJywgJ1NQQUNFX0VWRU5MWSddLmluZGV4T2YoanVzdGlmeShMLmp1c3RpZnkpKSAhPT0gLTE7CiAgICBmcmFtZS5sYXlvdXRNb2RlID0gTC5tb2RlOwogICAgZnJhbWUucHJpbWFyeUF4aXNTaXppbmdNb2RlID0gKGhhc0ZpbGxDaGlsZCB8fCBkaXN0cmlidXRlZCkgPyAnRklYRUQnIDogJ0FVVE8nOwogICAgLyogQ3Jvc3MgYXhpczogYSBob3Jpem9udGFsIHJvdyBodWdzIGl0cyBoZWlnaHQgc28gYSB0YWxsZXItdGhhbi1tZWFzdXJlZAogICAgICogbGluZSBjYW5ub3Qgc3BpbGwgb3V0IG9mIGEgcm93IHNpemVkIGZyb20gdGhlIGJyb3dzZXIuIEEgdmVydGljYWwgc3RhY2sKICAgICAqIGtlZXBzIGl0cyBtZWFzdXJlZCB3aWR0aCBhbmQgaHVncyBpdHMgaGVpZ2h0LiAqLwogICAgZnJhbWUuY291bnRlckF4aXNTaXppbmdNb2RlID0gTC5tb2RlID09PSAnSE9SSVpPTlRBTCcgPyAnQVVUTycgOiAnRklYRUQnOwogICAgZnJhbWUuaXRlbVNwYWNpbmcgPSBOdW1iZXIoTC5zcGFjaW5nKSB8fCAwOwogICAgZnJhbWUucGFkZGluZ1RvcCA9IHBhZGRpbmcoTCwgMCk7CiAgICBmcmFtZS5wYWRkaW5nUmlnaHQgPSBwYWRkaW5nKEwsIDEpOwogICAgZnJhbWUucGFkZGluZ0JvdHRvbSA9IHBhZGRpbmcoTCwgMik7CiAgICBmcmFtZS5wYWRkaW5nTGVmdCA9IHBhZGRpbmcoTCwgMyk7CiAgICBmcmFtZS5wcmltYXJ5QXhpc0FsaWduSXRlbXMgPSBqdXN0aWZ5KEwuanVzdGlmeSk7CiAgICBmcmFtZS5jb3VudGVyQXhpc0FsaWduSXRlbXMgPSBhbGlnbihMLmFsaWduKTsKICAgIGZyYW1lLmxheW91dFdyYXAgPSBMLndyYXAgPT09ICdXUkFQJyA/ICdXUkFQJyA6ICdOT19XUkFQJzsKICAgIHJlcG9ydC5hdXRvTGF5b3V0Kys7CiAgICByZXR1cm47CiAgfQogIGlmIChMLm1vZGUgPT09ICdHUklEJykgewogICAgY29uc3QgY29scyA9IFN0cmluZyhMLmNvbHVtbnMgfHwgJycpLnRyaW0oKS5zcGxpdCgvXHMrLykuZmlsdGVyKEJvb2xlYW4pLmxlbmd0aCB8fCAxOwogICAgdHJ5IHsKICAgICAgZnJhbWUubGF5b3V0TW9kZSA9ICdHUklEJzsKICAgICAgZnJhbWUuZ3JpZENvbHVtbkNvdW50ID0gTWF0aC5tYXgoMSwgY29scyk7CiAgICAgIGZyYW1lLmdyaWRSb3dDb3VudCA9IE1hdGgubWF4KDEsIE1hdGguY2VpbChjaGlsZENvdW50IC8gTWF0aC5tYXgoMSwgY29scykpKTsKICAgICAgZnJhbWUuZ3JpZFJvd0dhcCA9IE51bWJlcihMLnNwYWNpbmcpIHx8IDA7CiAgICAgIGZyYW1lLmdyaWRDb2x1bW5HYXAgPSBOdW1iZXIoTC5jb3VudGVyU3BhY2luZykgfHwgMDsKICAgICAgZnJhbWUuZ3JpZEl0ZW1zUG9zaXRpb25pbmcgPSAnUk9XX0FVVE9fRkxPVyc7CiAgICAgIGZyYW1lLnBhZGRpbmdUb3AgPSBwYWRkaW5nKEwsIDApOwogICAgICBmcmFtZS5wYWRkaW5nUmlnaHQgPSBwYWRkaW5nKEwsIDEpOwogICAgICBmcmFtZS5wYWRkaW5nQm90dG9tID0gcGFkZGluZyhMLCAyKTsKICAgICAgZnJhbWUucGFkZGluZ0xlZnQgPSBwYWRkaW5nKEwsIDMpOwogICAgICByZXBvcnQuYXV0b0xheW91dCsrOwogICAgfSBjYXRjaCAoZSkgewogICAgICBmcmFtZS5sYXlvdXRNb2RlID0gJ1ZFUlRJQ0FMJzsKICAgICAgZnJhbWUuaXRlbVNwYWNpbmcgPSBOdW1iZXIoTC5zcGFjaW5nKSB8fCAwOwogICAgICBmcmFtZS5wYWRkaW5nVG9wID0gcGFkZGluZyhMLCAwKTsKICAgICAgZnJhbWUucGFkZGluZ0xlZnQgPSBwYWRkaW5nKEwsIDMpOwogICAgICByZXBvcnQuYXV0b0xheW91dCsrOwogICAgfQogIH0KfQoKLyogInJnYmEoMCwgMCwgMCwgMC4wNikgMHB4IDRweCAyMHB4IDBweCIg4oaSIGEgRmlnbWEgRFJPUF9TSEFET1cuCiAqIENocm9tZSBwdXRzIHRoZSBjb2xvdXIgZmlyc3QsIFNhZmFyaSBzb21ldGltZXMgbGFzdCwgYW5kIGBpbnNldGAgYmVjb21lcyBhbgogKiBJTk5FUl9TSEFET1cuIE9ubHkgdGhlIGZpcnN0IHNoYWRvdyBpbiBhIHN0YWNrIGlzIGtlcHQ6IEZpZ21hIGNhbiBob2xkIG1hbnksCiAqIGJ1dCBhIENTUyBzdGFjayBvZiBmaXZlIGlzIHVzdWFsbHkgb25lIHJlYWwgZWxldmF0aW9uIHBsdXMgZmFsbGJhY2tzLiAqLwpmdW5jdGlvbiBwYXJzZVNoYWRvdyhzdHIpIHsKICBpZiAoIXN0ciB8fCBzdHIgPT09ICdub25lJykgcmV0dXJuIG51bGw7CiAgY29uc3QgZmlyc3QgPSBTdHJpbmcoc3RyKS5zcGxpdCgvLCg/IVteKF0qXCkpLylbMF07CiAgaWYgKCFmaXJzdCB8fCBmaXJzdCA9PT0gJ25vbmUnKSByZXR1cm4gbnVsbDsKICBjb25zdCBjb2xvdXJNYXRjaCA9IGZpcnN0Lm1hdGNoKC9yZ2JhP1woW14pXStcKXwjWzAtOWEtZkEtRl17Myw4fS8pOwogIGNvbnN0IG51bXMgPSBmaXJzdC5yZXBsYWNlKGNvbG91ck1hdGNoID8gY29sb3VyTWF0Y2hbMF0gOiAnJywgJycpLm1hdGNoKC8tP1tcZC5dK3B4L2cpIHx8IFtdOwogIGlmIChudW1zLmxlbmd0aCA8IDIpIHJldHVybiBudWxsOwogIGNvbnN0IFt4LCB5LCBibHVyLCBzcHJlYWRdID0gbnVtcy5tYXAoKG4pID0+IHBhcnNlRmxvYXQobikpOwogIGNvbnN0IGMgPSBwYXJzZUNvbG9yKGNvbG91ck1hdGNoID8gY29sb3VyTWF0Y2hbMF0gOiAncmdiYSgwLDAsMCwwLjE1KScpIHx8IHsgcjogMCwgZzogMCwgYjogMCwgYTogMC4xNSB9OwogIHJldHVybiB7CiAgICB0eXBlOiAvXGJpbnNldFxiLy50ZXN0KGZpcnN0KSA/ICdJTk5FUl9TSEFET1cnIDogJ0RST1BfU0hBRE9XJywKICAgIGNvbG9yOiB7IHI6IGMuciwgZzogYy5nLCBiOiBjLmIsIGE6IGMuYSB9LAogICAgb2Zmc2V0OiB7IHg6IE51bWJlci5pc0Zpbml0ZSh4KSA/IHggOiAwLCB5OiBOdW1iZXIuaXNGaW5pdGUoeSkgPyB5IDogMCB9LAogICAgcmFkaXVzOiBNYXRoLm1heCgwLCBOdW1iZXIuaXNGaW5pdGUoYmx1cikgPyBibHVyIDogMCksCiAgICBzcHJlYWQ6IE51bWJlci5pc0Zpbml0ZShzcHJlYWQpID8gc3ByZWFkIDogMCwKICAgIHZpc2libGU6IHRydWUsCiAgICBibGVuZE1vZGU6ICdOT1JNQUwnLAogIH07Cn0KCmZ1bmN0aW9uIGFwcGx5U3R5bGUobm9kZSwgc3R5bGUsIGJ5UmdiKSB7CiAgaWYgKCFzdHlsZSkgcmV0dXJuOwogIHRyeSB7CiAgICBjb25zdCBmaWxsID0gcGFyc2VDb2xvcihzdHlsZS5maWxsKTsKICAgIGlmIChmaWxsKSB7CiAgICAgIGNvbnN0IHYgPSBieVJnYi5nZXQoa2V5KGZpbGwpKTsKICAgICAgbm9kZS5maWxscyA9IFt2ID8gZmlnbWEudmFyaWFibGVzLnNldEJvdW5kVmFyaWFibGVGb3JQYWludChzb2xpZChmaWxsKSwgJ2NvbG9yJywgdikgOiBzb2xpZChmaWxsKV07CiAgICB9IGVsc2UgewogICAgICBub2RlLmZpbGxzID0gW107CiAgICB9CiAgfSBjYXRjaCAoZSkgeyBmYWlsKCdmaWxscycsIGUpOyB9CiAgdHJ5IHsKICAgIGNvbnN0IHN0cm9rZSA9IHBhcnNlQ29sb3Ioc3R5bGUuc3Ryb2tlKTsKICAgIGlmIChzdHJva2UpIHsKICAgICAgbm9kZS5zdHJva2VzID0gW3NvbGlkKHN0cm9rZSldOwogICAgICBub2RlLnN0cm9rZVdlaWdodCA9IE51bWJlcihzdHlsZS5zdHJva2VXaWR0aCkgfHwgMTsKICAgIH0KICB9IGNhdGNoIChlKSB7IGZhaWwoJ3N0cm9rZXMnLCBlKTsgfQogIHRyeSB7CiAgICBjb25zdCByID0gTnVtYmVyKHN0eWxlLnJhZGl1cyk7CiAgICBpZiAoTnVtYmVyLmlzRmluaXRlKHIpICYmIHIgPiAwKSBub2RlLmNvcm5lclJhZGl1cyA9IHI7CiAgfSBjYXRjaCAoZSkgeyAvKiBub3QgZXZlcnkgbm9kZSBoYXMgYSByYWRpdXMgKi8gfQogIHRyeSB7CiAgICBjb25zdCBzaGFkb3cgPSBwYXJzZVNoYWRvdyhzdHlsZS5zaGFkb3cpOwogICAgaWYgKHNoYWRvdykgewogICAgICBub2RlLmVmZmVjdHMgPSBbc2hhZG93XTsKICAgICAgcmVwb3J0LmVmZmVjdHMrKzsKICAgIH0KICB9IGNhdGNoIChlKSB7IC8qIGVmZmVjdHMgYXJlIG5vdCBhdmFpbGFibGUgb24gZXZlcnkgbm9kZSB0eXBlICovIH0KICB0cnkgewogICAgY29uc3QgbyA9IE51bWJlcihzdHlsZS5vcGFjaXR5KTsKICAgIGlmIChOdW1iZXIuaXNGaW5pdGUobykgJiYgbyA8IDEpIG5vZGUub3BhY2l0eSA9IG87CiAgfSBjYXRjaCAoZSkgeyAvKiBpZ25vcmUgKi8gfQp9CgpmdW5jdGlvbiBzYWZlQm94KG5vZGUpIHsKICBjb25zdCBiID0gbm9kZSAmJiBub2RlLmJveCA/IG5vZGUuYm94IDoge307CiAgcmV0dXJuIHsKICAgIHg6IE51bWJlcihiLngpIHx8IDAsIHk6IE51bWJlcihiLnkpIHx8IDAsCiAgICB3OiBNYXRoLm1heCgxLCBOdW1iZXIoYi53KSB8fCAxKSwgaDogTWF0aC5tYXgoMSwgTnVtYmVyKGIuaCkgfHwgMSksCiAgfTsKfQoKLyog4pSA4pSAIG5vZGUgdHJlZSDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgKi8KCmFzeW5jIGZ1bmN0aW9uIGNyZWF0ZU5vZGUobm9kZSwgcGFyZW50Qm94LCBieVJnYiwgZGVwdGgsIG9wdGlvbnMpIHsKICBpZiAoIW5vZGUgfHwgZGVwdGggPiAxMikgcmV0dXJuIG51bGw7CiAgY29uc3QgYm94ID0gc2FmZUJveChub2RlKTsKICBsZXQgb3V0ID0gbnVsbDsKICBsZXQgdGV4dEluayA9IG51bGw7CiAgbGV0IGNoaXAgPSBmYWxzZTsKICBsZXQgb25lTGluZSA9IGZhbHNlOwoKICBpZiAobm9kZS50eXBlID09PSAnVEVYVCcpIHsKICAgIGNvbnN0IHJhd1NpemUgPSBOdW1iZXIobm9kZS5zdHlsZSAmJiBub2RlLnN0eWxlLmZvbnRTaXplKSB8fCAxNDsKICAgIGNvbnN0IG1pblNpemUgPSBOdW1iZXIob3B0aW9ucyAmJiBvcHRpb25zLm1pbkZvbnRTaXplKSB8fCAwOwogICAgY29uc3Qgc2l6ZSA9IE1hdGgubWF4KHJhd1NpemUsIG1pblNpemUpOwogICAgaWYgKHNpemUgPiByYXdTaXplKSByZXBvcnQudGV4dEJvb3N0ZWQrKzsKICAgIHRleHRJbmsgPSBwYXJzZUNvbG9yKG5vZGUuc3R5bGUgJiYgbm9kZS5zdHlsZS5jb2xvcikgfHwgeyByOiAwLjA3LCBnOiAwLjA5LCBiOiAwLjE1LCBhOiAxIH07CgogICAgY29uc3QgdCA9IGZpZ21hLmNyZWF0ZVRleHQoKTsKICAgIHQubmFtZSA9IFN0cmluZyhub2RlLm5hbWUgfHwgJ1RleHQnKTsKICAgIHQuZm9udE5hbWUgPSBhd2FpdCBsb2FkRm9udChub2RlLnN0eWxlICYmIG5vZGUuc3R5bGUuZm9udEZhbWlseSwgbm9kZS5zdHlsZSAmJiBub2RlLnN0eWxlLmZvbnRXZWlnaHQpOwogICAgdC5jaGFyYWN0ZXJzID0gU3RyaW5nKG5vZGUudGV4dCB8fCAnJyk7CiAgICB0LmZvbnRTaXplID0gc2l6ZTsKICAgIGNvbnN0IGxoID0gbm9kZS5zdHlsZSAmJiBub2RlLnN0eWxlLmxpbmVIZWlnaHQ7CiAgICBpZiAobGggJiYgbGggIT09ICdub3JtYWwnKSB7CiAgICAgIGNvbnN0IHB4ID0gcGFyc2VGbG9hdChsaCk7CiAgICAgIGlmIChOdW1iZXIuaXNGaW5pdGUocHgpICYmIHB4ID4gMCkgdC5saW5lSGVpZ2h0ID0geyB1bml0OiAnUElYRUxTJywgdmFsdWU6IHB4IH07CiAgICB9CiAgICBjb25zdCBscyA9IHBhcnNlRmxvYXQobm9kZS5zdHlsZSAmJiBub2RlLnN0eWxlLmxldHRlclNwYWNpbmcpOwogICAgaWYgKE51bWJlci5pc0Zpbml0ZShscykgJiYgbHMgIT09IDApIHQubGV0dGVyU3BhY2luZyA9IHsgdW5pdDogJ1BJWEVMUycsIHZhbHVlOiBscyB9OwogICAgdC5maWxscyA9IFtzb2xpZCh0ZXh0SW5rKV07CgogICAgLyogQSBsYWJlbCB0aGF0IG9jY3VwaWVkIG9uZSBsaW5lIGluIHRoZSBicm93c2VyIG11c3Qgc3RheSBvbmUgbGluZS4gV2l0aAogICAgICogSEVJR0hUICsgdGhlIG1lYXN1cmVkIHdpZHRoLCBhIDHigJMzJSBtZXRyaWMgZGlmZmVyZW5jZSB3cmFwcyBhIGhlYWRpbmcgYW5kCiAgICAgKiB0aGUgcm93IGl0IHNpdHMgaW4g4oCUIHNpemVkIGZyb20gdGhlIGJyb3dzZXIg4oCUIGlzIHRoZW4gdG9vIHNob3J0LiAqLwogICAgb25lTGluZSA9IGJveC5oIDw9IHNpemUgKiAxLjY7CiAgICB0LnRleHRBdXRvUmVzaXplID0gb25lTGluZSA/ICdXSURUSF9BTkRfSEVJR0hUJyA6ICdIRUlHSFQnOwogICAgdC54ID0gMDsKICAgIHQueSA9IDA7CiAgICByZXBvcnQudGV4dHMrKzsKICAgIHJlcG9ydC50ZXh0SW5rKys7CgogICAgY29uc3QgYmcgPSBwYXJzZUNvbG9yKG5vZGUuc3R5bGUgJiYgbm9kZS5zdHlsZS5maWxsKTsKICAgIGlmIChiZyAmJiBiZy5hID4gMC4wNSkgewogICAgICAvKiBBIGxlYWYgd2l0aCB0ZXh0ICphbmQqIGEgYmFja2dyb3VuZCBpcyBhIGJhZGdlIG9yIGEgY2hpcC4gQSBURVhUIG5vZGUKICAgICAgICogY2Fubm90IGNhcnJ5IHRoZSBwbGF0ZSwgc28gd3JhcCBpdCBpbiBhIGZyYW1lIHRoYXQgZG9lcy4gKi8KICAgICAgY29uc3QgcGxhdGUgPSBmaWdtYS5jcmVhdGVGcmFtZSgpOwogICAgICBwbGF0ZS5uYW1lID0gU3RyaW5nKG5vZGUubmFtZSB8fCAnQ2hpcCcpOwogICAgICBwbGF0ZS5maWxscyA9IFtdOwogICAgICBhcHBseVN0eWxlKHBsYXRlLCBub2RlLnN0eWxlLCBieVJnYik7CiAgICAgIHRyeSB7IHBsYXRlLnJlc2l6ZShib3gudywgYm94LmgpOyB9IGNhdGNoIChlKSB7IGZhaWwoJ2NoaXAvJyArIG5vZGUubmFtZSwgZSk7IH0KICAgICAgdHJ5IHsKICAgICAgICBwbGF0ZS5hcHBlbmRDaGlsZCh0KTsKICAgICAgICB0LnggPSBNYXRoLm1heCgwLCAoYm94LncgLSB0LndpZHRoKSAvIDIpOwogICAgICAgIHQueSA9IE1hdGgubWF4KDAsIChib3guaCAtIHQuaGVpZ2h0KSAvIDIpOwogICAgICB9IGNhdGNoIChlKSB7IGZhaWwoJ2NoaXBUZXh0LycgKyBub2RlLm5hbWUsIGUpOyB9CiAgICAgIG91dCA9IHBsYXRlOwogICAgICBjaGlwID0gdHJ1ZTsKICAgICAgcmVwb3J0LmNoaXBzKys7CiAgICB9IGVsc2UgewogICAgICBvdXQgPSB0OwogICAgfQogIH0gZWxzZSBpZiAobm9kZS50eXBlID09PSAnVkVDVE9SJykgewogICAgdHJ5IHsKICAgICAgb3V0ID0gZmlnbWEuY3JlYXRlTm9kZUZyb21TdmcoU3RyaW5nKG5vZGUuc3ZnIHx8ICcnKSk7CiAgICAgIG91dC5uYW1lID0gU3RyaW5nKG5vZGUubmFtZSB8fCAnVmVjdG9yJyk7CiAgICAgIG91dC5maWxscyA9IFtdOwogICAgICBjb25zdCBzdyA9IE51bWJlcihvdXQud2lkdGgpIHx8IGJveC53OwogICAgICBjb25zdCBzaCA9IE51bWJlcihvdXQuaGVpZ2h0KSB8fCBib3guaDsKICAgICAgaWYgKHN3ID4gMCAmJiBzaCA+IDAgJiYgYm94LncgPiAwICYmIGJveC5oID4gMCkgewogICAgICAgIGNvbnN0IHNjYWxlID0gTWF0aC5taW4oYm94LncgLyBzdywgYm94LmggLyBzaCwgMTIpOwogICAgICAgIGlmIChOdW1iZXIuaXNGaW5pdGUoc2NhbGUpICYmIHNjYWxlID4gMCAmJiBNYXRoLmFicyhzY2FsZSAtIDEpID4gMC4wMikgewogICAgICAgICAgdHJ5IHsgb3V0LnJlc2NhbGUoc2NhbGUpOyByZXBvcnQudmVjdG9yc1NjYWxlZCsrOyB9IGNhdGNoIChlKSB7IC8qIGtlZXAgaW50cmluc2ljIHNpemUgKi8gfQogICAgICAgIH0KICAgICAgfQogICAgICByZXBvcnQudmVjdG9ycysrOwogICAgfSBjYXRjaCAoZSkgewogICAgICBjb25zdCByID0gZmlnbWEuY3JlYXRlUmVjdGFuZ2xlKCk7CiAgICAgIHIubmFtZSA9IFN0cmluZyhub2RlLm5hbWUgfHwgJ1ZlY3RvciAoZmFsbGJhY2spJyk7CiAgICAgIHIuZmlsbHMgPSBbXTsKICAgICAgb3V0ID0gcjsKICAgICAgcmVwb3J0LnJlY3RzKys7CiAgICAgIGZhaWwoJ3ZlY3Rvci8nICsgbm9kZS5uYW1lLCBlKTsKICAgIH0KICB9IGVsc2UgaWYgKG5vZGUudHlwZSA9PT0gJ1JFQ1RBTkdMRScpIHsKICAgIGNvbnN0IHIgPSBmaWdtYS5jcmVhdGVSZWN0YW5nbGUoKTsKICAgIHIubmFtZSA9IFN0cmluZyhub2RlLm5hbWUgfHwgJ1JlY3RhbmdsZScpOwogICAgb3V0ID0gcjsKICAgIHJlcG9ydC5yZWN0cysrOwogIH0gZWxzZSB7CiAgICBvdXQgPSBub2RlLmNvbXBvbmVudCA/IGZpZ21hLmNyZWF0ZUNvbXBvbmVudCgpIDogZmlnbWEuY3JlYXRlRnJhbWUoKTsKICAgIG91dC5uYW1lID0gU3RyaW5nKG5vZGUuY29tcG9uZW50IHx8IG5vZGUubmFtZSB8fCAnRnJhbWUnKTsKICAgIGlmIChub2RlLmNvbXBvbmVudCkgcmVwb3J0LmNvbXBvbmVudHMrKzsKICAgIGVsc2UgcmVwb3J0LmZyYW1lcysrOwogIH0KCiAgLyogQSBjaGlwIGFscmVhZHkgaGFkIGl0cyBwbGF0ZSBzdHlsZWQgYW5kIGl0cyBjaGlsZCBpbmtlZC4gKi8KICBpZiAoIWNoaXApIGFwcGx5U3R5bGUob3V0LCBub2RlLnN0eWxlLCBieVJnYik7CgogIC8qIGFwcGx5U3R5bGUgd3JpdGVzIHRoZSBDU1MgKmJhY2tncm91bmQqIGludG8gZmlsbHMuIFRleHQgaW5rIGNvbWVzIGZyb20KICAgKiBDU1MgYGNvbG9yYCwgd2hpY2ggaXMgdHJhbnNwYXJlbnQtYXMtYmFja2dyb3VuZCBmb3IgNzglIG9mIGxhYmVscyDigJQgdGhhdAogICAqIG92ZXJ3cml0ZSBtYWRlIGFsbW9zdCBldmVyeSB0ZXh0IGxheWVyIGludmlzaWJsZS4gUmUtYXBwbHkgaXQgbGFzdC4gKi8KICBpZiAobm9kZS50eXBlID09PSAnVEVYVCcgJiYgdGV4dEluayAmJiAhY2hpcCkgewogICAgdHJ5IHsgb3V0LmZpbGxzID0gW3NvbGlkKHRleHRJbmspXTsgfSBjYXRjaCAoZSkgeyBmYWlsKCd0ZXh0SW5rLycgKyBub2RlLm5hbWUsIGUpOyB9CiAgfQoKICB0cnkgewogICAgaWYgKGNoaXApIHsgLyogc2l6ZWQgd2hlbiB0aGUgcGxhdGUgd2FzIGJ1aWx0ICovIH0KICAgIGVsc2UgaWYgKG5vZGUudHlwZSA9PT0gJ1RFWFQnICYmIG9uZUxpbmUpIHsgLyogYXV0by13aWR0aCBrZWVwcyB0aGUgbGluZSBpbnRhY3QgKi8gfQogICAgZWxzZSBpZiAobm9kZS50eXBlID09PSAnVEVYVCcpIG91dC5yZXNpemUoTWF0aC5tYXgoYm94LncsIDMyKSwgYm94LmgpOwogICAgZWxzZSBvdXQucmVzaXplKGJveC53LCBib3guaCk7CiAgfSBjYXRjaCAoZSkgeyBmYWlsKCdyZXNpemUvJyArIG5vZGUubmFtZSwgZSk7IH0KICBvdXQueCA9IGJveC54IC0gcGFyZW50Qm94Lng7CiAgb3V0LnkgPSBib3gueSAtIHBhcmVudEJveC55OwoKICBjb25zdCBjaGlsZHJlbiA9IEFycmF5LmlzQXJyYXkobm9kZS5jaGlsZHJlbikgPyBub2RlLmNoaWxkcmVuIDogW107CiAgaWYgKG91dC50eXBlID09PSAnRlJBTUUnIHx8IG91dC50eXBlID09PSAnQ09NUE9ORU5UJyB8fCBvdXQudHlwZSA9PT0gJ0lOU1RBTkNFJykgewogICAgLyogQSBjaGlwIHBsYXRlIGlzIHNpemVkIGJ5IGl0cyBDU1Mgd2lkdGgvaGVpZ2h0IGFuZCBjZW50cmVzIGl0cyBsYWJlbC4gSWYKICAgICAqIGl0IHdlbnQgdGhyb3VnaCBhcHBseUxheW91dCBpdCB3b3VsZCBodWcgdGhlIHRleHQg4oCUIGEgMzLDlzMyIG51bWJlciBiYWRnZQogICAgICogY29sbGFwc2VkIHRvIDE0w5cxOCBhbmQgc3RvcHBlZCBiZWluZyBhIGNpcmNsZS4gKi8KICAgIGlmICghY2hpcCkgYXBwbHlMYXlvdXQob3V0LCBub2RlLmxheW91dCwgY2hpbGRyZW4pOwogICAgZm9yIChjb25zdCBjaGlsZCBvZiBjaGlsZHJlbikgewogICAgICBjb25zdCBtYWRlID0gYXdhaXQgY3JlYXRlTm9kZShjaGlsZCwgYm94LCBieVJnYiwgZGVwdGggKyAxLCBvcHRpb25zKTsKICAgICAgaWYgKCFtYWRlKSBjb250aW51ZTsKICAgICAgdHJ5IHsgb3V0LmFwcGVuZENoaWxkKG1hZGUpOyB9IGNhdGNoIChlKSB7IGZhaWwoJ2FwcGVuZC8nICsgY2hpbGQubmFtZSwgZSk7IGNvbnRpbnVlOyB9CiAgICAgIGNvbnN0IEwgPSBjaGlsZC5sYXlvdXQgfHwge307CiAgICAgIGlmIChvdXQubGF5b3V0TW9kZSAmJiBvdXQubGF5b3V0TW9kZSAhPT0gJ05PTkUnKSB7CiAgICAgICAgdHJ5IHsgbWFkZS5sYXlvdXRHcm93ID0gTnVtYmVyKEwuZ3JvdykgPiAwID8gMSA6IDA7IH0gY2F0Y2ggKGUpIHsgLyogbm90IGEgZmxvdyBjaGlsZCAqLyB9CiAgICAgICAgdHJ5IHsgbWFkZS5sYXlvdXRQb3NpdGlvbmluZyA9IEwucG9zaXRpb25pbmcgPT09ICdBQlNPTFVURScgPyAnQUJTT0xVVEUnIDogJ0FVVE8nOyB9IGNhdGNoIChlKSB7IC8qIG5vdCBhIGZsb3cgY2hpbGQgKi8gfQogICAgICAgIGlmIChMLnBvc2l0aW9uaW5nID09PSAnQUJTT0xVVEUnKSB7CiAgICAgICAgICB0cnkgeyBtYWRlLnggPSAoY2hpbGQuYm94ID8gTnVtYmVyKGNoaWxkLmJveC54KSB8fCAwIDogMCkgLSBib3gueDsgbWFkZS55ID0gKGNoaWxkLmJveCA/IE51bWJlcihjaGlsZC5ib3gueSkgfHwgMCA6IDApIC0gYm94Lnk7IH0gY2F0Y2ggKGUpIHsgLyogaWdub3JlICovIH0KICAgICAgICB9CiAgICAgIH0KICAgIH0KICB9CiAgcmV0dXJuIG91dDsKfQoKLyogQSBmcmFtZSB3aXRoIGxheW91dE1vZGUgTk9ORSBrZWVwcyB0aGUgaGVpZ2h0IHRoZSBicm93c2VyIG1lYXN1cmVkLCBhbmQKICogY2Fubm90IGh1Zy4gV2hlbiBhIGNoaWxkIGlzIHRhbGxlciB0aGFuIHRoYXQg4oCUIGEgaGVhZGluZyB0aGF0IHdyYXBwZWQsIGEgY2hpcAogKiB3aXRoIGEgYmlnZ2VyIGZvbnQg4oCUIHRoZSBjaGlsZCBzcGlsbHMgb3V0IG9mIGl0cyBib3guIEdyb3cgdGhlIGZyYW1lIHRvIGl0cwogKiBjaGlsZHJlbjsgbmV2ZXIgc2hyaW5rIGl0LCBiZWNhdXNlIHRoZSBicm93c2VyIGhlaWdodCBpcyBzdGlsbCB0aGUgaW50ZW50LiAqLwpmdW5jdGlvbiBmaXRBYnNvbHV0ZUZyYW1lcyhub2RlKSB7CiAgaWYgKCFub2RlKSByZXR1cm47CiAgY29uc3Qga2lkcyA9IEFycmF5LmlzQXJyYXkobm9kZS5jaGlsZHJlbikgPyBub2RlLmNoaWxkcmVuIDogW107CiAgZm9yIChjb25zdCBjaGlsZCBvZiBraWRzKSBmaXRBYnNvbHV0ZUZyYW1lcyhjaGlsZCk7CiAgaWYgKG5vZGUudHlwZSAhPT0gJ0ZSQU1FJyAmJiBub2RlLnR5cGUgIT09ICdDT01QT05FTlQnKSByZXR1cm47CiAgaWYgKG5vZGUubGF5b3V0TW9kZSAmJiBub2RlLmxheW91dE1vZGUgIT09ICdOT05FJykgcmV0dXJuOwogIGlmICgha2lkcy5sZW5ndGgpIHJldHVybjsKICBsZXQgbWF4UmlnaHQgPSAwOwogIGxldCBtYXhCb3R0b20gPSAwOwogIGZvciAoY29uc3QgY2hpbGQgb2Yga2lkcykgewogICAgbWF4UmlnaHQgPSBNYXRoLm1heChtYXhSaWdodCwgKE51bWJlcihjaGlsZC54KSB8fCAwKSArIChOdW1iZXIoY2hpbGQud2lkdGgpIHx8IDApKTsKICAgIG1heEJvdHRvbSA9IE1hdGgubWF4KG1heEJvdHRvbSwgKE51bWJlcihjaGlsZC55KSB8fCAwKSArIChOdW1iZXIoY2hpbGQuaGVpZ2h0KSB8fCAwKSk7CiAgfQogIHRyeSB7CiAgICBpZiAobWF4Qm90dG9tID4gbm9kZS5oZWlnaHQgKyAxKSB7IG5vZGUucmVzaXplKG5vZGUud2lkdGgsIG1heEJvdHRvbSk7IHJlcG9ydC5ncm93bisrOyB9CiAgICBpZiAobWF4UmlnaHQgPiBub2RlLndpZHRoICsgMSkgeyBub2RlLnJlc2l6ZShtYXhSaWdodCwgbm9kZS5oZWlnaHQpOyByZXBvcnQuZ3Jvd24rKzsgfQogIH0gY2F0Y2ggKGUpIHsgZmFpbCgnZml0LycgKyBub2RlLm5hbWUsIGUpOyB9Cn0KCi8qIOKUgOKUgCBidWlsZCDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgKi8KCmFzeW5jIGZ1bmN0aW9uIGJ1aWxkKG1hbmlmZXN0LCByZXBsYWNlLCBvcHRpb25zKSB7CiAgaWYgKCFtYW5pZmVzdCB8fCBtYW5pZmVzdC5raW5kICE9PSAnc3VubnlzaWRlL2ZpZ21hLW1hbmlmZXN0JykgewogICAgdGhyb3cgbmV3IEVycm9yKCdOb3QgYSBTdW5ueXNpZGUgRmlnbWEgbWFuaWZlc3QgKGtpbmQgbXVzdCBiZSBzdW5ueXNpZGUvZmlnbWEtbWFuaWZlc3QpJyk7CiAgfQogIGlmICghQXJyYXkuaXNBcnJheShtYW5pZmVzdC5zaGVldHMpIHx8ICFtYW5pZmVzdC5zaGVldHMubGVuZ3RoKSB0aHJvdyBuZXcgRXJyb3IoJ01hbmlmZXN0IGhhcyBubyBzaGVldHMnKTsKCiAgLyogVGhlIHBhdHRlcm5zIC8gdG9rZW4tc2hlZXQgcGFnZSBpcyBtb3N0bHkgY29weSBjb250cm9scyBhbmQgQ1NTIGR1bXBzOyBpdAogICAqIGlzIG9mZiB1bmxlc3MgYXNrZWQgZm9yLiAqLwogIGNvbnN0IGluY2x1ZGVQYXR0ZXJucyA9ICEhKG9wdGlvbnMgJiYgb3B0aW9ucy5pbmNsdWRlUGF0dGVybnMpOwogIGNvbnN0IHNoZWV0cyA9IG1hbmlmZXN0LnNoZWV0cy5maWx0ZXIoKHMpID0+IGluY2x1ZGVQYXR0ZXJucyB8fCAhL3BhdHRlcm5zfHRva2Vucy9pLnRlc3QoU3RyaW5nKChzICYmIHMubmFtZSkgfHwgJycpKSk7CiAgcmVwb3J0LnNraXBwZWRTaGVldHMgPSBtYW5pZmVzdC5zaGVldHMubGVuZ3RoIC0gc2hlZXRzLmxlbmd0aDsKICBpZiAoIXNoZWV0cy5sZW5ndGgpIHRocm93IG5ldyBFcnJvcignRXZlcnkgc2hlZXQgd2FzIGZpbHRlcmVkIG91dCDigJQgZW5hYmxlIHRoZSBwYXR0ZXJucyBwYWdlJyk7CgogIC8qIE1pZ3JhdGlvbjogcmUtcnVubmluZyBpbnRvIGFuIGV4aXN0aW5nIGZpbGUgdXNlZCB0byBhcHBlbmQgYSBzZWNvbmQgc2V0IG9mCiAgICogcGFnZXMuIFJlbW92ZSBvbmx5IHBhZ2VzIHdob3NlIG5hbWVzIHdlIGFyZSBhYm91dCB0byByZWNyZWF0ZSwgc28gYQogICAqIGRlc2lnbmVyJ3Mgb3duIHBhZ2VzIGFyZSBuZXZlciB0b3VjaGVkLiBCZXN0LWVmZm9ydDogd2l0aCBkeW5hbWljLXBhZ2UKICAgKiBhY2Nlc3MgRmlnbWEgbWF5IG5vdCBleHBvc2UgZXZlcnkgdW5sb2FkZWQgcGFnZS4gKi8KICBpZiAocmVwbGFjZSkgewogICAgY29uc3Qgd2FudGVkID0gbmV3IFNldChzaGVldHMubWFwKChzLCBpKSA9PiBTdHJpbmcoaSArIDEpLnBhZFN0YXJ0KDIsICcwJykgKyAnIMK3ICcgKyAocy5uYW1lIHx8ICdTaGVldCcpKSk7CiAgICB0cnkgewogICAgICBpZiAodHlwZW9mIGZpZ21hLmxvYWRBbGxQYWdlc0FzeW5jID09PSAnZnVuY3Rpb24nKSBhd2FpdCBmaWdtYS5sb2FkQWxsUGFnZXNBc3luYygpOwogICAgICBmb3IgKGNvbnN0IHBhZ2Ugb2YgWy4uLmZpZ21hLnJvb3QuY2hpbGRyZW5dKSB7CiAgICAgICAgaWYgKHBhZ2UudHlwZSA9PT0gJ1BBR0UnICYmIHdhbnRlZC5oYXMocGFnZS5uYW1lKSkgewogICAgICAgICAgdHJ5IHsgcGFnZS5yZW1vdmUoKTsgcmVwb3J0LnJlcGxhY2VkKys7IH0gY2F0Y2ggKGUpIHsgZmFpbCgncmVwbGFjZS8nICsgcGFnZS5uYW1lLCBlKTsgfQogICAgICAgIH0KICAgICAgfQogICAgfSBjYXRjaCAoZSkgeyBmYWlsKCdyZXBsYWNlL3NjYW4nLCBlKTsgfQogIH0KCiAgY29uc3QgYnlSZ2IgPSBhd2FpdCBidWlsZFN5c3RlbShtYW5pZmVzdC50b2tlbnMgfHwge30pOwoKICBmb3IgKGxldCBpID0gMDsgaSA8IHNoZWV0cy5sZW5ndGg7IGkrKykgewogICAgY29uc3Qgc2hlZXQgPSBzaGVldHNbaV07CiAgICBjb25zdCBwYWdlID0gZmlnbWEuY3JlYXRlUGFnZSgpOwogICAgcGFnZS5uYW1lID0gU3RyaW5nKGkgKyAxKS5wYWRTdGFydCgyLCAnMCcpICsgJyDCtyAnICsgKHNoZWV0Lm5hbWUgfHwgJ1NoZWV0Jyk7CiAgICBhd2FpdCB1c2VQYWdlKHBhZ2UpOwogICAgY29uc3Qgcm9vdCA9IGF3YWl0IGNyZWF0ZU5vZGUoc2hlZXQubm9kZSwgeyB4OiAwLCB5OiAwIH0sIGJ5UmdiLCAwLCBvcHRpb25zKTsKICAgIGlmIChyb290KSB7CiAgICAgIGZpdEFic29sdXRlRnJhbWVzKHJvb3QpOwogICAgICByb290LnggPSAwOwogICAgICByb290LnkgPSAwOwogICAgICBwYWdlLmFwcGVuZENoaWxkKHJvb3QpOwogICAgfQogICAgcmVwb3J0LnBhZ2VzKys7CiAgfQoKICB0cnkgewogICAgaWYgKHR5cGVvZiBmaWdtYS5sb2FkQWxsUGFnZXNBc3luYyA9PT0gJ2Z1bmN0aW9uJykgYXdhaXQgZmlnbWEubG9hZEFsbFBhZ2VzQXN5bmMoKTsKICAgIGZvciAoY29uc3QgcGFnZSBvZiBbLi4uZmlnbWEucm9vdC5jaGlsZHJlbl0pIHsKICAgICAgdHJ5IHsKICAgICAgICBpZiAoL15QYWdlIFxkKyQvLnRlc3QocGFnZS5uYW1lKSAmJiBwYWdlLmNoaWxkcmVuLmxlbmd0aCA9PT0gMCkgcGFnZS5yZW1vdmUoKTsKICAgICAgfSBjYXRjaCAoZSkgeyBmYWlsKCdwYWdlIGNsZWFudXAvJyArIHBhZ2UubmFtZSwgZSk7IH0KICAgIH0KICB9IGNhdGNoIChlKSB7IGZhaWwoJ3BhZ2UgY2xlYW51cCcsIGUpOyB9Cn0KCi8qIOKUgOKUgCBwbHVnaW4gZW50cnkg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAICovCgpmaWdtYS5zaG93VUkoX19odG1sX18sIHsgd2lkdGg6IDUyMCwgaGVpZ2h0OiA2MjAgfSk7CgpmaWdtYS51aS5vbm1lc3NhZ2UgPSBhc3luYyAobXNnKSA9PiB7CiAgaWYgKCFtc2cgfHwgbXNnLnR5cGUgPT09ICdjYW5jZWwnKSB7IGZpZ21hLmNsb3NlUGx1Z2luKCk7IHJldHVybjsgfQogIGlmIChtc2cudHlwZSAhPT0gJ2J1aWxkJykgcmV0dXJuOwogIHRyeSB7CiAgICBjb25zdCBtYW5pZmVzdCA9IHR5cGVvZiBtc2cuanNvbiA9PT0gJ3N0cmluZycgPyBKU09OLnBhcnNlKG1zZy5qc29uKSA6IG1zZy5qc29uOwogICAgY29uc3Qgb3B0aW9ucyA9IHsKICAgICAgbWluRm9udFNpemU6IE1hdGgubWF4KDAsIE51bWJlcihtc2cubWluRm9udFNpemUpIHx8IDApLAogICAgICBpbmNsdWRlUGF0dGVybnM6IG1zZy5pbmNsdWRlUGF0dGVybnMgPT09IHRydWUsCiAgICB9OwogICAgYXdhaXQgYnVpbGQobWFuaWZlc3QsIG1zZy5yZXBsYWNlICE9PSBmYWxzZSwgb3B0aW9ucyk7CiAgICBjb25zdCBzdW1tYXJ5ID0KICAgICAgKG1hbmlmZXN0LmJyYW5kIHx8ICdCcmFuZCcpICsgJzogJyArIHJlcG9ydC5wYWdlcyArICcgcGFnZXMsICcgKwogICAgICByZXBvcnQuYXV0b0xheW91dCArICcgYXV0byBsYXlvdXRzLCAnICsgcmVwb3J0LmZyYW1lcyArICcgZnJhbWVzLCAnICsKICAgICAgcmVwb3J0LnRleHRzICsgJyB0ZXh0cyAoJyArIHJlcG9ydC50ZXh0SW5rICsgJyBpbmtlZCcgKwogICAgICAocmVwb3J0LnRleHRCb29zdGVkID8gJywgJyArIHJlcG9ydC50ZXh0Qm9vc3RlZCArICcgYm9vc3RlZCB0byAnICsgb3B0aW9ucy5taW5Gb250U2l6ZSArICdweCcgOiAnJykgKyAnKSwgJyArCiAgICAgIHJlcG9ydC5yZWN0cyArICcgcmVjdHMsICcgKyByZXBvcnQudmVjdG9ycyArICcgdmVjdG9ycywgJyArIHJlcG9ydC5lZmZlY3RzICsgJyBzaGFkb3dzLCAnICsKICAgICAgKHJlcG9ydC5jaGlwcyA/IHJlcG9ydC5jaGlwcyArICcgY2hpcHMsICcgOiAnJykgKwogICAgICByZXBvcnQudmFyaWFibGVzICsgJyB2YXJpYWJsZXMsICcgKyByZXBvcnQucGFpbnRTdHlsZXMgKyAnIHBhaW50IHN0eWxlcywgJyArCiAgICAgIHJlcG9ydC50ZXh0U3R5bGVzICsgJyB0ZXh0IHN0eWxlcywgJyArIHJlcG9ydC5jb21wb25lbnRzICsgJyBjb21wb25lbnRzJyArCiAgICAgIChyZXBvcnQucmVwbGFjZWQgPyAnIMK3IHJlcGxhY2VkICcgKyByZXBvcnQucmVwbGFjZWQgKyAnIGV4aXN0aW5nIHBhZ2UocyknIDogJycpICsKICAgICAgKHJlcG9ydC5za2lwcGVkU2hlZXRzID8gJyDCtyBza2lwcGVkICcgKyByZXBvcnQuc2tpcHBlZFNoZWV0cyArICcgc2hlZXQocyknIDogJycpICsKICAgICAgKHJlcG9ydC5mb250RmFsbGJhY2tzID8gJyDCtyAnICsgcmVwb3J0LmZvbnRGYWxsYmFja3MgKyAnIGZvbnQgZmFsbGJhY2socykg4oCUIGluc3RhbGwgdGhlIGJyYW5kIGZvbnRzJyA6ICcnKTsKICAgIGZpZ21hLm5vdGlmeShzdW1tYXJ5LCB7IHRpbWVvdXQ6IDkwMDAgfSk7CiAgICBmaWdtYS51aS5wb3N0TWVzc2FnZSh7IHR5cGU6ICdkb25lJywgc3VtbWFyeTogc3VtbWFyeSArIChyZXBvcnQuZXJyb3JzLmxlbmd0aCA/ICcgwrcgJyArIHJlcG9ydC5lcnJvcnMubGVuZ3RoICsgJyBlcnJvcihzKScgOiAnJykgfSk7CiAgICBpZiAocmVwb3J0LmVycm9ycy5sZW5ndGgpIGZvciAoY29uc3QgZSBvZiByZXBvcnQuZXJyb3JzKSBjb25zb2xlLmVycm9yKCdbcmVwbGF5XSAnICsgZSk7CiAgICBmaWdtYS5jbG9zZVBsdWdpbihzdW1tYXJ5KTsKICB9IGNhdGNoIChlKSB7CiAgICBjb25zdCBtZXNzYWdlID0gKGUgJiYgZS5tZXNzYWdlKSB8fCBTdHJpbmcoZSk7CiAgICBmaWdtYS51aS5wb3N0TWVzc2FnZSh7IHR5cGU6ICdlcnJvcicsIG1lc3NhZ2U6IG1lc3NhZ2UgfSk7CiAgICBmaWdtYS5ub3RpZnkoJ0J1aWxkIGZhaWxlZDogJyArIG1lc3NhZ2UsIHsgZXJyb3I6IHRydWUgfSk7CiAgfQp9Owo=";
+var REPLAY_UI_B64="PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CjxtZXRhIGNoYXJzZXQ9InV0Zi04IiAvPgo8dGl0bGU+X19CUkFORF9fIOKAlCBGaWdtYSByZXBsYXk8L3RpdGxlPgo8c3R5bGU+CiAgKiB7IGJveC1zaXppbmc6IGJvcmRlci1ib3g7IH0KICBib2R5IHsgbWFyZ2luOiAwOyBwYWRkaW5nOiAxNnB4OyBmb250OiAxM3B4LzEuNSAtYXBwbGUtc3lzdGVtLCBCbGlua01hY1N5c3RlbUZvbnQsICJTZWdvZSBVSSIsIHNhbnMtc2VyaWY7IGNvbG9yOiAjMUYyOTM3OyBiYWNrZ3JvdW5kOiAjRkZGRkZGOyB9CiAgaDEgeyBmb250LXNpemU6IDE1cHg7IGZvbnQtd2VpZ2h0OiA2MDA7IG1hcmdpbjogMCAwIDRweDsgfQogIHAgeyBtYXJnaW46IDAgMCAxMnB4OyBjb2xvcjogIzZCNzI4MDsgZm9udC1zaXplOiAxMnB4OyB9CiAgdGV4dGFyZWEgeyB3aWR0aDogMTAwJTsgaGVpZ2h0OiAzMDBweDsgcGFkZGluZzogMTBweDsgYm9yZGVyOiAxcHggc29saWQgI0QxRDVEQjsgYm9yZGVyLXJhZGl1czogOHB4OyBmb250OiAxMXB4LzEuNDUgdWktbW9ub3NwYWNlLCBTRk1vbm8tUmVndWxhciwgTWVubG8sIG1vbm9zcGFjZTsgcmVzaXplOiB2ZXJ0aWNhbDsgY29sb3I6ICMxMTE4Mjc7IGJhY2tncm91bmQ6ICNGOUZBRkI7IH0KICB0ZXh0YXJlYTpmb2N1cyB7IG91dGxpbmU6IDJweCBzb2xpZCAjMjU2M0VCOyBvdXRsaW5lLW9mZnNldDogLTFweDsgfQogIC5yb3cgeyBkaXNwbGF5OiBmbGV4OyBnYXA6IDhweDsgbWFyZ2luLXRvcDogMTJweDsgfQogIGJ1dHRvbiB7IGZsZXg6IDE7IHBhZGRpbmc6IDlweCAxMnB4OyBib3JkZXItcmFkaXVzOiA4cHg7IGJvcmRlcjogMXB4IHNvbGlkICNEMUQ1REI7IGJhY2tncm91bmQ6ICNGRkZGRkY7IGNvbG9yOiAjMUYyOTM3OyBmb250OiAxM3B4IGluaGVyaXQ7IGN1cnNvcjogcG9pbnRlcjsgfQogIGJ1dHRvbi5wcmltYXJ5IHsgYmFja2dyb3VuZDogIzI1NjNFQjsgYm9yZGVyLWNvbG9yOiAjMjU2M0VCOyBjb2xvcjogI0ZGRkZGRjsgZm9udC13ZWlnaHQ6IDYwMDsgfQogIGJ1dHRvbjpob3ZlciB7IGZpbHRlcjogYnJpZ2h0bmVzcygwLjk3KTsgfQogICNzdGF0dXMgeyBtYXJnaW4tdG9wOiAxMnB4OyBwYWRkaW5nOiA5cHggMTBweDsgYm9yZGVyLXJhZGl1czogOHB4OyBiYWNrZ3JvdW5kOiAjRjNGNEY2OyBjb2xvcjogIzRCNTU2MzsgZm9udC1zaXplOiAxMnB4OyB3b3JkLWJyZWFrOiBicmVhay13b3JkOyB9CiAgI3N0YXR1cy5vayB7IGJhY2tncm91bmQ6ICNFQ0ZERjU7IGNvbG9yOiAjMDY1RjQ2OyB9CiAgI3N0YXR1cy5lcnIgeyBiYWNrZ3JvdW5kOiAjRkVGMkYyOyBjb2xvcjogIzk5MUIxQjsgfQogIC5vcHQgeyBkaXNwbGF5OiBmbGV4OyBhbGlnbi1pdGVtczogY2VudGVyOyBnYXA6IDdweDsgbWFyZ2luLXRvcDogMTBweDsgZm9udC1zaXplOiAxMnB4OyBjb2xvcjogIzRCNTU2MzsgfQogIC5vcHQgaW5wdXQgeyBtYXJnaW46IDA7IH0KICAuaGludCB7IG1hcmdpbi10b3A6IDEwcHg7IGZvbnQtc2l6ZTogMTFweDsgY29sb3I6ICM5Q0EzQUY7IH0KPC9zdHlsZT4KPC9oZWFkPgo8Ym9keT4KICA8aDE+X19CUkFORF9fIOKAlCBidWlsZCBpbiBGaWdtYTwvaDE+CiAgPHA+UGFzdGUgdGhlIG1hbmlmZXN0IGNvcGllZCB3aXRoIDxzdHJvbmc+Q29weSBmb3IgRmlnbWE8L3N0cm9uZz4gZnJvbSB0aGUgSFRNTCBzaGVldCwgdGhlbiBidWlsZC4gVGhpcyBjcmVhdGVzIG5hdGl2ZSBBdXRvIExheW91dCBmcmFtZXMsIHZhcmlhYmxlcywgc3R5bGVzLCB2ZWN0b3JzIGFuZCBjb21wb25lbnRzIOKAlCBubyBpbXBvcnRlciBuZWVkZWQuPC9wPgogIDx0ZXh0YXJlYSBpZD0ibWFuaWZlc3QiIHNwZWxsY2hlY2s9ImZhbHNlIiBwbGFjZWhvbGRlcj0iUGFzdGUgc3VubnlzaWRlL2ZpZ21hLW1hbmlmZXN0IEpTT04gaGVyZSI+PC90ZXh0YXJlYT4KICA8bGFiZWwgY2xhc3M9Im9wdCI+PGlucHV0IHR5cGU9ImNoZWNrYm94IiBpZD0icmVwbGFjZSIgY2hlY2tlZCAvPiBSZXBsYWNlIGV4aXN0aW5nIGdlbmVyYXRlZCBwYWdlcyAoc2FmZSByZS1pbXBvcnQgLyBtaWdyYXRpb24pPC9sYWJlbD4KICA8bGFiZWwgY2xhc3M9Im9wdCI+PGlucHV0IHR5cGU9ImNoZWNrYm94IiBpZD0iYm9vc3QiIGNoZWNrZWQgLz4gUmFpc2UgdGV4dCBiZWxvdyAxMnB4IHRvIDEycHggc28gbGFiZWxzIHN0YXkgbGVnaWJsZTwvbGFiZWw+CiAgPGxhYmVsIGNsYXNzPSJvcHQiPjxpbnB1dCB0eXBlPSJjaGVja2JveCIgaWQ9InBhdHRlcm5zIiAvPiBJbmNsdWRlIHRoZSBwYXR0ZXJucyAvIHRva2VuLXNoZWV0IHBhZ2UgKG9mZjogaXQgaXMgbW9zdGx5IENTUyBkdW1wcyk8L2xhYmVsPgogIDxkaXYgY2xhc3M9InJvdyI+CiAgICA8YnV0dG9uIGNsYXNzPSJwcmltYXJ5IiBpZD0iYnVpbGQiPkJ1aWxkIGluIEZpZ21hPC9idXR0b24+CiAgICA8YnV0dG9uIGlkPSJjbGVhciIgc3R5bGU9ImZsZXg6MCAwIDg4cHgiPkNsZWFyPC9idXR0b24+CiAgPC9kaXY+CiAgPGRpdiBpZD0ic3RhdHVzIj5XYWl0aW5nIGZvciBhIG1hbmlmZXN0LjwvZGl2PgogIDxkaXYgY2xhc3M9ImhpbnQiPlRoZSBzZWVkIG1hbmlmZXN0IGdlbmVyYXRlZCBhbG9uZ3NpZGUgdGhpcyBwbHVnaW4gaXMgbG9hZGVkIGF1dG9tYXRpY2FsbHkgd2hlbiBwcmVzZW50LjwvZGl2PgoKICA8c2NyaXB0IHR5cGU9ImFwcGxpY2F0aW9uL2pzb24iIGlkPSJzZWVkIj5fX01BTklGRVNUX188L3NjcmlwdD4KICA8c2NyaXB0PgogICAgdmFyIGZpZWxkID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ21hbmlmZXN0Jyk7CiAgICB2YXIgc3RhdHVzID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3N0YXR1cycpOwogICAgdHJ5IHsKICAgICAgdmFyIHNlZWQgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnc2VlZCcpLnRleHRDb250ZW50LnRyaW0oKTsKICAgICAgaWYgKHNlZWQpIHsKICAgICAgICBmaWVsZC52YWx1ZSA9IHNlZWQ7CiAgICAgICAgc3RhdHVzLnRleHRDb250ZW50ID0gJ1NlZWQgbWFuaWZlc3QgbG9hZGVkICgnICsgc2VlZC5sZW5ndGgudG9Mb2NhbGVTdHJpbmcoKSArICcgY2hhcnMpLiBDbGljayBCdWlsZCBpbiBGaWdtYS4nOwogICAgICB9CiAgICB9IGNhdGNoIChlKSB7fQoKICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdidWlsZCcpLm9uY2xpY2sgPSBmdW5jdGlvbiAoKSB7CiAgICAgIHZhciB0ZXh0ID0gZmllbGQudmFsdWUudHJpbSgpOwogICAgICBpZiAoIXRleHQpIHsgc3RhdHVzLmNsYXNzTmFtZSA9ICdlcnInOyBzdGF0dXMudGV4dENvbnRlbnQgPSAnUGFzdGUgYSBtYW5pZmVzdCBmaXJzdC4nOyByZXR1cm47IH0KICAgICAgdHJ5IHsgSlNPTi5wYXJzZSh0ZXh0KTsgfSBjYXRjaCAoZSkgewogICAgICAgIHN0YXR1cy5jbGFzc05hbWUgPSAnZXJyJzsKICAgICAgICBzdGF0dXMudGV4dENvbnRlbnQgPSAnSW52YWxpZCBKU09OOiAnICsgZS5tZXNzYWdlOwogICAgICAgIHJldHVybjsKICAgICAgfQogICAgICBzdGF0dXMuY2xhc3NOYW1lID0gJyc7CiAgICAgIHN0YXR1cy50ZXh0Q29udGVudCA9ICdCdWlsZGluZ+KApic7CiAgICAgIHBhcmVudC5wb3N0TWVzc2FnZSh7CiAgICAgICAgcGx1Z2luTWVzc2FnZTogewogICAgICAgICAgdHlwZTogJ2J1aWxkJywKICAgICAgICAgIGpzb246IHRleHQsCiAgICAgICAgICByZXBsYWNlOiBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgncmVwbGFjZScpLmNoZWNrZWQsCiAgICAgICAgICBtaW5Gb250U2l6ZTogZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2Jvb3N0JykuY2hlY2tlZCA/IDEyIDogMCwKICAgICAgICAgIGluY2x1ZGVQYXR0ZXJuczogZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3BhdHRlcm5zJykuY2hlY2tlZAogICAgICAgIH0KICAgICAgfSwgJyonKTsKICAgIH07CgogICAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2NsZWFyJykub25jbGljayA9IGZ1bmN0aW9uICgpIHsKICAgICAgZmllbGQudmFsdWUgPSAnJzsKICAgICAgc3RhdHVzLmNsYXNzTmFtZSA9ICcnOwogICAgICBzdGF0dXMudGV4dENvbnRlbnQgPSAnQ2xlYXJlZC4nOwogICAgfTsKCiAgICBvbm1lc3NhZ2UgPSBmdW5jdGlvbiAoZXZlbnQpIHsKICAgICAgdmFyIG1zZyA9IGV2ZW50LmRhdGEucGx1Z2luTWVzc2FnZTsKICAgICAgaWYgKCFtc2cpIHJldHVybjsKICAgICAgaWYgKG1zZy50eXBlID09PSAnZG9uZScpIHsgc3RhdHVzLmNsYXNzTmFtZSA9ICdvayc7IHN0YXR1cy50ZXh0Q29udGVudCA9IG1zZy5zdW1tYXJ5OyB9CiAgICAgIGlmIChtc2cudHlwZSA9PT0gJ2Vycm9yJykgeyBzdGF0dXMuY2xhc3NOYW1lID0gJ2Vycic7IHN0YXR1cy50ZXh0Q29udGVudCA9IG1zZy5tZXNzYWdlOyB9CiAgICB9OwogIDwvc2NyaXB0Pgo8L2JvZHk+CjwvaHRtbD4K";
+var REPLAY_MANIFEST_B64="eyJuYW1lIjoiTGVkZ2VyIOKAlCByZXBsYXkiLCJpZCI6ImxlZGdlci1yZXBsYXkiLCJhcGkiOiIxLjAuMCIsIm1haW4iOiJjb2RlLmpzIiwidWkiOiJ1aS5odG1sIiwiZWRpdG9yVHlwZSI6WyJmaWdtYSJdLCJuZXR3b3JrQWNjZXNzIjp7ImFsbG93ZWREb21haW5zIjpbIm5vbmUiXX0sImRvY3VtZW50QWNjZXNzIjoiZHluYW1pYy1wYWdlIn0=";
+
+    
+    /* ---- Download the manifest or a ready-to-import Figma plugin -------- */
+    function b64ToBytes(b64) {
+      var bin = atob(b64 || '');
+      var out = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+      return out;
+    }
+    function b64ToText(b64) {
+      try { return new TextDecoder('utf-8').decode(b64ToBytes(b64)); }
+      catch (e) { return ''; }
+    }
+    function triggerDownload(blob, filename) {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click();
+      setTimeout(function () { URL.revokeObjectURL(url); if (a.parentNode) a.parentNode.removeChild(a); }, 1200);
+    }
+    function slugifyName(s) {
+      return String(s || 'brand').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'brand';
+    }
+    function downloadFigmaManifest() {
+      try {
+        var m = buildFigmaManifest();
+        var json = JSON.stringify(m, null, 2);
+        triggerDownload(new Blob([json], { type: 'application/json' }), slugifyName(m.brand) + '-figma-manifest.json');
+        showToast('Manifest downloaded · ' + m.sheets.length + ' sheets · ' + m.nodes + ' nodes');
+      } catch (e) { showToast('Manifest failed: ' + ((e && e.message) || e)); }
+    }
+    function buildStoreZip(files) {
+      var table = (function () {
+        var t = new Uint32Array(256);
+        for (var n = 0; n < 256; n++) {
+          var c = n;
+          for (var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+          t[n] = c >>> 0;
+        }
+        return t;
+      })();
+      function crc32(buf) {
+        var c = 0xFFFFFFFF;
+        for (var i = 0; i < buf.length; i++) c = (c >>> 8) ^ table[(c ^ buf[i]) & 0xFF];
+        return (c ^ 0xFFFFFFFF) >>> 0;
+      }
+      var enc = new TextEncoder();
+      var parts = [];
+      var central = [];
+      var offset = 0;
+      for (var f = 0; f < files.length; f++) {
+        var nameBytes = enc.encode(files[f].name);
+        var data = files[f].data;
+        var crc = crc32(data);
+        var size = data.length;
+        var lh = new DataView(new ArrayBuffer(30));
+        lh.setUint32(0, 0x04034b50, true);
+        lh.setUint16(4, 20, true);
+        lh.setUint16(6, 0, true);
+        lh.setUint16(8, 0, true);
+        lh.setUint16(10, 0, true);
+        lh.setUint16(12, 0, true);
+        lh.setUint32(14, crc, true);
+        lh.setUint32(18, size, true);
+        lh.setUint32(22, size, true);
+        lh.setUint16(26, nameBytes.length, true);
+        lh.setUint16(28, 0, true);
+        parts.push(new Uint8Array(lh.buffer), nameBytes, data);
+        var ch = new DataView(new ArrayBuffer(46));
+        ch.setUint32(0, 0x02014b50, true);
+        ch.setUint16(4, 20, true);
+        ch.setUint16(6, 20, true);
+        ch.setUint16(8, 0, true);
+        ch.setUint16(10, 0, true);
+        ch.setUint16(12, 0, true);
+        ch.setUint16(14, 0, true);
+        ch.setUint32(16, crc, true);
+        ch.setUint32(20, size, true);
+        ch.setUint32(24, size, true);
+        ch.setUint16(28, nameBytes.length, true);
+        ch.setUint16(30, 0, true);
+        ch.setUint16(32, 0, true);
+        ch.setUint16(34, 0, true);
+        ch.setUint16(36, 0, true);
+        ch.setUint32(38, 0, true);
+        ch.setUint32(42, offset, true);
+        central.push(new Uint8Array(ch.buffer), nameBytes);
+        offset += 30 + nameBytes.length + size;
+      }
+      var centralSize = 0;
+      for (var c2 = 0; c2 < central.length; c2++) centralSize += central[c2].length;
+      var eo = new DataView(new ArrayBuffer(22));
+      eo.setUint32(0, 0x06054b50, true);
+      eo.setUint16(4, 0, true);
+      eo.setUint16(6, 0, true);
+      eo.setUint16(8, files.length, true);
+      eo.setUint16(10, files.length, true);
+      eo.setUint32(12, centralSize, true);
+      eo.setUint32(16, offset, true);
+      eo.setUint16(20, 0, true);
+      return new Blob(parts.concat(central, [new Uint8Array(eo.buffer)]), { type: 'application/zip' });
+    }
+    function downloadFigmaPlugin() {
+      try {
+        if (!REPLAY_CODE_B64 || !REPLAY_UI_B64 || !REPLAY_MANIFEST_B64) {
+          showToast('Plugin bundle not embedded in this build — regenerate the sheet.');
+          return;
+        }
+        var m = buildFigmaManifest();
+        var seed = JSON.stringify(m).replace(/</g, '\\u003c');
+        var uiHtml = b64ToText(REPLAY_UI_B64)
+          .replace('__BRAND__', function () { return m.brand || 'Brand'; })
+          .replace('__MANIFEST__', function () { return seed; });
+        var pluginManifest = b64ToText(REPLAY_MANIFEST_B64);
+        var files = [
+          { name: 'manifest.json', data: new TextEncoder().encode(pluginManifest) },
+          { name: 'code.js', data: b64ToBytes(REPLAY_CODE_B64) },
+          { name: 'ui.html', data: new TextEncoder().encode(uiHtml) }
+        ];
+        triggerDownload(buildStoreZip(files), slugifyName(m.brand) + '-figma-plugin.zip');
+        showToast('Figma plugin downloaded · manifest.json + code.js + ui.html');
+      } catch (e) { showToast('Plugin failed: ' + ((e && e.message) || e)); }
+    }
+
+
     // Auto-enable Clean Export Mode, Canvas Grid, and Single Sheet Filter from URL
     function initExportControls() {
       const params = new URLSearchParams(window.location.search);
@@ -3578,6 +3903,9 @@
         document.body.classList.add('spec-mode');
         const specBtn = document.getElementById('btn-spec');
         if (specBtn) specBtn.classList.add('active-spec');
+      }
+      if (params.get('autolayout') === '1') {
+        toggleAutoLayoutMode(true);
       }
       if (params.get('grid') === '1' || params.get('canvas') === '1' || params.get('layout') === 'grid') {
         document.body.classList.add('canvas-grid-mode');

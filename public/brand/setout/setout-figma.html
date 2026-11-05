@@ -230,6 +230,36 @@
       color: #1D4ED8;
     }
 
+    .btn-tool.active-grid {
+      background: #EFF6FF;
+      border-color: #93C5FD;
+      color: #1D4ED8;
+    }
+
+    /* 2-Column Canvas Grid Mode (< 10,000px on both sides for Doop & Figma) */
+    body.canvas-grid-mode {
+      width: max-content;
+      min-width: 100vw;
+      background: #F1F5F9;
+    }
+
+    body.canvas-grid-mode main {
+      display: grid;
+      grid-template-columns: repeat(2, 1440px);
+      gap: 32px;
+      padding: 32px;
+      width: max-content;
+      margin: 0 auto;
+    }
+
+    body.canvas-grid-mode .figma-sheet {
+      width: 1440px;
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
     /* =========================================================================
        3. FIGMA DOCUMENTATION SHEET ANATOMY
        ========================================================================= */
@@ -969,16 +999,22 @@
         <button class="nav-pill" onclick="filterSection('patterns', this)">08 · Patterns &amp; Tokens</button>
       </div>
 
-      <!-- Inspector, Clean Export & Back to Case Controls -->
+      <!-- Inspector, Clean Export, Canvas Grid & Doop Helper Controls -->
       <div class="topbar-actions">
         <button id="btn-spec" class="btn-tool" onclick="toggleSpecMode()" title="Toggle Figma component bounds">
           <span>❖ Figma Specs</span>
         </button>
-        <button id="btn-clean" class="btn-tool" onclick="toggleCleanMode()" title="Toggle Clean Export Mode (?clean=1) & copy URL">
+        <button id="btn-grid" class="btn-tool" onclick="toggleGridMode()" title="Toggle 2-column Canvas Grid Mode (&lt; 10,000px for Doop / Figma)">
+          <span>⊞ Canvas Grid</span>
+        </button>
+        <button id="btn-clean" class="btn-tool" onclick="toggleCleanMode()" title="Toggle Clean Export Mode (?clean=1) &amp; copy URL">
           <span>Clean Export</span>
         </button>
         <button class="btn-tool" onclick="copyCleanLink()" title="Copy clean export link with ?clean=1">
           <span>Copy Clean Link</span>
+        </button>
+        <button class="btn-tool" onclick="openDoopModal()" title="View Doop &amp; Figma sheet links (&lt; 10,000px on all sides)">
+          <span>Doop Helper</span>
         </button>
         <a class="btn-tool" href="/design-system/setout">
           <span>← Case Page</span>
@@ -2766,6 +2802,64 @@
     </div>
   </div>
 
+  <!-- =========================================================================
+       DOOP & FIGMA IMPORT HELPER MODAL (< 10,000px ON ALL SIDES)
+       ========================================================================= -->
+  <div id="doop-modal" class="live-modal-overlay" onclick="if(event.target === this) closeDoopModal()">
+    <div class="modal-card" style="width:100%; max-width:620px; max-height:90vh; overflow-y:auto;">
+      <div style="padding:18px 22px; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <strong style="font-size:15px; color:#111827;">Doop &amp; Figma Import Helper</strong>
+          <div style="font-size:12px; color:#64748B; margin-top:2px;">Figma restricts single frames to max 10,000px on each side.</div>
+        </div>
+        <button class="btn-tool" style="padding:4px 8px;" onclick="closeDoopModal()">✕</button>
+      </div>
+      <div style="padding:22px; font-size:13px; color:#334155;">
+        <div style="margin-bottom:18px; padding:12px 14px; background:#EFF6FF; border:1px solid #BFDBFE; border-radius:8px; color:#1E40AF; line-height:1.5;">
+          <strong>Why does Doop show "Frames must be at most 10,000px"?</strong><br/>
+          Figma has a strict internal limit: no frame can exceed 10,000px. When all 8 sheets are stacked vertically, the page totals ~13,500px. Choose one of the fixes below to import cleanly:
+        </div>
+
+        <h4 style="margin:0 0 8px 0; font-size:13px; text-transform:uppercase; letter-spacing:0.04em; color:#0F172A;">Option A: 2-Column Canvas Grid (&lt; 10,000px)</h4>
+        <p style="margin:0 0 10px 0; color:#64748B;">Arranges all 8 sheets in a 2-column side-by-side artboard canvas (~2,960px × ~7,400px), well under Figma's 10,000px limit on both sides.</p>
+        <div style="display:flex; gap:8px; margin-bottom:20px;">
+          <button class="btn-tool" style="flex:1; justify-content:center; background:#2563EB; color:#FFF; border-color:#2563EB; padding:8px 12px;" onclick="copyDoopUrl('grid')">
+            <span>Copy Canvas Grid URL (?clean=1&amp;grid=1)</span>
+          </button>
+        </div>
+
+        <h4 style="margin:0 0 8px 0; font-size:13px; text-transform:uppercase; letter-spacing:0.04em; color:#0F172A;">Option B: Import Sheet-by-Sheet (Recommended in Figma)</h4>
+        <p style="margin:0 0 10px 0; color:#64748B;">Each sheet is ~1,500px to ~2,000px tall. Click any sheet to copy its clean URL for Doop / Figma:</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <button class="btn-tool" style="justify-content:space-between; padding:8px 12px;" onclick="copyDoopUrl('1')">
+            <span>01 · Colors (~1.8k px)</span><span style="color:#2563EB;">Copy ↗</span>
+          </button>
+          <button class="btn-tool" style="justify-content:space-between; padding:8px 12px;" onclick="copyDoopUrl('2')">
+            <span>02 · Primitives (~1.5k px)</span><span style="color:#2563EB;">Copy ↗</span>
+          </button>
+          <button class="btn-tool" style="justify-content:space-between; padding:8px 12px;" onclick="copyDoopUrl('3')">
+            <span>03 · Typography (~1.8k px)</span><span style="color:#2563EB;">Copy ↗</span>
+          </button>
+          <button class="btn-tool" style="justify-content:space-between; padding:8px 12px;" onclick="copyDoopUrl('4')">
+            <span>04 · Logo (~1.6k px)</span><span style="color:#2563EB;">Copy ↗</span>
+          </button>
+          <button class="btn-tool" style="justify-content:space-between; padding:8px 12px;" onclick="copyDoopUrl('5')">
+            <span>05 · Cast &amp; Assets (~1.4k px)</span><span style="color:#2563EB;">Copy ↗</span>
+          </button>
+          <button class="btn-tool" style="justify-content:space-between; padding:8px 12px;" onclick="copyDoopUrl('6')">
+            <span>06 · Components (~2.0k px)</span><span style="color:#2563EB;">Copy ↗</span>
+          </button>
+          <button class="btn-tool" style="justify-content:space-between; padding:8px 12px;" onclick="copyDoopUrl('7')">
+            <span>07 · Modals (~1.8k px)</span><span style="color:#2563EB;">Copy ↗</span>
+          </button>
+          <button class="btn-tool" style="justify-content:space-between; padding:8px 12px;" onclick="copyDoopUrl('8')">
+            <span>08 · Patterns (~1.6k px)</span><span style="color:#2563EB;">Copy ↗</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Floating Toast Notification -->
   <div id="toast" class="toast-notification">
     <span style="color:#4ADE80;">✔</span>
@@ -2776,7 +2870,7 @@
        JAVASCRIPT: FILTERING, SPEC INSPECTOR, CLEAN EXPORT & CLIPBOARD
        ========================================================================= -->
   <script>
-    function filterSection(target, btn) {
+    function filterSection(target, btn, syncUrl = true) {
       document.querySelectorAll('.nav-pill').forEach(el => el.classList.remove('active'));
       if (btn) btn.classList.add('active');
 
@@ -2787,6 +2881,20 @@
           sec.classList.add('hidden-sheet');
         }
       });
+
+      if (syncUrl) {
+        try {
+          const url = new URL(window.location.href);
+          if (target === 'all') {
+            url.searchParams.delete('sheet');
+            url.searchParams.delete('section');
+          } else {
+            url.searchParams.set('sheet', target);
+          }
+          window.history.replaceState({}, '', url.toString());
+        } catch (e) {}
+      }
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -2794,6 +2902,32 @@
       document.body.classList.toggle('spec-mode');
       const btn = document.getElementById('btn-spec');
       if (btn) btn.classList.toggle('active-spec');
+    }
+
+    function toggleGridMode(forceState) {
+      const isGrid = forceState !== undefined ? forceState : !document.body.classList.contains('canvas-grid-mode');
+      const gridBtn = document.getElementById('btn-grid');
+
+      if (isGrid) {
+        document.body.classList.add('canvas-grid-mode');
+        if (gridBtn) gridBtn.classList.add('active-grid');
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.set('grid', '1');
+          window.history.replaceState({}, '', url.toString());
+          showToast('Canvas Grid active (2-col, < 10,000px on both sides)');
+        } catch (e) {}
+      } else {
+        document.body.classList.remove('canvas-grid-mode');
+        if (gridBtn) gridBtn.classList.remove('active-grid');
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.delete('grid');
+          url.searchParams.delete('canvas');
+          window.history.replaceState({}, '', url.toString());
+          showToast('Exited Canvas Grid Mode');
+        } catch (e) {}
+      }
     }
 
     function toggleCleanMode(forceState) {
@@ -2848,6 +2982,32 @@
       document.getElementById('live-modal').classList.remove('open');
     }
 
+    function openDoopModal() {
+      document.getElementById('doop-modal').classList.add('open');
+    }
+
+    function closeDoopModal() {
+      document.getElementById('doop-modal').classList.remove('open');
+    }
+
+    function copyDoopUrl(mode) {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('clean', '1');
+        if (mode === 'grid') {
+          url.searchParams.set('grid', '1');
+          url.searchParams.delete('sheet');
+          url.searchParams.delete('section');
+        } else {
+          url.searchParams.delete('grid');
+          url.searchParams.set('sheet', mode);
+        }
+        copyToClipboard(url.toString(), 'Copied Doop URL: ' + url.search);
+      } catch (e) {
+        fallbackCopy(window.location.href, 'Copied URL');
+      }
+    }
+
     function copyToClipboard(text, message) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(() => {
@@ -2893,8 +3053,8 @@
       toastTimer = setTimeout(() => toast.classList.remove('visible'), 2400);
     }
 
-    // Auto-enable Clean Export Mode when ?clean=1 or ?figma=1 is in the URL
-    window.addEventListener('DOMContentLoaded', () => {
+    // Auto-enable Clean Export Mode, Canvas Grid, and Single Sheet Filter from URL
+    function initExportControls() {
       const params = new URLSearchParams(window.location.search);
       if (params.get('clean') === '1' || params.get('figma') === '1') {
         document.body.classList.add('clean-export-mode');
@@ -2906,7 +3066,36 @@
         const specBtn = document.getElementById('btn-spec');
         if (specBtn) specBtn.classList.add('active-spec');
       }
-    });
+      if (params.get('grid') === '1' || params.get('canvas') === '1' || params.get('layout') === 'grid') {
+        document.body.classList.add('canvas-grid-mode');
+        const gridBtn = document.getElementById('btn-grid');
+        if (gridBtn) gridBtn.classList.add('active-grid');
+      }
+
+      // Check for single sheet filter (?sheet=1..8 or ?sheet=colors etc.)
+      const sheetParam = params.get('sheet') || params.get('section') || params.get('part');
+      if (sheetParam) {
+        const sheetMap = {
+          '1': 'colors', '01': 'colors', 'colors': 'colors', 'color': 'colors',
+          '2': 'primitives', '02': 'primitives', 'primitives': 'primitives', 'primitive': 'primitives',
+          '3': 'typography', '03': 'typography', 'typography': 'typography', 'type': 'typography',
+          '4': 'logo', '04': 'logo', 'logo': 'logo',
+          '5': 'assets', '05': 'assets', 'assets': 'assets', 'cast': 'assets',
+          '6': 'components', '06': 'components', 'components': 'components', 'ui': 'components',
+          '7': 'overlays', '07': 'overlays', 'overlays': 'overlays', 'modals': 'overlays', 'modal': 'overlays',
+          '8': 'patterns', '08': 'patterns', 'patterns': 'patterns', 'tokens': 'patterns'
+        };
+        const targetSection = sheetMap[sheetParam.toLowerCase()] || sheetParam;
+        const matchingBtn = Array.from(document.querySelectorAll('.nav-pill')).find(el => (el.getAttribute('onclick') || '').includes("'" + targetSection + "'"));
+        filterSection(targetSection, matchingBtn, false);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', initExportControls);
+    } else {
+      initExportControls();
+    }
   </script>
 </body>
 </html>

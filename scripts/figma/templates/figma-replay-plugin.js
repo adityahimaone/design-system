@@ -426,7 +426,13 @@ function applyLayout(frame, L, children, reg) {
       children.some((c) => c && c.layout && Number(c.layout.grow) > 0)
     const distributed = ['SPACE_BETWEEN', 'SPACE_AROUND', 'SPACE_EVENLY'].indexOf(justify(L.justify)) !== -1
     frame.layoutMode = L.mode
-    frame.primaryAxisSizingMode = (hasFillChild || distributed) ? 'FIXED' : 'AUTO'
+    /* HORIZONTAL: the primary axis IS the width. Hugging it collapsed every
+     * modal footer / action group to the width of its buttons — the grey bar
+     * stopped short and `justify: flex-end` had nowhere to push. Keep the
+     * browser's measured width; only hug the cross axis (height).
+     * VERTICAL: the primary axis is height — hug it unless a child FILLs or
+     * the stack is distributed; keep the measured width. */
+    frame.primaryAxisSizingMode = L.mode === 'HORIZONTAL' ? 'FIXED' : ((hasFillChild || distributed) ? 'FIXED' : 'AUTO')
     frame.counterAxisSizingMode = L.mode === 'HORIZONTAL' ? 'AUTO' : 'FIXED'
     frame.itemSpacing = Number(L.spacing) || 0
     frame.paddingTop = padding(L, 0)
@@ -542,7 +548,7 @@ function makeComponentHost(node, box, reg, ctx) {
   host.fills = []
   applyStyle(host, node.style, reg, true)
   try { host.resize(box.w, box.h) } catch (e) { fail('component/resize/' + spec.name, e) }
-  ctx.components.push({ node: host, spec })
+  ctx.components.push({ node: host, spec, manifestNode: node, box })
   report.components++
   return host
 }
@@ -587,7 +593,20 @@ async function createNode(node, parentBox, reg, depth, options, ctx) {
     }
     t.fills = [inkPaint]
 
-    oneLine = box.h <= size * 1.6
+    /* One line is a property of the TEXT, not of its padded container. A
+     * button is 36px tall with 10px padding top/bottom — `box.h <= fontSize*1.6`
+     * called it "wrapped", gave it a fixed width and Figma then broke every
+     * button/badge label onto two lines. Measure the inner line box instead,
+     * and honour the CSS white-space declaration the sheet now emits. */
+    const linePx = parseFloat(node.style && node.style.lineHeight)
+    const lineH = Number.isFinite(linePx) && linePx > 0 ? linePx : size * 1.35
+    const padTop = Number(node.layout && node.layout.padding && node.layout.padding[0]) || 0
+    const padBottom = Number(node.layout && node.layout.padding && node.layout.padding[2]) || 0
+    const innerH = Math.max(1, box.h - padTop - padBottom)
+    const nowrap = /nowrap|pre$/i.test(String((node.style && node.style.whiteSpace) || ''))
+    const hasBreak = /\n|\r/.test(String(node.text || ''))
+    const genuinelyWrapped = innerH > lineH * 1.65 && String(node.text || '').length > 45 && !nowrap
+    oneLine = !hasBreak && (nowrap || !!node.componentRef || !genuinelyWrapped)
     t.textAutoResize = oneLine ? 'WIDTH_AND_HEIGHT' : 'HEIGHT'
     t.x = 0
     t.y = 0
@@ -606,6 +625,9 @@ async function createNode(node, parentBox, reg, depth, options, ctx) {
       plate.fills = []
       applyStyle(plate, node.style, reg, true)
       try { plate.resize(box.w, box.h) } catch (e) { fail('chip/' + node.name, e) }
+      /* A chip label is single-line by construction; never let Figma wrap it
+       * inside its own plate. */
+      try { t.textAutoResize = 'WIDTH_AND_HEIGHT' } catch (e) { /* ignore */ }
       try {
         plate.appendChild(t)
         t.x = Math.max(0, (box.w - t.width) / 2)
@@ -654,7 +676,7 @@ async function createNode(node, parentBox, reg, depth, options, ctx) {
         out.description = spec.description || ''
         if (spec.description) report.componentDescriptions++
       } catch (e) { /* description is optional on older runtimes */ }
-      ctx.components.push({ node: out, spec })
+      ctx.components.push({ node: out, spec, manifestNode: node, box })
       report.components++
     } else {
       out.name = String(node.component || node.name || 'Frame')
@@ -737,7 +759,39 @@ function fitAbsoluteFrames(node) {
 
 /* ── real component library: variant sets + live instances ──────────────── */
 
-function buildComponentLibrary(page, root, ctx) {
+function boundFill(c, reg) {
+  const v = reg ? colourVarFor(c, reg) : null
+  if (v) report.paintBindings++
+  return v ? figma.variables.setBoundVariableForPaint(solid(c), 'color', v) : solid(c)
+}
+
+async function libraryLabel(text, size, weight, reg) {
+  const t = figma.createText()
+  t.name = 'Label / ' + String(text).slice(0, 48)
+  t.fontName = await loadFont('Inter', weight)
+  t.characters = String(text)
+  t.fontSize = size
+  t.textAutoResize = 'WIDTH_AND_HEIGHT'
+  t.fills = [boundFill({ r: 0.07, g: 0.09, b: 0.15, a: 1 }, reg)]
+  const st = textStyleFor(t, { fontFamily: 'Inter', fontWeight: weight }, reg)
+  if (st) {
+    try { t.textStyleId = st.id; report.textStyleBindings++ } catch (e) { /* ignore */ }
+  }
+  return t
+}
+
+/**
+ * Build a real, visible component library ABOVE the sheet root.
+ *
+ * v5.0.0 cloned COMPONENT nodes that were nested in the sheet and called
+ * combineAsVariants with a frame that was not yet in the document. Figma
+ * reparented the specimens' containers (surface-box, grid-2-cols,
+ * modal-stage) to the page root, which left pages 06 and 07 almost blank.
+ * Nothing here touches a sheet node: the variant masters are rebuilt from
+ * the manifest into fresh, page-level COMPONENTs, and the board shows
+ * INSTANCEs of the specimens still sitting in the sheet.
+ */
+async function buildComponentLibrary(page, root, ctx, reg, options) {
   const groups = new Map()
   for (const entry of ctx.components) {
     const name = entry.spec.name
@@ -748,55 +802,97 @@ function buildComponentLibrary(page, root, ctx) {
 
   const library = figma.createFrame()
   library.name = '◆ Component Library'
-  library.fills = []
+  library.fills = [boundFill({ r: 0.973, g: 0.98, b: 0.996, a: 1 }, reg)]
   try {
     library.layoutMode = 'VERTICAL'
     library.itemSpacing = 24
-    library.paddingTop = library.paddingRight = library.paddingBottom = library.paddingLeft = 32
-    library.resize(420, 120)
+    library.paddingTop = library.paddingRight = library.paddingBottom = library.paddingLeft = 40
+    library.primaryAxisSizingMode = 'AUTO'
+    library.counterAxisSizingMode = 'FIXED'
+    library.resize(1440, 120)
   } catch (e) { /* cosmetics only */ }
-  library.x = (Number(root.width) || 1440) + 200
-  library.y = 0
+  /* Append before adding children — Figma needs a live parent for the board. */
+  page.appendChild(library)
+  library.appendChild(await libraryLabel('◆ Component Library · ' + (ctx.system?.brand || 'Brand') + ' · ' + groups.size + ' families', 24, '700', reg))
 
-  const descriptionOf = (system, name) => {
-    for (const c of (system && system.components) || []) if (c.name === name) return c.description || ''
+  const descriptionOf = (name) => {
+    for (const c of (ctx.system && ctx.system.components) || []) if (c.name === name) return c.description || ''
     return ''
   }
 
   for (const [name, entries] of groups) {
-    /* combineAsVariants moves its arguments into a new COMPONENT_SET. Use
-     * clones so the specimens stay exactly where the sheet placed them. */
+    const section = figma.createFrame()
+    section.name = 'Section / ' + name
+    section.fills = [boundFill({ r: 1, g: 1, b: 1, a: 1 }, reg)]
+    try {
+      section.layoutMode = 'VERTICAL'
+      section.itemSpacing = 16
+      section.paddingTop = section.paddingRight = section.paddingBottom = section.paddingLeft = 24
+      section.primaryAxisSizingMode = 'AUTO'
+      section.counterAxisSizingMode = 'FIXED'
+      section.resize(1360, 100)
+      section.cornerRadius = 12
+    } catch (e) { /* ignore */ }
+    library.appendChild(section)
+    section.appendChild(await libraryLabel(name + ' · ' + entries.length + ' variants — ' + (descriptionOf(name) || entries[0].spec.description || ''), 15, '600', reg))
+
+    /* Fresh page-level masters, rebuilt from the manifest. No clone(), no
+     * reparenting of anything that belongs to the sheet. */
     let set = null
     if (typeof figma.combineAsVariants === 'function') {
       try {
-        const clones = []
+        const masters = []
         for (const entry of entries) {
-          if (typeof entry.node.clone !== 'function') continue
-          const copy = entry.node.clone()
-          copy.name = entry.spec.variant
-          library.appendChild(copy)
-          clones.push(copy)
+          const throwaway = { components: [], system: ctx.system }
+          const master = await createNode(
+            { ...entry.manifestNode, componentRef: { name: name, variant: entry.spec.variant, description: entry.spec.description } },
+            { x: 0, y: 0 }, reg, 0, options, throwaway)
+          if (!master) continue
+          master.name = entry.spec.variant
+          page.appendChild(master)
+          masters.push(master)
         }
-        if (clones.length) {
-          set = figma.combineAsVariants(clones, library)
+        if (masters.length) {
+          set = figma.combineAsVariants(masters, page)
           set.name = 'Component / ' + name
-          try { set.description = descriptionOf(ctx.system, name) || entries[0].spec.description || '' } catch (e) { /* ignore */ }
+          try { set.description = descriptionOf(name) || entries[0].spec.description || '' } catch (e) { /* ignore */ }
+          section.appendChild(set)
           report.componentSets++
         }
       } catch (e) { fail('combineAsVariants/' + name, e) }
     }
+
+    const row = figma.createFrame()
+    row.name = 'Instances / ' + name
+    row.fills = []
+    try {
+      row.layoutMode = 'HORIZONTAL'
+      row.layoutWrap = 'WRAP'
+      row.itemSpacing = 12
+      row.counterAxisAlignItems = 'CENTER'
+      row.primaryAxisSizingMode = 'FIXED'
+      row.counterAxisSizingMode = 'AUTO'
+      row.resize(1312, 60)
+    } catch (e) { /* ignore */ }
+    section.appendChild(row)
     for (const entry of entries) {
       try {
-        const inst = (set && set.defaultVariant && typeof set.defaultVariant.createInstance === 'function')
-          ? set.defaultVariant.createInstance()
-          : entry.node.createInstance()
+        const inst = typeof entry.node.createInstance === 'function'
+          ? entry.node.createInstance()
+          : null
+        if (!inst) continue
         inst.name = 'Instance / ' + name + ' / ' + entry.spec.variant
-        library.appendChild(inst)
+        row.appendChild(inst)
         report.instances++
       } catch (e) { fail('instance/' + name, e) }
     }
   }
-  page.appendChild(library)
+
+  /* Put the whole library above the sheet instead of off-canvas at x+200. */
+  try {
+    library.x = 0
+    library.y = -(Number(library.height) || 800) - 96
+  } catch (e) { /* ignore */ }
   return library
 }
 
@@ -849,7 +945,7 @@ async function build(manifest, replace, options) {
       root.x = 0
       root.y = 0
       page.appendChild(root)
-      if (options.components !== false) buildComponentLibrary(page, root, ctx)
+      if (options.components !== false) await buildComponentLibrary(page, root, ctx, reg, options)
     }
     report.pages++
   }

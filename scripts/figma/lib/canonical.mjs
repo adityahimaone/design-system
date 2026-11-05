@@ -261,6 +261,9 @@ export function buildSystemSpec({
     { name: 'Badge', description: 'Status pills used in ledgers and release notes.', variants: ['Tone=Brand', 'Tone=Secondary', 'Tone=Success', 'Tone=Warning', 'Tone=Danger'] },
     { name: 'Input', description: 'Text field with default / focus / error states.', variants: ['State=Default', 'State=Focused', 'State=Error'] },
     { name: 'Modal', description: 'Dialog surfaces: form publish and destructive confirm.', variants: ['Intent=Publish', 'Intent=Destructive'] },
+    { name: 'Cast Mark', description: 'Six companion marks on the 64×64 Kuwayama grid.', variants: [], page: 5 },
+    { name: 'System Icon', description: 'Eight 24×24 keyline UI icons, 1.75px stroke.', variants: [], page: 5 },
+    { name: 'Spot Illustration', description: 'Empty and status state illustrations.', variants: [], page: 5 },
   ]
 
   return {

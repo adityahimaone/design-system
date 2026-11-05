@@ -1640,6 +1640,40 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
       transform: translateX(-50%) translateY(0);
     }
 
+    /* =========================================================================
+       9. IMPORTER-PROOF ONE-LINE LABELS & FULL-WIDTH ACTION GROUPS
+       Doop / html.to.design substitute the brand face with a wider fallback, so
+       a label that fits in Chrome wraps in Figma and collides with the line
+       underneath. Declare the intent in CSS so *any* importer keeps one line,
+       and let the canonical manifest carry whiteSpace for the native replay.
+       ========================================================================= */
+    .sheet-title-row { flex-wrap: nowrap; }
+    .sheet-title-row > span,
+    .sheet-subtitle-row > span,
+    .category-title,
+    .category-desc,
+    .btn,
+    .badge-pill,
+    .modal-card strong,
+    .icon-cell > strong,
+    .icon-cell > span,
+    .type-row strong,
+    .swatch-title,
+    .swatch-hex {
+      white-space: nowrap;
+    }
+    .modal-card > div {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .modal-card .action-group {
+      width: 100%;
+      min-width: 100%;
+      flex-wrap: nowrap;
+    }
+    .icon-keyline { flex: 0 0 44px; }
+    .icon-keyline > svg { flex: 0 0 auto; }
+
     @media (max-width: 1024px) {
       .scale-colors-grid, .primitives-grid { grid-template-columns: repeat(3, 1fr); }
       .main-colors-grid { grid-template-columns: repeat(3, 1fr); }
@@ -2362,7 +2396,7 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
             ${castItems
               .map(
                 (c) => `
-            <div class="icon-cell" onclick="copyHex('cast/${escapeHtml(c.id)}.svg', 'Cast Mark')">
+            <div class="icon-cell" data-figma-role="icon" data-figma-component="Cast Mark" data-figma-variant="Name=${escapeHtml(c.name)}" data-figma-description="${escapeHtml(c.note || `64×64 companion cast mark · ${c.name}`)}" onclick="copyHex('cast/${escapeHtml(c.id)}.svg', 'Cast Mark')">
               <div class="icon-keyline" style="width:56px; height:56px;">${c.svg}</div>
               <strong style="font-size:13px; color:#111827;">${escapeHtml(c.name)}</strong>
               <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/${escapeHtml(c.id)}.svg</span>
@@ -2381,35 +2415,35 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
             </div>
           </div>
           <div class="icon-grid-8">
-            <div class="icon-cell" onclick="copyHex('icon-search', 'Icon Token')">
+            <div class="icon-cell" data-figma-role="icon" data-figma-component="System Icon" data-figma-variant="Name=search" data-figma-description="24×24 keyline system icon · search" onclick="copyHex('icon-search', 'Icon Token')">
               <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.3-4.3"/></svg></div>
               <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">search</span>
             </div>
-            <div class="icon-cell" onclick="copyHex('icon-layers', 'Icon Token')">
+            <div class="icon-cell" data-figma-role="icon" data-figma-component="System Icon" data-figma-variant="Name=layers" data-figma-description="24×24 keyline system icon · layers" onclick="copyHex('icon-layers', 'Icon Token')">
               <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
               <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">layers</span>
             </div>
-            <div class="icon-cell" onclick="copyHex('icon-bell', 'Icon Token')">
+            <div class="icon-cell" data-figma-role="icon" data-figma-component="System Icon" data-figma-variant="Name=bell" data-figma-description="24×24 keyline system icon · bell" onclick="copyHex('icon-bell', 'Icon Token')">
               <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
               <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">bell</span>
             </div>
-            <div class="icon-cell" onclick="copyHex('icon-shield', 'Icon Token')">
+            <div class="icon-cell" data-figma-role="icon" data-figma-component="System Icon" data-figma-variant="Name=shield" data-figma-description="24×24 keyline system icon · shield" onclick="copyHex('icon-shield', 'Icon Token')">
               <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
               <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">shield</span>
             </div>
-            <div class="icon-cell" onclick="copyHex('icon-folder', 'Icon Token')">
+            <div class="icon-cell" data-figma-role="icon" data-figma-component="System Icon" data-figma-variant="Name=folder" data-figma-description="24×24 keyline system icon · folder" onclick="copyHex('icon-folder', 'Icon Token')">
               <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
               <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">folder</span>
             </div>
-            <div class="icon-cell" onclick="copyHex('icon-sparkles', 'Icon Token')">
+            <div class="icon-cell" data-figma-role="icon" data-figma-component="System Icon" data-figma-variant="Name=sparkles" data-figma-description="24×24 keyline system icon · sparkles" onclick="copyHex('icon-sparkles', 'Icon Token')">
               <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/></svg></div>
               <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">sparkles</span>
             </div>
-            <div class="icon-cell" onclick="copyHex('icon-sliders', 'Icon Token')">
+            <div class="icon-cell" data-figma-role="icon" data-figma-component="System Icon" data-figma-variant="Name=sliders" data-figma-description="24×24 keyline system icon · sliders" onclick="copyHex('icon-sliders', 'Icon Token')">
               <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg></div>
               <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">sliders</span>
             </div>
-            <div class="icon-cell" onclick="copyHex('icon-terminal', 'Icon Token')">
+            <div class="icon-cell" data-figma-role="icon" data-figma-component="System Icon" data-figma-variant="Name=terminal" data-figma-description="24×24 keyline system icon · terminal" onclick="copyHex('icon-terminal', 'Icon Token')">
               <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div>
               <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">terminal</span>
             </div>
@@ -2420,7 +2454,7 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
         <div class="category-block" data-figma-node="❖ Assets / Spot Illustrations">
           <h2 class="category-title">Spot Illustrations (Empty &amp; Status States)</h2>
           <div class="grid-4-cols">
-            <div class="primitive-card" style="padding:24px;">
+            <div class="primitive-card" data-figma-role="icon" data-figma-component="Spot Illustration" data-figma-variant="State=empty-documents" data-figma-description="Empty or status state illustration · empty-documents" style="padding:24px;">
               <svg width="88" height="88" viewBox="0 0 120 120" fill="none" style="margin:0 auto 12px auto; display:block;">
                 <circle cx="60" cy="60" r="46" fill="${PRIMARY_SCALE[0].hex}"/>
                 <rect x="34" y="42" width="52" height="40" rx="6" fill="white" stroke="${primaryColor.hex}" stroke-width="2.5"/>
@@ -2433,7 +2467,7 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
               <p class="swatch-sub" style="margin-top:4px;">Zero-data tables &amp; folders</p>
             </div>
 
-            <div class="primitive-card" style="padding:24px;">
+            <div class="primitive-card" data-figma-role="icon" data-figma-component="Spot Illustration" data-figma-variant="State=empty-search" data-figma-description="Empty or status state illustration · empty-search" style="padding:24px;">
               <svg width="88" height="88" viewBox="0 0 120 120" fill="none" style="margin:0 auto 12px auto; display:block;">
                 <circle cx="60" cy="60" r="46" fill="${SECONDARY_SCALE[0].hex}"/>
                 <circle cx="55" cy="55" r="20" fill="white" stroke="${secondaryColor.hex}" stroke-width="2.5"/>
@@ -2444,7 +2478,7 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
               <p class="swatch-sub" style="margin-top:4px;">No matching filter results</p>
             </div>
 
-            <div class="primitive-card" style="padding:24px;">
+            <div class="primitive-card" data-figma-role="icon" data-figma-component="Spot Illustration" data-figma-variant="State=status-verified" data-figma-description="Empty or status state illustration · status-verified" style="padding:24px;">
               <svg width="88" height="88" viewBox="0 0 120 120" fill="none" style="margin:0 auto 12px auto; display:block;">
                 <circle cx="60" cy="60" r="46" fill="#F0FFF4"/>
                 <circle cx="60" cy="60" r="24" fill="#18B368"/>
@@ -2454,7 +2488,7 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
               <p class="swatch-sub" style="margin-top:4px;">Release &amp; sync completed</p>
             </div>
 
-            <div class="primitive-card" style="padding:24px;">
+            <div class="primitive-card" data-figma-role="icon" data-figma-component="Spot Illustration" data-figma-variant="State=status-warning" data-figma-description="Empty or status state illustration · status-warning" style="padding:24px;">
               <svg width="88" height="88" viewBox="0 0 120 120" fill="none" style="margin:0 auto 12px auto; display:block;">
                 <circle cx="60" cy="60" r="46" fill="#FFF1F2"/>
                 <path d="M60 36L86 80H34L60 36Z" fill="white" stroke="#E11D48" stroke-width="2.5" stroke-linejoin="round"/>
@@ -2624,7 +2658,7 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
                   <span class="badge-pill" style="background:#F0FFF4; color:#18B368;">SVG Cast (6)</span>
                 </div>
               </div>
-              <div style="padding:14px 22px; background:#FAFAFA; border-top:1px solid #F1F5F9; display:flex; justify-content:flex-end; gap:10px;">
+              <div class="action-group" data-figma-role="action-group" style="padding:14px 22px; width:100%; min-width:100%; background:#FAFAFA; border-top:1px solid #F1F5F9; display:flex; justify-content:flex-end; gap:10px;">
                 <button class="btn btn-outline" style="padding:7px 14px; font-size:12px;">Cancel</button>
                 <button class="btn btn-primary" style="padding:7px 14px; font-size:12px;" onclick="openLiveModal()">Publish Release</button>
               </div>
@@ -2636,7 +2670,7 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
                 <strong style="font-size:15px;">Revoke Deprecated Token?</strong>
                 <p class="swatch-sub" style="margin-top:6px;">Removing <code style="color:#E11D48;">--${ns}-legacy-50</code> will affect linked Figma component libraries.</p>
               </div>
-              <div style="padding:14px 22px; background:#FAFAFA; border-top:1px solid #F1F5F9; display:flex; justify-content:flex-end; gap:10px;">
+              <div class="action-group" data-figma-role="action-group" style="padding:14px 22px; width:100%; min-width:100%; background:#FAFAFA; border-top:1px solid #F1F5F9; display:flex; justify-content:flex-end; gap:10px;">
                 <button class="btn btn-outline" style="padding:7px 14px; font-size:12px;">Keep</button>
                 <button class="btn btn-danger" style="padding:7px 14px; font-size:12px;">Revoke Token</button>
               </div>
@@ -3093,6 +3127,8 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
         fontWeight: cs.fontWeight,
         lineHeight: cs.lineHeight,
         letterSpacing: cs.letterSpacing,
+        whiteSpace: cs.whiteSpace,
+        textOverflow: cs.textOverflow,
         shadow: cs.boxShadow || 'none',
         opacity: figmaNum(cs.opacity) || 1
       };
@@ -3259,7 +3295,15 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
           var id = 'n' + (count + 1);
           if (tag === 'svg') {
             count++;
-            return { id: id, name: el.getAttribute('aria-label') || 'vector', role: 'vector', type: 'VECTOR', svg: el.outerHTML, box: box, children: [] };
+            return {
+              id: id,
+              name: el.getAttribute('aria-label') || el.getAttribute('data-figma-name') || 'vector',
+              role: el.getAttribute('data-figma-role') || 'vector',
+              type: 'VECTOR', svg: el.outerHTML, box: box,
+              componentRef: componentSpecOf(el),
+              tokenRef: null, styleRef: null,
+              children: []
+            };
           }
           count++;
           var layout = figmaLayoutOf(el, view);

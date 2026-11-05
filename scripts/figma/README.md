@@ -36,6 +36,13 @@ case page links to.
 - **Upgrade existing pages** — migrates a flat Doop / html.to.design import in
   place instead of re-importing.
 - **Sheet 08 stays optional** in Figma but is always present in the spec.
+- **v5.1.0 layer quality:** one-line labels declare `white-space: nowrap` (no
+  wrapping in Doop / html.to.design either), modal action groups are explicit
+  full-width `action-group` layers, and the 6 cast marks / 8 system icons / 4
+  spot illustrations are real named components (7 families, 34 refs per case).
+  The plugin puts a full-width component library **above** the sheet on pages
+  05/06/07, keeps HORIZONTAL frames at their measured width, and never
+  reparents sheet content.
 
 ## Case discovery
 
@@ -59,7 +66,7 @@ path. If the sibling checkout is missing, that one command fails and the other
 
 ## Provenance
 
-Vendored from the `sunnyside-brand-system` skill at **v5.0.0**:
+Vendored from the `sunnyside-brand-system` skill at **v5.1.0**:
 
 ```
 scripts/figma/figma-html.mjs            ← scripts/figma-html.mjs

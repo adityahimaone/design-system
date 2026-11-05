@@ -1573,6 +1573,9 @@ export default function DesignSystemPage() {
             <a href="/brand/vitrine/vitrine-brandkit.png" download>
               Brand board
             </a>
+            <a href="/brand/vitrine/vitrine-figma.html">
+              Figma HTML sheet
+            </a>
           </div>
           <div>
             <p className={styles.cardLabel}>System</p>

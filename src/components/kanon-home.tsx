@@ -68,6 +68,7 @@ const RETURNS = [
   { n: '04', name: 'Surfaces', file: 'surface.html', says: 'The material grid it chose from, kept as evidence.' },
   { n: '05', name: 'Tokens', file: 'tokens.css', says: 'OKLCH, one or two scopes, every pair checked.' },
   { n: '06', name: 'Page', file: '<slug>.astro', says: 'Unnumbered hero and sections, from those tokens.' },
+  { n: '07', name: 'Figma HTML', file: '<slug>-figma.html', says: 'Eight white-background sheets, ready for HTML-to-Design.' },
 ] as const
 
 /* What one `skills add` unpacks, counted from the published tree. */
@@ -166,7 +167,17 @@ function CaseCard({ c }: { c: DesignCase }) {
         <p className="kn-case__desc">{c.description}</p>
         <div className="kn-case__foot">
           <span className="kn-case__mat">{c.material}</span>
-          {col && <span className="kn-case__col">{col.label}</span>}
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+            <a
+              href={`/brand/${c.slug}/${c.slug}-figma.html`}
+              className="kn-case__col"
+              style={{ textDecoration: 'none' }}
+              title={`Open ${c.name} Convertible Figma HTML Sheet`}
+            >
+              Figma HTML ↗
+            </a>
+            {col && <span className="kn-case__col">{col.label}</span>}
+          </span>
         </div>
       </div>
     </article>
@@ -455,6 +466,14 @@ export function KanonHome({ facts }: { facts: SystemFacts }) {
                   <a className="kn-once__go" href="/design-system/serenica">
                     Read one run end to end
                     <ArrowRight size={13} aria-hidden="true" />
+                  </a>
+                  <a
+                    className="kn-once__go"
+                    href="/brand/setout/setout-figma.html"
+                    style={{ marginTop: 6 }}
+                  >
+                    Open 8-sheet Figma HTML template
+                    <ArrowUpRight size={13} aria-hidden="true" />
                   </a>
                 </aside>
               </div>

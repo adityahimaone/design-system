@@ -1003,7 +1003,10 @@ export default function VesperPage() {
             {tokens.meta.version} · {tokens.contrast.length} contrast pairs ·{' '}
             {tokens.primitives.length} primitives · 26 brand files
             <br />
-            <span className="vs-mono">node vesper/scripts/build-page.mjs</span>
+            <a href="/brand/vesper/vesper-figma.html" style={{ textDecoration: 'underline' }}>
+              Figma HTML sheet ↗
+            </a>{' '}
+            · <span className="vs-mono">node vesper/scripts/build-page.mjs</span>
           </div>
         </div>
       </footer>

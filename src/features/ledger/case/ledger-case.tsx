@@ -184,6 +184,12 @@ export function LedgerCase() {
                 <Button asChild className="h-10 px-4" variant="outline">
                   <Link href="#foundation">See the tokens</Link>
                 </Button>
+                <Button asChild className="h-10 gap-1.5 px-4" variant="outline">
+                  <a href="/brand/ledger/ledger-figma.html">
+                    Figma HTML sheet
+                    <ArrowUpRight className="size-4" />
+                  </a>
+                </Button>
               </div>
 
               <div className="mt-6 flex flex-wrap items-center justify-center gap-2">

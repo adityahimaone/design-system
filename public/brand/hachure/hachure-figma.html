@@ -1,0 +1,2987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hachure (Case 05) — Figma &amp; HTML-to-Design Documentation Sheet</title>
+  <meta name="description" content="Relief drawn by density, never by shadow: seven elevation bands on cold survey stock, one chartreuse lichen field, and monospace bearings." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================================================
+       1. CSS RESET & DESIGN TOKENS (100% SELF-CONTAINED, ZERO EXTERNAL CDN)
+       ========================================================================= */
+    :root {
+      --primary-70: #A82A1C;
+      --secondary-60: #C9D94E;
+      --tertiary-80: #4A6B33;
+      --primary-tint: #FFE8E2;
+      --secondary-tint: #EFF4D9;
+      --tertiary-tint: #EBF3E6;
+      --text-main: #111827;
+      --text-secondary: #64748B;
+      --text-muted: #94A3B8;
+      --bg-white: #FFFFFF;
+      --bg-banner: #FAFAFA;
+      --border-subtle: #F1F5F9;
+      --border-default: #E2E8F0;
+      --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --brand-display: 'Geist Mono', var(--font-sans);
+      --brand-reading: 'Geist', var(--font-body);
+      --brand-mono: 'Geist Mono', var(--font-mono);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-white);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+    }
+
+    /* =========================================================================
+       2. STICKY TOP WORKSPACE BAR (COLLAPSIBLE FOR CLEAN FIGMA EXPORT)
+       ========================================================================= */
+    .workspace-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-default);
+      padding: 10px 24px;
+      transition: all 0.2s ease;
+    }
+
+    body.clean-export-mode .workspace-topbar,
+    body.clean-export-mode .section-copy-btn {
+      display: none !important;
+    }
+
+    @media print {
+      .workspace-topbar,
+      .section-copy-btn,
+      .floating-exit-clean,
+      .toast-notification {
+        display: none !important;
+      }
+    }
+
+    .floating-exit-clean {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+      background: #111827;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 9999px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+
+    body.clean-export-mode .floating-exit-clean {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topbar-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mini-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 9999px;
+      background: #FFFFFF;
+      border: 1px solid var(--border-default);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .brand-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-version {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      background: #E8EEFF;
+      color: #1E40AF;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .nav-pills {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #F1F5F9;
+      padding: 4px;
+      border-radius: 10px;
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
+    .nav-pill {
+      border: none;
+      background: transparent;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 11px;
+      border-radius: 7px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .nav-pill:hover {
+      color: var(--text-main);
+    }
+
+    .nav-pill.active {
+      background: #FFFFFF;
+      color: var(--text-main);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-tool {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--border-default);
+      background: #FFFFFF;
+      color: #334155;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-tool:hover {
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+    }
+
+    .btn-tool.active-spec {
+      background: #F5F0FF;
+      border-color: #B392F0;
+      color: #6739D2;
+    }
+
+    .btn-tool.active-clean {
+      background: #EFF6FF;
+      border-color: #93C5FD;
+      color: #1D4ED8;
+    }
+
+    /* =========================================================================
+       3. FIGMA DOCUMENTATION SHEET ANATOMY
+       ========================================================================= */
+    .figma-sheet {
+      background: var(--bg-white);
+      border-bottom: 12px solid #F1F5F9;
+    }
+
+    .figma-sheet.hidden-sheet {
+      display: none !important;
+    }
+
+    .sheet-banner {
+      background: var(--bg-banner);
+      border-bottom: 1px solid #F1F5F9;
+      padding: 34px 64px;
+    }
+
+    .sheet-banner-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .sheet-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+      font-size: 26px;
+      font-weight: 700;
+      color: #1E1E1E;
+      letter-spacing: -0.02em;
+    }
+
+    .sheet-num-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #111827;
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .sheet-subtitle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      padding-left: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #64748B;
+    }
+
+    .sheet-banner-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .section-copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+      background: #FFFFFF;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .section-copy-btn:hover {
+      border-color: var(--primary-70);
+      color: var(--primary-70);
+    }
+
+    .tnd-logo-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 9999px;
+      background: #FFFFFF;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      border: 1px solid #E2E8F0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .sheet-body {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 56px 0 64px 0;
+    }
+
+    .sheet-body-padded {
+      padding-left: 64px;
+      padding-right: 64px;
+      max-width: 1288px;
+      margin: 0 auto;
+    }
+
+    .category-block {
+      margin-bottom: 64px;
+      position: relative;
+    }
+
+    .category-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .category-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #111827;
+      margin: 0 0 28px 0;
+      letter-spacing: -0.02em;
+    }
+
+    .category-header-flex {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .category-header-flex .category-title {
+      margin-bottom: 0;
+    }
+
+    .category-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin: 4px 0 0 0;
+    }
+
+    body.spec-mode .category-block {
+      outline: 1.5px dashed #9747FF;
+      outline-offset: 10px;
+      border-radius: 8px;
+    }
+
+    body.spec-mode .category-block::before {
+      content: attr(data-figma-node);
+      position: absolute;
+      top: -22px;
+      right: 0;
+      background: #9747FF;
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* =========================================================================
+       4. SECTION 01: COLOR SYSTEM GRIDS & CONTRAST LEDGER
+       ========================================================================= */
+    .main-colors-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 224px);
+      gap: 18px;
+    }
+
+    .scale-colors-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      column-gap: 18px;
+      row-gap: 32px;
+    }
+
+    .primitives-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      column-gap: 18px;
+      row-gap: 28px;
+    }
+
+    .swatch-card {
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.15s ease;
+    }
+
+    .swatch-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .swatch-rect {
+      width: 100%;
+      height: 146px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+    }
+
+    .swatch-copy-pill {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(17, 24, 39, 0.78);
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .swatch-card:hover .swatch-copy-pill {
+      opacity: 1;
+    }
+
+    .swatch-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #111827;
+      margin: 0 0 4px 0;
+      line-height: 1.3;
+    }
+
+    .swatch-sub {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 400;
+      color: #64748B;
+      margin: 0 0 3px 0;
+      line-height: 1.35;
+    }
+
+    .swatch-hex {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      color: #64748B;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    .grid-4-cols {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .grid-3-cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .grid-2-cols {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .semantic-card {
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+
+    .semantic-head {
+      height: 88px;
+      padding: 14px 16px;
+      color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .semantic-list {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .semantic-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .contrast-ledger {
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+
+    .contrast-row {
+      display: grid;
+      grid-template-columns: 72px 1.4fr 110px 1fr;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 18px;
+      border-bottom: 1px solid #F1F5F9;
+      font-size: 13px;
+    }
+
+    .contrast-row:last-child {
+      border-bottom: none;
+    }
+
+    .contrast-row.is-fail {
+      background: #FFFBEB;
+    }
+
+    .contrast-chips {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .contrast-chip {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.14);
+    }
+
+    .contrast-chip + .contrast-chip {
+      margin-left: -6px;
+    }
+
+    /* =========================================================================
+       5. SECTION 02: PRIMITIVES, RADIUS, ELEVATION & 12-COL GRID
+       ========================================================================= */
+    .surface-box {
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      background: #FFFFFF;
+      padding: 24px;
+    }
+
+    .spacing-row {
+      display: grid;
+      grid-template-columns: 110px 120px 1fr;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 0;
+      border-bottom: 1px solid #F1F5F9;
+      font-size: 13px;
+    }
+
+    .spacing-row:last-child {
+      border-bottom: none;
+    }
+
+    .spacing-bar {
+      height: 18px;
+      background: var(--primary-70);
+      border-radius: 3px;
+      opacity: 0.88;
+    }
+
+    .grid-6-cols {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+
+    .primitive-card {
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      padding: 16px;
+      background: #FAFAFA;
+      text-align: center;
+    }
+
+    .radius-preview {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 12px auto;
+      background: #E8EEFF;
+      border: 2px solid var(--primary-70);
+    }
+
+    .shadow-preview {
+      height: 76px;
+      background: #FFFFFF;
+      border-radius: 8px;
+      border: 1px solid #F1F5F9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #64748B;
+      margin-bottom: 12px;
+    }
+
+    .cols-12-visualizer {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+      padding: 20px;
+      background: #FFF1F2;
+      border: 1px dashed #FDA4AF;
+      border-radius: 10px;
+    }
+
+    .col-bar {
+      height: 56px;
+      background: rgba(225, 29, 72, 0.12);
+      border: 1px solid rgba(225, 29, 72, 0.3);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: #E11D48;
+    }
+
+    /* =========================================================================
+       6. SECTION 03: TYPOGRAPHY SCALE
+       ========================================================================= */
+    .type-row {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 32px;
+      align-items: baseline;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .type-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* =========================================================================
+       7. SECTION 04 & 05: LOGO, CAST, ASSETS & ICONOGRAPHY
+       ========================================================================= */
+    .blueprint-grid {
+      background-color: #F8FAFC;
+      background-image:
+        linear-gradient(to right, rgba(41, 96, 236, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(41, 96, 236, 0.08) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .icon-grid-8 {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 12px;
+    }
+
+    .cast-grid-6 {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+
+    .icon-cell {
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      padding: 16px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      background: #FFFFFF;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .icon-cell:hover {
+      border-color: var(--primary-70);
+      background: #F8FAFF;
+      transform: translateY(-2px);
+    }
+
+    .icon-keyline {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      border: 1px dashed #C1D2FE;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1E293B;
+    }
+
+    .icon-cell:hover .icon-keyline {
+      color: var(--primary-70);
+      background: #E8EEFF;
+    }
+
+    /* =========================================================================
+       8. SECTION 06, 07, 08: COMPONENTS, MODALS & DATA TABLES
+       ========================================================================= */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary { background: var(--primary-70); color: #FFFFFF; }
+    .btn-primary:hover { opacity: 0.92; }
+    .btn-secondary { background: var(--secondary-60); color: #FFFFFF; }
+    .btn-secondary:hover { opacity: 0.92; }
+    .btn-success { background: var(--tertiary-80); color: #FFFFFF; }
+    .btn-danger { background: #E11D48; color: #FFFFFF; }
+    .btn-outline { background: #FFFFFF; border-color: #CBD5E1; color: #1E293B; }
+    .btn-outline:hover { background: #F8FAFC; }
+    .btn-subtle { background: #E8EEFF; color: #1E40AF; }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid #CBD5E1;
+      font-size: 13px;
+      color: #111827;
+      background: #FFFFFF;
+      outline: none;
+    }
+
+    .input-field:focus {
+      border-color: var(--primary-70);
+      box-shadow: 0 0 0 3px #DBE5FE;
+    }
+
+    .modal-stage {
+      background: #F1F5F9;
+      border: 1px solid var(--border-default);
+      border-radius: 16px;
+      padding: 32px;
+      display: grid;
+      grid-template-columns: 7fr 5fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.15);
+      overflow: hidden;
+    }
+
+    .ds-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .ds-table th {
+      background: #FAFAFA;
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748B;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .ds-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #F1F5F9;
+      color: #1E293B;
+    }
+
+    .code-sheet-card {
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      background: #0F172A;
+      color: #E2E8F0;
+      overflow: hidden;
+    }
+
+    .code-sheet-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: #1E293B;
+      border-bottom: 1px solid #334155;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: #94A3B8;
+    }
+
+    .code-sheet-pre {
+      margin: 0;
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      line-height: 1.6;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .live-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .live-modal-overlay.open {
+      display: flex;
+    }
+
+    .toast-notification {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #111827;
+      color: #FFFFFF;
+      padding: 10px 18px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s ease;
+      z-index: 400;
+    }
+
+    .toast-notification.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 1024px) {
+      .scale-colors-grid, .primitives-grid { grid-template-columns: repeat(3, 1fr); }
+      .main-colors-grid { grid-template-columns: repeat(3, 1fr); }
+      .grid-4-cols, .grid-6-cols, .cast-grid-6, .icon-grid-8 { grid-template-columns: repeat(2, 1fr); }
+      .modal-stage, .grid-2-cols, .grid-3-cols { grid-template-columns: 1fr; }
+      .sheet-banner, .sheet-body-padded, .sheet-footer { padding-left: 24px; padding-right: 24px; }
+      .type-row, .contrast-row { grid-template-columns: 1fr; gap: 8px; }
+    }
+
+    @media (max-width: 640px) {
+      .scale-colors-grid, .primitives-grid, .main-colors-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body id="top">
+
+  <!-- =========================================================================
+       STICKY WORKSPACE CONTROL BAR (Hidden in Clean Export Mode / ?clean=1)
+       ========================================================================= -->
+  <nav class="workspace-topbar">
+    <div class="topbar-inner">
+      <div class="brand-cluster">
+        <div class="brand-mini-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="22" height="22"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+        </div>
+        <div>
+          <div class="brand-title">
+            <span>Hachure DS</span>
+            <span class="badge-version">Case 05 · 1.1.0 Figma Sheet</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Switcher Tabs -->
+      <div class="nav-pills" role="tablist">
+        <button class="nav-pill active" onclick="filterSection('all', this)">All (8)</button>
+        <button class="nav-pill" onclick="filterSection('colors', this)">01 · Colors</button>
+        <button class="nav-pill" onclick="filterSection('primitives', this)">02 · Primitives</button>
+        <button class="nav-pill" onclick="filterSection('typography', this)">03 · Typography</button>
+        <button class="nav-pill" onclick="filterSection('logo', this)">04 · Logo</button>
+        <button class="nav-pill" onclick="filterSection('assets', this)">05 · Cast &amp; Assets</button>
+        <button class="nav-pill" onclick="filterSection('components', this)">06 · Components</button>
+        <button class="nav-pill" onclick="filterSection('overlays', this)">07 · Modals</button>
+        <button class="nav-pill" onclick="filterSection('patterns', this)">08 · Patterns &amp; Tokens</button>
+      </div>
+
+      <!-- Inspector, Clean Export & Back to Case Controls -->
+      <div class="topbar-actions">
+        <button id="btn-spec" class="btn-tool" onclick="toggleSpecMode()" title="Toggle Figma component bounds">
+          <span>❖ Figma Specs</span>
+        </button>
+        <button id="btn-clean" class="btn-tool" onclick="toggleCleanMode()" title="Toggle Clean Export Mode (?clean=1) & copy URL">
+          <span>Clean Export</span>
+        </button>
+        <button class="btn-tool" onclick="copyCleanLink()" title="Copy clean export link with ?clean=1">
+          <span>Copy Clean Link</span>
+        </button>
+        <a class="btn-tool" href="/design-system/hachure">
+          <span>← Case Page</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Floating button to exit Clean Preview mode -->
+  <button class="floating-exit-clean" onclick="toggleCleanMode(false)" data-html2canvas-ignore="true" title="Exit Clean Mode (removes ?clean=1)">
+    <span>✕ Exit Clean Preview</span>
+  </button>
+
+  <!-- =========================================================================
+       MAIN CONTAINER: 8 SELF-CONTAINED FIGMA DOCUMENTATION SHEETS
+       ========================================================================= -->
+  <main>
+
+    <!-- =======================================================================
+         SECTION 01: COLOR SYSTEM, PRIMITIVES & HONEST CONTRAST LEDGER
+         ======================================================================= -->
+    <section id="section-colors" data-section="colors" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">01</span>
+              <span>Hachure Color System</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>Color System · 9 Primitives · 18 Measured Contrast Pairs</span>
+            </div>
+          </div>
+
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-colors', 'Hachure Color System')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle" title="Hachure Brand Mark">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="28" height="28"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        
+        <!-- 1.1 Main Colors (3 Columns) -->
+        <div class="category-block" data-figma-node="❖ Color / Main Colors">
+          <h2 class="category-title">Main Colors</h2>
+          <div id="grid-main-colors" class="main-colors-grid">
+            
+            <div class="swatch-card" onclick="copyHex('#A82A1C', 'Alert (--hc-alert)')">
+              <div class="swatch-rect" style="background-color: #A82A1C;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Alert</p>
+              <p class="swatch-sub">--hc-alert</p>
+              <p class="swatch-hex">#A82A1C</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#C9D94E', 'Lichen (--hc-lichen)')">
+              <div class="swatch-rect" style="background-color: #C9D94E;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Lichen</p>
+              <p class="swatch-sub">--hc-lichen</p>
+              <p class="swatch-hex">#C9D94E</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#4A6B33', 'Moss (--hc-moss)')">
+              <div class="swatch-rect" style="background-color: #4A6B33;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Moss</p>
+              <p class="swatch-sub">--hc-moss</p>
+              <p class="swatch-hex">#4A6B33</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.2 Brand Primitives (All Primitives from tokens.json) -->
+        <div class="category-block" data-figma-node="❖ Color / Brand Primitives (9)">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">Brand Primitives (OKLCH Layer 1)</h2>
+              <p class="category-desc">Named once for the physical material (--hc-*). Primitives never flip values across scopes.</p>
+            </div>
+          </div>
+          <div class="primitives-grid">
+            
+            <div class="swatch-card" onclick="copyHex('#F2F4EE', '--hc-stock')">
+              <div class="swatch-rect" style="background-color: #F2F4EE; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">stock</p>
+              <p class="swatch-sub">Cold survey paper, faintly green — the only ground</p>
+              <p class="swatch-hex">#F2F4EE · oklch(0.964 0.008 121.6)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#E5E9DF', '--hc-stock-deep')">
+              <div class="swatch-rect" style="background-color: #E5E9DF; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">stock-deep</p>
+              <p class="swatch-sub">The same stock, one band under</p>
+              <p class="swatch-hex">#E5E9DF · oklch(0.928 0.014 124.6)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#16211B', '--hc-ink')">
+              <div class="swatch-rect" style="background-color: #16211B; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">ink</p>
+              <p class="swatch-sub">Pine black, the printed line</p>
+              <p class="swatch-hex">#16211B · oklch(0.235 0.019 160.6)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#1E3B2C', '--hc-pine')">
+              <div class="swatch-rect" style="background-color: #1E3B2C; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">pine</p>
+              <p class="swatch-sub">Deep forest, the far ridge</p>
+              <p class="swatch-hex">#1E3B2C · oklch(0.324 0.045 160.0)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#C9D94E', '--hc-lichen')">
+              <div class="swatch-rect" style="background-color: #C9D94E; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">lichen</p>
+              <p class="swatch-sub">Chartreuse lichen — the one loud field, fills only</p>
+              <p class="swatch-hex">#C9D94E · oklch(0.847 0.161 115.5)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#4A6B33', '--hc-moss')">
+              <div class="swatch-rect" style="background-color: #4A6B33; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">moss</p>
+              <p class="swatch-sub">Lichen as type: a darker green that can carry a sentence</p>
+              <p class="swatch-hex">#4A6B33 · oklch(0.488 0.091 133.8)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#A9BBB0', '--hc-mist')">
+              <div class="swatch-rect" style="background-color: #A9BBB0; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">mist</p>
+              <p class="swatch-sub">Valley fog, and the quiet accent under night</p>
+              <p class="swatch-hex">#A9BBB0 · oklch(0.775 0.025 159.0)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#0A110D', '--hc-night')">
+              <div class="swatch-rect" style="background-color: #0A110D; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">night</p>
+              <p class="swatch-sub">A range at night, no moon</p>
+              <p class="swatch-hex">#0A110D · oklch(0.169 0.014 159.5)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#A82A1C', '--hc-alert')">
+              <div class="swatch-rect" style="background-color: #A82A1C; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">alert</p>
+              <p class="swatch-sub">Survey red — errors only, never identity</p>
+              <p class="swatch-hex">#A82A1C · oklch(0.484 0.165 30.3)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.3 Primary Scale (5 Columns × 2 Rows: Primary-10 to Primary-100) -->
+        <div class="category-block" data-figma-node="❖ Color / Primary Scale">
+          <h2 class="category-title">Primary Scale (Alert)</h2>
+          <div id="grid-primary-blue" class="scale-colors-grid">
+            
+            <div class="swatch-card" onclick="copyHex('#FFE8E2', 'Primary-10')">
+              <div class="swatch-rect" style="background-color: #FFE8E2;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-10</p>
+              <p class="swatch-hex">#FFE8E2</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#FFD3C9', 'Primary-20')">
+              <div class="swatch-rect" style="background-color: #FFD3C9;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-20</p>
+              <p class="swatch-hex">#FFD3C9</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#FFB3A5', 'Primary-30')">
+              <div class="swatch-rect" style="background-color: #FFB3A5;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-30</p>
+              <p class="swatch-hex">#FFB3A5</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#F48D7C', 'Primary-40')">
+              <div class="swatch-rect" style="background-color: #F48D7C;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-40</p>
+              <p class="swatch-hex">#F48D7C</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#DC6655', 'Primary-50')">
+              <div class="swatch-rect" style="background-color: #DC6655;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-50</p>
+              <p class="swatch-hex">#DC6655</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#C24434', 'Primary-60')">
+              <div class="swatch-rect" style="background-color: #C24434;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-60</p>
+              <p class="swatch-hex">#C24434</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#A82A1C', 'Primary-70')">
+              <div class="swatch-rect" style="background-color: #A82A1C;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-70</p>
+              <p class="swatch-hex">#A82A1C</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#871207', 'Primary-80')">
+              <div class="swatch-rect" style="background-color: #871207;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-80</p>
+              <p class="swatch-hex">#871207</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#660000', 'Primary-90')">
+              <div class="swatch-rect" style="background-color: #660000;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-90</p>
+              <p class="swatch-hex">#660000</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#470000', 'Primary-100')">
+              <div class="swatch-rect" style="background-color: #470000;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-100</p>
+              <p class="swatch-hex">#470000</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.4 Secondary Scale (5 Columns × 2 Rows) -->
+        <div class="category-block" data-figma-node="❖ Color / Secondary Scale">
+          <h2 class="category-title">Secondary Scale (Lichen)</h2>
+          <div id="grid-secondary-purple" class="scale-colors-grid">
+            
+            <div class="swatch-card" onclick="copyHex('#EFF4D9', 'Secondary-10')">
+              <div class="swatch-rect" style="background-color: #EFF4D9;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-10</p>
+              <p class="swatch-hex">#EFF4D9</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#DFE7B9', 'Secondary-20')">
+              <div class="swatch-rect" style="background-color: #DFE7B9;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-20</p>
+              <p class="swatch-hex">#DFE7B9</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#C8D28B', 'Secondary-30')">
+              <div class="swatch-rect" style="background-color: #C8D28B;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-30</p>
+              <p class="swatch-hex">#C8D28B</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#ABB754', 'Secondary-40')">
+              <div class="swatch-rect" style="background-color: #ABB754;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-40</p>
+              <p class="swatch-hex">#ABB754</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#8C9900', 'Secondary-50')">
+              <div class="swatch-rect" style="background-color: #8C9900;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-50</p>
+              <p class="swatch-hex">#8C9900</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#C9D94E', 'Secondary-60')">
+              <div class="swatch-rect" style="background-color: #C9D94E;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-60</p>
+              <p class="swatch-hex">#C9D94E</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#5C6600', 'Secondary-70')">
+              <div class="swatch-rect" style="background-color: #5C6600;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-70</p>
+              <p class="swatch-hex">#5C6600</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#464E00', 'Secondary-80')">
+              <div class="swatch-rect" style="background-color: #464E00;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-80</p>
+              <p class="swatch-hex">#464E00</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#323800', 'Secondary-90')">
+              <div class="swatch-rect" style="background-color: #323800;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-90</p>
+              <p class="swatch-hex">#323800</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#1F2300', 'Secondary-100')">
+              <div class="swatch-rect" style="background-color: #1F2300;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-100</p>
+              <p class="swatch-hex">#1F2300</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.5 Tertiary Scale (5 Columns × 2 Rows) -->
+        <div class="category-block" data-figma-node="❖ Color / Tertiary Scale">
+          <h2 class="category-title">Tertiary Scale (Moss)</h2>
+          <div id="grid-tertiary-green" class="scale-colors-grid">
+            
+            <div class="swatch-card" onclick="copyHex('#EBF3E6', 'Tertiary-10')">
+              <div class="swatch-rect" style="background-color: #EBF3E6;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-10</p>
+              <p class="swatch-hex">#EBF3E6</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#D8E7D0', 'Tertiary-20')">
+              <div class="swatch-rect" style="background-color: #D8E7D0;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-20</p>
+              <p class="swatch-hex">#D8E7D0</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#BDD3B0', 'Tertiary-30')">
+              <div class="swatch-rect" style="background-color: #BDD3B0;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-30</p>
+              <p class="swatch-hex">#BDD3B0</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#9CB88A', 'Tertiary-40')">
+              <div class="swatch-rect" style="background-color: #9CB88A;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-40</p>
+              <p class="swatch-hex">#9CB88A</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#4A6B33', 'Tertiary-50')">
+              <div class="swatch-rect" style="background-color: #4A6B33;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-50</p>
+              <p class="swatch-hex">#4A6B33</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#5E8047', 'Tertiary-60')">
+              <div class="swatch-rect" style="background-color: #5E8047;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-60</p>
+              <p class="swatch-hex">#5E8047</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#486931', 'Tertiary-70')">
+              <div class="swatch-rect" style="background-color: #486931;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-70</p>
+              <p class="swatch-hex">#486931</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#34511F', 'Tertiary-80')">
+              <div class="swatch-rect" style="background-color: #34511F;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-80</p>
+              <p class="swatch-hex">#34511F</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#233B10', 'Tertiary-90')">
+              <div class="swatch-rect" style="background-color: #233B10;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-90</p>
+              <p class="swatch-hex">#233B10</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#122503', 'Tertiary-100')">
+              <div class="swatch-rect" style="background-color: #122503;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-100</p>
+              <p class="swatch-hex">#122503</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.6 Honest Contrast Ledger (Computed Pairs + Published Failures) -->
+        <div class="category-block" data-figma-node="❖ Color / Honest Contrast Ledger">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">Honest Contrast Ledger (18 Pairs · 2 Published Failures)</h2>
+              <p class="category-desc">Every pair is computed from hex. Failing pairs (&lt; 4.5:1) are published with a restricted non-text job.</p>
+            </div>
+          </div>
+          <div class="contrast-ledger">
+            
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#16211B;" title="Foreground: #16211B"></span>
+                <span class="contrast-chip" style="background:#F2F4EE;" title="Background: #F2F4EE"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Pine black on stock</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                14.95:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#586759;" title="Foreground: #586759"></span>
+                <span class="contrast-chip" style="background:#F2F4EE;" title="Background: #F2F4EE"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Bearing on stock</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                5.42:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#16211B;" title="Foreground: #16211B"></span>
+                <span class="contrast-chip" style="background:#C9D94E;" title="Background: #C9D94E"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Ink on the lichen field</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                10.67:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#4A6B33;" title="Foreground: #4A6B33"></span>
+                <span class="contrast-chip" style="background:#F2F4EE;" title="Background: #F2F4EE"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Moss as type</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                5.51:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row is-fail">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#C9D94E;" title="Foreground: #C9D94E"></span>
+                <span class="contrast-chip" style="background:#F2F4EE;" title="Background: #F2F4EE"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Lichen as type</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#B45309;">
+                1.40:1 FAIL
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Wash / graphic only — never type
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#16211B;" title="Foreground: #16211B"></span>
+                <span class="contrast-chip" style="background:#E5E9DF;" title="Background: #E5E9DF"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Ink on the bench panel</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                13.45:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#F2F4EE;" title="Foreground: #F2F4EE"></span>
+                <span class="contrast-chip" style="background:#16211B;" title="Background: #16211B"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Primary button label</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                14.95:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#16211B;" title="Foreground: #16211B"></span>
+                <span class="contrast-chip" style="background:#FBFCF8;" title="Background: #FBFCF8"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Text in a field</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                16.08:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row is-fail">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#7E8C82;" title="Foreground: #7E8C82"></span>
+                <span class="contrast-chip" style="background:#FBFCF8;" title="Background: #FBFCF8"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Field perimeter</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#B45309;">
+                3.42:1 FAIL
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Wash / graphic only — never type
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#A82A1C;" title="Foreground: #A82A1C"></span>
+                <span class="contrast-chip" style="background:#F2F4EE;" title="Background: #F2F4EE"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Survey red on stock</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                6.29:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#E8EEE7;" title="Foreground: #E8EEE7"></span>
+                <span class="contrast-chip" style="background:#0A110D;" title="Background: #0A110D"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Stock on night</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                16.21:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#93A398;" title="Foreground: #93A398"></span>
+                <span class="contrast-chip" style="background:#0A110D;" title="Background: #0A110D"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Bearing on night</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                7.22:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#C9D94E;" title="Foreground: #C9D94E"></span>
+                <span class="contrast-chip" style="background:#0A110D;" title="Background: #0A110D"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Lichen as type, night</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                12.30:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#A9BBB0;" title="Foreground: #A9BBB0"></span>
+                <span class="contrast-chip" style="background:#0A110D;" title="Background: #0A110D"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Mist as secondary type</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                9.48:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#16211B;" title="Foreground: #16211B"></span>
+                <span class="contrast-chip" style="background:#C9D94E;" title="Background: #C9D94E"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Ink on the lichen field</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                10.67:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#0A110D;" title="Foreground: #0A110D"></span>
+                <span class="contrast-chip" style="background:#E8EEE7;" title="Background: #E8EEE7"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Primary button label</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                16.21:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#557347;" title="Foreground: #557347"></span>
+                <span class="contrast-chip" style="background:#F2F4EE;" title="Background: #F2F4EE"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Range accent as type</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                4.82:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#5A8F67;" title="Foreground: #5A8F67"></span>
+                <span class="contrast-chip" style="background:#0A110D;" title="Background: #0A110D"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Range accent as type, night</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                5.06:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.7 Semantic & Status Feedback Tokens -->
+        <div class="category-block" data-figma-node="❖ Color / Semantic Tokens">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">Semantic Feedback Tokens</h2>
+              <p class="category-desc">System status pairings for alerts, badges, validation states, and surfaces.</p>
+            </div>
+          </div>
+          <div class="grid-4-cols">
+            <div class="semantic-card">
+              <div class="semantic-head" style="background:#18B368;" onclick="copyHex('#18B368', 'Success Primary')">
+                <span style="font-size:11px; font-family:var(--font-mono); opacity:0.85;">SUCCESS / POSITIVE</span>
+                <strong style="font-size:16px;">#18B368</strong>
+              </div>
+              <div class="semantic-list">
+                <div class="semantic-row" style="background:#F0FFF4; color:#165C26;" onclick="copyHex('#F0FFF4', 'Success Surface')">
+                  <span>surface-subtle</span><span>#F0FFF4</span>
+                </div>
+                <div class="semantic-row" style="border:1px solid #85E89D; color:#176F2C;" onclick="copyHex('#85E89D', 'Success Border')">
+                  <span>border-token</span><span>#85E89D</span>
+                </div>
+                <div class="semantic-row" style="color:#144620;" onclick="copyHex('#144620', 'Success Ink')">
+                  <span>text-ink</span><span>#144620</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="semantic-card">
+              <div class="semantic-head" style="background:#F59E0B;" onclick="copyHex('#F59E0B', 'Warning Primary')">
+                <span style="font-size:11px; font-family:var(--font-mono); opacity:0.85;">WARNING / CAUTION</span>
+                <strong style="font-size:16px;">#F59E0B</strong>
+              </div>
+              <div class="semantic-list">
+                <div class="semantic-row" style="background:#FFFBEB; color:#92400E;" onclick="copyHex('#FFFBEB', 'Warning Surface')">
+                  <span>surface-subtle</span><span>#FFFBEB</span>
+                </div>
+                <div class="semantic-row" style="border:1px solid #FCD34D; color:#B45309;" onclick="copyHex('#FCD34D', 'Warning Border')">
+                  <span>border-token</span><span>#FCD34D</span>
+                </div>
+                <div class="semantic-row" style="color:#78350F;" onclick="copyHex('#78350F', 'Warning Ink')">
+                  <span>text-ink</span><span>#78350F</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="semantic-card">
+              <div class="semantic-head" style="background:#E11D48;" onclick="copyHex('#E11D48', 'Danger Primary')">
+                <span style="font-size:11px; font-family:var(--font-mono); opacity:0.85;">DANGER / CRITICAL</span>
+                <strong style="font-size:16px;">#E11D48</strong>
+              </div>
+              <div class="semantic-list">
+                <div class="semantic-row" style="background:#FFF1F2; color:#9F1239;" onclick="copyHex('#FFF1F2', 'Danger Surface')">
+                  <span>surface-subtle</span><span>#FFF1F2</span>
+                </div>
+                <div class="semantic-row" style="border:1px solid #FDA4AF; color:#BE123C;" onclick="copyHex('#FDA4AF', 'Danger Border')">
+                  <span>border-token</span><span>#FDA4AF</span>
+                </div>
+                <div class="semantic-row" style="color:#881337;" onclick="copyHex('#881337', 'Danger Ink')">
+                  <span>text-ink</span><span>#881337</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="semantic-card">
+              <div class="semantic-head" style="background:#A82A1C;" onclick="copyHex('#A82A1C', 'Info Primary')">
+                <span style="font-size:11px; font-family:var(--font-mono); opacity:0.85;">INFO / BRAND SIGNAL</span>
+                <strong style="font-size:16px;">#A82A1C</strong>
+              </div>
+              <div class="semantic-list">
+                <div class="semantic-row" style="background:#FFE8E2; color:#660000;" onclick="copyHex('#FFE8E2', 'Info Surface')">
+                  <span>surface-subtle</span><span>#FFE8E2</span>
+                </div>
+                <div class="semantic-row" style="border:1px solid #F48D7C; color:#660000;" onclick="copyHex('#F48D7C', 'Info Border')">
+                  <span>border-token</span><span>#F48D7C</span>
+                </div>
+                <div class="semantic-row" style="color:#470000;" onclick="copyHex('#470000', 'Info Ink')">
+                  <span>text-ink</span><span>#470000</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 02: PRIMITIVES, SPACING & 12-COLUMN LAYOUT GRID
+         ======================================================================= -->
+    <section id="section-primitives" data-section="primitives" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">02</span>
+              <span>Hachure Primitives &amp; Layout Grid</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>Spacing Scale, Corner Radius (0px), Elevation &amp; 12-Col Grid</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-primitives', 'Hachure Primitives & Grid')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="28" height="28"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- 2.1 Spacing Scale -->
+        <div class="category-block" data-figma-node="❖ Primitives / 4px Spacing Scale">
+          <h2 class="category-title">Spacing Scale (Base 4px Unit)</h2>
+          <div class="surface-box" id="spacing-scale-list">
+            
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-1</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">4px (0.25rem)</span>
+              <div><div class="spacing-bar" style="width:16px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-2</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">8px (0.5rem)</span>
+              <div><div class="spacing-bar" style="width:32px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-3</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">12px (0.75rem)</span>
+              <div><div class="spacing-bar" style="width:48px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-4</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">16px (1rem)</span>
+              <div><div class="spacing-bar" style="width:64px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-6</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">24px (1.5rem)</span>
+              <div><div class="spacing-bar" style="width:96px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-8</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">32px (2rem)</span>
+              <div><div class="spacing-bar" style="width:128px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-12</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">48px (3rem)</span>
+              <div><div class="spacing-bar" style="width:192px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-16</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">64px (4rem)</span>
+              <div><div class="spacing-bar" style="width:256px; max-width:100%;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.2 Border Radius -->
+        <div class="category-block" data-figma-node="❖ Primitives / Border Radius">
+          <h2 class="category-title">Corner Radius Tokens (House Physics: 0px)</h2>
+          <div class="grid-6-cols">
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:0px;"></div>
+              <strong style="font-size:13px;">radius-none</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">0px</p>
+            </div>
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:4px;"></div>
+              <strong style="font-size:13px;">radius-sm</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">4px (Swatches)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:8px;"></div>
+              <strong style="font-size:13px;">radius-md</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">8px (Controls)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:12px;"></div>
+              <strong style="font-size:13px;">radius-lg</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">12px (Cards)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:16px;"></div>
+              <strong style="font-size:13px;">radius-xl</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">16px (Modals)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:9999px;"></div>
+              <strong style="font-size:13px;">radius-full</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">9999px (Pills)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.3 Elevation Shadows -->
+        <div class="category-block" data-figma-node="❖ Primitives / Elevation Shadows">
+          <h2 class="category-title">Elevation &amp; Hairline Surfaces</h2>
+          <div class="grid-4-cols">
+            <div class="primitive-card">
+              <div class="shadow-preview" style="box-shadow: none; border: 1px solid #CBD5E1;">hairline 1px</div>
+              <strong style="font-size:14px;">rule-1px (At Rest)</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">1px solid var(--hc-line-strong)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="shadow-preview" style="box-shadow: 0 4px 8px -2px rgba(16,24,40,0.08);">z-20</div>
+              <strong style="font-size:14px;">shadow-sm</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">0 4px 8px rgba(0,0,0,0.08)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="shadow-preview" style="box-shadow: 0 12px 24px -4px rgba(16,24,40,0.12);">z-30</div>
+              <strong style="font-size:14px;">shadow-lg</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">0 12px 24px rgba(0,0,0,0.12)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="shadow-preview" style="box-shadow: 0 24px 48px -12px rgba(16,24,40,0.18);">z-50</div>
+              <strong style="font-size:14px;">shadow-xl (Modal)</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">0 24px 48px rgba(0,0,0,0.18)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.4 12-Column Responsive Layout Grid -->
+        <div class="category-block" data-figma-node="❖ Primitives / 12-Column Grid">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">12-Column Responsive Layout Grid &amp; Section Rail</h2>
+              <p class="category-desc">Container Max-Width: 1160px–1280px • Left Rail: 176px (Rail A) / 200px (Rail B) • Margin: 64px</p>
+            </div>
+          </div>
+          <div class="cols-12-visualizer">
+            <div class="col-bar">1</div><div class="col-bar">2</div><div class="col-bar">3</div><div class="col-bar">4</div>
+            <div class="col-bar">5</div><div class="col-bar">6</div><div class="col-bar">7</div><div class="col-bar">8</div>
+            <div class="col-bar">9</div><div class="col-bar">10</div><div class="col-bar">11</div><div class="col-bar">12</div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 03: TYPOGRAPHY SYSTEM
+         ======================================================================= -->
+    <section id="section-typography" data-section="typography" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">03</span>
+              <span>Hachure Typography System</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>3-Role Font Stack (Geist Mono · Geist · Geist Mono)</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-typography', 'Hachure Typography System')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="28" height="28"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- Font Families -->
+        <div class="category-block" data-figma-node="❖ Typography / Font Families">
+          <h2 class="category-title">Typeface Tokens (--hc-font-*)</h2>
+          <div class="grid-3-cols">
+            <div class="surface-box" style="background:#FAFAFA;">
+              <span class="badge-version">HEADINGS &amp; DISPLAY</span>
+              <div style="font-size:44px; font-weight:700; color:var(--primary-70); font-family:var(--brand-display); margin:12px 0 6px 0;">Aa</div>
+              <strong style="font-size:17px;">Geist Mono</strong>
+              <p class="swatch-sub" style="margin-top:6px;">--hc-font-display · Display &amp; Section Headlines</p>
+            </div>
+            <div class="surface-box" style="background:#FAFAFA;">
+              <span class="badge-version" style="background:#F5F0FF; color:#6739D2;">UI &amp; READING COPY</span>
+              <div style="font-size:44px; font-weight:600; color:var(--secondary-60); font-family:var(--brand-reading); margin:12px 0 6px 0;">Aa</div>
+              <strong style="font-size:17px;">Geist</strong>
+              <p class="swatch-sub" style="margin-top:6px;">--hc-font-reading · 60ch–66ch Body &amp; UI Controls</p>
+            </div>
+            <div class="surface-box" style="background:#FAFAFA;">
+              <span class="badge-version" style="background:#F0FFF4; color:#18B368;">HEX, RAIL &amp; TABULAR DATA</span>
+              <div style="font-size:44px; font-weight:600; color:#18B368; font-family:var(--brand-mono); margin:12px 0 6px 0;">01</div>
+              <strong style="font-size:17px;">Geist Mono</strong>
+              <p class="swatch-sub" style="margin-top:6px;">--hc-font-mono · Rail Numbers, Tokens &amp; Ledger Figures</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Type Scale -->
+        <div class="category-block" data-figma-node="❖ Typography / Scale">
+          <h2 class="category-title">Type Scale &amp; Hierarchy</h2>
+          <div style="border-top: 1px solid var(--border-default);">
+            <div class="type-row">
+              <div>
+                <strong>Display XL (Hero H1)</strong>
+                <div class="type-meta">Geist Mono • 48px / 0.94 • -0.03em</div>
+              </div>
+              <div style="font-family:var(--brand-display); font-size:42px; font-weight:700; letter-spacing:-0.03em; line-height:1.05;">Relief drawn by density, never by shadow: seven elevation bands on cold survey stock, one chartreuse lichen field, and monospace bearings.</div>
+            </div>
+            <div class="type-row">
+              <div>
+                <strong>Heading H1 (Sheet Title)</strong>
+                <div class="type-meta">Geist Mono • 26px / 34px • Bold • -0.02em</div>
+              </div>
+              <div style="font-family:var(--brand-display); font-size:26px; font-weight:700; letter-spacing:-0.02em;">Hachure Architecture &amp; Surface Rules</div>
+            </div>
+            <div class="type-row">
+              <div>
+                <strong>Heading H2 (Section Group)</strong>
+                <div class="type-meta">Geist Mono • 24px / 32px • Bold • -0.02em</div>
+              </div>
+              <div style="font-family:var(--brand-display); font-size:24px; font-weight:700; letter-spacing:-0.02em;">Main Colors, Primitives &amp; Contrast Ledger</div>
+            </div>
+            <div class="type-row">
+              <div>
+                <strong>Body Regular (66ch Measure)</strong>
+                <div class="type-meta">Geist • 16px / 1.60 • Regular</div>
+              </div>
+              <div style="font-size:16px; color:#334155; font-family:var(--brand-reading); max-width:66ch;">Relief drawn by density, never by shadow: seven elevation bands on cold survey stock, one chartreuse lichen field, and monospace bearings.</div>
+            </div>
+            <div class="type-row">
+              <div>
+                <strong>Token Label / Tabular Mono</strong>
+                <div class="type-meta">Geist Mono • 13px / 1.50 • Regular</div>
+              </div>
+              <div style="font-size:13px; color:#64748B; font-family:var(--brand-mono);">--hc-alert • #A82A1C • --hc-lichen • #C9D94E</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 04: LOGO & BRAND IDENTITY (KUWAYAMA 64-GRID)
+         ======================================================================= -->
+    <section id="section-logo" data-section="logo" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">04</span>
+              <span>Hachure Logo &amp; Brand Identity</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>64×64 Construction Grid, Surface Polarity, Outlined Lockups &amp; 16px Compact</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-logo', 'Hachure Logo & Brand')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="28" height="28"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- 4.1 Primary Mark & Surface Polarity -->
+        <div class="category-block" data-figma-node="❖ Brand / Logo Construction & Surfaces">
+          <h2 class="category-title">Primary Mark &amp; Surface Polarity</h2>
+          <div class="grid-3-cols">
+            <div class="surface-box blueprint-grid" style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:200px;">
+              <div style="padding:20px 28px; background:#FFFFFF; border:1.5px dashed var(--primary-70); border-radius:14px; display:flex; align-items:center; gap:14px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="44" height="44"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+                <span style="font-family:var(--brand-display); font-size:24px; font-weight:800; letter-spacing:-0.03em; color:#111827;">Hachure</span>
+              </div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:var(--primary-70); margin-top:12px;">64×64 Grid · Clearspace = 3–4 Units</span>
+            </div>
+
+            <div class="surface-box" style="background:#111827; color:#FFFFFF; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:200px;">
+              <div style="display:flex; align-items:center; gap:14px;">
+                <div class="tnd-logo-circle" style="border:none;">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="28" height="28"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+                </div>
+                <span style="font-family:var(--brand-display); font-size:24px; font-weight:800;">Hachure</span>
+              </div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#94A3B8; margin-top:14px;">Dark / Night Surface (#111827)</span>
+            </div>
+
+            <div class="surface-box" style="background:var(--primary-70); color:#FFFFFF; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:200px;">
+              <div style="display:flex; align-items:center; gap:14px;">
+                <div class="tnd-logo-circle" style="border:none;">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="28" height="28"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+                </div>
+                <span style="font-family:var(--brand-display); font-size:24px; font-weight:800;">Hachure</span>
+              </div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:rgba(255,255,255,0.85); margin-top:14px;">Brand Accent Surface (#A82A1C)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4.2 Mark Variants & Scale Strip -->
+        <div class="category-block" data-figma-node="❖ Brand / Mark Family & Scale Strip">
+          <h2 class="category-title">Mark Family (Primary · Reverse · 16px Compact · Glyph)</h2>
+          <div class="grid-4-cols">
+            <div class="primitive-card" style="background:#FFFFFF; padding:24px;">
+              <div style="height:72px; display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="56" height="56"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+              </div>
+              <strong style="font-size:14px;">mark.svg</strong>
+              <p class="swatch-sub" style="margin-top:4px;">Primary 64×64 construction</p>
+            </div>
+            <div class="primitive-card" style="background:#111827; color:#FFFFFF; padding:24px;">
+              <div style="height:72px; display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="56" height="56"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+              </div>
+              <strong style="font-size:14px; color:#FFFFFF;">mark-reverse.svg</strong>
+              <p class="swatch-sub" style="margin-top:4px; color:#94A3B8;">Reverse on dark/loud field</p>
+            </div>
+            <div class="primitive-card" style="background:#FFFFFF; padding:24px;">
+              <div style="height:72px; display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:12px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="40" height="40"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="16" height="16"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+              </div>
+              <strong style="font-size:14px;">mark-compact.svg</strong>
+              <p class="swatch-sub" style="margin-top:4px;">Separate 16–24px drawing</p>
+            </div>
+            <div class="primitive-card" style="background:#FFFFFF; padding:24px;">
+              <div style="height:72px; display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:12px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="40" height="40"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="16" height="16"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+              </div>
+              <strong style="font-size:14px;">glyph.svg</strong>
+              <p class="swatch-sub" style="margin-top:4px;">16px favicon &amp; tab badge</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 05: COMPANION CAST, ICONOGRAPHY & SPOT ILLUSTRATIONS
+         ======================================================================= -->
+    <section id="section-assets" data-section="assets" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">05</span>
+              <span>Hachure Companion Cast, Icons &amp; Illustrations</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>6-Mark Companion Cast (64×64 Grid), 24px Keyline Icons &amp; Spot Illustrations</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-assets', 'Hachure Cast & Assets')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="28" height="28"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- 5.1 6-Mark Companion Cast -->
+        <div class="category-block" data-figma-node="❖ Assets / 6-Mark Companion Cast">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">6-Mark Companion Cast (Kuwayama 64×64 Grid)</h2>
+              <p class="category-desc">Domain-specific companion symbols drawn on the same 64-unit grid and cut-line weight as the primary mark.</p>
+            </div>
+          </div>
+          <div class="cast-grid-6">
+            
+            <div class="icon-cell" onclick="copyHex('cast/datum.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Datum"><path d="M6 50H58V56H6Z M28 8H36V50H28Z M16 18H48V22H16Z" fill="#A82A1C"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Datum</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/datum.svg</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('cast/grid.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Grid"><path d="M6 6H20V20H6Z M26 6H40V20H26Z M46 6H60V20H46Z M6 26H20V40H6Z M26 26H40V40H26Z M48 44H62V58H48Z M6 46H20V60H6Z M26 46H40V60H26Z" fill="#A82A1C"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Grid</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/grid.svg</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('cast/horizon.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Horizon"><path d="M6 46H58V52H6Z M32 10L38 26L54 32L38 38L32 46L26 38L10 32L26 26Z" fill="#A82A1C"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Horizon</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/horizon.svg</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('cast/frame.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Frame"><path d="M8 6H20V58H8Z M44 6H56V58H44Z M20 18H44V22H20Z M20 40H44V44H20Z" fill="#A82A1C"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Frame</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/frame.svg</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('cast/beacon.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Beacon"><path d="M20 8H44V18H20Z M28 18H36V56H28Z M24 56H40V60H24Z" fill="#A82A1C"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Beacon</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/beacon.svg</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('cast/step.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Step"><path d="M8 52H56V58H8Z M14 40H26V52H14Z M30 28H42V52H30Z M46 14H58V52H46Z" fill="#A82A1C"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Step</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/step.svg</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5.2 System Icons (24x24 Keyline Grid) -->
+        <div class="category-block" data-figma-node="❖ Assets / 24px Icon Grid">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">System Iconography (24×24px Keyline)</h2>
+              <p class="category-desc">1.75px stroke, rounded caps. Click any icon card to copy its token identifier.</p>
+            </div>
+          </div>
+          <div class="icon-grid-8">
+            <div class="icon-cell" onclick="copyHex('icon-search', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.3-4.3"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">search</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-layers', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">layers</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-bell', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">bell</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-shield', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">shield</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-folder', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">folder</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-sparkles', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">sparkles</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-sliders', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">sliders</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-terminal', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">terminal</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5.3 Empty State Spot Illustrations -->
+        <div class="category-block" data-figma-node="❖ Assets / Spot Illustrations">
+          <h2 class="category-title">Spot Illustrations (Empty &amp; Status States)</h2>
+          <div class="grid-4-cols">
+            <div class="primitive-card" style="padding:24px;">
+              <svg width="88" height="88" viewBox="0 0 120 120" fill="none" style="margin:0 auto 12px auto; display:block;">
+                <circle cx="60" cy="60" r="46" fill="#FFE8E2"/>
+                <rect x="34" y="42" width="52" height="40" rx="6" fill="white" stroke="#A82A1C" stroke-width="2.5"/>
+                <rect x="44" y="54" width="24" height="4" rx="2" fill="#F48D7C"/>
+                <rect x="44" y="64" width="16" height="4" rx="2" fill="#FFD3C9"/>
+                <circle cx="82" cy="40" r="10" fill="#C9D94E"/>
+                <path d="M82 36V44M78 40H86" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <strong style="font-size:14px;">empty-documents</strong>
+              <p class="swatch-sub" style="margin-top:4px;">Zero-data tables &amp; folders</p>
+            </div>
+
+            <div class="primitive-card" style="padding:24px;">
+              <svg width="88" height="88" viewBox="0 0 120 120" fill="none" style="margin:0 auto 12px auto; display:block;">
+                <circle cx="60" cy="60" r="46" fill="#EFF4D9"/>
+                <circle cx="55" cy="55" r="20" fill="white" stroke="#C9D94E" stroke-width="2.5"/>
+                <path d="M70 70L84 84" stroke="#C9D94E" stroke-width="4" stroke-linecap="round"/>
+                <path d="M49 55H61" stroke="#ABB754" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+              <strong style="font-size:14px;">empty-search</strong>
+              <p class="swatch-sub" style="margin-top:4px;">No matching filter results</p>
+            </div>
+
+            <div class="primitive-card" style="padding:24px;">
+              <svg width="88" height="88" viewBox="0 0 120 120" fill="none" style="margin:0 auto 12px auto; display:block;">
+                <circle cx="60" cy="60" r="46" fill="#F0FFF4"/>
+                <circle cx="60" cy="60" r="24" fill="#18B368"/>
+                <path d="M50 60.5L56.5 67L71 52.5" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <strong style="font-size:14px;">status-verified</strong>
+              <p class="swatch-sub" style="margin-top:4px;">Release &amp; sync completed</p>
+            </div>
+
+            <div class="primitive-card" style="padding:24px;">
+              <svg width="88" height="88" viewBox="0 0 120 120" fill="none" style="margin:0 auto 12px auto; display:block;">
+                <circle cx="60" cy="60" r="46" fill="#FFF1F2"/>
+                <path d="M60 36L86 80H34L60 36Z" fill="white" stroke="#E11D48" stroke-width="2.5" stroke-linejoin="round"/>
+                <path d="M60 52V64" stroke="#E11D48" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="60" cy="71" r="2" fill="#E11D48"/>
+              </svg>
+              <strong style="font-size:14px;">status-warning</strong>
+              <p class="swatch-sub" style="margin-top:4px;">Destructive &amp; offline alerts</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 06: CORE UI COMPONENTS STICKER SHEET
+         ======================================================================= -->
+    <section id="section-components" data-section="components" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">06</span>
+              <span>Hachure Core UI Components</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>Buttons, Form Controls, Double-Reported Validation &amp; Status Badges</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-components', 'Hachure UI Components')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="28" height="28"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- Buttons -->
+        <div class="category-block" data-figma-node="❖ Components / Button Variants">
+          <h2 class="category-title">Buttons &amp; Action Hierarchy</h2>
+          <div class="surface-box" style="display:flex; flex-wrap:wrap; gap:14px; align-items:center;">
+            <button class="btn btn-primary">Primary (#A82A1C)</button>
+            <button class="btn btn-secondary">Secondary (#C9D94E)</button>
+            <button class="btn btn-success">Tertiary (#4A6B33)</button>
+            <button class="btn btn-subtle">Subtle Surface</button>
+            <button class="btn btn-outline">Outline Neutral</button>
+            <button class="btn btn-danger">Destructive</button>
+          </div>
+        </div>
+
+        <!-- Form Inputs & Badges -->
+        <div class="category-block" data-figma-node="❖ Components / Inputs & Badges">
+          <div class="grid-2-cols">
+            <div class="surface-box">
+              <h3 style="margin:0 0 16px 0; font-size:17px;">Form Input States &amp; Validation</h3>
+              <div style="display:flex; flex-direction:column; gap:14px;">
+                <div>
+                  <label style="display:block; font-size:12px; font-weight:600; margin-bottom:6px;">Default Input</label>
+                  <input type="text" class="input-field" value="spec@hachure.design" readonly />
+                </div>
+                <div>
+                  <label style="display:block; font-size:12px; font-weight:600; color:var(--primary-70); margin-bottom:6px;">Focused Ring (--hc-alert)</label>
+                  <input type="text" class="input-field" style="border-color:var(--primary-70); box-shadow: 0 0 0 3px #FFD3C9;" value="Hachure Token 1.1.0" readonly />
+                </div>
+                <div>
+                  <label style="display:block; font-size:12px; font-weight:600; color:#E11D48; margin-bottom:6px;">Double-Reported Error State (aria-invalid="true")</label>
+                  <input type="text" class="input-field" style="border-color:#E11D48; background:#FFF1F2;" value="--hc-legacy-token" aria-invalid="true" readonly />
+                  <div style="margin-top:8px; padding:10px 12px; border-radius:8px; background:#FFF1F2; border:1px solid #FECDD3; font-size:12px; color:#9F1239;">
+                    <strong>2 validation problems:</strong> Token must resolve to a Layer 1 primitive, and contrast must be ≥ 4.5:1 for body text.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="surface-box">
+              <h3 style="margin:0 0 16px 0; font-size:17px;">Status Pills &amp; Badges</h3>
+              <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                <span class="badge-pill" style="background:#FFE8E2; color:#660000;">● --hc-alert</span>
+                <span class="badge-pill" style="background:#EFF4D9; color:#323800;">● --hc-lichen</span>
+                <span class="badge-pill" style="background:#F0FFF4; color:#18B368;">● Verified Pass</span>
+                <span class="badge-pill" style="background:#FFFBEB; color:#B45309;">● Graphic Only</span>
+                <span class="badge-pill" style="background:#FFF1F2; color:#E11D48;">● Deprecated</span>
+              </div>
+              <div style="margin-top:24px; padding-top:16px; border-top:1px solid #F1F5F9; display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:13px; color:#64748B;">Ready for Figma import or per-section HTML copy</span>
+                <button class="btn btn-subtle" style="padding:6px 12px; font-size:12px;" onclick="copySectionHTML('section-components', 'Hachure UI Components')">Copy Markup →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 07: MODALS, DRAWERS, TOASTS & OVERLAYS
+         ======================================================================= -->
+    <section id="section-overlays" data-section="overlays" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">07</span>
+              <span>Hachure Modals, Drawers &amp; Overlays</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>Dialog Anatomy, Destructive Confirmation &amp; Live Modal Preview</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="btn btn-primary" style="padding:7px 14px; font-size:12px;" onclick="openLiveModal()">
+              <span>Launch Live Modal</span>
+            </button>
+            <button class="section-copy-btn" onclick="copySectionHTML('section-overlays', 'Hachure Modals & Overlays')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="28" height="28"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <div class="category-block" data-figma-node="❖ Overlays / Modal Dialog Variants">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">Modal Dialogs (Form &amp; Destructive Variants)</h2>
+              <p class="category-desc">Static artboard sticker sheet + interactive live modal preview.</p>
+            </div>
+          </div>
+
+          <div class="modal-stage">
+            <div class="modal-card">
+              <div style="padding:18px 22px; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <strong style="font-size:15px;">Publish Hachure Design Token Release</strong>
+                  <p class="swatch-sub" style="margin-top:2px;">Sync variables to Figma &amp; CSS token bundles</p>
+                </div>
+                <span style="color:#94A3B8; font-weight:700;">✕</span>
+              </div>
+              <div style="padding:20px 22px; display:flex; flex-direction:column; gap:14px;">
+                <div>
+                  <label style="display:block; font-size:12px; font-weight:600; margin-bottom:5px;">Release Tag</label>
+                  <input type="text" class="input-field" value="1.1.0-hachure" readonly />
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                  <span class="badge-pill" style="background:#FFE8E2; color:#660000;">Figma Variables</span>
+                  <span class="badge-pill" style="background:#EFF4D9; color:#323800;">CSS Tokens (--hc-*)</span>
+                  <span class="badge-pill" style="background:#F0FFF4; color:#18B368;">SVG Cast (6)</span>
+                </div>
+              </div>
+              <div style="padding:14px 22px; background:#FAFAFA; border-top:1px solid #F1F5F9; display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-outline" style="padding:7px 14px; font-size:12px;">Cancel</button>
+                <button class="btn btn-primary" style="padding:7px 14px; font-size:12px;" onclick="openLiveModal()">Publish Release</button>
+              </div>
+            </div>
+
+            <div class="modal-card" style="border-color:#FECDD3;">
+              <div style="padding:22px;">
+                <div style="width:40px; height:40px; border-radius:9999px; background:#FFF1F2; color:#E11D48; display:flex; align-items:center; justify-content:center; font-weight:800; margin-bottom:12px;">!</div>
+                <strong style="font-size:15px;">Revoke Deprecated Token?</strong>
+                <p class="swatch-sub" style="margin-top:6px;">Removing <code style="color:#E11D48;">--hc-legacy-50</code> will affect linked Figma component libraries.</p>
+              </div>
+              <div style="padding:14px 22px; background:#FAFAFA; border-top:1px solid #F1F5F9; display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-outline" style="padding:7px 14px; font-size:12px;">Keep</button>
+                <button class="btn btn-danger" style="padding:7px 14px; font-size:12px;">Revoke Token</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 08: DATA DISPLAY, TABLES & TOKEN SHEETS
+         ======================================================================= -->
+    <section id="section-patterns" data-section="patterns" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">08</span>
+              <span>Hachure Data Display, Patterns &amp; Token Sheets</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>KPI Metric Cards, Token Registry Table &amp; Copyable CSS Sheets</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-patterns', 'Hachure Data & Patterns')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Hachure" width="28" height="28"><path d="M3 36L61 12V57H3Z" fill="var(--hx-mark-ink, #16211B)"/><path d="M3 29L61 5V12L3 36Z" fill="var(--hx-sheet, #C9D94E)"/></svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- 8.1 KPI Cards -->
+        <div class="category-block" data-figma-node="❖ Patterns / KPI Metric Cards">
+          <h2 class="category-title">System Metric Cards</h2>
+          <div class="grid-3-cols">
+            <div class="surface-box">
+              <div style="display:flex; justify-content:space-between; font-size:13px; color:#64748B;">
+                <span>Design Token Coverage</span>
+                <span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">100% Synced</span>
+              </div>
+              <div style="font-size:32px; font-weight:800; margin:10px 0 4px 0;">9 Primitives</div>
+              <div style="font-family:var(--font-mono); font-size:11px; color:#94A3B8;">Namespace: --hc-* · OKLCH verified</div>
+            </div>
+            <div class="surface-box">
+              <div style="display:flex; justify-content:space-between; font-size:13px; color:#64748B;">
+                <span>Contrast Ledger</span>
+                <span class="badge-pill" style="background:#FFE8E2; color:#660000; font-size:11px;">2 Published Fails</span>
+              </div>
+              <div style="font-size:32px; font-weight:800; margin:10px 0 4px 0;">18 Pairs</div>
+              <div style="font-family:var(--font-mono); font-size:11px; color:#94A3B8;">Measured from hex in tokens.json</div>
+            </div>
+            <div class="surface-box">
+              <div style="display:flex; justify-content:space-between; font-size:13px; color:#64748B;">
+                <span>Convertible Figma Artboards</span>
+                <span class="badge-pill" style="background:#EFF4D9; color:#323800; font-size:11px;">Zero-CDN</span>
+              </div>
+              <div style="font-size:32px; font-weight:800; margin:10px 0 4px 0;">8 Sheets</div>
+              <div style="font-family:var(--font-mono); font-size:11px; color:#94A3B8;">Isolated &lt;section&gt; blocks</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8.2 Token Registry Table -->
+        <div class="category-block" data-figma-node="❖ Patterns / Data Table">
+          <h2 class="category-title">Token Registry Table</h2>
+          <div class="surface-box" style="padding:0; overflow:hidden;">
+            <table class="ds-table">
+              <thead>
+                <tr>
+                  <th>Token Name</th>
+                  <th>Role / Usage</th>
+                  <th>HEX Value</th>
+                  <th>OKLCH</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                <tr onclick="copyHex('#F2F4EE', '--hc-stock')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--hc-stock</td>
+                  <td>Cold survey paper, faintly green — the only ground</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#F2F4EE;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#F2F4EE</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.964 0.008 121.6)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#E5E9DF', '--hc-stock-deep')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--hc-stock-deep</td>
+                  <td>The same stock, one band under</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#E5E9DF;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#E5E9DF</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.928 0.014 124.6)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#16211B', '--hc-ink')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--hc-ink</td>
+                  <td>Pine black, the printed line</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#16211B;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#16211B</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.235 0.019 160.6)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#1E3B2C', '--hc-pine')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--hc-pine</td>
+                  <td>Deep forest, the far ridge</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#1E3B2C;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#1E3B2C</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.324 0.045 160.0)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#C9D94E', '--hc-lichen')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--hc-lichen</td>
+                  <td>Chartreuse lichen — the one loud field, fills only</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#C9D94E;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#C9D94E</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.847 0.161 115.5)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#4A6B33', '--hc-moss')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--hc-moss</td>
+                  <td>Lichen as type: a darker green that can carry a sentence</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#4A6B33;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#4A6B33</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.488 0.091 133.8)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#A9BBB0', '--hc-mist')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--hc-mist</td>
+                  <td>Valley fog, and the quiet accent under night</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#A9BBB0;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#A9BBB0</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.775 0.025 159.0)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#0A110D', '--hc-night')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--hc-night</td>
+                  <td>A range at night, no moon</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#0A110D;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#0A110D</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.169 0.014 159.5)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#A82A1C', '--hc-alert')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--hc-alert</td>
+                  <td>Survey red — errors only, never identity</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#A82A1C;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#A82A1C</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.484 0.165 30.3)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 8.3 Copyable CSS Token Sheets -->
+        <div class="category-block" data-figma-node="❖ Patterns / CSS Token Sheets">
+          <h2 class="category-title">Copyable CSS Token Sheets</h2>
+          <div class="grid-2-cols">
+            <div class="code-sheet-card">
+              <div class="code-sheet-head">
+                <span>1 · PRIMITIVES (--hc-*)</span>
+                <button class="btn-tool" style="padding:3px 9px; font-size:11px;" onclick="copyToClipboard(document.getElementById('code-prim').textContent, 'Copied Primitives CSS')">Copy CSS</button>
+              </div>
+              <pre id="code-prim" class="code-sheet-pre">/* 1 · Primitives (Hachure --hc-*) */
+:root {
+  --hc-stock: #F2F4EE; /* oklch(0.964 0.008 121.6) */
+  --hc-stock-deep: #E5E9DF; /* oklch(0.928 0.014 124.6) */
+  --hc-ink: #16211B; /* oklch(0.235 0.019 160.6) */
+  --hc-pine: #1E3B2C; /* oklch(0.324 0.045 160.0) */
+  --hc-lichen: #C9D94E; /* oklch(0.847 0.161 115.5) */
+  --hc-moss: #4A6B33; /* oklch(0.488 0.091 133.8) */
+  --hc-mist: #A9BBB0; /* oklch(0.775 0.025 159.0) */
+  --hc-night: #0A110D; /* oklch(0.169 0.014 159.5) */
+  --hc-alert: #A82A1C; /* oklch(0.484 0.165 30.3) */
+}</pre>
+            </div>
+            <div class="code-sheet-card">
+              <div class="code-sheet-head">
+                <span>2 · FULL TOKEN SHEET (hachure-tokens.css)</span>
+                <button class="btn-tool" style="padding:3px 9px; font-size:11px;" onclick="copyToClipboard(document.getElementById('code-sem').textContent, 'Copied Full Token CSS')">Copy CSS</button>
+              </div>
+              <pre id="code-sem" class="code-sheet-pre">/**
+ * Hachure — generated by scripts/build-hachure-brand.mjs
+ * Edit features/hachure/tokens.json, then re-run. Never hand-edit this file.
+ *
+ * Tones 1–7 are the dither ramp, darkest last. Tone 1 is the paper itself,
+ * which is why the range can dissolve into the page instead of fading out of it.
+ */
+
+:root,
+.hx-scope,
+[data-hachure-root][data-theme=&quot;light&quot;] {
+  --hx-stock: #F2F4EE;
+  --hx-stock-deep: #E5E9DF;
+  --hx-ink: #16211B;
+  --hx-pine: #1E3B2C;
+  --hx-lichen: #C9D94E;
+  --hx-moss: #4A6B33;
+  --hx-mist: #A9BBB0;
+  --hx-night: #0A110D;
+  --hx-alert: #A82A1C;
+
+  --hx-surface: #F2F4EE;
+  --hx-surface-alt: #E5E9DF;
+  --hx-sheet: #C9D94E;
+  --hx-sheet-alt: #1E3B2C;
+  --hx-on-sheet: #16211B;
+  --hx-ink: #16211B;
+  --hx-ink-muted: #586759;
+  --hx-rule: #CBD3C6;
+  --hx-rule-strong: #16211B;
+  --hx-accent: #4A6B33;
+  --hx-accent-alt: #3F5C4B;
+  --hx-range-accent: #557347;
+  --hx-display-a: #C9D94E;
+  --hx-display-b: #1E3B2C;
+  --hx-mist: #A9BBB0;
+  --hx-field: #FBFCF8;
+  --hx-field-border: #7E8C82;
+  --hx-focus: #16211B;
+  --hx-button-bg: #16211B;
+  --hx-button-fg: #F2F4EE;
+  --hx-button-quiet-bg: #E5E9DF;
+  --hx-button-quiet-fg: #16211B;
+  --hx-alert: #A82A1C;
+
+  --hx-tone-1: #F2F4EE;
+  --hx-tone-2: #DCE4D4;
+  --hx-tone-3: #B7C9AE;
+  --hx-tone-4: #8AA47F;
+  --hx-tone-5: #557347;
+  --hx-tone-6: #36543A;
+  --hx-tone-7: #1B2E22;
+
+  --hx-display-size: clamp(2.5rem, 7.2vw, 6.25rem);
+  --hx-display-leading: 0.92;
+  --hx-display-track: -0.03em;
+  --hx-display-weight: 700;
+  --hx-display-face: var(--font-geist-mono, ui-monospace), ui-monospace, Menlo, Consolas, monospace;
+  --hx-headline-size: clamp(1.6rem, 3.5vw, 2.75rem);
+  --hx-headline-leading: 1.02;
+  --hx-headline-track: -0.02em;
+  --hx-headline-weight: 700;
+  --hx-headline-face: var(--font-geist-mono, ui-monospace), ui-monospace, Menlo, Consolas, monospace;
+  --hx-subhead-size: 1.0625rem;
+  --hx-subhead-leading: 1.3;
+  --hx-subhead-track: -0.01em;
+  --hx-subhead-weight: 500;
+  --hx-subhead-face: var(--font-geist-mono, ui-monospace), ui-monospace, Menlo, Consolas, monospace;
+  --hx-body-size: 1.0625rem;
+  --hx-body-leading: 1.6;
+  --hx-body-track: 0em;
+  --hx-body-weight: 400;
+  --hx-body-face: var(--font-geist, system-ui), system-ui, &quot;Helvetica Neue&quot;, Arial, sans-serif;
+  --hx-caption-size: 0.8125rem;
+  --hx-caption-leading: 1.5;
+  --hx-caption-track: 0em;
+  --hx-caption-weight: 400;
+  --hx-caption-face: var(--font-geist, system-ui), system-ui, &quot;Helvetica Neue&quot;, Arial, sans-serif;
+  --hx-label-size: 0.6875rem;
+  --hx-label-leading: 1.2;
+  --hx-label-track: 0.14em;
+  --hx-label-weight: 500;
+  --hx-label-face: var(--font-geist-mono, ui-monospace), ui-monospace, Menlo, Consolas, monospace;
+
+  --hx-space-1: 4px;
+  --hx-space-2: 8px;
+  --hx-space-3: 12px;
+  --hx-space-4: 16px;
+  --hx-space-5: 24px;
+  --hx-space-6: 32px;
+  --hx-space-7: 48px;
+  --hx-space-8: 72px;
+  --hx-space-9: 104px;
+
+  --hx-dur-fast: 180ms;
+  --hx-dur-base: 320ms;
+  --hx-dur-slow: 700ms;
+  --hx-dur-reveal: 1400ms;
+
+  --hx-radius: 0px;
+  --hx-hairline: 1px;
+  --hx-field-height: 46px;
+  --hx-focus-width: 2px;
+  --hx-focus-offset: 3px;
+  --hx-pixel: 2px;
+
+  --hx-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-hachure-root][data-theme=&quot;dark&quot;] {
+  --hx-surface: #0A110D;
+  --hx-surface-alt: #111B15;
+  --hx-sheet: #C9D94E;
+  --hx-sheet-alt: #6B9A6B;
+  --hx-on-sheet: #16211B;
+  --hx-ink: #E8EEE7;
+  --hx-ink-muted: #93A398;
+  --hx-rule: #1E2A22;
+  --hx-rule-strong: #E8EEE7;
+  --hx-accent: #C9D94E;
+  --hx-accent-alt: #A9BBB0;
+  --hx-range-accent: #5A8F67;
+  --hx-display-a: #C9D94E;
+  --hx-display-b: #6B9A6B;
+  --hx-mist: #3A4A40;
+  --hx-field: #111B15;
+  --hx-field-border: #55645A;
+  --hx-focus: #E8EEE7;
+  --hx-button-bg: #E8EEE7;
+  --hx-button-fg: #0A110D;
+  --hx-button-quiet-bg: #1B2720;
+  --hx-button-quiet-fg: #E8EEE7;
+  --hx-alert: #F0917F;
+
+  --hx-tone-1: #0A110D;
+  --hx-tone-2: #13241A;
+  --hx-tone-3: #1C3626;
+  --hx-tone-4: #2A4B35;
+  --hx-tone-5: #5A8F67;
+  --hx-tone-6: #79AC87;
+  --hx-tone-7: #A6D2B0;
+}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       LIVE INTERACTIVE MODAL OVERLAY
+       ========================================================================= -->
+  <div id="live-modal" class="live-modal-overlay" onclick="if(event.target === this) closeLiveModal()">
+    <div class="modal-card" style="width:100%; max-width:480px;">
+      <div style="padding:18px 22px; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center;">
+        <strong>Live Hachure Modal Preview</strong>
+        <button class="btn-tool" style="padding:4px 8px;" onclick="closeLiveModal()">✕</button>
+      </div>
+      <div style="padding:22px; font-size:14px; color:#475569;">
+        <p style="margin:0 0 12px 0;">This interactive modal uses the Hachure elevation token (<code>shadow-xl</code>) and primary token (<code>--hc-alert: #A82A1C</code>).</p>
+        <div style="padding:12px; background:#FAFAFA; border:1px solid #E2E8F0; border-radius:8px; font-family:var(--font-mono); font-size:12px;">
+          • Primary Action: #A82A1C (--hc-alert)<br/>
+          • Surface: #FFFFFF (Pure White Artboard)
+        </div>
+      </div>
+      <div style="padding:14px 22px; background:#FAFAFA; border-top:1px solid #F1F5F9; display:flex; justify-content:flex-end; gap:10px;">
+        <button class="btn btn-outline" onclick="closeLiveModal()">Close</button>
+        <button class="btn btn-primary" onclick="copySectionHTML('section-overlays', 'Hachure Modals & Overlays'); closeLiveModal();">Copy Section HTML</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notification -->
+  <div id="toast" class="toast-notification">
+    <span style="color:#4ADE80;">✔</span>
+    <span id="toast-text">Copied to clipboard</span>
+  </div>
+
+  <!-- =========================================================================
+       JAVASCRIPT: FILTERING, SPEC INSPECTOR, CLEAN EXPORT & CLIPBOARD
+       ========================================================================= -->
+  <script>
+    function filterSection(target, btn) {
+      document.querySelectorAll('.nav-pill').forEach(el => el.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      document.querySelectorAll('.figma-sheet').forEach(sec => {
+        if (target === 'all' || sec.getAttribute('data-section') === target) {
+          sec.classList.remove('hidden-sheet');
+        } else {
+          sec.classList.add('hidden-sheet');
+        }
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleSpecMode() {
+      document.body.classList.toggle('spec-mode');
+      const btn = document.getElementById('btn-spec');
+      if (btn) btn.classList.toggle('active-spec');
+    }
+
+    function toggleCleanMode(forceState) {
+      const isClean = forceState !== undefined ? forceState : !document.body.classList.contains('clean-export-mode');
+      const cleanBtn = document.getElementById('btn-clean');
+
+      if (isClean) {
+        document.body.classList.add('clean-export-mode');
+        if (cleanBtn) cleanBtn.classList.add('active-clean');
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.set('clean', '1');
+          window.history.replaceState({}, '', url.toString());
+          copyToClipboard(url.toString(), 'Clean Export Mode active · Copied clean URL (?clean=1)');
+        } catch (e) {
+          showToast('Clean Export Mode active (?clean=1)');
+        }
+      } else {
+        document.body.classList.remove('clean-export-mode');
+        if (cleanBtn) cleanBtn.classList.remove('active-clean');
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.delete('clean');
+          url.searchParams.delete('figma');
+          window.history.replaceState({}, '', url.toString());
+          showToast('Exited Clean Export Mode');
+        } catch (e) {
+          showToast('Exited Clean Export Mode');
+        }
+      }
+    }
+
+    function copyCleanLink() {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('clean', '1');
+        window.history.replaceState({}, '', url.toString());
+        document.body.classList.add('clean-export-mode');
+        const cleanBtn = document.getElementById('btn-clean');
+        if (cleanBtn) cleanBtn.classList.add('active-clean');
+        copyToClipboard(url.toString(), 'Copied Clean Export URL (?clean=1)');
+      } catch (e) {
+        fallbackCopy(window.location.href, 'Copied URL');
+      }
+    }
+
+    function openLiveModal() {
+      document.getElementById('live-modal').classList.add('open');
+    }
+
+    function closeLiveModal() {
+      document.getElementById('live-modal').classList.remove('open');
+    }
+
+    function copyToClipboard(text, message) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(message);
+        }).catch(() => fallbackCopy(text, message));
+        return;
+      }
+      fallbackCopy(text, message);
+    }
+
+    function fallbackCopy(text, message) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast(message);
+      } catch (err) {
+        showToast('Copied');
+      }
+      document.body.removeChild(textarea);
+    }
+
+    function copyHex(hex, label) {
+      copyToClipboard(hex, 'Copied ' + label + ': ' + hex);
+    }
+
+    function copySectionHTML(sectionId, title) {
+      const el = document.getElementById(sectionId);
+      if (!el) return;
+      copyToClipboard(el.outerHTML, 'Copied <section> HTML for "' + title + '"');
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-text').textContent = msg;
+      toast.classList.add('visible');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('visible'), 2400);
+    }
+
+    // Auto-enable Clean Export Mode when ?clean=1 or ?figma=1 is in the URL
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('clean') === '1' || params.get('figma') === '1') {
+        document.body.classList.add('clean-export-mode');
+        const cleanBtn = document.getElementById('btn-clean');
+        if (cleanBtn) cleanBtn.classList.add('active-clean');
+      }
+      if (params.get('spec') === '1') {
+        document.body.classList.add('spec-mode');
+        const specBtn = document.getElementById('btn-spec');
+        if (specBtn) specBtn.classList.add('active-spec');
+      }
+    });
+  </script>
+</body>
+</html>

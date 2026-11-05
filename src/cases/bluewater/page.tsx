@@ -985,7 +985,10 @@ export default function BluewaterPage() {
           </div>
           <div className={`${styles.wrap} ${styles.footerColophon}`}>
             <p className={styles.footerNote}>
-              {META.name} · {META.case} · v{META.version} · {META.essence}
+              {META.name} · {META.case} · v{META.version} · {META.essence} ·{' '}
+              <a href="/brand/bluewater/bluewater-figma.html" style={{ textDecoration: 'underline' }}>
+                Figma HTML sheet ↗
+              </a>
             </p>
             <p className={styles.footerNote}>
               Photographs supplied with the brief. Archivo, Inter and Geist Mono

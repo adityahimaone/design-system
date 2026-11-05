@@ -25,3 +25,4 @@ Thumbs.db
 
 # command code agent workspace
 .commandcode/
+.trash/

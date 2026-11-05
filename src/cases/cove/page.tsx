@@ -1150,6 +1150,9 @@ export default function CovePage() {
                     <a href={`${BRAND}/cove-brandkit.png`}>brand board</a>
                   </li>
                   <li>
+                    <a href={`${BRAND}/cove-figma.html`}>Figma HTML sheet</a>
+                  </li>
+                  <li>
                     <a href={`${BRAND}/cove-tokens.css`}>tokens.css</a>
                   </li>
                 </ul>

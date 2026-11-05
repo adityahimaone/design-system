@@ -1,0 +1,3134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Porphyry — Figma &amp; HTML-to-Design Documentation Sheet</title>
+  <meta name="description" content="A page composed like a stage: one stone, one light, and a cast that stands in front of the word." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&family=Cinzel:wght@400;500;600;700;800&family=Jost:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================================================
+       1. CSS RESET & DESIGN TOKENS (100% SELF-CONTAINED, ZERO EXTERNAL CDN)
+       ========================================================================= */
+    :root {
+      --primary-70: #A6395C;
+      --secondary-60: #7A1F3D;
+      --tertiary-80: #E08A78;
+      --primary-tint: #FFE8ED;
+      --secondary-tint: #FFE9ED;
+      --tertiary-tint: #FFEBE6;
+      --text-main: #111827;
+      --text-secondary: #64748B;
+      --text-muted: #94A3B8;
+      --bg-white: #FFFFFF;
+      --bg-banner: #FAFAFA;
+      --border-subtle: #F1F5F9;
+      --border-default: #E2E8F0;
+      --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --brand-display: 'Cinzel', var(--font-sans);
+      --brand-reading: 'Jost', var(--font-body);
+      --brand-mono: 'Geist Mono', var(--font-mono);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-white);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+    }
+
+    /* =========================================================================
+       2. STICKY TOP WORKSPACE BAR (COLLAPSIBLE FOR CLEAN FIGMA EXPORT)
+       ========================================================================= */
+    .workspace-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-default);
+      padding: 10px 24px;
+      transition: all 0.2s ease;
+    }
+
+    body.clean-export-mode .workspace-topbar,
+    body.clean-export-mode .section-copy-btn {
+      display: none !important;
+    }
+
+    @media print {
+      .workspace-topbar,
+      .section-copy-btn,
+      .floating-exit-clean,
+      .toast-notification {
+        display: none !important;
+      }
+    }
+
+    .floating-exit-clean {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+      background: #111827;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 9999px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+
+    body.clean-export-mode .floating-exit-clean {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topbar-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mini-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 9999px;
+      background: #FFFFFF;
+      border: 1px solid var(--border-default);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .brand-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-version {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      background: #E8EEFF;
+      color: #1E40AF;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .nav-pills {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #F1F5F9;
+      padding: 4px;
+      border-radius: 10px;
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
+    .nav-pill {
+      border: none;
+      background: transparent;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 11px;
+      border-radius: 7px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .nav-pill:hover {
+      color: var(--text-main);
+    }
+
+    .nav-pill.active {
+      background: #FFFFFF;
+      color: var(--text-main);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-tool {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--border-default);
+      background: #FFFFFF;
+      color: #334155;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-tool:hover {
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+    }
+
+    .btn-tool.active-spec {
+      background: #F5F0FF;
+      border-color: #B392F0;
+      color: #6739D2;
+    }
+
+    .btn-tool.active-clean {
+      background: #EFF6FF;
+      border-color: #93C5FD;
+      color: #1D4ED8;
+    }
+
+    /* =========================================================================
+       3. FIGMA DOCUMENTATION SHEET ANATOMY
+       ========================================================================= */
+    .figma-sheet {
+      background: var(--bg-white);
+      border-bottom: 12px solid #F1F5F9;
+    }
+
+    .figma-sheet.hidden-sheet {
+      display: none !important;
+    }
+
+    .sheet-banner {
+      background: var(--bg-banner);
+      border-bottom: 1px solid #F1F5F9;
+      padding: 34px 64px;
+    }
+
+    .sheet-banner-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .sheet-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+      font-size: 26px;
+      font-weight: 700;
+      color: #1E1E1E;
+      letter-spacing: -0.02em;
+    }
+
+    .sheet-num-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #111827;
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .sheet-subtitle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      padding-left: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #64748B;
+    }
+
+    .sheet-banner-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .section-copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+      background: #FFFFFF;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .section-copy-btn:hover {
+      border-color: var(--primary-70);
+      color: var(--primary-70);
+    }
+
+    .tnd-logo-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 9999px;
+      background: #FFFFFF;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      border: 1px solid #E2E8F0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .sheet-body {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 56px 0 64px 0;
+    }
+
+    .sheet-body-padded {
+      padding-left: 64px;
+      padding-right: 64px;
+      max-width: 1288px;
+      margin: 0 auto;
+    }
+
+    .category-block {
+      margin-bottom: 64px;
+      position: relative;
+    }
+
+    .category-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .category-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #111827;
+      margin: 0 0 28px 0;
+      letter-spacing: -0.02em;
+    }
+
+    .category-header-flex {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .category-header-flex .category-title {
+      margin-bottom: 0;
+    }
+
+    .category-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin: 4px 0 0 0;
+    }
+
+    body.spec-mode .category-block {
+      outline: 1.5px dashed #9747FF;
+      outline-offset: 10px;
+      border-radius: 8px;
+    }
+
+    body.spec-mode .category-block::before {
+      content: attr(data-figma-node);
+      position: absolute;
+      top: -22px;
+      right: 0;
+      background: #9747FF;
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* =========================================================================
+       4. SECTION 01: COLOR SYSTEM GRIDS & CONTRAST LEDGER
+       ========================================================================= */
+    .main-colors-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 224px);
+      gap: 18px;
+    }
+
+    .scale-colors-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      column-gap: 18px;
+      row-gap: 32px;
+    }
+
+    .primitives-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      column-gap: 18px;
+      row-gap: 28px;
+    }
+
+    .swatch-card {
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.15s ease;
+    }
+
+    .swatch-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .swatch-rect {
+      width: 100%;
+      height: 146px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+    }
+
+    .swatch-copy-pill {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(17, 24, 39, 0.78);
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .swatch-card:hover .swatch-copy-pill {
+      opacity: 1;
+    }
+
+    .swatch-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #111827;
+      margin: 0 0 4px 0;
+      line-height: 1.3;
+    }
+
+    .swatch-sub {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 400;
+      color: #64748B;
+      margin: 0 0 3px 0;
+      line-height: 1.35;
+    }
+
+    .swatch-hex {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      color: #64748B;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    .grid-4-cols {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .grid-3-cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .grid-2-cols {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .semantic-card {
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+
+    .semantic-head {
+      height: 88px;
+      padding: 14px 16px;
+      color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .semantic-list {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .semantic-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .contrast-ledger {
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+
+    .contrast-row {
+      display: grid;
+      grid-template-columns: 72px 1.4fr 110px 1fr;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 18px;
+      border-bottom: 1px solid #F1F5F9;
+      font-size: 13px;
+    }
+
+    .contrast-row:last-child {
+      border-bottom: none;
+    }
+
+    .contrast-row.is-fail {
+      background: #FFFBEB;
+    }
+
+    .contrast-chips {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .contrast-chip {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.14);
+    }
+
+    .contrast-chip + .contrast-chip {
+      margin-left: -6px;
+    }
+
+    /* =========================================================================
+       5. SECTION 02: PRIMITIVES, RADIUS, ELEVATION & 12-COL GRID
+       ========================================================================= */
+    .surface-box {
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      background: #FFFFFF;
+      padding: 24px;
+    }
+
+    .spacing-row {
+      display: grid;
+      grid-template-columns: 110px 120px 1fr;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 0;
+      border-bottom: 1px solid #F1F5F9;
+      font-size: 13px;
+    }
+
+    .spacing-row:last-child {
+      border-bottom: none;
+    }
+
+    .spacing-bar {
+      height: 18px;
+      background: var(--primary-70);
+      border-radius: 3px;
+      opacity: 0.88;
+    }
+
+    .grid-6-cols {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+
+    .primitive-card {
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      padding: 16px;
+      background: #FAFAFA;
+      text-align: center;
+    }
+
+    .radius-preview {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 12px auto;
+      background: #E8EEFF;
+      border: 2px solid var(--primary-70);
+    }
+
+    .shadow-preview {
+      height: 76px;
+      background: #FFFFFF;
+      border-radius: 8px;
+      border: 1px solid #F1F5F9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #64748B;
+      margin-bottom: 12px;
+    }
+
+    .cols-12-visualizer {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+      padding: 20px;
+      background: #FFF1F2;
+      border: 1px dashed #FDA4AF;
+      border-radius: 10px;
+    }
+
+    .col-bar {
+      height: 56px;
+      background: rgba(225, 29, 72, 0.12);
+      border: 1px solid rgba(225, 29, 72, 0.3);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: #E11D48;
+    }
+
+    /* =========================================================================
+       6. SECTION 03: TYPOGRAPHY SCALE
+       ========================================================================= */
+    .type-row {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 32px;
+      align-items: baseline;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .type-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* =========================================================================
+       7. SECTION 04 & 05: LOGO, CAST, ASSETS & ICONOGRAPHY
+       ========================================================================= */
+    .blueprint-grid {
+      background-color: #F8FAFC;
+      background-image:
+        linear-gradient(to right, rgba(41, 96, 236, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(41, 96, 236, 0.08) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .icon-grid-8 {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 12px;
+    }
+
+    .cast-grid-6 {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+
+    .icon-cell {
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      padding: 16px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      background: #FFFFFF;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .icon-cell:hover {
+      border-color: var(--primary-70);
+      background: #F8FAFF;
+      transform: translateY(-2px);
+    }
+
+    .icon-keyline {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      border: 1px dashed #C1D2FE;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1E293B;
+    }
+
+    .icon-cell:hover .icon-keyline {
+      color: var(--primary-70);
+      background: #E8EEFF;
+    }
+
+    /* =========================================================================
+       8. SECTION 06, 07, 08: COMPONENTS, MODALS & DATA TABLES
+       ========================================================================= */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary { background: var(--primary-70); color: #FFFFFF; }
+    .btn-primary:hover { opacity: 0.92; }
+    .btn-secondary { background: var(--secondary-60); color: #FFFFFF; }
+    .btn-secondary:hover { opacity: 0.92; }
+    .btn-success { background: var(--tertiary-80); color: #FFFFFF; }
+    .btn-danger { background: #E11D48; color: #FFFFFF; }
+    .btn-outline { background: #FFFFFF; border-color: #CBD5E1; color: #1E293B; }
+    .btn-outline:hover { background: #F8FAFC; }
+    .btn-subtle { background: #E8EEFF; color: #1E40AF; }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid #CBD5E1;
+      font-size: 13px;
+      color: #111827;
+      background: #FFFFFF;
+      outline: none;
+    }
+
+    .input-field:focus {
+      border-color: var(--primary-70);
+      box-shadow: 0 0 0 3px #DBE5FE;
+    }
+
+    .modal-stage {
+      background: #F1F5F9;
+      border: 1px solid var(--border-default);
+      border-radius: 16px;
+      padding: 32px;
+      display: grid;
+      grid-template-columns: 7fr 5fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.15);
+      overflow: hidden;
+    }
+
+    .ds-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .ds-table th {
+      background: #FAFAFA;
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748B;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .ds-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #F1F5F9;
+      color: #1E293B;
+    }
+
+    .code-sheet-card {
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      background: #0F172A;
+      color: #E2E8F0;
+      overflow: hidden;
+    }
+
+    .code-sheet-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: #1E293B;
+      border-bottom: 1px solid #334155;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: #94A3B8;
+    }
+
+    .code-sheet-pre {
+      margin: 0;
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      line-height: 1.6;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .live-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .live-modal-overlay.open {
+      display: flex;
+    }
+
+    .toast-notification {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #111827;
+      color: #FFFFFF;
+      padding: 10px 18px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s ease;
+      z-index: 400;
+    }
+
+    .toast-notification.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 1024px) {
+      .scale-colors-grid, .primitives-grid { grid-template-columns: repeat(3, 1fr); }
+      .main-colors-grid { grid-template-columns: repeat(3, 1fr); }
+      .grid-4-cols, .grid-6-cols, .cast-grid-6, .icon-grid-8 { grid-template-columns: repeat(2, 1fr); }
+      .modal-stage, .grid-2-cols, .grid-3-cols { grid-template-columns: 1fr; }
+      .sheet-banner, .sheet-body-padded, .sheet-footer { padding-left: 24px; padding-right: 24px; }
+      .type-row, .contrast-row { grid-template-columns: 1fr; gap: 8px; }
+    }
+
+    @media (max-width: 640px) {
+      .scale-colors-grid, .primitives-grid, .main-colors-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body id="top">
+
+  <!-- =========================================================================
+       STICKY WORKSPACE CONTROL BAR (Hidden in Clean Export Mode / ?clean=1)
+       ========================================================================= -->
+  <nav class="workspace-topbar">
+    <div class="topbar-inner">
+      <div class="brand-cluster">
+        <div class="brand-mini-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry mark: a stage opening cut into a block of stone" width="22" height="22">
+  <title>Porphyry mark</title>
+  
+  <path fill-rule="evenodd" d="M12 6H44L52 14V58H12V6Z M22 44L27 14H37L42 44Z" fill="#241017"/>
+  <rect x="22" y="44" width="20" height="8" fill="#b98d45"/>
+</svg>
+        </div>
+        <div>
+          <div class="brand-title">
+            <span>Porphyry DS</span>
+            <span class="badge-version">1.0.0 Figma Sheet</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Switcher Tabs -->
+      <div class="nav-pills" role="tablist">
+        <button class="nav-pill active" onclick="filterSection('all', this)">All (8)</button>
+        <button class="nav-pill" onclick="filterSection('colors', this)">01 · Colors</button>
+        <button class="nav-pill" onclick="filterSection('primitives', this)">02 · Primitives</button>
+        <button class="nav-pill" onclick="filterSection('typography', this)">03 · Typography</button>
+        <button class="nav-pill" onclick="filterSection('logo', this)">04 · Logo</button>
+        <button class="nav-pill" onclick="filterSection('assets', this)">05 · Cast &amp; Assets</button>
+        <button class="nav-pill" onclick="filterSection('components', this)">06 · Components</button>
+        <button class="nav-pill" onclick="filterSection('overlays', this)">07 · Modals</button>
+        <button class="nav-pill" onclick="filterSection('patterns', this)">08 · Patterns &amp; Tokens</button>
+      </div>
+
+      <!-- Inspector, Clean Export & Back to Case Controls -->
+      <div class="topbar-actions">
+        <button id="btn-spec" class="btn-tool" onclick="toggleSpecMode()" title="Toggle Figma component bounds">
+          <span>❖ Figma Specs</span>
+        </button>
+        <button id="btn-clean" class="btn-tool" onclick="toggleCleanMode()" title="Toggle Clean Export Mode (?clean=1) & copy URL">
+          <span>Clean Export</span>
+        </button>
+        <button class="btn-tool" onclick="copyCleanLink()" title="Copy clean export link with ?clean=1">
+          <span>Copy Clean Link</span>
+        </button>
+        <a class="btn-tool" href="/design-system/porphyry">
+          <span>← Case Page</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Floating button to exit Clean Preview mode -->
+  <button class="floating-exit-clean" onclick="toggleCleanMode(false)" data-html2canvas-ignore="true" title="Exit Clean Mode (removes ?clean=1)">
+    <span>✕ Exit Clean Preview</span>
+  </button>
+
+  <!-- =========================================================================
+       MAIN CONTAINER: 8 SELF-CONTAINED FIGMA DOCUMENTATION SHEETS
+       ========================================================================= -->
+  <main>
+
+    <!-- =======================================================================
+         SECTION 01: COLOR SYSTEM, PRIMITIVES & HONEST CONTRAST LEDGER
+         ======================================================================= -->
+    <section id="section-colors" data-section="colors" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">01</span>
+              <span>Porphyry Color System</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>Color System · 18 Primitives · 11 Measured Contrast Pairs</span>
+            </div>
+          </div>
+
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-colors', 'Porphyry Color System')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle" title="Porphyry Brand Mark">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry mark: a stage opening cut into a block of stone" width="28" height="28">
+  <title>Porphyry mark</title>
+  
+  <path fill-rule="evenodd" d="M12 6H44L52 14V58H12V6Z M22 44L27 14H37L42 44Z" fill="#241017"/>
+  <rect x="22" y="44" width="20" height="8" fill="#b98d45"/>
+</svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        
+        <!-- 1.1 Main Colors (3 Columns) -->
+        <div class="category-block" data-figma-node="❖ Color / Main Colors">
+          <h2 class="category-title">Main Colors</h2>
+          <div id="grid-main-colors" class="main-colors-grid">
+            
+            <div class="swatch-card" onclick="copyHex('#A6395C', 'Porphyry-ink (--po-porphyry-ink)')">
+              <div class="swatch-rect" style="background-color: #A6395C;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Porphyry-ink</p>
+              <p class="swatch-sub">--po-porphyry-ink</p>
+              <p class="swatch-hex">#A6395C</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#7A1F3D', 'Porphyry (--po-porphyry)')">
+              <div class="swatch-rect" style="background-color: #7A1F3D;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Porphyry</p>
+              <p class="swatch-sub">--po-porphyry</p>
+              <p class="swatch-hex">#7A1F3D</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#E08A78', 'Ember (--po-ember)')">
+              <div class="swatch-rect" style="background-color: #E08A78;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Ember</p>
+              <p class="swatch-sub">--po-ember</p>
+              <p class="swatch-hex">#E08A78</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.2 Brand Primitives (All Primitives from tokens.json) -->
+        <div class="category-block" data-figma-node="❖ Color / Brand Primitives (18)">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">Brand Primitives (OKLCH Layer 1)</h2>
+              <p class="category-desc">Named once for the physical material (--po-*). Primitives never flip values across scopes.</p>
+            </div>
+          </div>
+          <div class="primitives-grid">
+            
+            <div class="swatch-card" onclick="copyHex('#160A0F', '--po-stage')">
+              <div class="swatch-rect" style="background-color: #160A0F; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">stage</p>
+              <p class="swatch-sub">the dark of the auditorium; the page ground</p>
+              <p class="swatch-hex">#160A0F · oklch(0.165 0.023 353.3)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#1F1017', '--po-stage-plate')">
+              <div class="swatch-rect" style="background-color: #1F1017; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">stage-plate</p>
+              <p class="swatch-sub">a raised plate on the stage</p>
+              <p class="swatch-hex">#1F1017 · oklch(0.197 0.028 350.5)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#0F070A', '--po-stage-sunken')">
+              <div class="swatch-rect" style="background-color: #0F070A; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">stage-sunken</p>
+              <p class="swatch-sub">the pit: sunken wells and quiet bands</p>
+              <p class="swatch-hex">#0F070A · oklch(0.142 0.016 353.7)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#7A1F3D', '--po-porphyry')">
+              <div class="swatch-rect" style="background-color: #7A1F3D; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">porphyry</p>
+              <p class="swatch-sub">the stone field; a surface, never body copy</p>
+              <p class="swatch-hex">#7A1F3D · oklch(0.396 0.127 5.2)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#4A1226', '--po-porphyry-deep')">
+              <div class="swatch-rect" style="background-color: #4A1226; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">porphyry-deep</p>
+              <p class="swatch-sub">the shadow inside the stone</p>
+              <p class="swatch-hex">#4A1226 · oklch(0.284 0.086 2.6)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#A6395C', '--po-porphyry-ink')">
+              <div class="swatch-rect" style="background-color: #A6395C; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">porphyry-ink</p>
+              <p class="swatch-sub">the stone as ornament on the stage (3.10:1, decoration only)</p>
+              <p class="swatch-hex">#A6395C · oklch(0.509 0.146 4.1)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#C9A45C', '--po-gold')">
+              <div class="swatch-rect" style="background-color: #C9A45C; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">gold</p>
+              <p class="swatch-sub">the signal: one light, gold leaf, focus, the only accent</p>
+              <p class="swatch-hex">#C9A45C · oklch(0.737 0.101 82.7)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#E3C98E', '--po-gold-bright')">
+              <div class="swatch-rect" style="background-color: #E3C98E; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">gold-bright</p>
+              <p class="swatch-sub">the lit edge of the gold</p>
+              <p class="swatch-hex">#E3C98E · oklch(0.844 0.082 86.8)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#7A561F', '--po-gold-ink')">
+              <div class="swatch-rect" style="background-color: #7A561F; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">gold-ink</p>
+              <p class="swatch-sub">gold as type on vellum (5.63:1)</p>
+              <p class="swatch-hex">#7A561F · oklch(0.481 0.085 74.4)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#F2EAD9', '--po-marble')">
+              <div class="swatch-rect" style="background-color: #F2EAD9; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">marble</p>
+              <p class="swatch-sub">lit marble; reading ink on the stage</p>
+              <p class="swatch-hex">#F2EAD9 · oklch(0.939 0.024 85.8)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#B7A99B', '--po-marble-dim')">
+              <div class="swatch-rect" style="background-color: #B7A99B; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">marble-dim</p>
+              <p class="swatch-sub">second ink on the stage</p>
+              <p class="swatch-hex">#B7A99B · oklch(0.743 0.026 67.4)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#241017', '--po-ink')">
+              <div class="swatch-rect" style="background-color: #241017; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">ink</p>
+              <p class="swatch-sub">ink on vellum; the reading ink on paper</p>
+              <p class="swatch-hex">#241017 · oklch(0.205 0.035 358.3)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#F4ECDD', '--po-vellum')">
+              <div class="swatch-rect" style="background-color: #F4ECDD; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">vellum</p>
+              <p class="swatch-sub">the light surface; proof plates and fields</p>
+              <p class="swatch-hex">#F4ECDD · oklch(0.945 0.022 83.3)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#E8DDC6', '--po-vellum-deep')">
+              <div class="swatch-rect" style="background-color: #E8DDC6; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">vellum-deep</p>
+              <p class="swatch-sub">the light surface, one shade under</p>
+              <p class="swatch-hex">#E8DDC6 · oklch(0.900 0.033 85.5)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#6F5F57', '--po-vellum-muted')">
+              <div class="swatch-rect" style="background-color: #6F5F57; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">vellum-muted</p>
+              <p class="swatch-sub">second ink on vellum</p>
+              <p class="swatch-hex">#6F5F57 · oklch(0.499 0.024 48.2)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#4A3238', '--po-rule-dark')">
+              <div class="swatch-rect" style="background-color: #4A3238; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">rule-dark</p>
+              <p class="swatch-sub">engraved hairline on the stage</p>
+              <p class="swatch-hex">#4A3238 · oklch(0.347 0.036 2.7)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#CDBDA4', '--po-rule-light')">
+              <div class="swatch-rect" style="background-color: #CDBDA4; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">rule-light</p>
+              <p class="swatch-sub">engraved hairline on vellum</p>
+              <p class="swatch-hex">#CDBDA4 · oklch(0.805 0.039 79.0)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#E08A78', '--po-ember')">
+              <div class="swatch-rect" style="background-color: #E08A78; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">ember</p>
+              <p class="swatch-sub">invalid only; never a decorative fill</p>
+              <p class="swatch-hex">#E08A78 · oklch(0.719 0.109 32.6)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.3 Primary Scale (5 Columns × 2 Rows: Primary-10 to Primary-100) -->
+        <div class="category-block" data-figma-node="❖ Color / Primary Scale">
+          <h2 class="category-title">Primary Scale (Porphyry-ink)</h2>
+          <div id="grid-primary-blue" class="scale-colors-grid">
+            
+            <div class="swatch-card" onclick="copyHex('#FFE8ED', 'Primary-10')">
+              <div class="swatch-rect" style="background-color: #FFE8ED;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-10</p>
+              <p class="swatch-hex">#FFE8ED</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#FFD3DD', 'Primary-20')">
+              <div class="swatch-rect" style="background-color: #FFD3DD;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-20</p>
+              <p class="swatch-hex">#FFD3DD</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#FBB4C4', 'Primary-30')">
+              <div class="swatch-rect" style="background-color: #FBB4C4;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-30</p>
+              <p class="swatch-hex">#FBB4C4</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#EA8FA5', 'Primary-40')">
+              <div class="swatch-rect" style="background-color: #EA8FA5;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-40</p>
+              <p class="swatch-hex">#EA8FA5</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#D16985', 'Primary-50')">
+              <div class="swatch-rect" style="background-color: #D16985;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-50</p>
+              <p class="swatch-hex">#D16985</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#B7496A', 'Primary-60')">
+              <div class="swatch-rect" style="background-color: #B7496A;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-60</p>
+              <p class="swatch-hex">#B7496A</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#A6395C', 'Primary-70')">
+              <div class="swatch-rect" style="background-color: #A6395C;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-70</p>
+              <p class="swatch-hex">#A6395C</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#7E1C3F', 'Primary-80')">
+              <div class="swatch-rect" style="background-color: #7E1C3F;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-80</p>
+              <p class="swatch-hex">#7E1C3F</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#5F0B2C', 'Primary-90')">
+              <div class="swatch-rect" style="background-color: #5F0B2C;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-90</p>
+              <p class="swatch-hex">#5F0B2C</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#41001A', 'Primary-100')">
+              <div class="swatch-rect" style="background-color: #41001A;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-100</p>
+              <p class="swatch-hex">#41001A</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.4 Secondary Scale (5 Columns × 2 Rows) -->
+        <div class="category-block" data-figma-node="❖ Color / Secondary Scale">
+          <h2 class="category-title">Secondary Scale (Porphyry)</h2>
+          <div id="grid-secondary-purple" class="scale-colors-grid">
+            
+            <div class="swatch-card" onclick="copyHex('#FFE9ED', 'Secondary-10')">
+              <div class="swatch-rect" style="background-color: #FFE9ED;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-10</p>
+              <p class="swatch-hex">#FFE9ED</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#FFD5DD', 'Secondary-20')">
+              <div class="swatch-rect" style="background-color: #FFD5DD;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-20</p>
+              <p class="swatch-hex">#FFD5DD</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#F5B7C4', 'Secondary-30')">
+              <div class="swatch-rect" style="background-color: #F5B7C4;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-30</p>
+              <p class="swatch-hex">#F5B7C4</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#E393A5', 'Secondary-40')">
+              <div class="swatch-rect" style="background-color: #E393A5;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-40</p>
+              <p class="swatch-hex">#E393A5</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#CA6F85', 'Secondary-50')">
+              <div class="swatch-rect" style="background-color: #CA6F85;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-50</p>
+              <p class="swatch-hex">#CA6F85</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#7A1F3D', 'Secondary-60')">
+              <div class="swatch-rect" style="background-color: #7A1F3D;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-60</p>
+              <p class="swatch-hex">#7A1F3D</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#953954', 'Secondary-70')">
+              <div class="swatch-rect" style="background-color: #953954;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-70</p>
+              <p class="swatch-hex">#953954</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#78263F', 'Secondary-80')">
+              <div class="swatch-rect" style="background-color: #78263F;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-80</p>
+              <p class="swatch-hex">#78263F</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#5A152C', 'Secondary-90')">
+              <div class="swatch-rect" style="background-color: #5A152C;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-90</p>
+              <p class="swatch-hex">#5A152C</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#3E051A', 'Secondary-100')">
+              <div class="swatch-rect" style="background-color: #3E051A;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-100</p>
+              <p class="swatch-hex">#3E051A</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.5 Tertiary Scale (5 Columns × 2 Rows) -->
+        <div class="category-block" data-figma-node="❖ Color / Tertiary Scale">
+          <h2 class="category-title">Tertiary Scale (Ember)</h2>
+          <div id="grid-tertiary-green" class="scale-colors-grid">
+            
+            <div class="swatch-card" onclick="copyHex('#FFEBE6', 'Tertiary-10')">
+              <div class="swatch-rect" style="background-color: #FFEBE6;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-10</p>
+              <p class="swatch-hex">#FFEBE6</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#FCD8D0', 'Tertiary-20')">
+              <div class="swatch-rect" style="background-color: #FCD8D0;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-20</p>
+              <p class="swatch-hex">#FCD8D0</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#F1BCB1', 'Tertiary-30')">
+              <div class="swatch-rect" style="background-color: #F1BCB1;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-30</p>
+              <p class="swatch-hex">#F1BCB1</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#DE9A8C', 'Tertiary-40')">
+              <div class="swatch-rect" style="background-color: #DE9A8C;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-40</p>
+              <p class="swatch-hex">#DE9A8C</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#E08A78', 'Tertiary-50')">
+              <div class="swatch-rect" style="background-color: #E08A78;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-50</p>
+              <p class="swatch-hex">#E08A78</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#AB5A4A', 'Tertiary-60')">
+              <div class="swatch-rect" style="background-color: #AB5A4A;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-60</p>
+              <p class="swatch-hex">#AB5A4A</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#914334', 'Tertiary-70')">
+              <div class="swatch-rect" style="background-color: #914334;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-70</p>
+              <p class="swatch-hex">#914334</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#742F22', 'Tertiary-80')">
+              <div class="swatch-rect" style="background-color: #742F22;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-80</p>
+              <p class="swatch-hex">#742F22</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#571E13', 'Tertiary-90')">
+              <div class="swatch-rect" style="background-color: #571E13;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-90</p>
+              <p class="swatch-hex">#571E13</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#3B0D06', 'Tertiary-100')">
+              <div class="swatch-rect" style="background-color: #3B0D06;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-100</p>
+              <p class="swatch-hex">#3B0D06</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.6 Honest Contrast Ledger (Computed Pairs + Published Failures) -->
+        <div class="category-block" data-figma-node="❖ Color / Honest Contrast Ledger">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">Honest Contrast Ledger (11 Pairs · 2 Published Failures)</h2>
+              <p class="category-desc">Every pair is computed from hex. Failing pairs (&lt; 4.5:1) are published with a restricted non-text job.</p>
+            </div>
+          </div>
+          <div class="contrast-ledger">
+            
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#F2EAD9;" title="Foreground: #F2EAD9"></span>
+                <span class="contrast-chip" style="background:#160A0F;" title="Background: #160A0F"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Marble on the stage</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                16.18:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#C9A45C;" title="Foreground: #C9A45C"></span>
+                <span class="contrast-chip" style="background:#160A0F;" title="Background: #160A0F"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Gold on the stage</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                8.25:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#B7A99B;" title="Foreground: #B7A99B"></span>
+                <span class="contrast-chip" style="background:#160A0F;" title="Background: #160A0F"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Marble-dim on the stage</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                8.45:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#F2EAD9;" title="Foreground: #F2EAD9"></span>
+                <span class="contrast-chip" style="background:#7A1F3D;" title="Background: #7A1F3D"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Marble on porphyry</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                8.39:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row is-fail">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#C9A45C;" title="Foreground: #C9A45C"></span>
+                <span class="contrast-chip" style="background:#7A1F3D;" title="Background: #7A1F3D"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Gold on porphyry</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#B45309;">
+                4.28:1 FAIL
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Wash / graphic only — never type
+              </div>
+            </div>
+            <div class="contrast-row is-fail">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#A6395C;" title="Foreground: #A6395C"></span>
+                <span class="contrast-chip" style="background:#160A0F;" title="Background: #160A0F"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Porphyry ink on the stage</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#B45309;">
+                3.10:1 FAIL
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Wash / graphic only — never type
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#241017;" title="Foreground: #241017"></span>
+                <span class="contrast-chip" style="background:#F4ECDD;" title="Background: #F4ECDD"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Ink on vellum</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                15.40:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#6F5F57;" title="Foreground: #6F5F57"></span>
+                <span class="contrast-chip" style="background:#F4ECDD;" title="Background: #F4ECDD"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Vellum-muted on vellum</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                5.18:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#7A1F3D;" title="Foreground: #7A1F3D"></span>
+                <span class="contrast-chip" style="background:#F4ECDD;" title="Background: #F4ECDD"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Porphyry on vellum</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                8.56:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#7A561F;" title="Foreground: #7A561F"></span>
+                <span class="contrast-chip" style="background:#F4ECDD;" title="Background: #F4ECDD"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Gold ink on vellum</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                5.63:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#241017;" title="Foreground: #241017"></span>
+                <span class="contrast-chip" style="background:#C9A45C;" title="Background: #C9A45C"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Ink on gold</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                7.70:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.7 Semantic & Status Feedback Tokens -->
+        <div class="category-block" data-figma-node="❖ Color / Semantic Tokens">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">Semantic Feedback Tokens</h2>
+              <p class="category-desc">System status pairings for alerts, badges, validation states, and surfaces.</p>
+            </div>
+          </div>
+          <div class="grid-4-cols">
+            <div class="semantic-card">
+              <div class="semantic-head" style="background:#18B368;" onclick="copyHex('#18B368', 'Success Primary')">
+                <span style="font-size:11px; font-family:var(--font-mono); opacity:0.85;">SUCCESS / POSITIVE</span>
+                <strong style="font-size:16px;">#18B368</strong>
+              </div>
+              <div class="semantic-list">
+                <div class="semantic-row" style="background:#F0FFF4; color:#165C26;" onclick="copyHex('#F0FFF4', 'Success Surface')">
+                  <span>surface-subtle</span><span>#F0FFF4</span>
+                </div>
+                <div class="semantic-row" style="border:1px solid #85E89D; color:#176F2C;" onclick="copyHex('#85E89D', 'Success Border')">
+                  <span>border-token</span><span>#85E89D</span>
+                </div>
+                <div class="semantic-row" style="color:#144620;" onclick="copyHex('#144620', 'Success Ink')">
+                  <span>text-ink</span><span>#144620</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="semantic-card">
+              <div class="semantic-head" style="background:#F59E0B;" onclick="copyHex('#F59E0B', 'Warning Primary')">
+                <span style="font-size:11px; font-family:var(--font-mono); opacity:0.85;">WARNING / CAUTION</span>
+                <strong style="font-size:16px;">#F59E0B</strong>
+              </div>
+              <div class="semantic-list">
+                <div class="semantic-row" style="background:#FFFBEB; color:#92400E;" onclick="copyHex('#FFFBEB', 'Warning Surface')">
+                  <span>surface-subtle</span><span>#FFFBEB</span>
+                </div>
+                <div class="semantic-row" style="border:1px solid #FCD34D; color:#B45309;" onclick="copyHex('#FCD34D', 'Warning Border')">
+                  <span>border-token</span><span>#FCD34D</span>
+                </div>
+                <div class="semantic-row" style="color:#78350F;" onclick="copyHex('#78350F', 'Warning Ink')">
+                  <span>text-ink</span><span>#78350F</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="semantic-card">
+              <div class="semantic-head" style="background:#E11D48;" onclick="copyHex('#E11D48', 'Danger Primary')">
+                <span style="font-size:11px; font-family:var(--font-mono); opacity:0.85;">DANGER / CRITICAL</span>
+                <strong style="font-size:16px;">#E11D48</strong>
+              </div>
+              <div class="semantic-list">
+                <div class="semantic-row" style="background:#FFF1F2; color:#9F1239;" onclick="copyHex('#FFF1F2', 'Danger Surface')">
+                  <span>surface-subtle</span><span>#FFF1F2</span>
+                </div>
+                <div class="semantic-row" style="border:1px solid #FDA4AF; color:#BE123C;" onclick="copyHex('#FDA4AF', 'Danger Border')">
+                  <span>border-token</span><span>#FDA4AF</span>
+                </div>
+                <div class="semantic-row" style="color:#881337;" onclick="copyHex('#881337', 'Danger Ink')">
+                  <span>text-ink</span><span>#881337</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="semantic-card">
+              <div class="semantic-head" style="background:#A6395C;" onclick="copyHex('#A6395C', 'Info Primary')">
+                <span style="font-size:11px; font-family:var(--font-mono); opacity:0.85;">INFO / BRAND SIGNAL</span>
+                <strong style="font-size:16px;">#A6395C</strong>
+              </div>
+              <div class="semantic-list">
+                <div class="semantic-row" style="background:#FFE8ED; color:#5F0B2C;" onclick="copyHex('#FFE8ED', 'Info Surface')">
+                  <span>surface-subtle</span><span>#FFE8ED</span>
+                </div>
+                <div class="semantic-row" style="border:1px solid #EA8FA5; color:#5F0B2C;" onclick="copyHex('#EA8FA5', 'Info Border')">
+                  <span>border-token</span><span>#EA8FA5</span>
+                </div>
+                <div class="semantic-row" style="color:#41001A;" onclick="copyHex('#41001A', 'Info Ink')">
+                  <span>text-ink</span><span>#41001A</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 02: PRIMITIVES, SPACING & 12-COLUMN LAYOUT GRID
+         ======================================================================= -->
+    <section id="section-primitives" data-section="primitives" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">02</span>
+              <span>Porphyry Primitives &amp; Layout Grid</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>Spacing Scale, Corner Radius (0), Elevation &amp; 12-Col Grid</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-primitives', 'Porphyry Primitives & Grid')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry mark: a stage opening cut into a block of stone" width="28" height="28">
+  <title>Porphyry mark</title>
+  
+  <path fill-rule="evenodd" d="M12 6H44L52 14V58H12V6Z M22 44L27 14H37L42 44Z" fill="#241017"/>
+  <rect x="22" y="44" width="20" height="8" fill="#b98d45"/>
+</svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- 2.1 Spacing Scale -->
+        <div class="category-block" data-figma-node="❖ Primitives / 4px Spacing Scale">
+          <h2 class="category-title">Spacing Scale (Base 4px Unit)</h2>
+          <div class="surface-box" id="spacing-scale-list">
+            
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-1</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">4px (0.25rem)</span>
+              <div><div class="spacing-bar" style="width:16px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-2</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">8px (0.5rem)</span>
+              <div><div class="spacing-bar" style="width:32px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-3</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">12px (0.75rem)</span>
+              <div><div class="spacing-bar" style="width:48px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-4</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">16px (1rem)</span>
+              <div><div class="spacing-bar" style="width:64px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-6</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">24px (1.5rem)</span>
+              <div><div class="spacing-bar" style="width:96px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-8</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">32px (2rem)</span>
+              <div><div class="spacing-bar" style="width:128px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-12</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">48px (3rem)</span>
+              <div><div class="spacing-bar" style="width:192px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-16</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">64px (4rem)</span>
+              <div><div class="spacing-bar" style="width:256px; max-width:100%;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.2 Border Radius -->
+        <div class="category-block" data-figma-node="❖ Primitives / Border Radius">
+          <h2 class="category-title">Corner Radius Tokens (House Physics: 0)</h2>
+          <div class="grid-6-cols">
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:0px;"></div>
+              <strong style="font-size:13px;">radius-none</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">0px</p>
+            </div>
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:4px;"></div>
+              <strong style="font-size:13px;">radius-sm</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">4px (Swatches)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:8px;"></div>
+              <strong style="font-size:13px;">radius-md</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">8px (Controls)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:12px;"></div>
+              <strong style="font-size:13px;">radius-lg</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">12px (Cards)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:16px;"></div>
+              <strong style="font-size:13px;">radius-xl</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">16px (Modals)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:9999px;"></div>
+              <strong style="font-size:13px;">radius-full</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">9999px (Pills)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.3 Elevation Shadows -->
+        <div class="category-block" data-figma-node="❖ Primitives / Elevation Shadows">
+          <h2 class="category-title">Elevation &amp; Hairline Surfaces</h2>
+          <div class="grid-4-cols">
+            <div class="primitive-card">
+              <div class="shadow-preview" style="box-shadow: none; border: 1px solid #CBD5E1;">hairline 1px</div>
+              <strong style="font-size:14px;">rule-1px (At Rest)</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">1px solid var(--po-line-strong)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="shadow-preview" style="box-shadow: 0 4px 8px -2px rgba(16,24,40,0.08);">z-20</div>
+              <strong style="font-size:14px;">shadow-sm</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">0 4px 8px rgba(0,0,0,0.08)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="shadow-preview" style="box-shadow: 0 12px 24px -4px rgba(16,24,40,0.12);">z-30</div>
+              <strong style="font-size:14px;">shadow-lg</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">0 12px 24px rgba(0,0,0,0.12)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="shadow-preview" style="box-shadow: 0 24px 48px -12px rgba(16,24,40,0.18);">z-50</div>
+              <strong style="font-size:14px;">shadow-xl (Modal)</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">0 24px 48px rgba(0,0,0,0.18)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.4 12-Column Responsive Layout Grid -->
+        <div class="category-block" data-figma-node="❖ Primitives / 12-Column Grid">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">12-Column Responsive Layout Grid &amp; Section Rail</h2>
+              <p class="category-desc">Container Max-Width: 1160px–1280px • Left Rail: 176px (Rail A) / 200px (Rail B) • Margin: 64px</p>
+            </div>
+          </div>
+          <div class="cols-12-visualizer">
+            <div class="col-bar">1</div><div class="col-bar">2</div><div class="col-bar">3</div><div class="col-bar">4</div>
+            <div class="col-bar">5</div><div class="col-bar">6</div><div class="col-bar">7</div><div class="col-bar">8</div>
+            <div class="col-bar">9</div><div class="col-bar">10</div><div class="col-bar">11</div><div class="col-bar">12</div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 03: TYPOGRAPHY SYSTEM
+         ======================================================================= -->
+    <section id="section-typography" data-section="typography" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">03</span>
+              <span>Porphyry Typography System</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>3-Role Font Stack (Cinzel · Jost · Geist Mono)</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-typography', 'Porphyry Typography System')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry mark: a stage opening cut into a block of stone" width="28" height="28">
+  <title>Porphyry mark</title>
+  
+  <path fill-rule="evenodd" d="M12 6H44L52 14V58H12V6Z M22 44L27 14H37L42 44Z" fill="#241017"/>
+  <rect x="22" y="44" width="20" height="8" fill="#b98d45"/>
+</svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- Font Families -->
+        <div class="category-block" data-figma-node="❖ Typography / Font Families">
+          <h2 class="category-title">Typeface Tokens (--po-font-*)</h2>
+          <div class="grid-3-cols">
+            <div class="surface-box" style="background:#FAFAFA;">
+              <span class="badge-version">HEADINGS &amp; DISPLAY</span>
+              <div style="font-size:44px; font-weight:700; color:var(--primary-70); font-family:var(--brand-display); margin:12px 0 6px 0;">Aa</div>
+              <strong style="font-size:17px;">Cinzel</strong>
+              <p class="swatch-sub" style="margin-top:6px;">--po-font-display · Display &amp; Section Headlines</p>
+            </div>
+            <div class="surface-box" style="background:#FAFAFA;">
+              <span class="badge-version" style="background:#F5F0FF; color:#6739D2;">UI &amp; READING COPY</span>
+              <div style="font-size:44px; font-weight:600; color:var(--secondary-60); font-family:var(--brand-reading); margin:12px 0 6px 0;">Aa</div>
+              <strong style="font-size:17px;">Jost</strong>
+              <p class="swatch-sub" style="margin-top:6px;">--po-font-reading · 60ch–66ch Body &amp; UI Controls</p>
+            </div>
+            <div class="surface-box" style="background:#FAFAFA;">
+              <span class="badge-version" style="background:#F0FFF4; color:#18B368;">HEX, RAIL &amp; TABULAR DATA</span>
+              <div style="font-size:44px; font-weight:600; color:#18B368; font-family:var(--brand-mono); margin:12px 0 6px 0;">01</div>
+              <strong style="font-size:17px;">Geist Mono</strong>
+              <p class="swatch-sub" style="margin-top:6px;">--po-font-mono · Rail Numbers, Tokens &amp; Ledger Figures</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Type Scale -->
+        <div class="category-block" data-figma-node="❖ Typography / Scale">
+          <h2 class="category-title">Type Scale &amp; Hierarchy</h2>
+          <div style="border-top: 1px solid var(--border-default);">
+            <div class="type-row">
+              <div>
+                <strong>Display XL (Hero H1)</strong>
+                <div class="type-meta">Cinzel • 48px / 0.94 • -0.03em</div>
+              </div>
+              <div style="font-family:var(--brand-display); font-size:42px; font-weight:700; letter-spacing:-0.03em; line-height:1.05;">Porphyry, marble, gold leaf and one dark stage.</div>
+            </div>
+            <div class="type-row">
+              <div>
+                <strong>Heading H1 (Sheet Title)</strong>
+                <div class="type-meta">Cinzel • 26px / 34px • Bold • -0.02em</div>
+              </div>
+              <div style="font-family:var(--brand-display); font-size:26px; font-weight:700; letter-spacing:-0.02em;">Porphyry Architecture &amp; Surface Rules</div>
+            </div>
+            <div class="type-row">
+              <div>
+                <strong>Heading H2 (Section Group)</strong>
+                <div class="type-meta">Cinzel • 24px / 32px • Bold • -0.02em</div>
+              </div>
+              <div style="font-family:var(--brand-display); font-size:24px; font-weight:700; letter-spacing:-0.02em;">Main Colors, Primitives &amp; Contrast Ledger</div>
+            </div>
+            <div class="type-row">
+              <div>
+                <strong>Body Regular (66ch Measure)</strong>
+                <div class="type-meta">Jost • 16px / 1.60 • Regular</div>
+              </div>
+              <div style="font-size:16px; color:#334155; font-family:var(--brand-reading); max-width:66ch;">A page composed like a stage: one stone, one light, and a cast that stands in front of the word.</div>
+            </div>
+            <div class="type-row">
+              <div>
+                <strong>Token Label / Tabular Mono</strong>
+                <div class="type-meta">Geist Mono • 13px / 1.50 • Regular</div>
+              </div>
+              <div style="font-size:13px; color:#64748B; font-family:var(--brand-mono);">--po-porphyry-ink • #A6395C • --po-porphyry • #7A1F3D</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 04: LOGO & BRAND IDENTITY (KUWAYAMA 64-GRID)
+         ======================================================================= -->
+    <section id="section-logo" data-section="logo" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">04</span>
+              <span>Porphyry Logo &amp; Brand Identity</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>64×64 Construction Grid, Surface Polarity, Outlined Lockups &amp; 16px Compact</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-logo', 'Porphyry Logo & Brand')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry mark: a stage opening cut into a block of stone" width="28" height="28">
+  <title>Porphyry mark</title>
+  
+  <path fill-rule="evenodd" d="M12 6H44L52 14V58H12V6Z M22 44L27 14H37L42 44Z" fill="#241017"/>
+  <rect x="22" y="44" width="20" height="8" fill="#b98d45"/>
+</svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- 4.1 Primary Mark & Surface Polarity -->
+        <div class="category-block" data-figma-node="❖ Brand / Logo Construction & Surfaces">
+          <h2 class="category-title">Primary Mark &amp; Surface Polarity</h2>
+          <div class="grid-3-cols">
+            <div class="surface-box blueprint-grid" style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:200px;">
+              <div style="padding:20px 28px; background:#FFFFFF; border:1.5px dashed var(--primary-70); border-radius:14px; display:flex; align-items:center; gap:14px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry mark: a stage opening cut into a block of stone" width="44" height="44">
+  <title>Porphyry mark</title>
+  
+  <path fill-rule="evenodd" d="M12 6H44L52 14V58H12V6Z M22 44L27 14H37L42 44Z" fill="#241017"/>
+  <rect x="22" y="44" width="20" height="8" fill="#b98d45"/>
+</svg>
+                <span style="font-family:var(--brand-display); font-size:24px; font-weight:800; letter-spacing:-0.03em; color:#111827;">Porphyry</span>
+              </div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:var(--primary-70); margin-top:12px;">64×64 Grid · Clearspace = 3–4 Units</span>
+            </div>
+
+            <div class="surface-box" style="background:#111827; color:#FFFFFF; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:200px;">
+              <div style="display:flex; align-items:center; gap:14px;">
+                <div class="tnd-logo-circle" style="border:none;">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry mark: a stage opening cut into a block of stone" width="28" height="28">
+  <title>Porphyry mark</title>
+  
+  <path fill-rule="evenodd" d="M12 6H44L52 14V58H12V6Z M22 44L27 14H37L42 44Z" fill="#241017"/>
+  <rect x="22" y="44" width="20" height="8" fill="#b98d45"/>
+</svg>
+                </div>
+                <span style="font-family:var(--brand-display); font-size:24px; font-weight:800;">Porphyry</span>
+              </div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#94A3B8; margin-top:14px;">Dark / Night Surface (#111827)</span>
+            </div>
+
+            <div class="surface-box" style="background:var(--primary-70); color:#FFFFFF; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:200px;">
+              <div style="display:flex; align-items:center; gap:14px;">
+                <div class="tnd-logo-circle" style="border:none;">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry mark: a stage opening cut into a block of stone" width="28" height="28">
+  <title>Porphyry mark</title>
+  
+  <path fill-rule="evenodd" d="M12 6H44L52 14V58H12V6Z M22 44L27 14H37L42 44Z" fill="#241017"/>
+  <rect x="22" y="44" width="20" height="8" fill="#b98d45"/>
+</svg>
+                </div>
+                <span style="font-family:var(--brand-display); font-size:24px; font-weight:800;">Porphyry</span>
+              </div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:rgba(255,255,255,0.85); margin-top:14px;">Brand Accent Surface (#A6395C)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4.2 Mark Variants & Scale Strip -->
+        <div class="category-block" data-figma-node="❖ Brand / Mark Family & Scale Strip">
+          <h2 class="category-title">Mark Family (Primary · Reverse · 16px Compact · Glyph)</h2>
+          <div class="grid-4-cols">
+            <div class="primitive-card" style="background:#FFFFFF; padding:24px;">
+              <div style="height:72px; display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry mark: a stage opening cut into a block of stone" width="56" height="56">
+  <title>Porphyry mark</title>
+  
+  <path fill-rule="evenodd" d="M12 6H44L52 14V58H12V6Z M22 44L27 14H37L42 44Z" fill="#241017"/>
+  <rect x="22" y="44" width="20" height="8" fill="#b98d45"/>
+</svg>
+              </div>
+              <strong style="font-size:14px;">mark.svg</strong>
+              <p class="swatch-sub" style="margin-top:4px;">Primary 64×64 construction</p>
+            </div>
+            <div class="primitive-card" style="background:#111827; color:#FFFFFF; padding:24px;">
+              <div style="height:72px; display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry mark, reverse" width="56" height="56">
+  <title>Porphyry mark, reverse</title>
+  
+  <path fill-rule="evenodd" d="M12 6H44L52 14V58H12V6Z M22 44L27 14H37L42 44Z" fill="#f2ead9"/>
+  <rect x="22" y="44" width="20" height="8" fill="#d8b269"/>
+</svg>
+              </div>
+              <strong style="font-size:14px; color:#FFFFFF;">mark-reverse.svg</strong>
+              <p class="swatch-sub" style="margin-top:4px; color:#94A3B8;">Reverse on dark/loud field</p>
+            </div>
+            <div class="primitive-card" style="background:#FFFFFF; padding:24px;">
+              <div style="height:72px; display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:12px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry compact mark" width="40" height="40">
+  <title>Porphyry compact mark</title>
+  
+  <path fill-rule="evenodd" d="M10 6H44L54 16V58H10V6Z M20 44L26 14H38L44 44Z" fill="#241017"/>
+  <rect x="20" y="44" width="24" height="9" fill="#b98d45"/>
+</svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry compact mark" width="16" height="16">
+  <title>Porphyry compact mark</title>
+  
+  <path fill-rule="evenodd" d="M10 6H44L54 16V58H10V6Z M20 44L26 14H38L44 44Z" fill="#241017"/>
+  <rect x="20" y="44" width="24" height="9" fill="#b98d45"/>
+</svg>
+              </div>
+              <strong style="font-size:14px;">mark-compact.svg</strong>
+              <p class="swatch-sub" style="margin-top:4px;">Separate 16–24px drawing</p>
+            </div>
+            <div class="primitive-card" style="background:#FFFFFF; padding:24px;">
+              <div style="height:72px; display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:12px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry glyph" width="40" height="40">
+  <title>Porphyry glyph</title>
+  
+  <path fill="currentColor" fill-rule="evenodd" d="M12 6H44L52 14V58H12V6Z M22 44L27 14H37L42 44Z"/>
+</svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry glyph" width="16" height="16">
+  <title>Porphyry glyph</title>
+  
+  <path fill="currentColor" fill-rule="evenodd" d="M12 6H44L52 14V58H12V6Z M22 44L27 14H37L42 44Z"/>
+</svg>
+              </div>
+              <strong style="font-size:14px;">glyph.svg</strong>
+              <p class="swatch-sub" style="margin-top:4px;">16px favicon &amp; tab badge</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 05: COMPANION CAST, ICONOGRAPHY & SPOT ILLUSTRATIONS
+         ======================================================================= -->
+    <section id="section-assets" data-section="assets" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">05</span>
+              <span>Porphyry Companion Cast, Icons &amp; Illustrations</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>6-Mark Companion Cast (64×64 Grid), 24px Keyline Icons &amp; Spot Illustrations</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-assets', 'Porphyry Cast & Assets')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry mark: a stage opening cut into a block of stone" width="28" height="28">
+  <title>Porphyry mark</title>
+  
+  <path fill-rule="evenodd" d="M12 6H44L52 14V58H12V6Z M22 44L27 14H37L42 44Z" fill="#241017"/>
+  <rect x="22" y="44" width="20" height="8" fill="#b98d45"/>
+</svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- 5.1 6-Mark Companion Cast -->
+        <div class="category-block" data-figma-node="❖ Assets / 6-Mark Companion Cast">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">6-Mark Companion Cast (Kuwayama 64×64 Grid)</h2>
+              <p class="category-desc">Domain-specific companion symbols drawn on the same 64-unit grid and cut-line weight as the primary mark.</p>
+            </div>
+          </div>
+          <div class="cast-grid-6">
+            
+            <div class="icon-cell" onclick="copyHex('cast/datum.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Datum"><path d="M6 50H58V56H6Z M28 8H36V50H28Z M16 18H48V22H16Z" fill="#A6395C"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Datum</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/datum.svg</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('cast/grid.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Grid"><path d="M6 6H20V20H6Z M26 6H40V20H26Z M46 6H60V20H46Z M6 26H20V40H6Z M26 26H40V40H26Z M48 44H62V58H48Z M6 46H20V60H6Z M26 46H40V60H26Z" fill="#A6395C"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Grid</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/grid.svg</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('cast/horizon.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Horizon"><path d="M6 46H58V52H6Z M32 10L38 26L54 32L38 38L32 46L26 38L10 32L26 26Z" fill="#A6395C"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Horizon</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/horizon.svg</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('cast/frame.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Frame"><path d="M8 6H20V58H8Z M44 6H56V58H44Z M20 18H44V22H20Z M20 40H44V44H20Z" fill="#A6395C"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Frame</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/frame.svg</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('cast/beacon.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Beacon"><path d="M20 8H44V18H20Z M28 18H36V56H28Z M24 56H40V60H24Z" fill="#A6395C"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Beacon</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/beacon.svg</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('cast/step.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Step"><path d="M8 52H56V58H8Z M14 40H26V52H14Z M30 28H42V52H30Z M46 14H58V52H46Z" fill="#A6395C"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Step</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/step.svg</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5.2 System Icons (24x24 Keyline Grid) -->
+        <div class="category-block" data-figma-node="❖ Assets / 24px Icon Grid">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">System Iconography (24×24px Keyline)</h2>
+              <p class="category-desc">1.75px stroke, rounded caps. Click any icon card to copy its token identifier.</p>
+            </div>
+          </div>
+          <div class="icon-grid-8">
+            <div class="icon-cell" onclick="copyHex('icon-search', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.3-4.3"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">search</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-layers', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">layers</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-bell', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">bell</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-shield', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">shield</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-folder', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">folder</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-sparkles', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">sparkles</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-sliders', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">sliders</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-terminal', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">terminal</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5.3 Empty State Spot Illustrations -->
+        <div class="category-block" data-figma-node="❖ Assets / Spot Illustrations">
+          <h2 class="category-title">Spot Illustrations (Empty &amp; Status States)</h2>
+          <div class="grid-4-cols">
+            <div class="primitive-card" style="padding:24px;">
+              <svg width="88" height="88" viewBox="0 0 120 120" fill="none" style="margin:0 auto 12px auto; display:block;">
+                <circle cx="60" cy="60" r="46" fill="#FFE8ED"/>
+                <rect x="34" y="42" width="52" height="40" rx="6" fill="white" stroke="#A6395C" stroke-width="2.5"/>
+                <rect x="44" y="54" width="24" height="4" rx="2" fill="#EA8FA5"/>
+                <rect x="44" y="64" width="16" height="4" rx="2" fill="#FFD3DD"/>
+                <circle cx="82" cy="40" r="10" fill="#7A1F3D"/>
+                <path d="M82 36V44M78 40H86" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <strong style="font-size:14px;">empty-documents</strong>
+              <p class="swatch-sub" style="margin-top:4px;">Zero-data tables &amp; folders</p>
+            </div>
+
+            <div class="primitive-card" style="padding:24px;">
+              <svg width="88" height="88" viewBox="0 0 120 120" fill="none" style="margin:0 auto 12px auto; display:block;">
+                <circle cx="60" cy="60" r="46" fill="#FFE9ED"/>
+                <circle cx="55" cy="55" r="20" fill="white" stroke="#7A1F3D" stroke-width="2.5"/>
+                <path d="M70 70L84 84" stroke="#7A1F3D" stroke-width="4" stroke-linecap="round"/>
+                <path d="M49 55H61" stroke="#E393A5" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+              <strong style="font-size:14px;">empty-search</strong>
+              <p class="swatch-sub" style="margin-top:4px;">No matching filter results</p>
+            </div>
+
+            <div class="primitive-card" style="padding:24px;">
+              <svg width="88" height="88" viewBox="0 0 120 120" fill="none" style="margin:0 auto 12px auto; display:block;">
+                <circle cx="60" cy="60" r="46" fill="#F0FFF4"/>
+                <circle cx="60" cy="60" r="24" fill="#18B368"/>
+                <path d="M50 60.5L56.5 67L71 52.5" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <strong style="font-size:14px;">status-verified</strong>
+              <p class="swatch-sub" style="margin-top:4px;">Release &amp; sync completed</p>
+            </div>
+
+            <div class="primitive-card" style="padding:24px;">
+              <svg width="88" height="88" viewBox="0 0 120 120" fill="none" style="margin:0 auto 12px auto; display:block;">
+                <circle cx="60" cy="60" r="46" fill="#FFF1F2"/>
+                <path d="M60 36L86 80H34L60 36Z" fill="white" stroke="#E11D48" stroke-width="2.5" stroke-linejoin="round"/>
+                <path d="M60 52V64" stroke="#E11D48" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="60" cy="71" r="2" fill="#E11D48"/>
+              </svg>
+              <strong style="font-size:14px;">status-warning</strong>
+              <p class="swatch-sub" style="margin-top:4px;">Destructive &amp; offline alerts</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 06: CORE UI COMPONENTS STICKER SHEET
+         ======================================================================= -->
+    <section id="section-components" data-section="components" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">06</span>
+              <span>Porphyry Core UI Components</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>Buttons, Form Controls, Double-Reported Validation &amp; Status Badges</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-components', 'Porphyry UI Components')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry mark: a stage opening cut into a block of stone" width="28" height="28">
+  <title>Porphyry mark</title>
+  
+  <path fill-rule="evenodd" d="M12 6H44L52 14V58H12V6Z M22 44L27 14H37L42 44Z" fill="#241017"/>
+  <rect x="22" y="44" width="20" height="8" fill="#b98d45"/>
+</svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- Buttons -->
+        <div class="category-block" data-figma-node="❖ Components / Button Variants">
+          <h2 class="category-title">Buttons &amp; Action Hierarchy</h2>
+          <div class="surface-box" style="display:flex; flex-wrap:wrap; gap:14px; align-items:center;">
+            <button class="btn btn-primary">Primary (#A6395C)</button>
+            <button class="btn btn-secondary">Secondary (#7A1F3D)</button>
+            <button class="btn btn-success">Tertiary (#E08A78)</button>
+            <button class="btn btn-subtle">Subtle Surface</button>
+            <button class="btn btn-outline">Outline Neutral</button>
+            <button class="btn btn-danger">Destructive</button>
+          </div>
+        </div>
+
+        <!-- Form Inputs & Badges -->
+        <div class="category-block" data-figma-node="❖ Components / Inputs & Badges">
+          <div class="grid-2-cols">
+            <div class="surface-box">
+              <h3 style="margin:0 0 16px 0; font-size:17px;">Form Input States &amp; Validation</h3>
+              <div style="display:flex; flex-direction:column; gap:14px;">
+                <div>
+                  <label style="display:block; font-size:12px; font-weight:600; margin-bottom:6px;">Default Input</label>
+                  <input type="text" class="input-field" value="spec@porphyry.design" readonly />
+                </div>
+                <div>
+                  <label style="display:block; font-size:12px; font-weight:600; color:var(--primary-70); margin-bottom:6px;">Focused Ring (--po-porphyry-ink)</label>
+                  <input type="text" class="input-field" style="border-color:var(--primary-70); box-shadow: 0 0 0 3px #FFD3DD;" value="Porphyry Token 1.0.0" readonly />
+                </div>
+                <div>
+                  <label style="display:block; font-size:12px; font-weight:600; color:#E11D48; margin-bottom:6px;">Double-Reported Error State (aria-invalid="true")</label>
+                  <input type="text" class="input-field" style="border-color:#E11D48; background:#FFF1F2;" value="--po-legacy-token" aria-invalid="true" readonly />
+                  <div style="margin-top:8px; padding:10px 12px; border-radius:8px; background:#FFF1F2; border:1px solid #FECDD3; font-size:12px; color:#9F1239;">
+                    <strong>2 validation problems:</strong> Token must resolve to a Layer 1 primitive, and contrast must be ≥ 4.5:1 for body text.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="surface-box">
+              <h3 style="margin:0 0 16px 0; font-size:17px;">Status Pills &amp; Badges</h3>
+              <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                <span class="badge-pill" style="background:#FFE8ED; color:#5F0B2C;">● --po-porphyry-ink</span>
+                <span class="badge-pill" style="background:#FFE9ED; color:#5A152C;">● --po-porphyry</span>
+                <span class="badge-pill" style="background:#F0FFF4; color:#18B368;">● Verified Pass</span>
+                <span class="badge-pill" style="background:#FFFBEB; color:#B45309;">● Graphic Only</span>
+                <span class="badge-pill" style="background:#FFF1F2; color:#E11D48;">● Deprecated</span>
+              </div>
+              <div style="margin-top:24px; padding-top:16px; border-top:1px solid #F1F5F9; display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:13px; color:#64748B;">Ready for Figma import or per-section HTML copy</span>
+                <button class="btn btn-subtle" style="padding:6px 12px; font-size:12px;" onclick="copySectionHTML('section-components', 'Porphyry UI Components')">Copy Markup →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 07: MODALS, DRAWERS, TOASTS & OVERLAYS
+         ======================================================================= -->
+    <section id="section-overlays" data-section="overlays" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">07</span>
+              <span>Porphyry Modals, Drawers &amp; Overlays</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>Dialog Anatomy, Destructive Confirmation &amp; Live Modal Preview</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="btn btn-primary" style="padding:7px 14px; font-size:12px;" onclick="openLiveModal()">
+              <span>Launch Live Modal</span>
+            </button>
+            <button class="section-copy-btn" onclick="copySectionHTML('section-overlays', 'Porphyry Modals & Overlays')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry mark: a stage opening cut into a block of stone" width="28" height="28">
+  <title>Porphyry mark</title>
+  
+  <path fill-rule="evenodd" d="M12 6H44L52 14V58H12V6Z M22 44L27 14H37L42 44Z" fill="#241017"/>
+  <rect x="22" y="44" width="20" height="8" fill="#b98d45"/>
+</svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <div class="category-block" data-figma-node="❖ Overlays / Modal Dialog Variants">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">Modal Dialogs (Form &amp; Destructive Variants)</h2>
+              <p class="category-desc">Static artboard sticker sheet + interactive live modal preview.</p>
+            </div>
+          </div>
+
+          <div class="modal-stage">
+            <div class="modal-card">
+              <div style="padding:18px 22px; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <strong style="font-size:15px;">Publish Porphyry Design Token Release</strong>
+                  <p class="swatch-sub" style="margin-top:2px;">Sync variables to Figma &amp; CSS token bundles</p>
+                </div>
+                <span style="color:#94A3B8; font-weight:700;">✕</span>
+              </div>
+              <div style="padding:20px 22px; display:flex; flex-direction:column; gap:14px;">
+                <div>
+                  <label style="display:block; font-size:12px; font-weight:600; margin-bottom:5px;">Release Tag</label>
+                  <input type="text" class="input-field" value="1.0.0-porphyry" readonly />
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                  <span class="badge-pill" style="background:#FFE8ED; color:#5F0B2C;">Figma Variables</span>
+                  <span class="badge-pill" style="background:#FFE9ED; color:#5A152C;">CSS Tokens (--po-*)</span>
+                  <span class="badge-pill" style="background:#F0FFF4; color:#18B368;">SVG Cast (6)</span>
+                </div>
+              </div>
+              <div style="padding:14px 22px; background:#FAFAFA; border-top:1px solid #F1F5F9; display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-outline" style="padding:7px 14px; font-size:12px;">Cancel</button>
+                <button class="btn btn-primary" style="padding:7px 14px; font-size:12px;" onclick="openLiveModal()">Publish Release</button>
+              </div>
+            </div>
+
+            <div class="modal-card" style="border-color:#FECDD3;">
+              <div style="padding:22px;">
+                <div style="width:40px; height:40px; border-radius:9999px; background:#FFF1F2; color:#E11D48; display:flex; align-items:center; justify-content:center; font-weight:800; margin-bottom:12px;">!</div>
+                <strong style="font-size:15px;">Revoke Deprecated Token?</strong>
+                <p class="swatch-sub" style="margin-top:6px;">Removing <code style="color:#E11D48;">--po-legacy-50</code> will affect linked Figma component libraries.</p>
+              </div>
+              <div style="padding:14px 22px; background:#FAFAFA; border-top:1px solid #F1F5F9; display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-outline" style="padding:7px 14px; font-size:12px;">Keep</button>
+                <button class="btn btn-danger" style="padding:7px 14px; font-size:12px;">Revoke Token</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 08: DATA DISPLAY, TABLES & TOKEN SHEETS
+         ======================================================================= -->
+    <section id="section-patterns" data-section="patterns" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">08</span>
+              <span>Porphyry Data Display, Patterns &amp; Token Sheets</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>KPI Metric Cards, Token Registry Table &amp; Copyable CSS Sheets</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-patterns', 'Porphyry Data & Patterns')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Porphyry mark: a stage opening cut into a block of stone" width="28" height="28">
+  <title>Porphyry mark</title>
+  
+  <path fill-rule="evenodd" d="M12 6H44L52 14V58H12V6Z M22 44L27 14H37L42 44Z" fill="#241017"/>
+  <rect x="22" y="44" width="20" height="8" fill="#b98d45"/>
+</svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- 8.1 KPI Cards -->
+        <div class="category-block" data-figma-node="❖ Patterns / KPI Metric Cards">
+          <h2 class="category-title">System Metric Cards</h2>
+          <div class="grid-3-cols">
+            <div class="surface-box">
+              <div style="display:flex; justify-content:space-between; font-size:13px; color:#64748B;">
+                <span>Design Token Coverage</span>
+                <span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">100% Synced</span>
+              </div>
+              <div style="font-size:32px; font-weight:800; margin:10px 0 4px 0;">18 Primitives</div>
+              <div style="font-family:var(--font-mono); font-size:11px; color:#94A3B8;">Namespace: --po-* · OKLCH verified</div>
+            </div>
+            <div class="surface-box">
+              <div style="display:flex; justify-content:space-between; font-size:13px; color:#64748B;">
+                <span>Contrast Ledger</span>
+                <span class="badge-pill" style="background:#FFE8ED; color:#5F0B2C; font-size:11px;">2 Published Fails</span>
+              </div>
+              <div style="font-size:32px; font-weight:800; margin:10px 0 4px 0;">11 Pairs</div>
+              <div style="font-family:var(--font-mono); font-size:11px; color:#94A3B8;">Measured from hex in tokens.json</div>
+            </div>
+            <div class="surface-box">
+              <div style="display:flex; justify-content:space-between; font-size:13px; color:#64748B;">
+                <span>Convertible Figma Artboards</span>
+                <span class="badge-pill" style="background:#FFE9ED; color:#5A152C; font-size:11px;">Zero-CDN</span>
+              </div>
+              <div style="font-size:32px; font-weight:800; margin:10px 0 4px 0;">8 Sheets</div>
+              <div style="font-family:var(--font-mono); font-size:11px; color:#94A3B8;">Isolated &lt;section&gt; blocks</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8.2 Token Registry Table -->
+        <div class="category-block" data-figma-node="❖ Patterns / Data Table">
+          <h2 class="category-title">Token Registry Table</h2>
+          <div class="surface-box" style="padding:0; overflow:hidden;">
+            <table class="ds-table">
+              <thead>
+                <tr>
+                  <th>Token Name</th>
+                  <th>Role / Usage</th>
+                  <th>HEX Value</th>
+                  <th>OKLCH</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                <tr onclick="copyHex('#160A0F', '--po-stage')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-stage</td>
+                  <td>the dark of the auditorium; the page ground</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#160A0F;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#160A0F</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.165 0.023 353.3)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#1F1017', '--po-stage-plate')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-stage-plate</td>
+                  <td>a raised plate on the stage</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#1F1017;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#1F1017</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.197 0.028 350.5)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#0F070A', '--po-stage-sunken')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-stage-sunken</td>
+                  <td>the pit: sunken wells and quiet bands</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#0F070A;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#0F070A</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.142 0.016 353.7)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#7A1F3D', '--po-porphyry')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-porphyry</td>
+                  <td>the stone field; a surface, never body copy</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#7A1F3D;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#7A1F3D</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.396 0.127 5.2)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#4A1226', '--po-porphyry-deep')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-porphyry-deep</td>
+                  <td>the shadow inside the stone</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#4A1226;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#4A1226</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.284 0.086 2.6)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#A6395C', '--po-porphyry-ink')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-porphyry-ink</td>
+                  <td>the stone as ornament on the stage (3.10:1, decoration only)</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#A6395C;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#A6395C</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.509 0.146 4.1)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#C9A45C', '--po-gold')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-gold</td>
+                  <td>the signal: one light, gold leaf, focus, the only accent</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#C9A45C;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#C9A45C</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.737 0.101 82.7)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#E3C98E', '--po-gold-bright')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-gold-bright</td>
+                  <td>the lit edge of the gold</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#E3C98E;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#E3C98E</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.844 0.082 86.8)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#7A561F', '--po-gold-ink')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-gold-ink</td>
+                  <td>gold as type on vellum (5.63:1)</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#7A561F;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#7A561F</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.481 0.085 74.4)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#F2EAD9', '--po-marble')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-marble</td>
+                  <td>lit marble; reading ink on the stage</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#F2EAD9;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#F2EAD9</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.939 0.024 85.8)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#B7A99B', '--po-marble-dim')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-marble-dim</td>
+                  <td>second ink on the stage</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#B7A99B;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#B7A99B</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.743 0.026 67.4)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#241017', '--po-ink')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-ink</td>
+                  <td>ink on vellum; the reading ink on paper</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#241017;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#241017</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.205 0.035 358.3)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#F4ECDD', '--po-vellum')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-vellum</td>
+                  <td>the light surface; proof plates and fields</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#F4ECDD;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#F4ECDD</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.945 0.022 83.3)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#E8DDC6', '--po-vellum-deep')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-vellum-deep</td>
+                  <td>the light surface, one shade under</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#E8DDC6;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#E8DDC6</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.900 0.033 85.5)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#6F5F57', '--po-vellum-muted')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-vellum-muted</td>
+                  <td>second ink on vellum</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#6F5F57;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#6F5F57</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.499 0.024 48.2)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#4A3238', '--po-rule-dark')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-rule-dark</td>
+                  <td>engraved hairline on the stage</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#4A3238;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#4A3238</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.347 0.036 2.7)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#CDBDA4', '--po-rule-light')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-rule-light</td>
+                  <td>engraved hairline on vellum</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#CDBDA4;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#CDBDA4</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.805 0.039 79.0)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#E08A78', '--po-ember')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--po-ember</td>
+                  <td>invalid only; never a decorative fill</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#E08A78;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#E08A78</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.719 0.109 32.6)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 8.3 Copyable CSS Token Sheets -->
+        <div class="category-block" data-figma-node="❖ Patterns / CSS Token Sheets">
+          <h2 class="category-title">Copyable CSS Token Sheets</h2>
+          <div class="grid-2-cols">
+            <div class="code-sheet-card">
+              <div class="code-sheet-head">
+                <span>1 · PRIMITIVES (--po-*)</span>
+                <button class="btn-tool" style="padding:3px 9px; font-size:11px;" onclick="copyToClipboard(document.getElementById('code-prim').textContent, 'Copied Primitives CSS')">Copy CSS</button>
+              </div>
+              <pre id="code-prim" class="code-sheet-pre">/* 1 · Primitives (Porphyry --po-*) */
+:root {
+  --po-stage: #160A0F; /* oklch(0.165 0.023 353.3) */
+  --po-stage-plate: #1F1017; /* oklch(0.197 0.028 350.5) */
+  --po-stage-sunken: #0F070A; /* oklch(0.142 0.016 353.7) */
+  --po-porphyry: #7A1F3D; /* oklch(0.396 0.127 5.2) */
+  --po-porphyry-deep: #4A1226; /* oklch(0.284 0.086 2.6) */
+  --po-porphyry-ink: #A6395C; /* oklch(0.509 0.146 4.1) */
+  --po-gold: #C9A45C; /* oklch(0.737 0.101 82.7) */
+  --po-gold-bright: #E3C98E; /* oklch(0.844 0.082 86.8) */
+  --po-gold-ink: #7A561F; /* oklch(0.481 0.085 74.4) */
+  --po-marble: #F2EAD9; /* oklch(0.939 0.024 85.8) */
+  --po-marble-dim: #B7A99B; /* oklch(0.743 0.026 67.4) */
+  --po-ink: #241017; /* oklch(0.205 0.035 358.3) */
+  --po-vellum: #F4ECDD; /* oklch(0.945 0.022 83.3) */
+  --po-vellum-deep: #E8DDC6; /* oklch(0.900 0.033 85.5) */
+  --po-vellum-muted: #6F5F57; /* oklch(0.499 0.024 48.2) */
+  --po-rule-dark: #4A3238; /* oklch(0.347 0.036 2.7) */
+  --po-rule-light: #CDBDA4; /* oklch(0.805 0.039 79.0) */
+  --po-ember: #E08A78; /* oklch(0.719 0.109 32.6) */
+}</pre>
+            </div>
+            <div class="code-sheet-card">
+              <div class="code-sheet-head">
+                <span>2 · FULL TOKEN SHEET (porphyry-tokens.css)</span>
+                <button class="btn-tool" style="padding:3px 9px; font-size:11px;" onclick="copyToClipboard(document.getElementById('code-sem').textContent, 'Copied Full Token CSS')">Copy CSS</button>
+              </div>
+              <pre id="code-sem" class="code-sheet-pre">/* Porphyry — token source, v1.0. Three layers: primitive → semantic →
+   component. Namespaced --po-* so it never touches the host site's tokens.
+   The stage is the default surface; the vellum is the proof surface, scoped to
+   html[data-po='vellum'] so a theme flip never renames a primitive. */
+
+@font-face {
+  font-family: 'Cinzel';
+  src: url('/brand/porphyry/fonts/Cinzel.woff2') format('woff2');
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Jost';
+  src: url('/brand/porphyry/fonts/Jost.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pinyon Script';
+  src: url('/brand/porphyry/fonts/PinyonScript-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+.po-scope {
+  /* Theme DNA: the mark, the engraved rule and the fields all read this object */
+  --po-dna-family: architectural block;
+  --po-dna-material: porphyry + marble + gold leaf + one dark stage;
+  --po-dna-edge: 0 radius, 1px engraved rule;
+  --po-dna-offset: none — depth comes from light, never misregistration;
+  --po-dna-stroke: 0 (fill only);
+  --po-dna-tile: none;
+  --po-dna-radius: 0;
+  --po-dna-ring: 2px gold + 2px offset;
+  --po-dna-density: airy;
+  --po-dna-label: caps 0.22em Jost 500;
+  --po-dna-field-recipe: inscribed slab;
+  --po-dna-mark-form: stone block, gold threshold;
+
+  /* 1 · primitive — the stone, the light, the paper */
+  --po-stage: #160a0f;
+  --po-stage-plate: #1f1017;
+  --po-stage-sunken: #0f070a;
+  --po-porphyry: #7a1f3d;
+  --po-porphyry-deep: #4a1226;
+  --po-porphyry-ink: #a6395c;
+  --po-gold: #c9a45c;
+  --po-gold-bright: #e3c98e;
+  --po-gold-ink: #7a561f;
+  --po-marble: #f2ead9;
+  --po-marble-dim: #b7a99b;
+  --po-ink: #241017;
+  --po-vellum: #f4ecdd;
+  --po-vellum-deep: #e8ddc6;
+  --po-vellum-muted: #6f5f57;
+  --po-rule-dark: #4a3238;
+  --po-rule-light: #cdbda4;
+  --po-ember: #e08a78;
+
+  /* 2 · semantic — the stage (default) */
+  --po-surface: var(--po-stage);
+  --po-surface-raised: var(--po-stage-plate);
+  --po-surface-sunken: var(--po-stage-sunken);
+  --po-surface-loud: var(--po-porphyry);
+  --po-surface-stage: var(--po-stage);
+  --po-text: var(--po-marble);
+  --po-text-muted: var(--po-marble-dim);
+  --po-text-on-loud: var(--po-marble);
+  --po-rule: var(--po-rule-dark);
+  --po-rule-strong: var(--po-marble);
+  --po-accent: var(--po-gold);
+  --po-accent-bright: var(--po-gold-bright);
+  --po-accent-ink: var(--po-gold);
+  --po-ornament: var(--po-porphyry-ink);
+  --po-focus: var(--po-gold);
+  --po-error: var(--po-ember);
+  --po-selection: rgb(201 164 92 / 0.26);
+  --po-mark-accent: var(--po-gold);
+
+  /* 3 · component */
+  --po-button-bg: var(--po-gold);
+  --po-button-ink: var(--po-ink);
+  --po-button-quiet-bg: transparent;
+  --po-button-quiet-ink: var(--po-text);
+  --po-field-bg: var(--po-stage-sunken);
+  --po-field-edge: var(--po-rule-dark);
+  --po-field-ink: var(--po-text);
+  --po-field-invalid: var(--po-ember);
+  --po-card-bg: var(--po-stage-plate);
+  --po-card-edge: var(--po-rule-dark);
+
+  /* type */
+  --po-font-display: 'Cinzel', 'Trajan Pro', 'Times New Roman', serif;
+  --po-font-reading: 'Jost', 'Futura', 'Helvetica Neue', Arial, sans-serif;
+  --po-font-script: 'Pinyon Script', 'Snell Roundhand', cursive;
+  --po-font-mono: var(--font-geist-mono), 'Geist Mono', ui-monospace, monospace;
+  --po-scale-display: clamp(2.6rem, 1.2rem + 4.6vw, 5rem);
+  --po-scale-h2: clamp(1.8rem, 1.35rem + 1.6vw, 2.7rem);
+  --po-scale-h3: 1.25rem;
+  --po-scale-body: 1.0625rem;
+  --po-scale-small: 0.9375rem;
+  --po-scale-micro: 0.6875rem;
+  --po-label-tracking: 0.22em;
+
+  /* space, edge, motion */
+  --po-shell: min(1180px, 100% - 40px);
+  --po-gutter: clamp(20px, 4vw, 56px);
+  --po-space-1: 4px;
+  --po-space-2: 8px;
+  --po-space-3: 12px;
+  --po-space-4: 16px;
+  --po-space-5: 24px;
+  --po-space-6: 32px;
+  --po-space-7: 48px;
+  --po-space-8: 72px;
+  --po-space-9: 112px;
+  --po-radius: 0;
+  --po-rule-width: 1px;
+  --po-fast: 120ms;
+  --po-ui: 200ms;
+  --po-slow: 320ms;
+  --po-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --po-ease-in: cubic-bezier(0.7, 0, 0.18, 1);
+
+  /* the stage's light, shared with the preloader's palette */
+  --po-glow: #ffd9a0;
+  --po-vignette: rgb(9 4 6 / 0.9);
+}
+
+html[data-po='vellum'] .po-scope {
+  --po-surface: var(--po-vellum);
+  --po-surface-raised: var(--po-vellum);
+  --po-surface-sunken: var(--po-vellum-deep);
+  --po-surface-loud: var(--po-porphyry);
+  --po-surface-stage: var(--po-stage);
+  --po-text: var(--po-ink);
+  --po-text-muted: var(--po-vellum-muted);
+  --po-text-on-loud: var(--po-marble);
+  --po-rule: var(--po-rule-light);
+  --po-rule-strong: var(--po-ink);
+  --po-accent: var(--po-porphyry);
+  --po-accent-bright: var(--po-gold-ink);
+  --po-accent-ink: var(--po-gold-ink);
+  --po-ornament: var(--po-porphyry);
+  --po-focus: var(--po-porphyry);
+  --po-error: #a3362b;
+  --po-selection: rgb(122 31 61 / 0.18);
+  --po-mark-accent: var(--po-gold-ink);
+  --po-button-bg: var(--po-ink);
+  --po-button-ink: var(--po-vellum);
+  --po-button-quiet-bg: transparent;
+  --po-button-quiet-ink: var(--po-text);
+  --po-field-bg: var(--po-vellum);
+  --po-field-edge: #8c7a63;
+  --po-field-ink: var(--po-ink);
+  --po-field-invalid: #a3362b;
+  --po-card-bg: var(--po-vellum);
+  --po-card-edge: var(--po-rule-light);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .po-scope {
+    --po-fast: 1ms;
+    --po-ui: 1ms;
+    --po-slow: 1ms;
+  }
+}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       LIVE INTERACTIVE MODAL OVERLAY
+       ========================================================================= -->
+  <div id="live-modal" class="live-modal-overlay" onclick="if(event.target === this) closeLiveModal()">
+    <div class="modal-card" style="width:100%; max-width:480px;">
+      <div style="padding:18px 22px; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center;">
+        <strong>Live Porphyry Modal Preview</strong>
+        <button class="btn-tool" style="padding:4px 8px;" onclick="closeLiveModal()">✕</button>
+      </div>
+      <div style="padding:22px; font-size:14px; color:#475569;">
+        <p style="margin:0 0 12px 0;">This interactive modal uses the Porphyry elevation token (<code>shadow-xl</code>) and primary token (<code>--po-porphyry-ink: #A6395C</code>).</p>
+        <div style="padding:12px; background:#FAFAFA; border:1px solid #E2E8F0; border-radius:8px; font-family:var(--font-mono); font-size:12px;">
+          • Primary Action: #A6395C (--po-porphyry-ink)<br/>
+          • Surface: #FFFFFF (Pure White Artboard)
+        </div>
+      </div>
+      <div style="padding:14px 22px; background:#FAFAFA; border-top:1px solid #F1F5F9; display:flex; justify-content:flex-end; gap:10px;">
+        <button class="btn btn-outline" onclick="closeLiveModal()">Close</button>
+        <button class="btn btn-primary" onclick="copySectionHTML('section-overlays', 'Porphyry Modals & Overlays'); closeLiveModal();">Copy Section HTML</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notification -->
+  <div id="toast" class="toast-notification">
+    <span style="color:#4ADE80;">✔</span>
+    <span id="toast-text">Copied to clipboard</span>
+  </div>
+
+  <!-- =========================================================================
+       JAVASCRIPT: FILTERING, SPEC INSPECTOR, CLEAN EXPORT & CLIPBOARD
+       ========================================================================= -->
+  <script>
+    function filterSection(target, btn) {
+      document.querySelectorAll('.nav-pill').forEach(el => el.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      document.querySelectorAll('.figma-sheet').forEach(sec => {
+        if (target === 'all' || sec.getAttribute('data-section') === target) {
+          sec.classList.remove('hidden-sheet');
+        } else {
+          sec.classList.add('hidden-sheet');
+        }
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleSpecMode() {
+      document.body.classList.toggle('spec-mode');
+      const btn = document.getElementById('btn-spec');
+      if (btn) btn.classList.toggle('active-spec');
+    }
+
+    function toggleCleanMode(forceState) {
+      const isClean = forceState !== undefined ? forceState : !document.body.classList.contains('clean-export-mode');
+      const cleanBtn = document.getElementById('btn-clean');
+
+      if (isClean) {
+        document.body.classList.add('clean-export-mode');
+        if (cleanBtn) cleanBtn.classList.add('active-clean');
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.set('clean', '1');
+          window.history.replaceState({}, '', url.toString());
+          copyToClipboard(url.toString(), 'Clean Export Mode active · Copied clean URL (?clean=1)');
+        } catch (e) {
+          showToast('Clean Export Mode active (?clean=1)');
+        }
+      } else {
+        document.body.classList.remove('clean-export-mode');
+        if (cleanBtn) cleanBtn.classList.remove('active-clean');
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.delete('clean');
+          url.searchParams.delete('figma');
+          window.history.replaceState({}, '', url.toString());
+          showToast('Exited Clean Export Mode');
+        } catch (e) {
+          showToast('Exited Clean Export Mode');
+        }
+      }
+    }
+
+    function copyCleanLink() {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('clean', '1');
+        window.history.replaceState({}, '', url.toString());
+        document.body.classList.add('clean-export-mode');
+        const cleanBtn = document.getElementById('btn-clean');
+        if (cleanBtn) cleanBtn.classList.add('active-clean');
+        copyToClipboard(url.toString(), 'Copied Clean Export URL (?clean=1)');
+      } catch (e) {
+        fallbackCopy(window.location.href, 'Copied URL');
+      }
+    }
+
+    function openLiveModal() {
+      document.getElementById('live-modal').classList.add('open');
+    }
+
+    function closeLiveModal() {
+      document.getElementById('live-modal').classList.remove('open');
+    }
+
+    function copyToClipboard(text, message) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(message);
+        }).catch(() => fallbackCopy(text, message));
+        return;
+      }
+      fallbackCopy(text, message);
+    }
+
+    function fallbackCopy(text, message) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast(message);
+      } catch (err) {
+        showToast('Copied');
+      }
+      document.body.removeChild(textarea);
+    }
+
+    function copyHex(hex, label) {
+      copyToClipboard(hex, 'Copied ' + label + ': ' + hex);
+    }
+
+    function copySectionHTML(sectionId, title) {
+      const el = document.getElementById(sectionId);
+      if (!el) return;
+      copyToClipboard(el.outerHTML, 'Copied <section> HTML for "' + title + '"');
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-text').textContent = msg;
+      toast.classList.add('visible');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('visible'), 2400);
+    }
+
+    // Auto-enable Clean Export Mode when ?clean=1 or ?figma=1 is in the URL
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('clean') === '1' || params.get('figma') === '1') {
+        document.body.classList.add('clean-export-mode');
+        const cleanBtn = document.getElementById('btn-clean');
+        if (cleanBtn) cleanBtn.classList.add('active-clean');
+      }
+      if (params.get('spec') === '1') {
+        document.body.classList.add('spec-mode');
+        const specBtn = document.getElementById('btn-spec');
+        if (specBtn) specBtn.classList.add('active-spec');
+      }
+    });
+  </script>
+</body>
+</html>

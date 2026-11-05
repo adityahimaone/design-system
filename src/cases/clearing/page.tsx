@@ -1210,6 +1210,7 @@ export default function ClearingPage() {
           <span>
             <a href="/design-system/clearing/llms.txt">llms.txt</a> ·{' '}
             <a href={`${BRAND}/clearing-brandkit.png`}>brand board</a> ·{' '}
+            <a href={`${BRAND}/clearing-figma.html`}>Figma HTML sheet</a> ·{' '}
             <a href={`${BRAND}/clearing-tokens.css`}>tokens</a>
           </span>
           <span>Drawn track · painted glass · 64 grid</span>

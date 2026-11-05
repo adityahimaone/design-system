@@ -445,6 +445,7 @@ export default function WildflowerWindPage() {
             <h4>Files</h4>
             <div className={styles.footerLinks}>
               <a href={META.specimen}>The full specimen ↗</a>
+              <a href="/brand/wildflower-wind/wildflower-wind-figma.html">Figma HTML sheet ↗</a>
               <a href={META.audit}>The audit ↗</a>
               <a href={META.design}>DESIGN.md ↗</a>
             </div>

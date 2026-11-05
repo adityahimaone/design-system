@@ -859,6 +859,7 @@ export default function RisoPage() {
             Riso Co. · {META.caseNumber} · {META.version} · {META.date}
           </span>
           <span>
+            <a href="/brand/riso/riso-figma.html">Figma HTML sheet ↗</a> ·{' '}
             <a href="/design-system">All design systems</a> ·{' '}
             <a href="#top">Back to top ↑</a>
           </span>

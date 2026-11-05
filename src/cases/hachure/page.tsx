@@ -1433,6 +1433,7 @@ export default function HachurePage() {
               <HachureMark size={34} title="Hachure" />
               <div className={styles.colophonLinks}>
                 <Link href="/design-system">Case library</Link>
+                <a href="/brand/hachure/hachure-figma.html">Figma HTML sheet</a>
                 <Link href="/design-engineering">Design engineering</Link>
                 <a href="/design-system/hachure/llms.txt">Markdown twin</a>
                 <a href="/brand/hachure/hachure-tokens.json">Tokens</a>

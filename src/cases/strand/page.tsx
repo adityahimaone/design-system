@@ -1109,6 +1109,9 @@ export default function StrandPage() {
                 <a href="/brand/strand/mark.svg" download>
                   Download the mark
                 </a>
+                <a href="/brand/strand/strand-figma.html">
+                  Figma HTML sheet
+                </a>
                 <a href="/brand/strand/strand-tokens.css" download>
                   Tokens
                 </a>

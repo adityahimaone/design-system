@@ -812,6 +812,7 @@ export default function HuginnPage() {
             Huginn · {META.caseNumber} · {META.version} · {META.date}
           </span>
           <span>
+            <a href="/brand/huginn/huginn-figma.html">Figma HTML sheet ↗</a> ·{' '}
             <a href="/design-system">All design systems</a> ·{' '}
             <a href="#top">Back to top ↑</a>
           </span>

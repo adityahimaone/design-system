@@ -1026,6 +1026,9 @@ export default function JakartaCasePage() {
                 <li>
                   <a href="/brand/jakarta/jakarta-brandkit.png">brand board</a>
                 </li>
+                <li>
+                  <a href="/brand/jakarta/jakarta-figma.html">Figma HTML sheet</a>
+                </li>
               </ul>
             </div>
 

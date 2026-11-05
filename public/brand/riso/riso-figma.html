@@ -1,0 +1,3057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Riso Co. — Figma &amp; HTML-to-Design Documentation Sheet</title>
+  <meta name="description" content="One pin holds the sheet. The tear is what the second drum prints." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================================================
+       1. CSS RESET & DESIGN TOKENS (100% SELF-CONTAINED, ZERO EXTERNAL CDN)
+       ========================================================================= */
+    :root {
+      --primary-70: #1D63FF;
+      --secondary-60: #F2542D;
+      --tertiary-80: #2B192E;
+      --primary-tint: #DEF1FF;
+      --secondary-tint: #FFE6DD;
+      --tertiary-tint: #F3EEF4;
+      --text-main: #111827;
+      --text-secondary: #64748B;
+      --text-muted: #94A3B8;
+      --bg-white: #FFFFFF;
+      --bg-banner: #FAFAFA;
+      --border-subtle: #F1F5F9;
+      --border-default: #E2E8F0;
+      --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --brand-display: 'Space Grotesk', var(--font-sans);
+      --brand-reading: 'Geist', var(--font-body);
+      --brand-mono: 'Geist Mono', var(--font-mono);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-white);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+    }
+
+    /* =========================================================================
+       2. STICKY TOP WORKSPACE BAR (COLLAPSIBLE FOR CLEAN FIGMA EXPORT)
+       ========================================================================= */
+    .workspace-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-default);
+      padding: 10px 24px;
+      transition: all 0.2s ease;
+    }
+
+    body.clean-export-mode .workspace-topbar,
+    body.clean-export-mode .section-copy-btn {
+      display: none !important;
+    }
+
+    @media print {
+      .workspace-topbar,
+      .section-copy-btn,
+      .floating-exit-clean,
+      .toast-notification {
+        display: none !important;
+      }
+    }
+
+    .floating-exit-clean {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+      background: #111827;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 9999px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+
+    body.clean-export-mode .floating-exit-clean {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topbar-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mini-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 9999px;
+      background: #FFFFFF;
+      border: 1px solid var(--border-default);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .brand-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-version {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      background: #E8EEFF;
+      color: #1E40AF;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .nav-pills {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #F1F5F9;
+      padding: 4px;
+      border-radius: 10px;
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
+    .nav-pill {
+      border: none;
+      background: transparent;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 11px;
+      border-radius: 7px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .nav-pill:hover {
+      color: var(--text-main);
+    }
+
+    .nav-pill.active {
+      background: #FFFFFF;
+      color: var(--text-main);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-tool {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--border-default);
+      background: #FFFFFF;
+      color: #334155;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-tool:hover {
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+    }
+
+    .btn-tool.active-spec {
+      background: #F5F0FF;
+      border-color: #B392F0;
+      color: #6739D2;
+    }
+
+    .btn-tool.active-clean {
+      background: #EFF6FF;
+      border-color: #93C5FD;
+      color: #1D4ED8;
+    }
+
+    /* =========================================================================
+       3. FIGMA DOCUMENTATION SHEET ANATOMY
+       ========================================================================= */
+    .figma-sheet {
+      background: var(--bg-white);
+      border-bottom: 12px solid #F1F5F9;
+    }
+
+    .figma-sheet.hidden-sheet {
+      display: none !important;
+    }
+
+    .sheet-banner {
+      background: var(--bg-banner);
+      border-bottom: 1px solid #F1F5F9;
+      padding: 34px 64px;
+    }
+
+    .sheet-banner-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .sheet-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+      font-size: 26px;
+      font-weight: 700;
+      color: #1E1E1E;
+      letter-spacing: -0.02em;
+    }
+
+    .sheet-num-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #111827;
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .sheet-subtitle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      padding-left: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #64748B;
+    }
+
+    .sheet-banner-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .section-copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+      background: #FFFFFF;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .section-copy-btn:hover {
+      border-color: var(--primary-70);
+      color: var(--primary-70);
+    }
+
+    .tnd-logo-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 9999px;
+      background: #FFFFFF;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      border: 1px solid #E2E8F0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .sheet-body {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 56px 0 64px 0;
+    }
+
+    .sheet-body-padded {
+      padding-left: 64px;
+      padding-right: 64px;
+      max-width: 1288px;
+      margin: 0 auto;
+    }
+
+    .category-block {
+      margin-bottom: 64px;
+      position: relative;
+    }
+
+    .category-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .category-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #111827;
+      margin: 0 0 28px 0;
+      letter-spacing: -0.02em;
+    }
+
+    .category-header-flex {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .category-header-flex .category-title {
+      margin-bottom: 0;
+    }
+
+    .category-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin: 4px 0 0 0;
+    }
+
+    body.spec-mode .category-block {
+      outline: 1.5px dashed #9747FF;
+      outline-offset: 10px;
+      border-radius: 8px;
+    }
+
+    body.spec-mode .category-block::before {
+      content: attr(data-figma-node);
+      position: absolute;
+      top: -22px;
+      right: 0;
+      background: #9747FF;
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* =========================================================================
+       4. SECTION 01: COLOR SYSTEM GRIDS & CONTRAST LEDGER
+       ========================================================================= */
+    .main-colors-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 224px);
+      gap: 18px;
+    }
+
+    .scale-colors-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      column-gap: 18px;
+      row-gap: 32px;
+    }
+
+    .primitives-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      column-gap: 18px;
+      row-gap: 28px;
+    }
+
+    .swatch-card {
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.15s ease;
+    }
+
+    .swatch-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .swatch-rect {
+      width: 100%;
+      height: 146px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+    }
+
+    .swatch-copy-pill {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(17, 24, 39, 0.78);
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .swatch-card:hover .swatch-copy-pill {
+      opacity: 1;
+    }
+
+    .swatch-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #111827;
+      margin: 0 0 4px 0;
+      line-height: 1.3;
+    }
+
+    .swatch-sub {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 400;
+      color: #64748B;
+      margin: 0 0 3px 0;
+      line-height: 1.35;
+    }
+
+    .swatch-hex {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      color: #64748B;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    .grid-4-cols {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .grid-3-cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .grid-2-cols {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .semantic-card {
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+
+    .semantic-head {
+      height: 88px;
+      padding: 14px 16px;
+      color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .semantic-list {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .semantic-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .contrast-ledger {
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+
+    .contrast-row {
+      display: grid;
+      grid-template-columns: 72px 1.4fr 110px 1fr;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 18px;
+      border-bottom: 1px solid #F1F5F9;
+      font-size: 13px;
+    }
+
+    .contrast-row:last-child {
+      border-bottom: none;
+    }
+
+    .contrast-row.is-fail {
+      background: #FFFBEB;
+    }
+
+    .contrast-chips {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .contrast-chip {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.14);
+    }
+
+    .contrast-chip + .contrast-chip {
+      margin-left: -6px;
+    }
+
+    /* =========================================================================
+       5. SECTION 02: PRIMITIVES, RADIUS, ELEVATION & 12-COL GRID
+       ========================================================================= */
+    .surface-box {
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      background: #FFFFFF;
+      padding: 24px;
+    }
+
+    .spacing-row {
+      display: grid;
+      grid-template-columns: 110px 120px 1fr;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 0;
+      border-bottom: 1px solid #F1F5F9;
+      font-size: 13px;
+    }
+
+    .spacing-row:last-child {
+      border-bottom: none;
+    }
+
+    .spacing-bar {
+      height: 18px;
+      background: var(--primary-70);
+      border-radius: 3px;
+      opacity: 0.88;
+    }
+
+    .grid-6-cols {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+
+    .primitive-card {
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      padding: 16px;
+      background: #FAFAFA;
+      text-align: center;
+    }
+
+    .radius-preview {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 12px auto;
+      background: #E8EEFF;
+      border: 2px solid var(--primary-70);
+    }
+
+    .shadow-preview {
+      height: 76px;
+      background: #FFFFFF;
+      border-radius: 8px;
+      border: 1px solid #F1F5F9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #64748B;
+      margin-bottom: 12px;
+    }
+
+    .cols-12-visualizer {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+      padding: 20px;
+      background: #FFF1F2;
+      border: 1px dashed #FDA4AF;
+      border-radius: 10px;
+    }
+
+    .col-bar {
+      height: 56px;
+      background: rgba(225, 29, 72, 0.12);
+      border: 1px solid rgba(225, 29, 72, 0.3);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: #E11D48;
+    }
+
+    /* =========================================================================
+       6. SECTION 03: TYPOGRAPHY SCALE
+       ========================================================================= */
+    .type-row {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 32px;
+      align-items: baseline;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .type-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* =========================================================================
+       7. SECTION 04 & 05: LOGO, CAST, ASSETS & ICONOGRAPHY
+       ========================================================================= */
+    .blueprint-grid {
+      background-color: #F8FAFC;
+      background-image:
+        linear-gradient(to right, rgba(41, 96, 236, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(41, 96, 236, 0.08) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .icon-grid-8 {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 12px;
+    }
+
+    .cast-grid-6 {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+
+    .icon-cell {
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      padding: 16px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      background: #FFFFFF;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .icon-cell:hover {
+      border-color: var(--primary-70);
+      background: #F8FAFF;
+      transform: translateY(-2px);
+    }
+
+    .icon-keyline {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      border: 1px dashed #C1D2FE;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1E293B;
+    }
+
+    .icon-cell:hover .icon-keyline {
+      color: var(--primary-70);
+      background: #E8EEFF;
+    }
+
+    /* =========================================================================
+       8. SECTION 06, 07, 08: COMPONENTS, MODALS & DATA TABLES
+       ========================================================================= */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary { background: var(--primary-70); color: #FFFFFF; }
+    .btn-primary:hover { opacity: 0.92; }
+    .btn-secondary { background: var(--secondary-60); color: #FFFFFF; }
+    .btn-secondary:hover { opacity: 0.92; }
+    .btn-success { background: var(--tertiary-80); color: #FFFFFF; }
+    .btn-danger { background: #E11D48; color: #FFFFFF; }
+    .btn-outline { background: #FFFFFF; border-color: #CBD5E1; color: #1E293B; }
+    .btn-outline:hover { background: #F8FAFC; }
+    .btn-subtle { background: #E8EEFF; color: #1E40AF; }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid #CBD5E1;
+      font-size: 13px;
+      color: #111827;
+      background: #FFFFFF;
+      outline: none;
+    }
+
+    .input-field:focus {
+      border-color: var(--primary-70);
+      box-shadow: 0 0 0 3px #DBE5FE;
+    }
+
+    .modal-stage {
+      background: #F1F5F9;
+      border: 1px solid var(--border-default);
+      border-radius: 16px;
+      padding: 32px;
+      display: grid;
+      grid-template-columns: 7fr 5fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.15);
+      overflow: hidden;
+    }
+
+    .ds-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .ds-table th {
+      background: #FAFAFA;
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748B;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .ds-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #F1F5F9;
+      color: #1E293B;
+    }
+
+    .code-sheet-card {
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      background: #0F172A;
+      color: #E2E8F0;
+      overflow: hidden;
+    }
+
+    .code-sheet-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: #1E293B;
+      border-bottom: 1px solid #334155;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: #94A3B8;
+    }
+
+    .code-sheet-pre {
+      margin: 0;
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      line-height: 1.6;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .live-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .live-modal-overlay.open {
+      display: flex;
+    }
+
+    .toast-notification {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #111827;
+      color: #FFFFFF;
+      padding: 10px 18px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s ease;
+      z-index: 400;
+    }
+
+    .toast-notification.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 1024px) {
+      .scale-colors-grid, .primitives-grid { grid-template-columns: repeat(3, 1fr); }
+      .main-colors-grid { grid-template-columns: repeat(3, 1fr); }
+      .grid-4-cols, .grid-6-cols, .cast-grid-6, .icon-grid-8 { grid-template-columns: repeat(2, 1fr); }
+      .modal-stage, .grid-2-cols, .grid-3-cols { grid-template-columns: 1fr; }
+      .sheet-banner, .sheet-body-padded, .sheet-footer { padding-left: 24px; padding-right: 24px; }
+      .type-row, .contrast-row { grid-template-columns: 1fr; gap: 8px; }
+    }
+
+    @media (max-width: 640px) {
+      .scale-colors-grid, .primitives-grid, .main-colors-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body id="top">
+
+  <!-- =========================================================================
+       STICKY WORKSPACE CONTROL BAR (Hidden in Clean Export Mode / ?clean=1)
+       ========================================================================= -->
+  <nav class="workspace-topbar">
+    <div class="topbar-inner">
+      <div class="brand-cluster">
+        <div class="brand-mini-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Riso Co." width="22" height="22">
+  <title>Riso Co. — the pinned sheet, torn from the pin</title>
+  <!--
+    Two drums, one sheet. The tear is the seam the second drum prints:
+    drum A holds the left flap, drum B the right one slid 4,3 out of
+    register, and the pin is the only element that crosses the tear.
+  -->
+  <path d="M8 9H30L35 20L27 27L36 36L30 44L38 55H17L8 47Z" fill="var(--rs-drum-a, #f2542d)"/>
+  <path d="M34 12L39 23L31 30L40 39L34 47L42 58H47L55 50V16L50 12Z" fill="var(--rs-drum-b, #1d63ff)"/>
+  <path d="M32.5 6L38 11L32.5 16L27 11Z" fill="var(--rs-pin, #1b1712)"/>
+</svg>
+        </div>
+        <div>
+          <div class="brand-title">
+            <span>Riso Co. DS</span>
+            <span class="badge-version">4.0.0 Figma Sheet</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Switcher Tabs -->
+      <div class="nav-pills" role="tablist">
+        <button class="nav-pill active" onclick="filterSection('all', this)">All (8)</button>
+        <button class="nav-pill" onclick="filterSection('colors', this)">01 · Colors</button>
+        <button class="nav-pill" onclick="filterSection('primitives', this)">02 · Primitives</button>
+        <button class="nav-pill" onclick="filterSection('typography', this)">03 · Typography</button>
+        <button class="nav-pill" onclick="filterSection('logo', this)">04 · Logo</button>
+        <button class="nav-pill" onclick="filterSection('assets', this)">05 · Cast &amp; Assets</button>
+        <button class="nav-pill" onclick="filterSection('components', this)">06 · Components</button>
+        <button class="nav-pill" onclick="filterSection('overlays', this)">07 · Modals</button>
+        <button class="nav-pill" onclick="filterSection('patterns', this)">08 · Patterns &amp; Tokens</button>
+      </div>
+
+      <!-- Inspector, Clean Export & Back to Case Controls -->
+      <div class="topbar-actions">
+        <button id="btn-spec" class="btn-tool" onclick="toggleSpecMode()" title="Toggle Figma component bounds">
+          <span>❖ Figma Specs</span>
+        </button>
+        <button id="btn-clean" class="btn-tool" onclick="toggleCleanMode()" title="Toggle Clean Export Mode (?clean=1) & copy URL">
+          <span>Clean Export</span>
+        </button>
+        <button class="btn-tool" onclick="copyCleanLink()" title="Copy clean export link with ?clean=1">
+          <span>Copy Clean Link</span>
+        </button>
+        <a class="btn-tool" href="/design-system/riso">
+          <span>← Case Page</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Floating button to exit Clean Preview mode -->
+  <button class="floating-exit-clean" onclick="toggleCleanMode(false)" data-html2canvas-ignore="true" title="Exit Clean Mode (removes ?clean=1)">
+    <span>✕ Exit Clean Preview</span>
+  </button>
+
+  <!-- =========================================================================
+       MAIN CONTAINER: 8 SELF-CONTAINED FIGMA DOCUMENTATION SHEETS
+       ========================================================================= -->
+  <main>
+
+    <!-- =======================================================================
+         SECTION 01: COLOR SYSTEM, PRIMITIVES & HONEST CONTRAST LEDGER
+         ======================================================================= -->
+    <section id="section-colors" data-section="colors" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">01</span>
+              <span>Riso Co. Color System</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>Color System · 9 Primitives · 13 Measured Contrast Pairs</span>
+            </div>
+          </div>
+
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-colors', 'Riso Co. Color System')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle" title="Riso Co. Brand Mark">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Riso Co." width="28" height="28">
+  <title>Riso Co. — the pinned sheet, torn from the pin</title>
+  <!--
+    Two drums, one sheet. The tear is the seam the second drum prints:
+    drum A holds the left flap, drum B the right one slid 4,3 out of
+    register, and the pin is the only element that crosses the tear.
+  -->
+  <path d="M8 9H30L35 20L27 27L36 36L30 44L38 55H17L8 47Z" fill="var(--rs-drum-a, #f2542d)"/>
+  <path d="M34 12L39 23L31 30L40 39L34 47L42 58H47L55 50V16L50 12Z" fill="var(--rs-drum-b, #1d63ff)"/>
+  <path d="M32.5 6L38 11L32.5 16L27 11Z" fill="var(--rs-pin, #1b1712)"/>
+</svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        
+        <!-- 1.1 Main Colors (3 Columns) -->
+        <div class="category-block" data-figma-node="❖ Color / Main Colors">
+          <h2 class="category-title">Main Colors</h2>
+          <div id="grid-main-colors" class="main-colors-grid">
+            
+            <div class="swatch-card" onclick="copyHex('#1D63FF', 'Drum-b (--rs-drum-b)')">
+              <div class="swatch-rect" style="background-color: #1D63FF;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Drum-b</p>
+              <p class="swatch-sub">--rs-drum-b</p>
+              <p class="swatch-hex">#1D63FF</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#F2542D', 'Drum-a (--rs-drum-a)')">
+              <div class="swatch-rect" style="background-color: #F2542D;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Drum-a</p>
+              <p class="swatch-sub">--rs-drum-a</p>
+              <p class="swatch-hex">#F2542D</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#2B192E', 'Overprint (--rs-overprint)')">
+              <div class="swatch-rect" style="background-color: #2B192E;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Overprint</p>
+              <p class="swatch-sub">--rs-overprint</p>
+              <p class="swatch-hex">#2B192E</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.2 Brand Primitives (All Primitives from tokens.json) -->
+        <div class="category-block" data-figma-node="❖ Color / Brand Primitives (9)">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">Brand Primitives (OKLCH Layer 1)</h2>
+              <p class="category-desc">Named once for the physical material (--rs-*). Primitives never flip values across scopes.</p>
+            </div>
+          </div>
+          <div class="primitives-grid">
+            
+            <div class="swatch-card" onclick="copyHex('#F1EDE4', '--rs-paper')">
+              <div class="swatch-rect" style="background-color: #F1EDE4; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">paper</p>
+              <p class="swatch-sub">270gsm unbleached vellum, the only ground</p>
+              <p class="swatch-hex">#F1EDE4 · oklch(0.947 0.013 86.8)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#E8E1D3', '--rs-paper-deep')">
+              <div class="swatch-rect" style="background-color: #E8E1D3; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">paper-deep</p>
+              <p class="swatch-sub">The same stock, one shade under</p>
+              <p class="swatch-hex">#E8E1D3 · oklch(0.911 0.020 84.6)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#FBF8F0', '--rs-paper-light')">
+              <div class="swatch-rect" style="background-color: #FBF8F0; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">paper-light</p>
+              <p class="swatch-sub">Input ground, a lighter sheet</p>
+              <p class="swatch-hex">#FBF8F0 · oklch(0.979 0.011 89.7)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#1B1712', '--rs-carbon')">
+              <div class="swatch-rect" style="background-color: #1B1712; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">carbon</p>
+              <p class="swatch-sub">Soy carbon black, the reading ink and the pin</p>
+              <p class="swatch-hex">#1B1712 · oklch(0.208 0.011 73.3)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#F2542D', '--rs-drum-a')">
+              <div class="swatch-rect" style="background-color: #F2542D; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">drum-a</p>
+              <p class="swatch-sub">Fluorescent orange drum, fill only</p>
+              <p class="swatch-hex">#F2542D · oklch(0.656 0.201 34.8)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#1D63FF', '--rs-drum-b')">
+              <div class="swatch-rect" style="background-color: #1D63FF; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">drum-b</p>
+              <p class="swatch-sub">Federal blue drum, the second pass</p>
+              <p class="swatch-hex">#1D63FF · oklch(0.561 0.241 262.9)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#2B192E', '--rs-overprint')">
+              <div class="swatch-rect" style="background-color: #2B192E; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">overprint</p>
+              <p class="swatch-sub">Where both drums land on the same fibre</p>
+              <p class="swatch-hex">#2B192E · oklch(0.247 0.046 321.7)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#A3A9B2', '--rs-steel')">
+              <div class="swatch-rect" style="background-color: #A3A9B2; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">steel</p>
+              <p class="swatch-sub">The pushpin needle, and nothing else</p>
+              <p class="swatch-hex">#A3A9B2 · oklch(0.733 0.015 258.4)</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#141110', '--rs-safelight')">
+              <div class="swatch-rect" style="background-color: #141110; height: 112px;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">safelight</p>
+              <p class="swatch-sub">Darkroom ground, the second surface</p>
+              <p class="swatch-hex">#141110 · oklch(0.181 0.005 39.3)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.3 Primary Scale (5 Columns × 2 Rows: Primary-10 to Primary-100) -->
+        <div class="category-block" data-figma-node="❖ Color / Primary Scale">
+          <h2 class="category-title">Primary Scale (Drum-b)</h2>
+          <div id="grid-primary-blue" class="scale-colors-grid">
+            
+            <div class="swatch-card" onclick="copyHex('#DEF1FF', 'Primary-10')">
+              <div class="swatch-rect" style="background-color: #DEF1FF;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-10</p>
+              <p class="swatch-hex">#DEF1FF</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#C1E2FF', 'Primary-20')">
+              <div class="swatch-rect" style="background-color: #C1E2FF;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-20</p>
+              <p class="swatch-hex">#C1E2FF</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#9AC9FF', 'Primary-30')">
+              <div class="swatch-rect" style="background-color: #9AC9FF;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-30</p>
+              <p class="swatch-hex">#9AC9FF</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#6CA9FF', 'Primary-40')">
+              <div class="swatch-rect" style="background-color: #6CA9FF;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-40</p>
+              <p class="swatch-hex">#6CA9FF</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#4184FF', 'Primary-50')">
+              <div class="swatch-rect" style="background-color: #4184FF;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-50</p>
+              <p class="swatch-hex">#4184FF</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#1D63FE', 'Primary-60')">
+              <div class="swatch-rect" style="background-color: #1D63FE;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-60</p>
+              <p class="swatch-hex">#1D63FE</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#1D63FF', 'Primary-70')">
+              <div class="swatch-rect" style="background-color: #1D63FF;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-70</p>
+              <p class="swatch-hex">#1D63FF</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#002FBC', 'Primary-80')">
+              <div class="swatch-rect" style="background-color: #002FBC;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-80</p>
+              <p class="swatch-hex">#002FBC</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#001A92', 'Primary-90')">
+              <div class="swatch-rect" style="background-color: #001A92;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-90</p>
+              <p class="swatch-hex">#001A92</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#00036B', 'Primary-100')">
+              <div class="swatch-rect" style="background-color: #00036B;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Primary-100</p>
+              <p class="swatch-hex">#00036B</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.4 Secondary Scale (5 Columns × 2 Rows) -->
+        <div class="category-block" data-figma-node="❖ Color / Secondary Scale">
+          <h2 class="category-title">Secondary Scale (Drum-a)</h2>
+          <div id="grid-secondary-purple" class="scale-colors-grid">
+            
+            <div class="swatch-card" onclick="copyHex('#FFE6DD', 'Secondary-10')">
+              <div class="swatch-rect" style="background-color: #FFE6DD;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-10</p>
+              <p class="swatch-hex">#FFE6DD</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#FFD0C0', 'Secondary-20')">
+              <div class="swatch-rect" style="background-color: #FFD0C0;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-20</p>
+              <p class="swatch-hex">#FFD0C0</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#FFAF97', 'Secondary-30')">
+              <div class="swatch-rect" style="background-color: #FFAF97;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-30</p>
+              <p class="swatch-hex">#FFAF97</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#FF8567', 'Secondary-40')">
+              <div class="swatch-rect" style="background-color: #FF8567;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-40</p>
+              <p class="swatch-hex">#FF8567</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#E95A37', 'Secondary-50')">
+              <div class="swatch-rect" style="background-color: #E95A37;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-50</p>
+              <p class="swatch-hex">#E95A37</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#F2542D', 'Secondary-60')">
+              <div class="swatch-rect" style="background-color: #F2542D;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-60</p>
+              <p class="swatch-hex">#F2542D</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#B30100', 'Secondary-70')">
+              <div class="swatch-rect" style="background-color: #B30100;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-70</p>
+              <p class="swatch-hex">#B30100</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#910000', 'Secondary-80')">
+              <div class="swatch-rect" style="background-color: #910000;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-80</p>
+              <p class="swatch-hex">#910000</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#6F0000', 'Secondary-90')">
+              <div class="swatch-rect" style="background-color: #6F0000;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-90</p>
+              <p class="swatch-hex">#6F0000</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#4D0000', 'Secondary-100')">
+              <div class="swatch-rect" style="background-color: #4D0000;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Secondary-100</p>
+              <p class="swatch-hex">#4D0000</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.5 Tertiary Scale (5 Columns × 2 Rows) -->
+        <div class="category-block" data-figma-node="❖ Color / Tertiary Scale">
+          <h2 class="category-title">Tertiary Scale (Overprint)</h2>
+          <div id="grid-tertiary-green" class="scale-colors-grid">
+            
+            <div class="swatch-card" onclick="copyHex('#F3EEF4', 'Tertiary-10')">
+              <div class="swatch-rect" style="background-color: #F3EEF4;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-10</p>
+              <p class="swatch-hex">#F3EEF4</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#E7DEE8', 'Tertiary-20')">
+              <div class="swatch-rect" style="background-color: #E7DEE8;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-20</p>
+              <p class="swatch-hex">#E7DEE8</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#D3C5D5', 'Tertiary-30')">
+              <div class="swatch-rect" style="background-color: #D3C5D5;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-30</p>
+              <p class="swatch-hex">#D3C5D5</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#B9A7BC', 'Tertiary-40')">
+              <div class="swatch-rect" style="background-color: #B9A7BC;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-40</p>
+              <p class="swatch-hex">#B9A7BC</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#2B192E', 'Tertiary-50')">
+              <div class="swatch-rect" style="background-color: #2B192E;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-50</p>
+              <p class="swatch-hex">#2B192E</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#826C85', 'Tertiary-60')">
+              <div class="swatch-rect" style="background-color: #826C85;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-60</p>
+              <p class="swatch-hex">#826C85</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#6A556D', 'Tertiary-70')">
+              <div class="swatch-rect" style="background-color: #6A556D;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-70</p>
+              <p class="swatch-hex">#6A556D</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#534056', 'Tertiary-80')">
+              <div class="swatch-rect" style="background-color: #534056;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-80</p>
+              <p class="swatch-hex">#534056</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#3C2D3E', 'Tertiary-90')">
+              <div class="swatch-rect" style="background-color: #3C2D3E;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-90</p>
+              <p class="swatch-hex">#3C2D3E</p>
+            </div>
+            <div class="swatch-card" onclick="copyHex('#261A28', 'Tertiary-100')">
+              <div class="swatch-rect" style="background-color: #261A28;">
+                <span class="swatch-copy-pill">Copy</span>
+              </div>
+              <p class="swatch-title">Tertiary-100</p>
+              <p class="swatch-hex">#261A28</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.6 Honest Contrast Ledger (Computed Pairs + Published Failures) -->
+        <div class="category-block" data-figma-node="❖ Color / Honest Contrast Ledger">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">Honest Contrast Ledger (13 Pairs · 3 Published Failures)</h2>
+              <p class="category-desc">Every pair is computed from hex. Failing pairs (&lt; 4.5:1) are published with a restricted non-text job.</p>
+            </div>
+          </div>
+          <div class="contrast-ledger">
+            
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#1B1712;" title="Foreground: #1B1712"></span>
+                <span class="contrast-chip" style="background:#F1EDE4;" title="Background: #F1EDE4"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Carbon on vellum</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                15.26:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#1B1712;" title="Foreground: #1B1712"></span>
+                <span class="contrast-chip" style="background:#E8E1D3;" title="Background: #E8E1D3"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Carbon on the inset panel</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                13.70:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#1B1712;" title="Foreground: #1B1712"></span>
+                <span class="contrast-chip" style="background:#F2542D;" title="Background: #F2542D"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Carbon on drum A</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                5.16:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row is-fail">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#1B1712;" title="Foreground: #1B1712"></span>
+                <span class="contrast-chip" style="background:#1D63FF;" title="Background: #1D63FF"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Carbon on drum B</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#B45309;">
+                3.63:1 FAIL
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Wash / graphic only — never type
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#C22E08;" title="Foreground: #C22E08"></span>
+                <span class="contrast-chip" style="background:#F1EDE4;" title="Background: #F1EDE4"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Second-impression orange</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                4.87:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#0E3F8F;" title="Foreground: #0E3F8F"></span>
+                <span class="contrast-chip" style="background:#F1EDE4;" title="Background: #F1EDE4"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Federal blue as type</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                8.45:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#6B6155;" title="Foreground: #6B6155"></span>
+                <span class="contrast-chip" style="background:#F1EDE4;" title="Background: #F1EDE4"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Press note on vellum</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                5.19:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row is-fail">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#F2542D;" title="Foreground: #F2542D"></span>
+                <span class="contrast-chip" style="background:#F1EDE4;" title="Background: #F1EDE4"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Fluorescent orange as type</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#B45309;">
+                2.96:1 FAIL
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Wash / graphic only — never type
+              </div>
+            </div>
+            <div class="contrast-row is-fail">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#A3A9B2;" title="Foreground: #A3A9B2"></span>
+                <span class="contrast-chip" style="background:#F1EDE4;" title="Background: #F1EDE4"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Steel on vellum</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#B45309;">
+                2.03:1 FAIL
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Wash / graphic only — never type
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#F1EDE4;" title="Foreground: #F1EDE4"></span>
+                <span class="contrast-chip" style="background:#141110;" title="Background: #141110"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Vellum on safelight</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                16.09:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#BEB3A2;" title="Foreground: #BEB3A2"></span>
+                <span class="contrast-chip" style="background:#141110;" title="Background: #141110"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Press note under safelight</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                9.09:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#FF7A4D;" title="Foreground: #FF7A4D"></span>
+                <span class="contrast-chip" style="background:#141110;" title="Background: #141110"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Orange type, dark stock</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                7.29:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+            <div class="contrast-row ">
+              <div class="contrast-chips">
+                <span class="contrast-chip" style="background:#6FAEFF;" title="Foreground: #6FAEFF"></span>
+                <span class="contrast-chip" style="background:#141110;" title="Background: #141110"></span>
+              </div>
+              <div>
+                <strong style="color:#111827;">Blue type, dark stock</strong>
+                
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:700; color:#15803D;">
+                8.21:1 PASS
+              </div>
+              <div style="font-size:12px; color:#475569;">
+                Text at any size
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.7 Semantic & Status Feedback Tokens -->
+        <div class="category-block" data-figma-node="❖ Color / Semantic Tokens">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">Semantic Feedback Tokens</h2>
+              <p class="category-desc">System status pairings for alerts, badges, validation states, and surfaces.</p>
+            </div>
+          </div>
+          <div class="grid-4-cols">
+            <div class="semantic-card">
+              <div class="semantic-head" style="background:#18B368;" onclick="copyHex('#18B368', 'Success Primary')">
+                <span style="font-size:11px; font-family:var(--font-mono); opacity:0.85;">SUCCESS / POSITIVE</span>
+                <strong style="font-size:16px;">#18B368</strong>
+              </div>
+              <div class="semantic-list">
+                <div class="semantic-row" style="background:#F0FFF4; color:#165C26;" onclick="copyHex('#F0FFF4', 'Success Surface')">
+                  <span>surface-subtle</span><span>#F0FFF4</span>
+                </div>
+                <div class="semantic-row" style="border:1px solid #85E89D; color:#176F2C;" onclick="copyHex('#85E89D', 'Success Border')">
+                  <span>border-token</span><span>#85E89D</span>
+                </div>
+                <div class="semantic-row" style="color:#144620;" onclick="copyHex('#144620', 'Success Ink')">
+                  <span>text-ink</span><span>#144620</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="semantic-card">
+              <div class="semantic-head" style="background:#F59E0B;" onclick="copyHex('#F59E0B', 'Warning Primary')">
+                <span style="font-size:11px; font-family:var(--font-mono); opacity:0.85;">WARNING / CAUTION</span>
+                <strong style="font-size:16px;">#F59E0B</strong>
+              </div>
+              <div class="semantic-list">
+                <div class="semantic-row" style="background:#FFFBEB; color:#92400E;" onclick="copyHex('#FFFBEB', 'Warning Surface')">
+                  <span>surface-subtle</span><span>#FFFBEB</span>
+                </div>
+                <div class="semantic-row" style="border:1px solid #FCD34D; color:#B45309;" onclick="copyHex('#FCD34D', 'Warning Border')">
+                  <span>border-token</span><span>#FCD34D</span>
+                </div>
+                <div class="semantic-row" style="color:#78350F;" onclick="copyHex('#78350F', 'Warning Ink')">
+                  <span>text-ink</span><span>#78350F</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="semantic-card">
+              <div class="semantic-head" style="background:#E11D48;" onclick="copyHex('#E11D48', 'Danger Primary')">
+                <span style="font-size:11px; font-family:var(--font-mono); opacity:0.85;">DANGER / CRITICAL</span>
+                <strong style="font-size:16px;">#E11D48</strong>
+              </div>
+              <div class="semantic-list">
+                <div class="semantic-row" style="background:#FFF1F2; color:#9F1239;" onclick="copyHex('#FFF1F2', 'Danger Surface')">
+                  <span>surface-subtle</span><span>#FFF1F2</span>
+                </div>
+                <div class="semantic-row" style="border:1px solid #FDA4AF; color:#BE123C;" onclick="copyHex('#FDA4AF', 'Danger Border')">
+                  <span>border-token</span><span>#FDA4AF</span>
+                </div>
+                <div class="semantic-row" style="color:#881337;" onclick="copyHex('#881337', 'Danger Ink')">
+                  <span>text-ink</span><span>#881337</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="semantic-card">
+              <div class="semantic-head" style="background:#1D63FF;" onclick="copyHex('#1D63FF', 'Info Primary')">
+                <span style="font-size:11px; font-family:var(--font-mono); opacity:0.85;">INFO / BRAND SIGNAL</span>
+                <strong style="font-size:16px;">#1D63FF</strong>
+              </div>
+              <div class="semantic-list">
+                <div class="semantic-row" style="background:#DEF1FF; color:#001A92;" onclick="copyHex('#DEF1FF', 'Info Surface')">
+                  <span>surface-subtle</span><span>#DEF1FF</span>
+                </div>
+                <div class="semantic-row" style="border:1px solid #6CA9FF; color:#001A92;" onclick="copyHex('#6CA9FF', 'Info Border')">
+                  <span>border-token</span><span>#6CA9FF</span>
+                </div>
+                <div class="semantic-row" style="color:#00036B;" onclick="copyHex('#00036B', 'Info Ink')">
+                  <span>text-ink</span><span>#00036B</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 02: PRIMITIVES, SPACING & 12-COLUMN LAYOUT GRID
+         ======================================================================= -->
+    <section id="section-primitives" data-section="primitives" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">02</span>
+              <span>Riso Co. Primitives &amp; Layout Grid</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>Spacing Scale, Corner Radius (0px), Elevation &amp; 12-Col Grid</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-primitives', 'Riso Co. Primitives & Grid')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Riso Co." width="28" height="28">
+  <title>Riso Co. — the pinned sheet, torn from the pin</title>
+  <!--
+    Two drums, one sheet. The tear is the seam the second drum prints:
+    drum A holds the left flap, drum B the right one slid 4,3 out of
+    register, and the pin is the only element that crosses the tear.
+  -->
+  <path d="M8 9H30L35 20L27 27L36 36L30 44L38 55H17L8 47Z" fill="var(--rs-drum-a, #f2542d)"/>
+  <path d="M34 12L39 23L31 30L40 39L34 47L42 58H47L55 50V16L50 12Z" fill="var(--rs-drum-b, #1d63ff)"/>
+  <path d="M32.5 6L38 11L32.5 16L27 11Z" fill="var(--rs-pin, #1b1712)"/>
+</svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- 2.1 Spacing Scale -->
+        <div class="category-block" data-figma-node="❖ Primitives / 4px Spacing Scale">
+          <h2 class="category-title">Spacing Scale (Base 4px Unit)</h2>
+          <div class="surface-box" id="spacing-scale-list">
+            
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-1</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">4px (0.25rem)</span>
+              <div><div class="spacing-bar" style="width:16px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-2</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">8px (0.5rem)</span>
+              <div><div class="spacing-bar" style="width:32px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-3</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">12px (0.75rem)</span>
+              <div><div class="spacing-bar" style="width:48px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-4</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">16px (1rem)</span>
+              <div><div class="spacing-bar" style="width:64px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-6</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">24px (1.5rem)</span>
+              <div><div class="spacing-bar" style="width:96px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-8</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">32px (2rem)</span>
+              <div><div class="spacing-bar" style="width:128px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-12</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">48px (3rem)</span>
+              <div><div class="spacing-bar" style="width:192px; max-width:100%;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <strong style="font-family:var(--font-mono); color:var(--primary-70);">space-16</strong>
+              <span style="font-family:var(--font-mono); color:#64748B;">64px (4rem)</span>
+              <div><div class="spacing-bar" style="width:256px; max-width:100%;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.2 Border Radius -->
+        <div class="category-block" data-figma-node="❖ Primitives / Border Radius">
+          <h2 class="category-title">Corner Radius Tokens (House Physics: 0px)</h2>
+          <div class="grid-6-cols">
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:0px;"></div>
+              <strong style="font-size:13px;">radius-none</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">0px</p>
+            </div>
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:4px;"></div>
+              <strong style="font-size:13px;">radius-sm</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">4px (Swatches)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:8px;"></div>
+              <strong style="font-size:13px;">radius-md</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">8px (Controls)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:12px;"></div>
+              <strong style="font-size:13px;">radius-lg</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">12px (Cards)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:16px;"></div>
+              <strong style="font-size:13px;">radius-xl</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">16px (Modals)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="radius-preview" style="border-radius:9999px;"></div>
+              <strong style="font-size:13px;">radius-full</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">9999px (Pills)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.3 Elevation Shadows -->
+        <div class="category-block" data-figma-node="❖ Primitives / Elevation Shadows">
+          <h2 class="category-title">Elevation &amp; Hairline Surfaces</h2>
+          <div class="grid-4-cols">
+            <div class="primitive-card">
+              <div class="shadow-preview" style="box-shadow: none; border: 1px solid #CBD5E1;">hairline 1px</div>
+              <strong style="font-size:14px;">rule-1px (At Rest)</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">1px solid var(--rs-line-strong)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="shadow-preview" style="box-shadow: 0 4px 8px -2px rgba(16,24,40,0.08);">z-20</div>
+              <strong style="font-size:14px;">shadow-sm</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">0 4px 8px rgba(0,0,0,0.08)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="shadow-preview" style="box-shadow: 0 12px 24px -4px rgba(16,24,40,0.12);">z-30</div>
+              <strong style="font-size:14px;">shadow-lg</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">0 12px 24px rgba(0,0,0,0.12)</p>
+            </div>
+            <div class="primitive-card">
+              <div class="shadow-preview" style="box-shadow: 0 24px 48px -12px rgba(16,24,40,0.18);">z-50</div>
+              <strong style="font-size:14px;">shadow-xl (Modal)</strong>
+              <p class="swatch-sub" style="font-family:var(--font-mono); margin-top:4px;">0 24px 48px rgba(0,0,0,0.18)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.4 12-Column Responsive Layout Grid -->
+        <div class="category-block" data-figma-node="❖ Primitives / 12-Column Grid">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">12-Column Responsive Layout Grid &amp; Section Rail</h2>
+              <p class="category-desc">Container Max-Width: 1160px–1280px • Left Rail: 176px (Rail A) / 200px (Rail B) • Margin: 64px</p>
+            </div>
+          </div>
+          <div class="cols-12-visualizer">
+            <div class="col-bar">1</div><div class="col-bar">2</div><div class="col-bar">3</div><div class="col-bar">4</div>
+            <div class="col-bar">5</div><div class="col-bar">6</div><div class="col-bar">7</div><div class="col-bar">8</div>
+            <div class="col-bar">9</div><div class="col-bar">10</div><div class="col-bar">11</div><div class="col-bar">12</div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 03: TYPOGRAPHY SYSTEM
+         ======================================================================= -->
+    <section id="section-typography" data-section="typography" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">03</span>
+              <span>Riso Co. Typography System</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>3-Role Font Stack (Space Grotesk · Geist · Geist Mono)</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-typography', 'Riso Co. Typography System')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Riso Co." width="28" height="28">
+  <title>Riso Co. — the pinned sheet, torn from the pin</title>
+  <!--
+    Two drums, one sheet. The tear is the seam the second drum prints:
+    drum A holds the left flap, drum B the right one slid 4,3 out of
+    register, and the pin is the only element that crosses the tear.
+  -->
+  <path d="M8 9H30L35 20L27 27L36 36L30 44L38 55H17L8 47Z" fill="var(--rs-drum-a, #f2542d)"/>
+  <path d="M34 12L39 23L31 30L40 39L34 47L42 58H47L55 50V16L50 12Z" fill="var(--rs-drum-b, #1d63ff)"/>
+  <path d="M32.5 6L38 11L32.5 16L27 11Z" fill="var(--rs-pin, #1b1712)"/>
+</svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- Font Families -->
+        <div class="category-block" data-figma-node="❖ Typography / Font Families">
+          <h2 class="category-title">Typeface Tokens (--rs-font-*)</h2>
+          <div class="grid-3-cols">
+            <div class="surface-box" style="background:#FAFAFA;">
+              <span class="badge-version">HEADINGS &amp; DISPLAY</span>
+              <div style="font-size:44px; font-weight:700; color:var(--primary-70); font-family:var(--brand-display); margin:12px 0 6px 0;">Aa</div>
+              <strong style="font-size:17px;">Space Grotesk</strong>
+              <p class="swatch-sub" style="margin-top:6px;">--rs-font-display · Display &amp; Section Headlines</p>
+            </div>
+            <div class="surface-box" style="background:#FAFAFA;">
+              <span class="badge-version" style="background:#F5F0FF; color:#6739D2;">UI &amp; READING COPY</span>
+              <div style="font-size:44px; font-weight:600; color:var(--secondary-60); font-family:var(--brand-reading); margin:12px 0 6px 0;">Aa</div>
+              <strong style="font-size:17px;">Geist</strong>
+              <p class="swatch-sub" style="margin-top:6px;">--rs-font-reading · 60ch–66ch Body &amp; UI Controls</p>
+            </div>
+            <div class="surface-box" style="background:#FAFAFA;">
+              <span class="badge-version" style="background:#F0FFF4; color:#18B368;">HEX, RAIL &amp; TABULAR DATA</span>
+              <div style="font-size:44px; font-weight:600; color:#18B368; font-family:var(--brand-mono); margin:12px 0 6px 0;">01</div>
+              <strong style="font-size:17px;">Geist Mono</strong>
+              <p class="swatch-sub" style="margin-top:6px;">--rs-font-mono · Rail Numbers, Tokens &amp; Ledger Figures</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Type Scale -->
+        <div class="category-block" data-figma-node="❖ Typography / Scale">
+          <h2 class="category-title">Type Scale &amp; Hierarchy</h2>
+          <div style="border-top: 1px solid var(--border-default);">
+            <div class="type-row">
+              <div>
+                <strong>Display XL (Hero H1)</strong>
+                <div class="type-meta">Space Grotesk • 48px / 0.94 • -0.03em</div>
+              </div>
+              <div style="font-family:var(--brand-display); font-size:42px; font-weight:700; letter-spacing:-0.03em; line-height:1.05;">One pin holds the sheet. The tear is what the second drum prints.</div>
+            </div>
+            <div class="type-row">
+              <div>
+                <strong>Heading H1 (Sheet Title)</strong>
+                <div class="type-meta">Space Grotesk • 26px / 34px • Bold • -0.02em</div>
+              </div>
+              <div style="font-family:var(--brand-display); font-size:26px; font-weight:700; letter-spacing:-0.02em;">Riso Co. Architecture &amp; Surface Rules</div>
+            </div>
+            <div class="type-row">
+              <div>
+                <strong>Heading H2 (Section Group)</strong>
+                <div class="type-meta">Space Grotesk • 24px / 32px • Bold • -0.02em</div>
+              </div>
+              <div style="font-family:var(--brand-display); font-size:24px; font-weight:700; letter-spacing:-0.02em;">Main Colors, Primitives &amp; Contrast Ledger</div>
+            </div>
+            <div class="type-row">
+              <div>
+                <strong>Body Regular (66ch Measure)</strong>
+                <div class="type-meta">Geist • 16px / 1.60 • Regular</div>
+              </div>
+              <div style="font-size:16px; color:#334155; font-family:var(--brand-reading); max-width:66ch;">One pin holds the sheet. The tear is what the second drum prints.</div>
+            </div>
+            <div class="type-row">
+              <div>
+                <strong>Token Label / Tabular Mono</strong>
+                <div class="type-meta">Geist Mono • 13px / 1.50 • Regular</div>
+              </div>
+              <div style="font-size:13px; color:#64748B; font-family:var(--brand-mono);">--rs-drum-b • #1D63FF • --rs-drum-a • #F2542D</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 04: LOGO & BRAND IDENTITY (KUWAYAMA 64-GRID)
+         ======================================================================= -->
+    <section id="section-logo" data-section="logo" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">04</span>
+              <span>Riso Co. Logo &amp; Brand Identity</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>64×64 Construction Grid, Surface Polarity, Outlined Lockups &amp; 16px Compact</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-logo', 'Riso Co. Logo & Brand')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Riso Co." width="28" height="28">
+  <title>Riso Co. — the pinned sheet, torn from the pin</title>
+  <!--
+    Two drums, one sheet. The tear is the seam the second drum prints:
+    drum A holds the left flap, drum B the right one slid 4,3 out of
+    register, and the pin is the only element that crosses the tear.
+  -->
+  <path d="M8 9H30L35 20L27 27L36 36L30 44L38 55H17L8 47Z" fill="var(--rs-drum-a, #f2542d)"/>
+  <path d="M34 12L39 23L31 30L40 39L34 47L42 58H47L55 50V16L50 12Z" fill="var(--rs-drum-b, #1d63ff)"/>
+  <path d="M32.5 6L38 11L32.5 16L27 11Z" fill="var(--rs-pin, #1b1712)"/>
+</svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- 4.1 Primary Mark & Surface Polarity -->
+        <div class="category-block" data-figma-node="❖ Brand / Logo Construction & Surfaces">
+          <h2 class="category-title">Primary Mark &amp; Surface Polarity</h2>
+          <div class="grid-3-cols">
+            <div class="surface-box blueprint-grid" style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:200px;">
+              <div style="padding:20px 28px; background:#FFFFFF; border:1.5px dashed var(--primary-70); border-radius:14px; display:flex; align-items:center; gap:14px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Riso Co." width="44" height="44">
+  <title>Riso Co. — the pinned sheet, torn from the pin</title>
+  <!--
+    Two drums, one sheet. The tear is the seam the second drum prints:
+    drum A holds the left flap, drum B the right one slid 4,3 out of
+    register, and the pin is the only element that crosses the tear.
+  -->
+  <path d="M8 9H30L35 20L27 27L36 36L30 44L38 55H17L8 47Z" fill="var(--rs-drum-a, #f2542d)"/>
+  <path d="M34 12L39 23L31 30L40 39L34 47L42 58H47L55 50V16L50 12Z" fill="var(--rs-drum-b, #1d63ff)"/>
+  <path d="M32.5 6L38 11L32.5 16L27 11Z" fill="var(--rs-pin, #1b1712)"/>
+</svg>
+                <span style="font-family:var(--brand-display); font-size:24px; font-weight:800; letter-spacing:-0.03em; color:#111827;">Riso Co.</span>
+              </div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:var(--primary-70); margin-top:12px;">64×64 Grid · Clearspace = 3–4 Units</span>
+            </div>
+
+            <div class="surface-box" style="background:#111827; color:#FFFFFF; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:200px;">
+              <div style="display:flex; align-items:center; gap:14px;">
+                <div class="tnd-logo-circle" style="border:none;">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Riso Co." width="28" height="28">
+  <title>Riso Co. — the pinned sheet, torn from the pin</title>
+  <!--
+    Two drums, one sheet. The tear is the seam the second drum prints:
+    drum A holds the left flap, drum B the right one slid 4,3 out of
+    register, and the pin is the only element that crosses the tear.
+  -->
+  <path d="M8 9H30L35 20L27 27L36 36L30 44L38 55H17L8 47Z" fill="var(--rs-drum-a, #f2542d)"/>
+  <path d="M34 12L39 23L31 30L40 39L34 47L42 58H47L55 50V16L50 12Z" fill="var(--rs-drum-b, #1d63ff)"/>
+  <path d="M32.5 6L38 11L32.5 16L27 11Z" fill="var(--rs-pin, #1b1712)"/>
+</svg>
+                </div>
+                <span style="font-family:var(--brand-display); font-size:24px; font-weight:800;">Riso Co.</span>
+              </div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#94A3B8; margin-top:14px;">Dark / Night Surface (#111827)</span>
+            </div>
+
+            <div class="surface-box" style="background:var(--primary-70); color:#FFFFFF; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:200px;">
+              <div style="display:flex; align-items:center; gap:14px;">
+                <div class="tnd-logo-circle" style="border:none;">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Riso Co." width="28" height="28">
+  <title>Riso Co. — the pinned sheet, torn from the pin</title>
+  <!--
+    Two drums, one sheet. The tear is the seam the second drum prints:
+    drum A holds the left flap, drum B the right one slid 4,3 out of
+    register, and the pin is the only element that crosses the tear.
+  -->
+  <path d="M8 9H30L35 20L27 27L36 36L30 44L38 55H17L8 47Z" fill="var(--rs-drum-a, #f2542d)"/>
+  <path d="M34 12L39 23L31 30L40 39L34 47L42 58H47L55 50V16L50 12Z" fill="var(--rs-drum-b, #1d63ff)"/>
+  <path d="M32.5 6L38 11L32.5 16L27 11Z" fill="var(--rs-pin, #1b1712)"/>
+</svg>
+                </div>
+                <span style="font-family:var(--brand-display); font-size:24px; font-weight:800;">Riso Co.</span>
+              </div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:rgba(255,255,255,0.85); margin-top:14px;">Brand Accent Surface (#1D63FF)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4.2 Mark Variants & Scale Strip -->
+        <div class="category-block" data-figma-node="❖ Brand / Mark Family & Scale Strip">
+          <h2 class="category-title">Mark Family (Primary · Reverse · 16px Compact · Glyph)</h2>
+          <div class="grid-4-cols">
+            <div class="primitive-card" style="background:#FFFFFF; padding:24px;">
+              <div style="height:72px; display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Riso Co." width="56" height="56">
+  <title>Riso Co. — the pinned sheet, torn from the pin</title>
+  <!--
+    Two drums, one sheet. The tear is the seam the second drum prints:
+    drum A holds the left flap, drum B the right one slid 4,3 out of
+    register, and the pin is the only element that crosses the tear.
+  -->
+  <path d="M8 9H30L35 20L27 27L36 36L30 44L38 55H17L8 47Z" fill="var(--rs-drum-a, #f2542d)"/>
+  <path d="M34 12L39 23L31 30L40 39L34 47L42 58H47L55 50V16L50 12Z" fill="var(--rs-drum-b, #1d63ff)"/>
+  <path d="M32.5 6L38 11L32.5 16L27 11Z" fill="var(--rs-pin, #1b1712)"/>
+</svg>
+              </div>
+              <strong style="font-size:14px;">mark.svg</strong>
+              <p class="swatch-sub" style="margin-top:4px;">Primary 64×64 construction</p>
+            </div>
+            <div class="primitive-card" style="background:#111827; color:#FFFFFF; padding:24px;">
+              <div style="height:72px; display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Riso Co." width="56" height="56">
+  <title>Riso Co. — reverse: printed on the orange drum</title>
+  <!-- On the orange sheet the second drum is carbon, not blue: blue on orange is
+       1.24:1 and the tear stops reading. Carbon is 5.16:1, paper 3.36:1. -->
+  <path d="M8 9H30L35 20L27 27L36 36L30 44L38 55H17L8 47Z" fill="#f1ede4"/>
+  <path d="M34 12L39 23L31 30L40 39L34 47L42 58H47L55 50V16L50 12Z" fill="#1b1712"/>
+  <path d="M32.5 6L38 11L32.5 16L27 11Z" fill="#1b1712"/>
+</svg>
+              </div>
+              <strong style="font-size:14px; color:#FFFFFF;">mark-reverse.svg</strong>
+              <p class="swatch-sub" style="margin-top:4px; color:#94A3B8;">Reverse on dark/loud field</p>
+            </div>
+            <div class="primitive-card" style="background:#FFFFFF; padding:24px;">
+              <div style="height:72px; display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:12px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"   role="img" aria-label="Riso Co." width="40" height="40">
+  <title>Riso Co. — compact: the tear, two shapes, no pin</title>
+  <!-- A separate drawing for 16px: the same tear, wider channel, two shapes only. -->
+  <path d="M4 5H15L17.5 10.5L13.5 14L18 19L15 23L19 27H8.5L4 23.5Z" fill="var(--rs-drum-a, #f2542d)"/>
+  <path d="M17 6.5L19.5 12L15.5 15.5L20 20.5L17 24.5L21 28H23.5L28 24V9.5L25.5 6.5Z" fill="var(--rs-drum-b, #1d63ff)"/>
+</svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"   role="img" aria-label="Riso Co." width="16" height="16">
+  <title>Riso Co. — compact: the tear, two shapes, no pin</title>
+  <!-- A separate drawing for 16px: the same tear, wider channel, two shapes only. -->
+  <path d="M4 5H15L17.5 10.5L13.5 14L18 19L15 23L19 27H8.5L4 23.5Z" fill="var(--rs-drum-a, #f2542d)"/>
+  <path d="M17 6.5L19.5 12L15.5 15.5L20 20.5L17 24.5L21 28H23.5L28 24V9.5L25.5 6.5Z" fill="var(--rs-drum-b, #1d63ff)"/>
+</svg>
+              </div>
+              <strong style="font-size:14px;">mark-compact.svg</strong>
+              <p class="swatch-sub" style="margin-top:4px;">Separate 16–24px drawing</p>
+            </div>
+            <div class="primitive-card" style="background:#FFFFFF; padding:24px;">
+              <div style="height:72px; display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:12px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"   color="#1b1712" fill="currentColor" role="img" aria-label="Riso Co." width="40" height="40">
+  <title>Riso Co. — glyph: the tear alone, one ink</title>
+  <path d="M4 5H15L17.5 10.5L13.5 14L18 19L15 23L19 27H8.5L4 23.5Z"/>
+  <path d="M17 6.5L19.5 12L15.5 15.5L20 20.5L17 24.5L21 28H23.5L28 24V9.5L25.5 6.5Z"/>
+</svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"   color="#1b1712" fill="currentColor" role="img" aria-label="Riso Co." width="16" height="16">
+  <title>Riso Co. — glyph: the tear alone, one ink</title>
+  <path d="M4 5H15L17.5 10.5L13.5 14L18 19L15 23L19 27H8.5L4 23.5Z"/>
+  <path d="M17 6.5L19.5 12L15.5 15.5L20 20.5L17 24.5L21 28H23.5L28 24V9.5L25.5 6.5Z"/>
+</svg>
+              </div>
+              <strong style="font-size:14px;">glyph.svg</strong>
+              <p class="swatch-sub" style="margin-top:4px;">16px favicon &amp; tab badge</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 05: COMPANION CAST, ICONOGRAPHY & SPOT ILLUSTRATIONS
+         ======================================================================= -->
+    <section id="section-assets" data-section="assets" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">05</span>
+              <span>Riso Co. Companion Cast, Icons &amp; Illustrations</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>6-Mark Companion Cast (64×64 Grid), 24px Keyline Icons &amp; Spot Illustrations</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-assets', 'Riso Co. Cast & Assets')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Riso Co." width="28" height="28">
+  <title>Riso Co. — the pinned sheet, torn from the pin</title>
+  <!--
+    Two drums, one sheet. The tear is the seam the second drum prints:
+    drum A holds the left flap, drum B the right one slid 4,3 out of
+    register, and the pin is the only element that crosses the tear.
+  -->
+  <path d="M8 9H30L35 20L27 27L36 36L30 44L38 55H17L8 47Z" fill="var(--rs-drum-a, #f2542d)"/>
+  <path d="M34 12L39 23L31 30L40 39L34 47L42 58H47L55 50V16L50 12Z" fill="var(--rs-drum-b, #1d63ff)"/>
+  <path d="M32.5 6L38 11L32.5 16L27 11Z" fill="var(--rs-pin, #1b1712)"/>
+</svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- 5.1 6-Mark Companion Cast -->
+        <div class="category-block" data-figma-node="❖ Assets / 6-Mark Companion Cast">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">6-Mark Companion Cast (Kuwayama 64×64 Grid)</h2>
+              <p class="category-desc">Domain-specific companion symbols drawn on the same 64-unit grid and cut-line weight as the primary mark.</p>
+            </div>
+          </div>
+          <div class="cast-grid-6">
+            
+            <div class="icon-cell" onclick="copyHex('cast/datum.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Datum"><path d="M6 50H58V56H6Z M28 8H36V50H28Z M16 18H48V22H16Z" fill="#1D63FF"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Datum</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/datum.svg</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('cast/grid.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Grid"><path d="M6 6H20V20H6Z M26 6H40V20H26Z M46 6H60V20H46Z M6 26H20V40H6Z M26 26H40V40H26Z M48 44H62V58H48Z M6 46H20V60H6Z M26 46H40V60H26Z" fill="#1D63FF"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Grid</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/grid.svg</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('cast/horizon.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Horizon"><path d="M6 46H58V52H6Z M32 10L38 26L54 32L38 38L32 46L26 38L10 32L26 26Z" fill="#1D63FF"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Horizon</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/horizon.svg</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('cast/frame.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Frame"><path d="M8 6H20V58H8Z M44 6H56V58H44Z M20 18H44V22H20Z M20 40H44V44H20Z" fill="#1D63FF"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Frame</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/frame.svg</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('cast/beacon.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Beacon"><path d="M20 8H44V18H20Z M28 18H36V56H28Z M24 56H40V60H24Z" fill="#1D63FF"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Beacon</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/beacon.svg</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('cast/step.svg', 'Cast Mark')">
+              <div class="icon-keyline" style="width:56px; height:56px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" role="img" aria-label="Step"><path d="M8 52H56V58H8Z M14 40H26V52H14Z M30 28H42V52H30Z M46 14H58V52H46Z" fill="#1D63FF"/></svg></div>
+              <strong style="font-size:13px; color:#111827;">Step</strong>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">cast/step.svg</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5.2 System Icons (24x24 Keyline Grid) -->
+        <div class="category-block" data-figma-node="❖ Assets / 24px Icon Grid">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">System Iconography (24×24px Keyline)</h2>
+              <p class="category-desc">1.75px stroke, rounded caps. Click any icon card to copy its token identifier.</p>
+            </div>
+          </div>
+          <div class="icon-grid-8">
+            <div class="icon-cell" onclick="copyHex('icon-search', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.3-4.3"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">search</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-layers', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">layers</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-bell', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">bell</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-shield', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">shield</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-folder', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">folder</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-sparkles', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">sparkles</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-sliders', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">sliders</span>
+            </div>
+            <div class="icon-cell" onclick="copyHex('icon-terminal', 'Icon Token')">
+              <div class="icon-keyline"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#475569;">terminal</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5.3 Empty State Spot Illustrations -->
+        <div class="category-block" data-figma-node="❖ Assets / Spot Illustrations">
+          <h2 class="category-title">Spot Illustrations (Empty &amp; Status States)</h2>
+          <div class="grid-4-cols">
+            <div class="primitive-card" style="padding:24px;">
+              <svg width="88" height="88" viewBox="0 0 120 120" fill="none" style="margin:0 auto 12px auto; display:block;">
+                <circle cx="60" cy="60" r="46" fill="#DEF1FF"/>
+                <rect x="34" y="42" width="52" height="40" rx="6" fill="white" stroke="#1D63FF" stroke-width="2.5"/>
+                <rect x="44" y="54" width="24" height="4" rx="2" fill="#6CA9FF"/>
+                <rect x="44" y="64" width="16" height="4" rx="2" fill="#C1E2FF"/>
+                <circle cx="82" cy="40" r="10" fill="#F2542D"/>
+                <path d="M82 36V44M78 40H86" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <strong style="font-size:14px;">empty-documents</strong>
+              <p class="swatch-sub" style="margin-top:4px;">Zero-data tables &amp; folders</p>
+            </div>
+
+            <div class="primitive-card" style="padding:24px;">
+              <svg width="88" height="88" viewBox="0 0 120 120" fill="none" style="margin:0 auto 12px auto; display:block;">
+                <circle cx="60" cy="60" r="46" fill="#FFE6DD"/>
+                <circle cx="55" cy="55" r="20" fill="white" stroke="#F2542D" stroke-width="2.5"/>
+                <path d="M70 70L84 84" stroke="#F2542D" stroke-width="4" stroke-linecap="round"/>
+                <path d="M49 55H61" stroke="#FF8567" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+              <strong style="font-size:14px;">empty-search</strong>
+              <p class="swatch-sub" style="margin-top:4px;">No matching filter results</p>
+            </div>
+
+            <div class="primitive-card" style="padding:24px;">
+              <svg width="88" height="88" viewBox="0 0 120 120" fill="none" style="margin:0 auto 12px auto; display:block;">
+                <circle cx="60" cy="60" r="46" fill="#F0FFF4"/>
+                <circle cx="60" cy="60" r="24" fill="#18B368"/>
+                <path d="M50 60.5L56.5 67L71 52.5" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <strong style="font-size:14px;">status-verified</strong>
+              <p class="swatch-sub" style="margin-top:4px;">Release &amp; sync completed</p>
+            </div>
+
+            <div class="primitive-card" style="padding:24px;">
+              <svg width="88" height="88" viewBox="0 0 120 120" fill="none" style="margin:0 auto 12px auto; display:block;">
+                <circle cx="60" cy="60" r="46" fill="#FFF1F2"/>
+                <path d="M60 36L86 80H34L60 36Z" fill="white" stroke="#E11D48" stroke-width="2.5" stroke-linejoin="round"/>
+                <path d="M60 52V64" stroke="#E11D48" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="60" cy="71" r="2" fill="#E11D48"/>
+              </svg>
+              <strong style="font-size:14px;">status-warning</strong>
+              <p class="swatch-sub" style="margin-top:4px;">Destructive &amp; offline alerts</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 06: CORE UI COMPONENTS STICKER SHEET
+         ======================================================================= -->
+    <section id="section-components" data-section="components" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">06</span>
+              <span>Riso Co. Core UI Components</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>Buttons, Form Controls, Double-Reported Validation &amp; Status Badges</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-components', 'Riso Co. UI Components')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Riso Co." width="28" height="28">
+  <title>Riso Co. — the pinned sheet, torn from the pin</title>
+  <!--
+    Two drums, one sheet. The tear is the seam the second drum prints:
+    drum A holds the left flap, drum B the right one slid 4,3 out of
+    register, and the pin is the only element that crosses the tear.
+  -->
+  <path d="M8 9H30L35 20L27 27L36 36L30 44L38 55H17L8 47Z" fill="var(--rs-drum-a, #f2542d)"/>
+  <path d="M34 12L39 23L31 30L40 39L34 47L42 58H47L55 50V16L50 12Z" fill="var(--rs-drum-b, #1d63ff)"/>
+  <path d="M32.5 6L38 11L32.5 16L27 11Z" fill="var(--rs-pin, #1b1712)"/>
+</svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- Buttons -->
+        <div class="category-block" data-figma-node="❖ Components / Button Variants">
+          <h2 class="category-title">Buttons &amp; Action Hierarchy</h2>
+          <div class="surface-box" style="display:flex; flex-wrap:wrap; gap:14px; align-items:center;">
+            <button class="btn btn-primary">Primary (#1D63FF)</button>
+            <button class="btn btn-secondary">Secondary (#F2542D)</button>
+            <button class="btn btn-success">Tertiary (#2B192E)</button>
+            <button class="btn btn-subtle">Subtle Surface</button>
+            <button class="btn btn-outline">Outline Neutral</button>
+            <button class="btn btn-danger">Destructive</button>
+          </div>
+        </div>
+
+        <!-- Form Inputs & Badges -->
+        <div class="category-block" data-figma-node="❖ Components / Inputs & Badges">
+          <div class="grid-2-cols">
+            <div class="surface-box">
+              <h3 style="margin:0 0 16px 0; font-size:17px;">Form Input States &amp; Validation</h3>
+              <div style="display:flex; flex-direction:column; gap:14px;">
+                <div>
+                  <label style="display:block; font-size:12px; font-weight:600; margin-bottom:6px;">Default Input</label>
+                  <input type="text" class="input-field" value="spec@riso.design" readonly />
+                </div>
+                <div>
+                  <label style="display:block; font-size:12px; font-weight:600; color:var(--primary-70); margin-bottom:6px;">Focused Ring (--rs-drum-b)</label>
+                  <input type="text" class="input-field" style="border-color:var(--primary-70); box-shadow: 0 0 0 3px #C1E2FF;" value="Riso Co. Token 4.0.0" readonly />
+                </div>
+                <div>
+                  <label style="display:block; font-size:12px; font-weight:600; color:#E11D48; margin-bottom:6px;">Double-Reported Error State (aria-invalid="true")</label>
+                  <input type="text" class="input-field" style="border-color:#E11D48; background:#FFF1F2;" value="--rs-legacy-token" aria-invalid="true" readonly />
+                  <div style="margin-top:8px; padding:10px 12px; border-radius:8px; background:#FFF1F2; border:1px solid #FECDD3; font-size:12px; color:#9F1239;">
+                    <strong>2 validation problems:</strong> Token must resolve to a Layer 1 primitive, and contrast must be ≥ 4.5:1 for body text.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="surface-box">
+              <h3 style="margin:0 0 16px 0; font-size:17px;">Status Pills &amp; Badges</h3>
+              <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                <span class="badge-pill" style="background:#DEF1FF; color:#001A92;">● --rs-drum-b</span>
+                <span class="badge-pill" style="background:#FFE6DD; color:#6F0000;">● --rs-drum-a</span>
+                <span class="badge-pill" style="background:#F0FFF4; color:#18B368;">● Verified Pass</span>
+                <span class="badge-pill" style="background:#FFFBEB; color:#B45309;">● Graphic Only</span>
+                <span class="badge-pill" style="background:#FFF1F2; color:#E11D48;">● Deprecated</span>
+              </div>
+              <div style="margin-top:24px; padding-top:16px; border-top:1px solid #F1F5F9; display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:13px; color:#64748B;">Ready for Figma import or per-section HTML copy</span>
+                <button class="btn btn-subtle" style="padding:6px 12px; font-size:12px;" onclick="copySectionHTML('section-components', 'Riso Co. UI Components')">Copy Markup →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 07: MODALS, DRAWERS, TOASTS & OVERLAYS
+         ======================================================================= -->
+    <section id="section-overlays" data-section="overlays" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">07</span>
+              <span>Riso Co. Modals, Drawers &amp; Overlays</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>Dialog Anatomy, Destructive Confirmation &amp; Live Modal Preview</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="btn btn-primary" style="padding:7px 14px; font-size:12px;" onclick="openLiveModal()">
+              <span>Launch Live Modal</span>
+            </button>
+            <button class="section-copy-btn" onclick="copySectionHTML('section-overlays', 'Riso Co. Modals & Overlays')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Riso Co." width="28" height="28">
+  <title>Riso Co. — the pinned sheet, torn from the pin</title>
+  <!--
+    Two drums, one sheet. The tear is the seam the second drum prints:
+    drum A holds the left flap, drum B the right one slid 4,3 out of
+    register, and the pin is the only element that crosses the tear.
+  -->
+  <path d="M8 9H30L35 20L27 27L36 36L30 44L38 55H17L8 47Z" fill="var(--rs-drum-a, #f2542d)"/>
+  <path d="M34 12L39 23L31 30L40 39L34 47L42 58H47L55 50V16L50 12Z" fill="var(--rs-drum-b, #1d63ff)"/>
+  <path d="M32.5 6L38 11L32.5 16L27 11Z" fill="var(--rs-pin, #1b1712)"/>
+</svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <div class="category-block" data-figma-node="❖ Overlays / Modal Dialog Variants">
+          <div class="category-header-flex">
+            <div>
+              <h2 class="category-title">Modal Dialogs (Form &amp; Destructive Variants)</h2>
+              <p class="category-desc">Static artboard sticker sheet + interactive live modal preview.</p>
+            </div>
+          </div>
+
+          <div class="modal-stage">
+            <div class="modal-card">
+              <div style="padding:18px 22px; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <strong style="font-size:15px;">Publish Riso Co. Design Token Release</strong>
+                  <p class="swatch-sub" style="margin-top:2px;">Sync variables to Figma &amp; CSS token bundles</p>
+                </div>
+                <span style="color:#94A3B8; font-weight:700;">✕</span>
+              </div>
+              <div style="padding:20px 22px; display:flex; flex-direction:column; gap:14px;">
+                <div>
+                  <label style="display:block; font-size:12px; font-weight:600; margin-bottom:5px;">Release Tag</label>
+                  <input type="text" class="input-field" value="4.0.0-riso" readonly />
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                  <span class="badge-pill" style="background:#DEF1FF; color:#001A92;">Figma Variables</span>
+                  <span class="badge-pill" style="background:#FFE6DD; color:#6F0000;">CSS Tokens (--rs-*)</span>
+                  <span class="badge-pill" style="background:#F0FFF4; color:#18B368;">SVG Cast (6)</span>
+                </div>
+              </div>
+              <div style="padding:14px 22px; background:#FAFAFA; border-top:1px solid #F1F5F9; display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-outline" style="padding:7px 14px; font-size:12px;">Cancel</button>
+                <button class="btn btn-primary" style="padding:7px 14px; font-size:12px;" onclick="openLiveModal()">Publish Release</button>
+              </div>
+            </div>
+
+            <div class="modal-card" style="border-color:#FECDD3;">
+              <div style="padding:22px;">
+                <div style="width:40px; height:40px; border-radius:9999px; background:#FFF1F2; color:#E11D48; display:flex; align-items:center; justify-content:center; font-weight:800; margin-bottom:12px;">!</div>
+                <strong style="font-size:15px;">Revoke Deprecated Token?</strong>
+                <p class="swatch-sub" style="margin-top:6px;">Removing <code style="color:#E11D48;">--rs-legacy-50</code> will affect linked Figma component libraries.</p>
+              </div>
+              <div style="padding:14px 22px; background:#FAFAFA; border-top:1px solid #F1F5F9; display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-outline" style="padding:7px 14px; font-size:12px;">Keep</button>
+                <button class="btn btn-danger" style="padding:7px 14px; font-size:12px;">Revoke Token</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+
+    <!-- =======================================================================
+         SECTION 08: DATA DISPLAY, TABLES & TOKEN SHEETS
+         ======================================================================= -->
+    <section id="section-patterns" data-section="patterns" class="figma-sheet">
+      <header class="sheet-banner">
+        <div class="sheet-banner-inner">
+          <div>
+            <h1 class="sheet-title-row">
+              <span class="sheet-num-badge">08</span>
+              <span>Riso Co. Data Display, Patterns &amp; Token Sheets</span>
+            </h1>
+            <div class="sheet-subtitle-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>KPI Metric Cards, Token Registry Table &amp; Copyable CSS Sheets</span>
+            </div>
+          </div>
+          <div class="sheet-banner-right">
+            <button class="section-copy-btn" onclick="copySectionHTML('section-patterns', 'Riso Co. Data & Patterns')">
+              <span>Copy Section HTML</span>
+            </button>
+            <div class="tnd-logo-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"   role="img" aria-label="Riso Co." width="28" height="28">
+  <title>Riso Co. — the pinned sheet, torn from the pin</title>
+  <!--
+    Two drums, one sheet. The tear is the seam the second drum prints:
+    drum A holds the left flap, drum B the right one slid 4,3 out of
+    register, and the pin is the only element that crosses the tear.
+  -->
+  <path d="M8 9H30L35 20L27 27L36 36L30 44L38 55H17L8 47Z" fill="var(--rs-drum-a, #f2542d)"/>
+  <path d="M34 12L39 23L31 30L40 39L34 47L42 58H47L55 50V16L50 12Z" fill="var(--rs-drum-b, #1d63ff)"/>
+  <path d="M32.5 6L38 11L32.5 16L27 11Z" fill="var(--rs-pin, #1b1712)"/>
+</svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sheet-body sheet-body-padded">
+        <!-- 8.1 KPI Cards -->
+        <div class="category-block" data-figma-node="❖ Patterns / KPI Metric Cards">
+          <h2 class="category-title">System Metric Cards</h2>
+          <div class="grid-3-cols">
+            <div class="surface-box">
+              <div style="display:flex; justify-content:space-between; font-size:13px; color:#64748B;">
+                <span>Design Token Coverage</span>
+                <span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">100% Synced</span>
+              </div>
+              <div style="font-size:32px; font-weight:800; margin:10px 0 4px 0;">9 Primitives</div>
+              <div style="font-family:var(--font-mono); font-size:11px; color:#94A3B8;">Namespace: --rs-* · OKLCH verified</div>
+            </div>
+            <div class="surface-box">
+              <div style="display:flex; justify-content:space-between; font-size:13px; color:#64748B;">
+                <span>Contrast Ledger</span>
+                <span class="badge-pill" style="background:#DEF1FF; color:#001A92; font-size:11px;">3 Published Fails</span>
+              </div>
+              <div style="font-size:32px; font-weight:800; margin:10px 0 4px 0;">13 Pairs</div>
+              <div style="font-family:var(--font-mono); font-size:11px; color:#94A3B8;">Measured from hex in tokens.json</div>
+            </div>
+            <div class="surface-box">
+              <div style="display:flex; justify-content:space-between; font-size:13px; color:#64748B;">
+                <span>Convertible Figma Artboards</span>
+                <span class="badge-pill" style="background:#FFE6DD; color:#6F0000; font-size:11px;">Zero-CDN</span>
+              </div>
+              <div style="font-size:32px; font-weight:800; margin:10px 0 4px 0;">8 Sheets</div>
+              <div style="font-family:var(--font-mono); font-size:11px; color:#94A3B8;">Isolated &lt;section&gt; blocks</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8.2 Token Registry Table -->
+        <div class="category-block" data-figma-node="❖ Patterns / Data Table">
+          <h2 class="category-title">Token Registry Table</h2>
+          <div class="surface-box" style="padding:0; overflow:hidden;">
+            <table class="ds-table">
+              <thead>
+                <tr>
+                  <th>Token Name</th>
+                  <th>Role / Usage</th>
+                  <th>HEX Value</th>
+                  <th>OKLCH</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                <tr onclick="copyHex('#F1EDE4', '--rs-paper')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--rs-paper</td>
+                  <td>270gsm unbleached vellum, the only ground</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#F1EDE4;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#F1EDE4</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.947 0.013 86.8)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#E8E1D3', '--rs-paper-deep')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--rs-paper-deep</td>
+                  <td>The same stock, one shade under</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#E8E1D3;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#E8E1D3</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.911 0.020 84.6)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#FBF8F0', '--rs-paper-light')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--rs-paper-light</td>
+                  <td>Input ground, a lighter sheet</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#FBF8F0;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#FBF8F0</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.979 0.011 89.7)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#1B1712', '--rs-carbon')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--rs-carbon</td>
+                  <td>Soy carbon black, the reading ink and the pin</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#1B1712;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#1B1712</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.208 0.011 73.3)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#F2542D', '--rs-drum-a')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--rs-drum-a</td>
+                  <td>Fluorescent orange drum, fill only</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#F2542D;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#F2542D</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.656 0.201 34.8)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#1D63FF', '--rs-drum-b')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--rs-drum-b</td>
+                  <td>Federal blue drum, the second pass</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#1D63FF;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#1D63FF</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.561 0.241 262.9)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#2B192E', '--rs-overprint')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--rs-overprint</td>
+                  <td>Where both drums land on the same fibre</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#2B192E;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#2B192E</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.247 0.046 321.7)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#A3A9B2', '--rs-steel')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--rs-steel</td>
+                  <td>The pushpin needle, and nothing else</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#A3A9B2;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#A3A9B2</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.733 0.015 258.4)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+                <tr onclick="copyHex('#141110', '--rs-safelight')" style="cursor:pointer;">
+                  <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary-70);">--rs-safelight</td>
+                  <td>Darkroom ground, the second surface</td>
+                  <td style="font-family:var(--font-mono);"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#141110;border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:6px;"></span>#141110</td>
+                  <td style="font-family:var(--font-mono); font-size:12px; color:#64748B;">oklch(0.181 0.005 39.3)</td>
+                  <td><span class="badge-pill" style="background:#F0FFF4; color:#18B368; font-size:11px;">Verified</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 8.3 Copyable CSS Token Sheets -->
+        <div class="category-block" data-figma-node="❖ Patterns / CSS Token Sheets">
+          <h2 class="category-title">Copyable CSS Token Sheets</h2>
+          <div class="grid-2-cols">
+            <div class="code-sheet-card">
+              <div class="code-sheet-head">
+                <span>1 · PRIMITIVES (--rs-*)</span>
+                <button class="btn-tool" style="padding:3px 9px; font-size:11px;" onclick="copyToClipboard(document.getElementById('code-prim').textContent, 'Copied Primitives CSS')">Copy CSS</button>
+              </div>
+              <pre id="code-prim" class="code-sheet-pre">/* 1 · Primitives (Riso Co. --rs-*) */
+:root {
+  --rs-paper: #F1EDE4; /* oklch(0.947 0.013 86.8) */
+  --rs-paper-deep: #E8E1D3; /* oklch(0.911 0.020 84.6) */
+  --rs-paper-light: #FBF8F0; /* oklch(0.979 0.011 89.7) */
+  --rs-carbon: #1B1712; /* oklch(0.208 0.011 73.3) */
+  --rs-drum-a: #F2542D; /* oklch(0.656 0.201 34.8) */
+  --rs-drum-b: #1D63FF; /* oklch(0.561 0.241 262.9) */
+  --rs-overprint: #2B192E; /* oklch(0.247 0.046 321.7) */
+  --rs-steel: #A3A9B2; /* oklch(0.733 0.015 258.4) */
+  --rs-safelight: #141110; /* oklch(0.181 0.005 39.3) */
+}</pre>
+            </div>
+            <div class="code-sheet-card">
+              <div class="code-sheet-head">
+                <span>2 · FULL TOKEN SHEET (riso-tokens.css)</span>
+                <button class="btn-tool" style="padding:3px 9px; font-size:11px;" onclick="copyToClipboard(document.getElementById('code-sem').textContent, 'Copied Full Token CSS')">Copy CSS</button>
+              </div>
+              <pre id="code-sem" class="code-sheet-pre">/* Riso Co. — token source, v4.0. Three layers: primitive → semantic →
+   component. Namespaced --rs-* so it never touches the host site's tokens.
+   The dark surface (the safelight) is scoped to html[data-riso='safelight'].
+   Every name below describes the pin, the tear or a drum; there is no generic
+   &quot;accent-1&quot; to drift. */
+
+.rs-scope {
+  /* Theme DNA: the mark, the tear edge and the fields all read this object */
+  --rs-dna-family: constructed-track;
+  --rs-dna-material: uncoated-vellum + two-drums;
+  --rs-dna-edge: 0 radius, 1px carbon rule;
+  --rs-dna-offset: 4,3 on the mark / 2.2px on type;
+  --rs-dna-stroke: 0 (fill only);
+  --rs-dna-tile: none;
+  --rs-dna-radius: 0;
+  --rs-dna-ring: 2px carbon + 2px paper;
+  --rs-dna-density: tight;
+  --rs-dna-label: mono-caps;
+  --rs-dna-field-recipe: cut-sheet;
+  --rs-dna-mark-form: pinned-sheet-torn;
+  --rs-dna-mark-grid: 64 units;
+  --rs-dna-mark-seam: 4,3 out of register;
+  --rs-dna-mark-pin: 11 unit diamond;
+
+  /* 1 · primitive — the stock, the two drums, the pin, the darkroom */
+  --rs-paper: #f1ede4;
+  --rs-paper-deep: #e8e1d3;
+  --rs-paper-light: #fbf8f0;
+  --rs-carbon: #1b1712;
+  --rs-drum-a: #f2542d;
+  --rs-drum-b: #1d63ff;
+  --rs-overprint: #2b192e;
+  --rs-steel: #a3a9b2;
+  --rs-safelight: #141110;
+
+  /* 2 · semantic — light */
+  --rs-surface: var(--rs-paper);
+  --rs-surface-raised: var(--rs-paper-light);
+  --rs-surface-sunken: var(--rs-paper-deep);
+  --rs-surface-loud: var(--rs-drum-a);
+  --rs-surface-second: var(--rs-drum-b);
+  --rs-surface-stage: #141110;
+  --rs-text: var(--rs-carbon);
+  --rs-text-muted: #6b6155;
+  --rs-text-on-drum: var(--rs-carbon);
+  --rs-text-on-stage: var(--rs-paper);
+  --rs-rule: #c9c0af;
+  --rs-rule-strong: var(--rs-carbon);
+  --rs-accent: #c22e08;
+  --rs-accent-second: #0e3f8f;
+  --rs-ghost: var(--rs-drum-b);
+  --rs-ghost-ink: rgb(29 99 255 / 0.55);
+  --rs-pin: var(--rs-carbon);
+  --rs-focus: var(--rs-carbon);
+  --rs-selection: rgb(242 84 45 / 0.22);
+
+  /* 3 · component */
+  --rs-button-bg: var(--rs-carbon);
+  --rs-button-ink: var(--rs-paper);
+  --rs-button-quiet-bg: var(--rs-paper-deep);
+  --rs-button-quiet-ink: var(--rs-carbon);
+  --rs-field-bg: var(--rs-paper-light);
+  --rs-field-edge: #8c8274;
+  --rs-field-ink: var(--rs-carbon);
+  --rs-field-invalid: #a3280a;
+  --rs-card-bg: var(--rs-paper-light);
+  --rs-card-edge: var(--rs-rule);
+
+  /* type */
+  --rs-font-display: var(--font-space-grotesk), 'Space Grotesk', ui-sans-serif,
+    system-ui, sans-serif;
+  --rs-font-reading: var(--font-geist), 'Geist', ui-sans-serif, -apple-system,
+    'Segoe UI', system-ui, sans-serif;
+  --rs-font-mono: var(--font-geist-mono), 'Geist Mono', ui-monospace, 'SF Mono',
+    Menlo, monospace;
+  --rs-scale-display: clamp(2.6rem, 1.4rem + 4.4vw, 4.75rem);
+  --rs-scale-h2: clamp(1.7rem, 1.28rem + 1.5vw, 2.4rem);
+  --rs-scale-h3: 1.1875rem;
+  --rs-scale-body: 1.0625rem;
+  --rs-scale-small: 0.9375rem;
+  --rs-scale-caption: 0.8125rem;
+  --rs-scale-label: 0.6875rem;
+  --rs-leading-display: 0.98;
+  --rs-leading-heading: 1.08;
+  --rs-leading-body: 1.6;
+  --rs-tracking-display: -0.03em;
+  --rs-tracking-label: 0.18em;
+
+  /* space · radius · motion — the sheet has no rounded corners at all */
+  --rs-space-1: 4px;
+  --rs-space-2: 8px;
+  --rs-space-3: 12px;
+  --rs-space-4: 16px;
+  --rs-space-5: 24px;
+  --rs-space-6: 32px;
+  --rs-space-7: 48px;
+  --rs-space-8: 64px;
+  --rs-space-9: 96px;
+  --rs-space-10: 128px;
+  --rs-radius: 0;
+  --rs-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --rs-dur-1: 110ms;
+  --rs-dur-2: 180ms;
+  --rs-dur-3: 320ms;
+  --rs-topbar-h: 60px;
+  --rs-register: 2.2px;
+}
+
+/* The safelight — the same two drums read in the dark, nothing re-hued */
+html[data-riso='safelight'] .rs-scope,
+.rs-scope[data-riso='safelight'] {
+  --rs-surface: #141110;
+  --rs-surface-raised: #1c1815;
+  --rs-surface-sunken: #0d0b0a;
+  --rs-surface-stage: #0d0b0a;
+  --rs-text: #f1ede4;
+  --rs-text-muted: #beb3a2;
+  --rs-rule: #3a322a;
+  --rs-rule-strong: #f1ede4;
+  --rs-accent: #ff7a4d;
+  --rs-accent-second: #6faeff;
+  --rs-ghost: #6faeff;
+  --rs-ghost-ink: rgb(111 174 255 / 0.5);
+  --rs-pin: #f1ede4;
+  --rs-focus: #f1ede4;
+  --rs-selection: rgb(29 99 255 / 0.35);
+  --rs-button-bg: #f1ede4;
+  --rs-button-ink: #141110;
+  --rs-button-quiet-bg: #262019;
+  --rs-button-quiet-ink: #f1ede4;
+  --rs-field-bg: #1c1815;
+  --rs-field-edge: #6e6357;
+  --rs-field-ink: #f1ede4;
+  --rs-field-invalid: #ff8f6b;
+  --rs-card-bg: #1c1815;
+  --rs-card-edge: #3a322a;
+}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       LIVE INTERACTIVE MODAL OVERLAY
+       ========================================================================= -->
+  <div id="live-modal" class="live-modal-overlay" onclick="if(event.target === this) closeLiveModal()">
+    <div class="modal-card" style="width:100%; max-width:480px;">
+      <div style="padding:18px 22px; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center;">
+        <strong>Live Riso Co. Modal Preview</strong>
+        <button class="btn-tool" style="padding:4px 8px;" onclick="closeLiveModal()">✕</button>
+      </div>
+      <div style="padding:22px; font-size:14px; color:#475569;">
+        <p style="margin:0 0 12px 0;">This interactive modal uses the Riso Co. elevation token (<code>shadow-xl</code>) and primary token (<code>--rs-drum-b: #1D63FF</code>).</p>
+        <div style="padding:12px; background:#FAFAFA; border:1px solid #E2E8F0; border-radius:8px; font-family:var(--font-mono); font-size:12px;">
+          • Primary Action: #1D63FF (--rs-drum-b)<br/>
+          • Surface: #FFFFFF (Pure White Artboard)
+        </div>
+      </div>
+      <div style="padding:14px 22px; background:#FAFAFA; border-top:1px solid #F1F5F9; display:flex; justify-content:flex-end; gap:10px;">
+        <button class="btn btn-outline" onclick="closeLiveModal()">Close</button>
+        <button class="btn btn-primary" onclick="copySectionHTML('section-overlays', 'Riso Co. Modals & Overlays'); closeLiveModal();">Copy Section HTML</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notification -->
+  <div id="toast" class="toast-notification">
+    <span style="color:#4ADE80;">✔</span>
+    <span id="toast-text">Copied to clipboard</span>
+  </div>
+
+  <!-- =========================================================================
+       JAVASCRIPT: FILTERING, SPEC INSPECTOR, CLEAN EXPORT & CLIPBOARD
+       ========================================================================= -->
+  <script>
+    function filterSection(target, btn) {
+      document.querySelectorAll('.nav-pill').forEach(el => el.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      document.querySelectorAll('.figma-sheet').forEach(sec => {
+        if (target === 'all' || sec.getAttribute('data-section') === target) {
+          sec.classList.remove('hidden-sheet');
+        } else {
+          sec.classList.add('hidden-sheet');
+        }
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleSpecMode() {
+      document.body.classList.toggle('spec-mode');
+      const btn = document.getElementById('btn-spec');
+      if (btn) btn.classList.toggle('active-spec');
+    }
+
+    function toggleCleanMode(forceState) {
+      const isClean = forceState !== undefined ? forceState : !document.body.classList.contains('clean-export-mode');
+      const cleanBtn = document.getElementById('btn-clean');
+
+      if (isClean) {
+        document.body.classList.add('clean-export-mode');
+        if (cleanBtn) cleanBtn.classList.add('active-clean');
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.set('clean', '1');
+          window.history.replaceState({}, '', url.toString());
+          copyToClipboard(url.toString(), 'Clean Export Mode active · Copied clean URL (?clean=1)');
+        } catch (e) {
+          showToast('Clean Export Mode active (?clean=1)');
+        }
+      } else {
+        document.body.classList.remove('clean-export-mode');
+        if (cleanBtn) cleanBtn.classList.remove('active-clean');
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.delete('clean');
+          url.searchParams.delete('figma');
+          window.history.replaceState({}, '', url.toString());
+          showToast('Exited Clean Export Mode');
+        } catch (e) {
+          showToast('Exited Clean Export Mode');
+        }
+      }
+    }
+
+    function copyCleanLink() {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('clean', '1');
+        window.history.replaceState({}, '', url.toString());
+        document.body.classList.add('clean-export-mode');
+        const cleanBtn = document.getElementById('btn-clean');
+        if (cleanBtn) cleanBtn.classList.add('active-clean');
+        copyToClipboard(url.toString(), 'Copied Clean Export URL (?clean=1)');
+      } catch (e) {
+        fallbackCopy(window.location.href, 'Copied URL');
+      }
+    }
+
+    function openLiveModal() {
+      document.getElementById('live-modal').classList.add('open');
+    }
+
+    function closeLiveModal() {
+      document.getElementById('live-modal').classList.remove('open');
+    }
+
+    function copyToClipboard(text, message) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(message);
+        }).catch(() => fallbackCopy(text, message));
+        return;
+      }
+      fallbackCopy(text, message);
+    }
+
+    function fallbackCopy(text, message) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast(message);
+      } catch (err) {
+        showToast('Copied');
+      }
+      document.body.removeChild(textarea);
+    }
+
+    function copyHex(hex, label) {
+      copyToClipboard(hex, 'Copied ' + label + ': ' + hex);
+    }
+
+    function copySectionHTML(sectionId, title) {
+      const el = document.getElementById(sectionId);
+      if (!el) return;
+      copyToClipboard(el.outerHTML, 'Copied <section> HTML for "' + title + '"');
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-text').textContent = msg;
+      toast.classList.add('visible');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('visible'), 2400);
+    }
+
+    // Auto-enable Clean Export Mode when ?clean=1 or ?figma=1 is in the URL
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('clean') === '1' || params.get('figma') === '1') {
+        document.body.classList.add('clean-export-mode');
+        const cleanBtn = document.getElementById('btn-clean');
+        if (cleanBtn) cleanBtn.classList.add('active-clean');
+      }
+      if (params.get('spec') === '1') {
+        document.body.classList.add('spec-mode');
+        const specBtn = document.getElementById('btn-spec');
+        if (specBtn) specBtn.classList.add('active-spec');
+      }
+    });
+  </script>
+</body>
+</html>

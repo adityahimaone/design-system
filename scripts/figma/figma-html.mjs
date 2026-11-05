@@ -36,9 +36,11 @@ function buildReplayAssets(brandName, slug) {
   const b64 = (s) => Buffer.from(String(s), 'utf8').toString('base64')
   try {
     const code = readFileSync(join(TEMPLATES_DIR, 'figma-replay-plugin.js'), 'utf8')
+    const version = (/const PLUGIN_VERSION = '([^']+)'/.exec(code) || [, '0'])[1]
     const ui = readFileSync(join(TEMPLATES_DIR, 'figma-replay-ui.html'), 'utf8')
+      .replace('__VERSION__', () => version)
     const pluginManifest = JSON.stringify({
-      name: `${brandName} — replay`,
+      name: `${brandName} — replay v${version}`,
       id: `${slug}-replay`,
       api: '1.0.0',
       main: 'code.js',

@@ -22,12 +22,13 @@
   .opt { display: flex; align-items: center; gap: 7px; margin-top: 8px; font-size: 12px; color: #4B5563; }
   .opt input { margin: 0; }
   .hint { margin-top: 10px; font-size: 11px; color: #9CA3AF; }
+  .ver { font-size: 11px; font-weight: 500; color: #9CA3AF; }
   section.migrate { margin-top: 16px; padding-top: 14px; border-top: 1px solid #E5E7EB; }
   section.migrate p { margin-bottom: 8px; }
 </style>
 </head>
 <body>
-  <h1>__BRAND__ — build in Figma</h1>
+  <h1>__BRAND__ — build in Figma <span class="ver">v__VERSION__</span></h1>
   <p>One canonical spec drives everything: Auto Layout, the complete variable/style library, real component sets with instances, and live text. No importer, no copy-paste.</p>
   <textarea id="manifest" spellcheck="false" placeholder="Paste sunnyside/figma-manifest JSON here"></textarea>
   <label class="opt"><input type="checkbox" id="replace" checked /> Replace existing generated pages (safe re-import / migration)</label>

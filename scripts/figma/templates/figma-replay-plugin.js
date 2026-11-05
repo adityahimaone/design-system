@@ -16,12 +16,17 @@
  * v1 manifests (tokens-only, no `system`) still build via a compatibility path.
  * ==========================================================================*/
 
+/* Shown in the Figma toast and the plugin UI. If the toast does not start with
+ * this string, Figma is running a previously imported build — re-import the
+ * Plugin ZIP from the sheet. */
+const PLUGIN_VERSION = '5.1.1'
+
 const blankReport = () => ({
   pages: 0, frames: 0, texts: 0, rects: 0, vectors: 0,
   variables: 0, variablesReused: 0, autoVariables: 0,
   paintStyles: 0, textStyles: 0, effectStyles: 0, gridStyles: 0,
   components: 0, componentSets: 0, instances: 0, componentDescriptions: 0,
-  autoLayout: 0, layoutBindings: 0, textStyleBindings: 0,
+  autoLayout: 0, layoutBindings: 0, textStyleBindings: 0, stretchedRows: 0,
   paintBindings: 0, styleBindings: 0, replaced: 0,
   upgradedTexts: 0, upgradedFills: 0, upgradedLayouts: 0, upgradedPages: 0, skippedPages: 0,
   textInk: 0, textBoosted: 0, fontFallbacks: 0, vectorsScaled: 0,
@@ -732,6 +737,17 @@ async function createNode(node, parentBox, reg, depth, options, ctx) {
         }
       }
     }
+    /* Appending children can let Figma re-derive a horizontal row's sizing.
+     * Force the browser's measured width back on, after the children exist, so
+     * a modal footer can never collapse around its buttons. */
+    if (node.layout && node.layout.mode === 'HORIZONTAL') {
+      try {
+        out.primaryAxisSizingMode = 'FIXED'
+        out.layoutSizingHorizontal = 'FIXED'
+        out.resize(box.w, Number(out.height) || box.h)
+        out.primaryAxisAlignItems = justify(node.layout.justify)
+      } catch (e) { fail('rowWidth/' + node.name, e) }
+    }
   }
   return out
 }
@@ -760,9 +776,20 @@ function fitAbsoluteFrames(node) {
 /* ── real component library: variant sets + live instances ──────────────── */
 
 function boundFill(c, reg) {
+  const plain = solid(c)
   const v = reg ? colourVarFor(c, reg) : null
-  if (v) report.paintBindings++
-  return v ? figma.variables.setBoundVariableForPaint(solid(c), 'color', v) : solid(c)
+  if (!v) return plain
+  try {
+    const paint = figma.variables.setBoundVariableForPaint(plain, 'color', v)
+    /* A rejected binding can come back without a colour; a fill like that
+     * renders as nothing and the board disappears against a dark canvas. */
+    if (!paint || !paint.color) return plain
+    report.paintBindings++
+    return paint
+  } catch (e) {
+    fail('bind/' + hexOf(c), e)
+    return plain
+  }
 }
 
 async function libraryLabel(text, size, weight, reg) {
@@ -772,6 +799,9 @@ async function libraryLabel(text, size, weight, reg) {
   t.characters = String(text)
   t.fontSize = size
   t.textAutoResize = 'WIDTH_AND_HEIGHT'
+  /* Library chrome uses plain paints. If a variable binding is rejected by the
+   * host, a bound paint can land as an empty fill and the whole board reads as
+   * invisible dark-on-dark. Chrome must never depend on that. */
   t.fills = [boundFill({ r: 0.07, g: 0.09, b: 0.15, a: 1 }, reg)]
   const st = textStyleFor(t, { fontFamily: 'Inter', fontWeight: weight }, reg)
   if (st) {
@@ -804,6 +834,9 @@ async function buildComponentLibrary(page, root, ctx, reg, options) {
   library.name = '◆ Component Library'
   library.fills = [boundFill({ r: 0.973, g: 0.98, b: 0.996, a: 1 }, reg)]
   try {
+    library.strokes = [solid({ r: 0.88, g: 0.9, b: 0.94, a: 1 })]
+    library.strokeWeight = 1
+    library.cornerRadius = 16
     library.layoutMode = 'VERTICAL'
     library.itemSpacing = 24
     library.paddingTop = library.paddingRight = library.paddingBottom = library.paddingLeft = 40
@@ -824,6 +857,10 @@ async function buildComponentLibrary(page, root, ctx, reg, options) {
     const section = figma.createFrame()
     section.name = 'Section / ' + name
     section.fills = [boundFill({ r: 1, g: 1, b: 1, a: 1 }, reg)]
+    try {
+      section.strokes = [solid({ r: 0.89, g: 0.91, b: 0.94, a: 1 })]
+      section.strokeWeight = 1
+    } catch (e) { /* ignore */ }
     try {
       section.layoutMode = 'VERTICAL'
       section.itemSpacing = 16
@@ -888,12 +925,35 @@ async function buildComponentLibrary(page, root, ctx, reg, options) {
     }
   }
 
-  /* Put the whole library above the sheet instead of off-canvas at x+200. */
+  /* The library sits at the page origin and the sheet is pushed below it, so
+   * everything stays in positive page space and the board reads as part of the
+   * page rather than an off-canvas frame at x+200. */
   try {
     library.x = 0
-    library.y = -(Number(library.height) || 800) - 96
+    library.y = 0
   } catch (e) { /* ignore */ }
   return library
+}
+
+/**
+ * Figma does not always keep an explicit `primaryAxisSizingMode` on a
+ * HORIZONTAL row once children are appended: a modal footer can silently fall
+ * back to hugging, which left-aligns its buttons and shrinks the grey bar.
+ * Walk every VERTICAL auto-layout frame and stretch its horizontal children on
+ * the cross axis (`layoutAlign = STRETCH`) — deterministic, independent of
+ * heuristics, and idempotent.
+ */
+function stretchRows(node) {
+  const kids = Array.isArray(node.children) ? node.children : []
+  for (const k of kids) stretchRows(k)
+  if (node.layoutMode !== 'VERTICAL') return
+  for (const k of kids) {
+    if (!k || k.layoutMode !== 'HORIZONTAL') continue
+    try { k.layoutAlign = 'STRETCH' } catch (e) { /* not a flow child */ }
+    try { k.layoutSizingHorizontal = 'FILL' } catch (e) { /* older runtime */ }
+    try { k.primaryAxisSizingMode = 'FIXED' } catch (e) { /* ignore */ }
+    report.stretchedRows++
+  }
 }
 
 /* ── build ──────────────────────────────────────────────────────────────── */
@@ -942,10 +1002,17 @@ async function build(manifest, replace, options) {
     const root = await createNode(sheet.node, { x: 0, y: 0 }, reg, 0, options, ctx)
     if (root) {
       fitAbsoluteFrames(root)
+      stretchRows(root)
       root.x = 0
       root.y = 0
       page.appendChild(root)
-      if (options.components !== false) await buildComponentLibrary(page, root, ctx, reg, options)
+      if (options.components !== false) {
+        const lib = await buildComponentLibrary(page, root, ctx, reg, options)
+        /* Keep both in positive page space: board first, sheet below it. */
+        if (lib) {
+          try { root.y = (Number(lib.height) || 0) + 96 } catch (e) { /* ignore */ }
+        }
+      }
     }
     report.pages++
   }
@@ -1038,8 +1105,8 @@ async function upgrade(manifest, options) {
 figma.showUI(__html__, { width: 520, height: 720 })
 
 function summaryFor(label, manifest) {
-  return (label + ' · ' + (manifest && manifest.brand ? manifest.brand + ' — ' : '')) +
-    report.pages + ' pages, ' + report.autoLayout + ' auto layouts, ' +
+  return ('v' + PLUGIN_VERSION + ' · ' + label + ' · ' + (manifest && manifest.brand ? manifest.brand + ' — ' : '')) +
+    report.pages + ' pages, ' + report.autoLayout + ' auto layouts (' + report.stretchedRows + ' full-width rows), ' +
     report.frames + ' frames, ' +
     report.texts + ' texts (' + report.textInk + ' inked, ' + report.textStyleBindings + ' styled' +
     (report.textBoosted ? ', ' + report.textBoosted + ' boosted' : '') + '), ' +

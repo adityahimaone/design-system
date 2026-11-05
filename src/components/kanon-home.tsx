@@ -84,6 +84,18 @@ const SORTS = [
   { id: 'collection', label: 'Collection' },
 ] as const
 
+/* Sunnyside is the case the studio was built on, so it holds index 0: the
+   filters narrow the list and the sorts reorder it, and neither moves this one. */
+const PINNED_SLUG = 'sunnyside'
+
+const withPinned = (list: DesignCase[]): DesignCase[] => {
+  const i = list.findIndex((c) => c.slug === PINNED_SLUG)
+  if (i <= 0) return list
+  const next = [...list]
+  next.unshift(...next.splice(i, 1))
+  return next
+}
+
 const haystack = (c: DesignCase) =>
   [
     c.name,
@@ -220,7 +232,7 @@ export function KanonHome({ facts }: { facts: SystemFacts }) {
           (collectionOf(a)?.label ?? '').localeCompare(collectionOf(b)?.label ?? '') ||
           a.number.localeCompare(b.number),
       )
-    return list
+    return withPinned(list)
   }, [active, query, sort])
 
   const filtered = active !== 'all' || query.trim() !== ''
@@ -631,7 +643,7 @@ export function KanonHome({ facts }: { facts: SystemFacts }) {
           </CommandGroup>
 
           <CommandGroup heading={`Cases · ${DESIGN_CASES.length}`}>
-            {DESIGN_CASES.map((c) => (
+            {withPinned([...DESIGN_CASES]).map((c) => (
               <CommandItem
                 key={c.slug}
                 value={`${c.name} ${c.number} ${c.material} ${c.tags.join(' ')}`}

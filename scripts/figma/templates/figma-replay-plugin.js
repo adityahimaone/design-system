@@ -19,7 +19,7 @@
 /* Shown in the Figma toast and the plugin UI. If the toast does not start with
  * this string, Figma is running a previously imported build — re-import the
  * Plugin ZIP from the sheet. */
-const PLUGIN_VERSION = '5.1.1'
+const PLUGIN_VERSION = '5.2.0'
 
 const blankReport = () => ({
   pages: 0, frames: 0, texts: 0, rects: 0, vectors: 0,
@@ -539,6 +539,30 @@ function safeBox(node) {
   }
 }
 
+/* CSS `border-radius: 9999px` / `50%` must become an explicit, clamped Figma
+ * radius. Feeding 9999 straight in produced an unusable (mixed) corner value,
+ * so pills and the logo circle arrived as rectangles / half circles. */
+function fixRadius(node, source, box) {
+  const r = Number(source && source.style && source.style.radius) || 0
+  if (r <= 0) return
+  try { node.cornerRadius = Math.min(r, Math.max(1, Math.min(box.w, box.h) / 2)) } catch (e) { /* not every node has a radius */ }
+}
+
+/* Figma auto-layout stretches newly appended children on the cross axis by
+ * default — a 52×52 logo circle became 52×30. Pin each child back to the
+ * browser's measured box AFTER it is appended. */
+function pinChild(node, source, parentBox) {
+  const b = safeBox(source)
+  try { node.layoutAlign = 'INHERIT' } catch (e) { /* not a flow child */ }
+  try { node.layoutSizingHorizontal = 'FIXED'; node.layoutSizingVertical = 'FIXED' } catch (e) { /* older runtime */ }
+  try {
+    if (source.type !== 'TEXT' || source.textAutoResize !== 'WIDTH_AND_HEIGHT') {
+      node.resize(Math.max(1, b.w), Math.max(1, b.h))
+    }
+  } catch (e) { /* text with auto width cannot be resized */ }
+  fixRadius(node, source, b)
+}
+
 /* A button, badge or input is a TEXT / RECTANGLE leaf in the DOM, but a real
  * component in the design system. Give it a COMPONENT host carrying the plate,
  * description and variant name, with the visual node as its child. */
@@ -563,6 +587,12 @@ function makeComponentHost(node, box, reg, ctx) {
 async function createNode(node, parentBox, reg, depth, options, ctx) {
   if (!node || depth > 14) return null
   const box = safeBox(node)
+  const sheetMode = !!(options && options.sheetMode)
+  /* Every specimen must be collected for the library, including the leaf ones
+   * (button = TEXT, input = RECTANGLE) that never reach the frame branch. */
+  if (node.componentRef && sheetMode) {
+    ctx.components.push({ node: null, spec: node.componentRef, manifestNode: node, box })
+  }
   let out = null
   let textInk = null
   let inkPaint = null
@@ -630,6 +660,7 @@ async function createNode(node, parentBox, reg, depth, options, ctx) {
       plate.fills = []
       applyStyle(plate, node.style, reg, true)
       try { plate.resize(box.w, box.h) } catch (e) { fail('chip/' + node.name, e) }
+      fixRadius(plate, node, box)
       /* A chip label is single-line by construction; never let Figma wrap it
        * inside its own plate. */
       try { t.textAutoResize = 'WIDTH_AND_HEIGHT' } catch (e) { /* ignore */ }
@@ -673,16 +704,25 @@ async function createNode(node, parentBox, reg, depth, options, ctx) {
     report.rects++
   } else {
     const spec = node.componentRef
-    const isComponent = !!(spec || node.component)
+    /* A COMPONENT nested in the sheet makes Figma promote its container to the
+     * page root (measured in test ds 4/5: surface-box, grid-2-cols,
+     * modal-stage all detached and the sheet body went blank). Sheet builds
+     * use plain FRAMEs; only the library masters are real COMPONENTs. */
+    const isComponent = !!(spec || node.component) && !sheetMode
     out = isComponent ? figma.createComponent() : figma.createFrame()
     if (spec) {
-      out.name = 'Component/' + spec.name + '/' + spec.variant
-      try {
-        out.description = spec.description || ''
-        if (spec.description) report.componentDescriptions++
-      } catch (e) { /* description is optional on older runtimes */ }
-      ctx.components.push({ node: out, spec, manifestNode: node, box })
-      report.components++
+      if (sheetMode) {
+        out.name = String(node.name || 'Frame')
+        report.frames++
+      } else {
+        out.name = 'Component/' + spec.name + '/' + spec.variant
+        try {
+          out.description = spec.description || ''
+          if (spec.description) report.componentDescriptions++
+        } catch (e) { /* description is optional on older runtimes */ }
+        report.components++
+        ctx.components.push({ node: out, spec, manifestNode: node, box })
+      }
     } else {
       out.name = String(node.component || node.name || 'Frame')
       if (node.component) report.components++
@@ -704,12 +744,13 @@ async function createNode(node, parentBox, reg, depth, options, ctx) {
     else if (node.type === 'TEXT') out.resize(Math.max(box.w, 32), box.h)
     else out.resize(box.w, box.h)
   } catch (e) { fail('resize/' + node.name, e) }
+  fixRadius(out, node, box)
   out.x = box.x - parentBox.x
   out.y = box.y - parentBox.y
 
   /* Leaf specimens (buttons, badges, inputs) need a COMPONENT host of their
    * own. Frame specimens already registered themselves above. */
-  if (node.componentRef && out.type !== 'COMPONENT') {
+  if (node.componentRef && out.type !== 'COMPONENT' && !(options && options.sheetMode)) {
     const host = makeComponentHost(node, box, reg, ctx)
     try {
       host.appendChild(out)
@@ -728,6 +769,7 @@ async function createNode(node, parentBox, reg, depth, options, ctx) {
       const made = await createNode(child, box, reg, depth + 1, options, ctx)
       if (!made) continue
       try { out.appendChild(made) } catch (e) { fail('append/' + child.name, e); continue }
+      pinChild(made, child, box)
       const L = child.layout || {}
       if (out.layoutMode && out.layoutMode !== 'NONE') {
         try { made.layoutGrow = Number(L.grow) > 0 ? 1 : 0 } catch (e) { /* not a flow child */ }
@@ -830,6 +872,9 @@ async function buildComponentLibrary(page, root, ctx, reg, options) {
   }
   if (!groups.size) return null
 
+  /* Auto-layout with `AUTO` height clipped the board to 120px in a real file
+   * while its sections were 196/338/441px tall. Use explicit geometry and
+   * disable clipping — every child is placed by coordinate, nothing hugs. */
   const library = figma.createFrame()
   library.name = '◆ Component Library'
   library.fills = [boundFill({ r: 0.973, g: 0.98, b: 0.996, a: 1 }, reg)]
@@ -837,22 +882,23 @@ async function buildComponentLibrary(page, root, ctx, reg, options) {
     library.strokes = [solid({ r: 0.88, g: 0.9, b: 0.94, a: 1 })]
     library.strokeWeight = 1
     library.cornerRadius = 16
-    library.layoutMode = 'VERTICAL'
-    library.itemSpacing = 24
-    library.paddingTop = library.paddingRight = library.paddingBottom = library.paddingLeft = 40
-    library.primaryAxisSizingMode = 'AUTO'
-    library.counterAxisSizingMode = 'FIXED'
-    library.resize(1440, 120)
+    library.layoutMode = 'NONE'
+    library.clipsContent = false
+    library.resize(1440, 160)
   } catch (e) { /* cosmetics only */ }
-  /* Append before adding children — Figma needs a live parent for the board. */
   page.appendChild(library)
-  library.appendChild(await libraryLabel('◆ Component Library · ' + (ctx.system?.brand || 'Brand') + ' · ' + groups.size + ' families', 24, '700', reg))
+
+  const header = await libraryLabel('◆ Component Library · ' + (ctx.system?.brand || 'Brand') + ' · ' + groups.size + ' families', 24, '700', reg)
+  header.x = 40
+  header.y = 32
+  library.appendChild(header)
 
   const descriptionOf = (name) => {
     for (const c of (ctx.system && ctx.system.components) || []) if (c.name === name) return c.description || ''
     return ''
   }
 
+  let cursorY = 88
   for (const [name, entries] of groups) {
     const section = figma.createFrame()
     section.name = 'Section / ' + name
@@ -860,75 +906,88 @@ async function buildComponentLibrary(page, root, ctx, reg, options) {
     try {
       section.strokes = [solid({ r: 0.89, g: 0.91, b: 0.94, a: 1 })]
       section.strokeWeight = 1
-    } catch (e) { /* ignore */ }
-    try {
-      section.layoutMode = 'VERTICAL'
-      section.itemSpacing = 16
-      section.paddingTop = section.paddingRight = section.paddingBottom = section.paddingLeft = 24
-      section.primaryAxisSizingMode = 'AUTO'
-      section.counterAxisSizingMode = 'FIXED'
-      section.resize(1360, 100)
       section.cornerRadius = 12
+      section.layoutMode = 'NONE'
+      section.clipsContent = false
+      section.resize(1360, 160)
     } catch (e) { /* ignore */ }
+    section.x = 40
+    section.y = cursorY
     library.appendChild(section)
-    section.appendChild(await libraryLabel(name + ' · ' + entries.length + ' variants — ' + (descriptionOf(name) || entries[0].spec.description || ''), 15, '600', reg))
+    const label = await libraryLabel(name + ' · ' + entries.length + ' variants — ' + (descriptionOf(name) || entries[0].spec.description || ''), 15, '600', reg)
+    label.x = 24
+    label.y = 18
+    section.appendChild(label)
 
     /* Fresh page-level masters, rebuilt from the manifest. No clone(), no
-     * reparenting of anything that belongs to the sheet. */
+     * COMPONENT inside the sheet, no reparenting of sheet containers. */
+    const masters = []
     let set = null
-    if (typeof figma.combineAsVariants === 'function') {
+    try {
+      for (const entry of entries) {
+        const throwaway = { components: [], system: ctx.system }
+        const master = await createNode(
+          { ...entry.manifestNode, componentRef: { name: name, variant: entry.spec.variant, description: entry.spec.description } },
+          { x: 0, y: 0 }, reg, 0, options, throwaway)
+        if (!master) continue
+        master.name = entry.spec.variant
+        master.x = 0
+        master.y = 0
+        page.appendChild(master)
+        masters.push(master)
+      }
+      if (masters.length && typeof figma.combineAsVariants === 'function') {
+        set = figma.combineAsVariants(masters, page)
+        set.name = 'Component / ' + name
+        try { set.description = descriptionOf(name) || entries[0].spec.description || '' } catch (e) { /* ignore */ }
+        report.componentSets++
+      }
+    } catch (e) { fail('combineAsVariants/' + name, e) }
+
+    /* Sets stay page-level (Figma's safest place for them) and are positioned
+     * over their section; instances live inside the section. */
+    const sources = (set && Array.isArray(set.children) && set.children.length) ? set.children : masters
+    let setH = 0
+    if (set) {
       try {
-        const masters = []
-        for (const entry of entries) {
-          const throwaway = { components: [], system: ctx.system }
-          const master = await createNode(
-            { ...entry.manifestNode, componentRef: { name: name, variant: entry.spec.variant, description: entry.spec.description } },
-            { x: 0, y: 0 }, reg, 0, options, throwaway)
-          if (!master) continue
-          master.name = entry.spec.variant
-          page.appendChild(master)
-          masters.push(master)
-        }
-        if (masters.length) {
-          set = figma.combineAsVariants(masters, page)
-          set.name = 'Component / ' + name
-          try { set.description = descriptionOf(name) || entries[0].spec.description || '' } catch (e) { /* ignore */ }
-          section.appendChild(set)
-          report.componentSets++
-        }
-      } catch (e) { fail('combineAsVariants/' + name, e) }
+        set.x = 40 + 24
+        set.y = cursorY + 60
+        setH = Number(set.height) || 120
+      } catch (e) { /* ignore */ }
+    } else {
+      let mx = 24
+      for (const m of masters) {
+        try { m.x = 40 + mx; m.y = cursorY + 60; mx += (Number(m.width) || 120) + 16; setH = Math.max(setH, Number(m.height) || 80) } catch (e) { /* ignore */ }
+      }
     }
 
-    const row = figma.createFrame()
-    row.name = 'Instances / ' + name
-    row.fills = []
-    try {
-      row.layoutMode = 'HORIZONTAL'
-      row.layoutWrap = 'WRAP'
-      row.itemSpacing = 12
-      row.counterAxisAlignItems = 'CENTER'
-      row.primaryAxisSizingMode = 'FIXED'
-      row.counterAxisSizingMode = 'AUTO'
-      row.resize(1312, 60)
-    } catch (e) { /* ignore */ }
-    section.appendChild(row)
-    for (const entry of entries) {
+    let ix = 24
+    let iy = 60 + setH + 20
+    let rowH = 0
+    for (let i = 0; i < entries.length; i++) {
+      const src = sources[i] || sources[0]
+      if (!src || typeof src.createInstance !== 'function') continue
       try {
-        const inst = typeof entry.node.createInstance === 'function'
-          ? entry.node.createInstance()
-          : null
-        if (!inst) continue
-        inst.name = 'Instance / ' + name + ' / ' + entry.spec.variant
-        row.appendChild(inst)
+        const inst = src.createInstance()
+        inst.name = 'Instance / ' + name + ' / ' + entries[i].spec.variant
+        section.appendChild(inst)
+        inst.x = ix
+        inst.y = iy
+        const iw = Number(inst.width) || 120
+        const ih = Number(inst.height) || 60
+        rowH = Math.max(rowH, ih)
+        ix += iw + 16
+        if (ix > 1280) { ix = 24; iy += rowH + 16; rowH = 0 }
         report.instances++
       } catch (e) { fail('instance/' + name, e) }
     }
+    const sectionH = iy + rowH + 24
+    try { section.resize(1360, sectionH) } catch (e) { /* ignore */ }
+    cursorY += sectionH + 24
   }
 
-  /* The library sits at the page origin and the sheet is pushed below it, so
-   * everything stays in positive page space and the board reads as part of the
-   * page rather than an off-canvas frame at x+200. */
   try {
+    library.resize(1440, cursorY + 24)
     library.x = 0
     library.y = 0
   } catch (e) { /* ignore */ }
@@ -948,7 +1007,9 @@ function stretchRows(node) {
   for (const k of kids) stretchRows(k)
   if (node.layoutMode !== 'VERTICAL') return
   for (const k of kids) {
-    if (!k || k.layoutMode !== 'HORIZONTAL') continue
+    /* Only explicit action rows stretch. Stretching every horizontal child
+     * squashed 52×52 logo circles to 52×30 on the cross axis. */
+    if (!k || k.layoutMode !== 'HORIZONTAL' || k.name !== 'action-group') continue
     try { k.layoutAlign = 'STRETCH' } catch (e) { /* not a flow child */ }
     try { k.layoutSizingHorizontal = 'FILL' } catch (e) { /* older runtime */ }
     try { k.primaryAxisSizingMode = 'FIXED' } catch (e) { /* ignore */ }
@@ -999,7 +1060,9 @@ async function build(manifest, replace, options) {
     page.name = number + ' · ' + (sheet.name || 'Sheet')
     await usePage(page)
     const ctx = { components: [], system }
-    const root = await createNode(sheet.node, { x: 0, y: 0 }, reg, 0, options, ctx)
+    const sheetOptions = { ...options, sheetMode: true }
+    const masterOptions = { ...options, sheetMode: false }
+    const root = await createNode(sheet.node, { x: 0, y: 0 }, reg, 0, sheetOptions, ctx)
     if (root) {
       fitAbsoluteFrames(root)
       stretchRows(root)
@@ -1007,7 +1070,7 @@ async function build(manifest, replace, options) {
       root.y = 0
       page.appendChild(root)
       if (options.components !== false) {
-        const lib = await buildComponentLibrary(page, root, ctx, reg, options)
+        const lib = await buildComponentLibrary(page, root, ctx, reg, masterOptions)
         /* Keep both in positive page space: board first, sheet below it. */
         if (lib) {
           try { root.y = (Number(lib.height) || 0) + 96 } catch (e) { /* ignore */ }
@@ -1019,10 +1082,23 @@ async function build(manifest, replace, options) {
 
   try {
     if (typeof figma.loadAllPagesAsync === 'function') await figma.loadAllPagesAsync()
-    for (const page of [...figma.root.children]) {
+    const allPages = [...figma.root.children]
+    for (const page of allPages) {
       try {
         if (/^Page \d+$/.test(page.name) && page.children.length === 0) page.remove()
       } catch (e) { fail('page cleanup/' + page.name, e) }
+    }
+    /* test ds 5.fig had TWO `07 · overlays` pages: replace missed an unloaded
+     * page under dynamic-page, so the stale v5.0 board stayed visible. Keep
+     * only the LAST page for each generated name. */
+    const seen = new Set()
+    for (const page of allPages.slice().reverse()) {
+      if (page.type !== 'PAGE' || !/^\d{2} · /.test(page.name)) continue
+      if (seen.has(page.name)) {
+        try { page.remove(); report.replaced++ } catch (e) { fail('dedupe/' + page.name, e) }
+      } else {
+        seen.add(page.name)
+      }
     }
   } catch (e) { fail('page cleanup', e) }
 }

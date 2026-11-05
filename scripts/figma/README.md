@@ -25,8 +25,10 @@ case page links to.
   produced at any browser width, in Canvas Grid mode, with `?clean=1`, or with a
   single-sheet filter. The manifest is signed (`dsId`, `capture.checksum`).
 - `?autolayout=1` — outlines flow containers and flags absolute/transform layers.
-- `?clean=1&grid=1` — clean export and 2-column canvas grid (preview only;
-  capture ignores it).
+- **`?clean=1&doop=1` — Doop / importer mode.** One 1440px column, no sticky bar,
+  no 2-column grid, no shadows or transforms, and 28px of slack on one-line
+  labels so a substituted font cannot clip them. Copy it from **Doop Helper**.
+- `?clean=1&grid=1` — 2-column canvas grid for preview only (capture ignores it).
 - **Copy for Figma** / **Manifest** — copy or download the signed v2 manifest.
 - **Plugin** — downloads a ready-to-import Figma plugin ZIP (`manifest.json`,
   `code.js`, `ui.html`) with the sheet's manifest baked in as the seed. Running
@@ -66,7 +68,7 @@ path. If the sibling checkout is missing, that one command fails and the other
 
 ## Provenance
 
-Vendored from the `sunnyside-brand-system` skill at **v5.1.0**:
+Vendored from the `sunnyside-brand-system` skill at **v5.2.0**:
 
 ```
 scripts/figma/figma-html.mjs            ← scripts/figma-html.mjs

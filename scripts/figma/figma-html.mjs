@@ -1676,6 +1676,60 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
     .icon-keyline { flex: 0 0 44px; }
     .icon-keyline > svg { flex: 0 0 auto; }
 
+    /* =========================================================================
+       10. DOOP / IMPORTER MODE (?clean=1&doop=1)
+       Importers snapshot computed styles. A 2-column grid, sticky chrome,
+       shadows and transforms all survive that snapshot as extra layers and
+       clipped frames. This mode is one 1440px column of plain sheets.
+       ========================================================================= */
+    body.doop-mode {
+      width: 1440px !important;
+      min-width: 1440px !important;
+      background: #FFFFFF !important;
+    }
+    body.doop-mode main {
+      display: block !important;
+      width: 1440px !important;
+      max-width: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      gap: 0 !important;
+    }
+    body.doop-mode .figma-sheet {
+      width: 1440px !important;
+      max-width: 1440px !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      overflow: visible !important;
+    }
+    body.doop-mode .workspace-topbar,
+    body.doop-mode .section-copy-btn,
+    body.doop-mode .swatch-copy-pill,
+    body.doop-mode .toast-notification,
+    body.doop-mode .live-modal-overlay,
+    body.doop-mode #doop-modal {
+      display: none !important;
+    }
+    body.doop-mode .figma-sheet * {
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      transform: none !important;
+    }
+    /* Substituted fonts are wider than the brand face; give one-line labels
+       slack so an importer does not clip them mid-word. */
+    body.doop-mode .sheet-title-row > span,
+    body.doop-mode .sheet-subtitle-row > span,
+    body.doop-mode .category-title,
+    body.doop-mode .category-desc,
+    body.doop-mode .btn,
+    body.doop-mode .badge-pill,
+    body.doop-mode .icon-cell > strong,
+    body.doop-mode .icon-cell > span {
+      padding-right: 28px;
+    }
+
     @media (max-width: 1024px) {
       .scale-colors-grid, .primitives-grid { grid-template-columns: repeat(3, 1fr); }
       .main-colors-grid { grid-template-columns: repeat(3, 1fr); }
@@ -2847,11 +2901,14 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
           Figma has a strict internal limit: no frame can exceed 10,000px. When all 8 sheets are stacked vertically, the page totals ~13,500px. Choose one of the fixes below to import cleanly:
         </div>
 
-        <h4 style="margin:0 0 8px 0; font-size:13px; text-transform:uppercase; letter-spacing:0.04em; color:#0F172A;">Option A: 2-Column Canvas Grid (&lt; 10,000px)</h4>
-        <p style="margin:0 0 10px 0; color:#64748B;">Arranges all 8 sheets in a 2-column side-by-side artboard canvas (~2,960px × ~7,400px), well under Figma's 10,000px limit on both sides.</p>
+        <h4 style="margin:0 0 8px 0; font-size:13px; text-transform:uppercase; letter-spacing:0.04em; color:#0F172A;">Option A: Doop Clean — single column (recommended)</h4>
+        <p style="margin:0 0 10px 0; color:#64748B;">One 1440px column, no grid, no sticky bar, no shadows or transforms. This is the layout an importer should snapshot — it removes the extra layers and clipped frames that make the imported page look messy.</p>
         <div style="display:flex; gap:8px; margin-bottom:20px;">
-          <button class="btn-tool" style="flex:1; justify-content:center; background:#2563EB; color:#FFF; border-color:#2563EB; padding:8px 12px;" onclick="copyDoopUrl('grid')">
-            <span>Copy Canvas Grid URL (?clean=1&amp;grid=1)</span>
+          <button class="btn-tool" style="flex:1; justify-content:center; background:#2563EB; color:#FFF; border-color:#2563EB; padding:8px 12px;" onclick="copyDoopUrl('doop')">
+            <span>Copy Doop Clean URL (?clean=1&amp;doop=1)</span>
+          </button>
+          <button class="btn-tool" style="flex:0 0 190px; justify-content:center; padding:8px 12px;" onclick="copyDoopUrl('grid')">
+            <span>2-Column Grid</span>
           </button>
         </div>
 
@@ -3023,10 +3080,19 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
         url.searchParams.set('clean', '1');
         if (mode === 'grid') {
           url.searchParams.set('grid', '1');
+          url.searchParams.delete('doop');
+          url.searchParams.delete('sheet');
+          url.searchParams.delete('section');
+        } else if (mode === 'doop') {
+          /* Single-column, chrome-free, shadow-free: what an importer should
+           * snapshot. */
+          url.searchParams.set('doop', '1');
+          url.searchParams.delete('grid');
           url.searchParams.delete('sheet');
           url.searchParams.delete('section');
         } else {
           url.searchParams.delete('grid');
+          url.searchParams.set('doop', '1');
           url.searchParams.set('sheet', mode);
         }
         copyToClipboard(url.toString(), 'Copied Doop URL: ' + url.search);
@@ -3435,6 +3501,10 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
         document.body.classList.add('clean-export-mode');
         const cleanBtn = document.getElementById('btn-clean');
         if (cleanBtn) cleanBtn.classList.add('active-clean');
+      }
+      if (params.get('doop') === '1') {
+        document.body.classList.add('doop-mode');
+        document.body.classList.add('clean-export-mode');
       }
       if (params.get('spec') === '1') {
         document.body.classList.add('spec-mode');

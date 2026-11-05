@@ -79,33 +79,9 @@
     @media print {
       .workspace-topbar,
       .section-copy-btn,
-      .floating-exit-clean,
       .toast-notification {
         display: none !important;
       }
-    }
-
-    .floating-exit-clean {
-      display: none;
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 200;
-      background: #111827;
-      color: #FFFFFF;
-      border: none;
-      border-radius: 9999px;
-      padding: 10px 18px;
-      font-size: 13px;
-      font-weight: 600;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      cursor: pointer;
-    }
-
-    body.clean-export-mode .floating-exit-clean {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
     }
 
     .topbar-inner {
@@ -1031,11 +1007,6 @@
       </div>
     </div>
   </nav>
-
-  <!-- Floating button to exit Clean Preview mode -->
-  <button class="floating-exit-clean" onclick="toggleCleanMode(false)" data-html2canvas-ignore="true" title="Exit Clean Mode (removes ?clean=1)">
-    <span>✕ Exit Clean Preview</span>
-  </button>
 
   <!-- =========================================================================
        MAIN CONTAINER: 8 SELF-CONTAINED FIGMA DOCUMENTATION SHEETS

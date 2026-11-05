@@ -16,6 +16,10 @@ import { existsSync, readdirSync, readFileSync, mkdirSync, writeFileSync } from 
 import { basename, dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { findTokens, readTokens, familyOf } from './lib/tokens.mjs'
+import {
+  buildSystemSpec, CHECKSUM_JS, GENERATOR_VERSION, CAPTURE_VIEWPORT,
+  CAPTURE_MODE, SHEET_INDEX, makeDsId,
+} from './lib/canonical.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 /* Vendored layout: the replay templates sit beside this script, not two levels up. */
@@ -78,12 +82,12 @@ const FIGMA_DOWNLOAD_JS = String.raw`
     function slugifyName(s) {
       return String(s || 'brand').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'brand';
     }
-    function downloadFigmaManifest() {
+    async function downloadFigmaManifest() {
       try {
-        var m = buildFigmaManifest();
+        var m = await buildFigmaManifest();
         var json = JSON.stringify(m, null, 2);
         triggerDownload(new Blob([json], { type: 'application/json' }), slugifyName(m.brand) + '-figma-manifest.json');
-        showToast('Manifest downloaded · ' + m.sheets.length + ' sheets · ' + m.nodes + ' nodes');
+        showToast('Manifest downloaded · ' + m.sheets.length + ' sheets · ' + m.nodes + ' nodes · ' + m.capture.checksum);
       } catch (e) { showToast('Manifest failed: ' + ((e && e.message) || e)); }
     }
     function buildStoreZip(files) {
@@ -157,13 +161,13 @@ const FIGMA_DOWNLOAD_JS = String.raw`
       eo.setUint16(20, 0, true);
       return new Blob(parts.concat(central, [new Uint8Array(eo.buffer)]), { type: 'application/zip' });
     }
-    function downloadFigmaPlugin() {
+    async function downloadFigmaPlugin() {
       try {
         if (!REPLAY_CODE_B64 || !REPLAY_UI_B64 || !REPLAY_MANIFEST_B64) {
           showToast('Plugin bundle not embedded in this build — regenerate the sheet.');
           return;
         }
-        var m = buildFigmaManifest();
+        var m = await buildFigmaManifest();
         var seed = JSON.stringify(m).replace(/</g, '\\u003c');
         var uiHtml = b64ToText(REPLAY_UI_B64)
           .replace('__BRAND__', function () { return m.brand || 'Brand'; })
@@ -668,6 +672,22 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
     space: (parsed.space || []).map((s) => ({ name: s.name, value: s.value })),
     radius: (parsed.radius || []).map((r) => ({ name: r.name, value: r.value })),
   }).replace(/</g, '\\u003c')
+
+  /* v2: the complete design-system description. It does not depend on a
+   * tokens.json having type/space/radius keys — the sheet's own scales, CSS
+   * variables and canonical roles are folded in. The plugin reads `system`
+   * first and falls back to `tokens` for sheets generated before v5.0.0. */
+  const systemSpec = buildSystemSpec({
+    slug, brandName, version, ns, fonts,
+    primitives,
+    scales: { Primary: PRIMARY_SCALE, Secondary: SECONDARY_SCALE, Tertiary: TERTIARY_SCALE },
+    parsed, cssText, houseRadius, spacingTokens: SPACING_TOKENS,
+    primaryHex: primaryColor.hex,
+    primaryTint: PRIMARY_SCALE[0].hex,
+    secondaryTint: SECONDARY_SCALE[0].hex,
+    tertiaryTint: TERTIARY_SCALE[0].hex,
+  })
+  const systemPayload = JSON.stringify(systemSpec).replace(/</g, '\\u003c')
 
   const htmlTemplate = `<!DOCTYPE html>
 <html lang="en">
@@ -1637,6 +1657,7 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
 <body id="top">
 
   <script type="application/json" id="figma-tokens">${tokenPayload}</script>
+  <script type="application/json" id="figma-system">${systemPayload}</script>
 
   <!-- =========================================================================
        STICKY WORKSPACE CONTROL BAR (Hidden in Clean Export Mode / ?clean=1)
@@ -2486,12 +2507,12 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
         <div class="category-block" data-figma-node="❖ Components / Button Variants">
           <h2 class="category-title">Buttons &amp; Action Hierarchy</h2>
           <div class="surface-box" style="display:flex; flex-wrap:wrap; gap:14px; align-items:center;">
-            <button class="btn btn-primary">Primary (${MAIN_COLORS[0].hex})</button>
-            <button class="btn btn-secondary">Secondary (${MAIN_COLORS[1].hex})</button>
-            <button class="btn btn-success">Tertiary (${MAIN_COLORS[2].hex})</button>
-            <button class="btn btn-subtle">Subtle Surface</button>
-            <button class="btn btn-outline">Outline Neutral</button>
-            <button class="btn btn-danger">Destructive</button>
+            <button class="btn btn-primary" data-figma-component="Button" data-figma-variant="State=Primary" data-figma-description="Primary brand action">Primary (${MAIN_COLORS[0].hex})</button>
+            <button class="btn btn-secondary" data-figma-component="Button" data-figma-variant="State=Secondary" data-figma-description="Secondary action">Secondary (${MAIN_COLORS[1].hex})</button>
+            <button class="btn btn-success" data-figma-component="Button" data-figma-variant="State=Tertiary" data-figma-description="Positive / confirm action">Tertiary (${MAIN_COLORS[2].hex})</button>
+            <button class="btn btn-subtle" data-figma-component="Button" data-figma-variant="State=Subtle" data-figma-description="Low-emphasis surface action">Subtle Surface</button>
+            <button class="btn btn-outline" data-figma-component="Button" data-figma-variant="State=Outline" data-figma-description="Neutral outlined action">Outline Neutral</button>
+            <button class="btn btn-danger" data-figma-component="Button" data-figma-variant="State=Destructive" data-figma-description="Destructive action">Destructive</button>
           </div>
         </div>
 
@@ -2503,15 +2524,15 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
               <div style="display:flex; flex-direction:column; gap:14px;">
                 <div>
                   <label style="display:block; font-size:12px; font-weight:600; margin-bottom:6px;">Default Input</label>
-                  <input type="text" class="input-field" value="spec@${escapeHtml(slug)}.design" readonly />
+                  <input type="text" class="input-field" data-figma-component="Input" data-figma-variant="State=Default" data-figma-description="Text field at rest" value="spec@${escapeHtml(slug)}.design" readonly />
                 </div>
                 <div>
                   <label style="display:block; font-size:12px; font-weight:600; color:var(--primary-70); margin-bottom:6px;">Focused Ring (${escapeHtml(MAIN_COLORS[0].token)})</label>
-                  <input type="text" class="input-field" style="border-color:var(--primary-70); box-shadow: 0 0 0 3px ${PRIMARY_SCALE[1].hex};" value="${escapeHtml(brandName)} Token ${escapeHtml(version)}" readonly />
+                  <input type="text" class="input-field" data-figma-component="Input" data-figma-variant="State=Focused" data-figma-description="Text field with focus ring" style="border-color:var(--primary-70); box-shadow: 0 0 0 3px ${PRIMARY_SCALE[1].hex};" value="${escapeHtml(brandName)} Token ${escapeHtml(version)}" readonly />
                 </div>
                 <div>
                   <label style="display:block; font-size:12px; font-weight:600; color:#E11D48; margin-bottom:6px;">Double-Reported Error State (aria-invalid="true")</label>
-                  <input type="text" class="input-field" style="border-color:#E11D48; background:#FFF1F2;" value="--${ns}-legacy-token" aria-invalid="true" readonly />
+                  <input type="text" class="input-field" data-figma-component="Input" data-figma-variant="State=Error" data-figma-description="Text field with validation error" style="border-color:#E11D48; background:#FFF1F2;" value="--${ns}-legacy-token" aria-invalid="true" readonly />
                   <div style="margin-top:8px; padding:10px 12px; border-radius:8px; background:#FFF1F2; border:1px solid #FECDD3; font-size:12px; color:#9F1239;">
                     <strong>2 validation problems:</strong> Token must resolve to a Layer 1 primitive, and contrast must be ≥ 4.5:1 for body text.
                   </div>
@@ -2522,11 +2543,11 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
             <div class="surface-box">
               <h3 style="margin:0 0 16px 0; font-size:17px;">Status Pills &amp; Badges</h3>
               <div style="display:flex; flex-wrap:wrap; gap:10px;">
-                <span class="badge-pill" style="background:${PRIMARY_SCALE[0].hex}; color:${PRIMARY_SCALE[8].hex};">● ${escapeHtml(MAIN_COLORS[0].token)}</span>
-                <span class="badge-pill" style="background:${SECONDARY_SCALE[0].hex}; color:${SECONDARY_SCALE[8].hex};">● ${escapeHtml(MAIN_COLORS[1].token)}</span>
-                <span class="badge-pill" style="background:#F0FFF4; color:#18B368;">● Verified Pass</span>
-                <span class="badge-pill" style="background:#FFFBEB; color:#B45309;">● Graphic Only</span>
-                <span class="badge-pill" style="background:#FFF1F2; color:#E11D48;">● Deprecated</span>
+                <span class="badge-pill" data-figma-component="Badge" data-figma-variant="Tone=Brand" data-figma-description="Brand-token status pill" style="background:${PRIMARY_SCALE[0].hex}; color:${PRIMARY_SCALE[8].hex};">● ${escapeHtml(MAIN_COLORS[0].token)}</span>
+                <span class="badge-pill" data-figma-component="Badge" data-figma-variant="Tone=Secondary" data-figma-description="Secondary-token status pill" style="background:${SECONDARY_SCALE[0].hex}; color:${SECONDARY_SCALE[8].hex};">● ${escapeHtml(MAIN_COLORS[1].token)}</span>
+                <span class="badge-pill" data-figma-component="Badge" data-figma-variant="Tone=Success" data-figma-description="Passing contrast status" style="background:#F0FFF4; color:#18B368;">● Verified Pass</span>
+                <span class="badge-pill" data-figma-component="Badge" data-figma-variant="Tone=Warning" data-figma-description="Graphic-only status" style="background:#FFFBEB; color:#B45309;">● Graphic Only</span>
+                <span class="badge-pill" data-figma-component="Badge" data-figma-variant="Tone=Danger" data-figma-description="Deprecated token status" style="background:#FFF1F2; color:#E11D48;">● Deprecated</span>
               </div>
               <div style="margin-top:24px; padding-top:16px; border-top:1px solid #F1F5F9; display:flex; align-items:center; justify-content:space-between;">
                 <span style="font-size:13px; color:#64748B;">Ready for Figma import or per-section HTML copy</span>
@@ -2584,7 +2605,7 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
           </div>
 
           <div class="modal-stage">
-            <div class="modal-card">
+            <div class="modal-card" data-figma-component="Modal" data-figma-variant="Intent=Publish" data-figma-description="Form dialog for publishing a token release">
               <div style="padding:18px 22px; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center;">
                 <div>
                   <strong style="font-size:15px;">Publish ${escapeHtml(brandName)} Design Token Release</strong>
@@ -2609,7 +2630,7 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
               </div>
             </div>
 
-            <div class="modal-card" style="border-color:#FECDD3;">
+            <div class="modal-card" data-figma-component="Modal" data-figma-variant="Intent=Destructive" data-figma-description="Destructive confirmation dialog" style="border-color:#FECDD3;">
               <div style="padding:22px;">
                 <div style="width:40px; height:40px; border-radius:9999px; background:#FFF1F2; color:#E11D48; display:flex; align-items:center; justify-content:center; font-weight:800; margin-bottom:12px;">!</div>
                 <strong style="font-size:15px;">Revoke Deprecated Token?</strong>
@@ -3023,18 +3044,21 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
       toastTimer = setTimeout(() => toast.classList.remove('visible'), 2400);
     }
 
-    /* ---- Auto Layout inspector + Figma manifest --------------------------
-       No HTML attribute can give Figma variables, components or auto layout.
-       An importer infers flow from computed CSS. These two controls do the only
-       two useful things a page can do: show where flow exists, and emit a
-       deterministic manifest the Sunnyside replay plugin rebuilds natively. */
+    /* ---- Canonical capture + Figma manifest (v2) -------------------------
+       The old capture measured the live window. In Canvas Grid mode that is a
+       3090px two-column grid whose rows are stretched to equal height, so the
+       same sheet arrived 842px tall in one run and 1189px in the next — while
+       the headless extractor used a fixed 1440px viewport. Both flows now
+       measure the SAME document: a clean clone in a 1440px iframe, with no
+       body modes, no hidden sheets, and coordinates relative to each sheet
+       root. That is the canonical spec the plugin rebuilds. */
     function figmaNum(v) {
       var n = parseFloat(v);
       return isFinite(n) ? n : 0;
     }
 
-    function figmaLayoutOf(el) {
-      var cs = window.getComputedStyle(el);
+    function figmaLayoutOf(el, view) {
+      var cs = (view || window).getComputedStyle(el);
       var d = String(cs.display || '').toLowerCase();
       var mode = 'NONE';
       if (d.indexOf('flex') !== -1) {
@@ -3056,8 +3080,8 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
       };
     }
 
-    function figmaStyleOf(el) {
-      var cs = window.getComputedStyle(el);
+    function figmaStyleOf(el, view) {
+      var cs = (view || window).getComputedStyle(el);
       return {
         fill: cs.backgroundColor,
         color: cs.color,
@@ -3074,83 +3098,253 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
       };
     }
 
-    function figmaSkip(el) {
+    function figmaSkip(el, view) {
       if (!el || !el.tagName) return true;
       var tag = el.tagName.toLowerCase();
-      if (tag === 'script' || tag === 'style' || tag === 'br') return true;
+      if (tag === 'script' || tag === 'style' || tag === 'br' || tag === 'link' || tag === 'meta' || tag === 'title') return true;
       if (tag === 'button' && String(el.getAttribute('onclick') || '').indexOf('copy') !== -1) return true;
-      /* Browser-only chrome: copy pills, hover-only controls, the top bar and
-       * overlays. Anything marked data-figma-ignore never reaches Figma. */
+      /* Browser-only chrome. Anything marked data-figma-ignore never reaches
+       * Figma. The Doop importer keeps these as invisible layers; we do not. */
       if (el.closest && el.closest('[data-figma-ignore], .swatch-copy-pill, .section-copy-btn, .copy-btn, .workspace-topbar, .modal, .modal-overlay, .toast-notification')) return true;
-      var cs = window.getComputedStyle(el);
+      var cs = (view || window).getComputedStyle(el);
       if (cs.display === 'none' || cs.visibility === 'hidden') return true;
       if (parseFloat(cs.opacity) === 0) return true;
       return false;
     }
 
-    function buildFigmaManifest() {
-      var tokens = {};
-      var tokenEl = document.getElementById('figma-tokens');
-      if (tokenEl) { try { tokens = JSON.parse(tokenEl.textContent || '{}'); } catch (e) {} }
-      /* A shipped 8-sheet doc has ~1,150 elements across all sheets. The cap is
-         a guard against a runaway DOM, not a fidelity limit — leave headroom. */
-      var MAX_DEPTH = 9;
-      var MAX_NODES = 2000;
-      var count = 0;
+    /* CSS colour → canonical hex, so a DOM style can name the variable it
+       should bind to. rgba(0,0,0,0) is transparent and has no token. */
+    function cssToHex(str) {
+      if (!str || typeof str !== 'string') return null;
+      var s = str.trim().toLowerCase();
+      if (s === 'transparent' || s === 'none' || s === 'rgba(0, 0, 0, 0)') return null;
+      if (s.charAt(0) === '#') {
+        var h = s.slice(1);
+        if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+        if (h.length === 8) h = h.slice(0, 6);
+        return /^[0-9a-f]{6}$/.test(h) ? '#' + h.toUpperCase() : null;
+      }
+      var m = s.match(/rgba?\\(([^)]+)\\)/);
+      if (!m) return null;
+      var p = m[1].split(/[,\\s\\/]+/).filter(Boolean).map(parseFloat);
+      if (p.length < 3) return null;
+      if (p.length > 3 && p[3] <= 0.001) return null;
+      var out = '#';
+      for (var i = 0; i < 3; i++) {
+        var b = Math.max(0, Math.min(255, Math.round(p[i]))).toString(16);
+        out += (b.length === 1 ? '0' : '') + b;
+      }
+      return out.toUpperCase();
+    }
 
-      function walk(el, depth) {
-        if (count >= MAX_NODES || figmaSkip(el)) return null;
-        var tag = el.tagName.toLowerCase();
-        var r = el.getBoundingClientRect();
-        var box = { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) };
-        if (tag === 'svg') {
-          count++;
-          return { name: el.getAttribute('aria-label') || 'vector', type: 'VECTOR', svg: el.outerHTML, box: box, children: [] };
+    function componentSpecOf(el) {
+      var name = el.getAttribute('data-figma-component');
+      if (!name) return null;
+      return {
+        name: name,
+        variant: el.getAttribute('data-figma-variant') || 'Default',
+        description: el.getAttribute('data-figma-description') || ''
+      };
+    }
+
+    var SHEET_INDEX = ${JSON.stringify(SHEET_INDEX)};
+    var CAPTURE_VIEWPORT = ${CAPTURE_VIEWPORT};
+    var CAPTURE_MODE = ${JSON.stringify(CAPTURE_MODE)};
+    var GENERATOR_VERSION = ${JSON.stringify(GENERATOR_VERSION)};
+    var CAPTURE_CSS =
+      'html,body{width:' + CAPTURE_VIEWPORT + 'px!important;min-width:' + CAPTURE_VIEWPORT + 'px!important;max-width:' + CAPTURE_VIEWPORT + 'px!important;margin:0!important;padding:0!important;background:#fff!important}' +
+      'main{display:block!important;width:' + CAPTURE_VIEWPORT + 'px!important;margin:0!important;padding:0!important;gap:0!important}' +
+      '.figma-sheet.hidden-sheet{display:block!important}' +
+      '.workspace-topbar,.toast-notification,.modal-overlay,.modal{display:none!important}';
+
+    /* A fresh, fixed-width document. Stripping scripts also strips the ~600KB
+       embedded replay bundle, so the clone is cheap. DOMParser + document.write
+       keeps everything synchronous except the optional font wait. */
+    function makeCaptureView() {
+      try {
+        var parsed = new DOMParser().parseFromString('<!DOCTYPE html>' + document.documentElement.outerHTML, 'text/html');
+        var scripts = parsed.querySelectorAll('script');
+        for (var i = 0; i < scripts.length; i++) scripts[i].parentNode.removeChild(scripts[i]);
+        parsed.body.className = 'figma-capture-mode';
+        var hidden = parsed.querySelectorAll('.hidden-sheet');
+        for (var j = 0; j < hidden.length; j++) hidden[j].classList.remove('hidden-sheet');
+        var inspected = parsed.querySelectorAll('[data-figma-layout],[data-figma-warn]');
+        for (var k = 0; k < inspected.length; k++) {
+          inspected[k].removeAttribute('data-figma-layout');
+          inspected[k].removeAttribute('data-figma-warn');
         }
-        count++;
-        var layout = figmaLayoutOf(el);
-        var style = figmaStyleOf(el);
-        var rawText = el.children.length === 0 ? String(el.textContent || '').trim() : '';
-        var isText = rawText.length > 0;
-        var label = el.getAttribute('data-figma-node') || (typeof el.className === 'string' && el.className.split(' ')[0]) || tag;
-        var node = {
-          name: label,
-          type: isText ? 'TEXT' : (layout.mode !== 'NONE' || el.children.length ? 'FRAME' : 'RECTANGLE'),
-          layout: layout,
-          style: style,
-          box: box,
-          component: el.getAttribute('data-figma-node'),
-          text: isText ? rawText.slice(0, 240) : null,
-          children: []
+        var style = parsed.createElement('style');
+        style.textContent = CAPTURE_CSS;
+        parsed.head.appendChild(style);
+
+        var frame = document.createElement('iframe');
+        frame.setAttribute('aria-hidden', 'true');
+        frame.setAttribute('title', 'canonical capture');
+        frame.style.cssText = 'position:fixed;left:-100000px;top:0;width:' + CAPTURE_VIEWPORT + 'px;height:900px;border:0;';
+        document.body.appendChild(frame);
+        var doc = frame.contentDocument;
+        var view = frame.contentWindow;
+        doc.open();
+        doc.write('<!DOCTYPE html>' + parsed.documentElement.outerHTML);
+        doc.close();
+        return {
+          doc: doc, view: view,
+          cleanup: function () { if (frame.parentNode) frame.parentNode.removeChild(frame); }
         };
-        if (depth < MAX_DEPTH && !isText) {
-          for (var i = 0; i < el.children.length && count < MAX_NODES; i++) {
-            var child = walk(el.children[i], depth + 1);
-            if (child) node.children.push(child);
+      } catch (e) {
+        return { doc: document, view: window, cleanup: function () {}, fallback: String((e && e.message) || e) };
+      }
+    }
+
+    ${CHECKSUM_JS}
+
+    async function buildFigmaManifest() {
+      var tokens = {};
+      var system = null;
+      var tokenEl = document.getElementById('figma-tokens');
+      var systemEl = document.getElementById('figma-system');
+      if (tokenEl) { try { tokens = JSON.parse(tokenEl.textContent || '{}'); } catch (e) {} }
+      if (systemEl) { try { system = JSON.parse(systemEl.textContent || 'null'); } catch (e) {} }
+      if (!system) {
+        system = {
+          version: tokens.version || 'v1.0',
+          brand: tokens.brand || document.title.split(' ')[0],
+          slug: tokens.slug || '',
+          namespace: tokens.namespace || '',
+          colours: (tokens.palette || []).map(function (p) { return { name: p.name, hex: p.hex, token: p.name, group: 'Primitive' }; }),
+          type: tokens.type || [], space: tokens.space || [], radius: tokens.radius || [],
+          effects: [], components: [], fonts: null, sheets: SHEET_INDEX
+        };
+      }
+
+      /* Token lookup tables: computed CSS values → the design-system name. */
+      var colourByHex = {};
+      for (var ci = 0; ci < (system.colours || []).length; ci++) {
+        var col = system.colours[ci];
+        var H = cssToHex(col.hex);
+        if (H && !colourByHex[H]) colourByHex[H] = col.token || col.name;
+      }
+      var typeBySize = {};
+      for (var ti = 0; ti < (system.type || []).length; ti++) {
+        var t = system.type[ti];
+        var sz = Math.round(Number(t.size) || 0);
+        if (sz && !typeBySize[sz]) typeBySize[sz] = t.name;
+      }
+
+      var cap = makeCaptureView();
+      var doc = cap.doc, view = cap.view;
+      try {
+        /* Webfonts change text metrics; wait for them, but never let an offline
+           Google Fonts request stall a download. */
+        try {
+          var ready = [];
+          if (document.fonts && document.fonts.ready) ready.push(document.fonts.ready);
+          if (doc !== document && doc.fonts && doc.fonts.ready) ready.push(doc.fonts.ready);
+          if (ready.length) await Promise.race(ready.concat([new Promise(function (r) { setTimeout(r, 1500); })]));
+        } catch (e) {}
+
+        var MAX_DEPTH = 12;
+        var MAX_NODES = 4000;
+        var count = 0;
+        var origin = { left: 0, top: 0 };
+
+        function walk(el, depth) {
+          if (count >= MAX_NODES || depth > MAX_DEPTH || figmaSkip(el, view)) return null;
+          var tag = el.tagName.toLowerCase();
+          var r = el.getBoundingClientRect();
+          var box = {
+            x: Math.round(r.left - origin.left), y: Math.round(r.top - origin.top),
+            w: Math.round(r.width), h: Math.round(r.height)
+          };
+          var id = 'n' + (count + 1);
+          if (tag === 'svg') {
+            count++;
+            return { id: id, name: el.getAttribute('aria-label') || 'vector', role: 'vector', type: 'VECTOR', svg: el.outerHTML, box: box, children: [] };
+          }
+          count++;
+          var layout = figmaLayoutOf(el, view);
+          var style = figmaStyleOf(el, view);
+          var rawText = el.children.length === 0 ? String(el.textContent || '').trim() : '';
+          var isText = rawText.length > 0;
+          var label = el.getAttribute('data-figma-node') || (typeof el.className === 'string' && el.className.split(' ')[0]) || tag;
+          var fillHex = cssToHex(style.fill);
+          var node = {
+            id: id,
+            name: label,
+            role: el.getAttribute('data-figma-role') || (isText ? 'text' : (el.getAttribute('data-figma-component') ? 'component' : 'container')),
+            type: isText ? 'TEXT' : (layout.mode !== 'NONE' || el.children.length ? 'FRAME' : 'RECTANGLE'),
+            layout: layout,
+            style: style,
+            box: box,
+            component: el.getAttribute('data-figma-node'),
+            componentRef: componentSpecOf(el),
+            styleRef: isText ? (typeBySize[Math.round(style.fontSize)] || null) : null,
+            tokenRef: fillHex ? (colourByHex[fillHex] || null) : null,
+            text: isText ? rawText.slice(0, 240) : null,
+            children: []
+          };
+          if (depth < MAX_DEPTH && !isText) {
+            for (var i = 0; i < el.children.length && count < MAX_NODES; i++) {
+              var child = walk(el.children[i], depth + 1);
+              if (child) node.children.push(child);
+            }
+          }
+          return node;
+        }
+
+        var sheets = [];
+        var sections = doc.querySelectorAll('.figma-sheet');
+        for (var s = 0; s < sections.length; s++) {
+          var sec = sections[s];
+          var name = sec.getAttribute('data-section') || sec.id;
+          var meta = null;
+          for (var mi = 0; mi < SHEET_INDEX.length; mi++) if (SHEET_INDEX[mi].name === name || SHEET_INDEX[mi].label === sec.id) meta = SHEET_INDEX[mi];
+          origin = sec.getBoundingClientRect();
+          var root = walk(sec, 0);
+          if (root) {
+            sheets.push({
+              index: meta ? meta.index : s + 1,
+              name: name,
+              label: sec.id,
+              title: meta ? meta.title : name,
+              optional: meta ? meta.optional : false,
+              node: root
+            });
           }
         }
-        return node;
-      }
 
-      var sheets = [];
-      var sections = document.querySelectorAll('.figma-sheet');
-      for (var s = 0; s < sections.length; s++) {
-        var sec = sections[s];
-        if (sec.classList.contains('hidden-sheet')) continue;
-        var root = walk(sec, 0);
-        if (root) sheets.push({ name: sec.getAttribute('data-section') || sec.id, label: sec.id, node: root });
+        var dsId = (system.dsId || (String(system.slug || tokens.slug || 'brand').toLowerCase() + '@' + String(system.version || 'v1.0').replace(/^v/i, '')));
+        var m = {
+          version: 2,
+          kind: 'sunnyside/figma-manifest',
+          dsId: dsId,
+          brand: system.brand || tokens.brand || document.title.split(' ')[0],
+          slug: system.slug || tokens.slug || '',
+          versionLabel: system.version || tokens.version || 'v1.0',
+          namespace: system.namespace || tokens.namespace || '',
+          source: window.location.href,
+          capture: {
+            viewport: CAPTURE_VIEWPORT,
+            sheets: sheets.length,
+            mode: cap.fallback ? 'live-window-fallback' : CAPTURE_MODE,
+            generator: GENERATOR_VERSION,
+            fallback: cap.fallback || null
+          },
+          system: system,
+          tokens: tokens,
+          sheets: sheets,
+          nodes: count
+        };
+        m.capture.checksum = figmaChecksum(JSON.stringify({
+          dsId: m.dsId, version: m.version,
+          viewport: m.capture.viewport, sheets: m.capture.sheets,
+          mode: m.capture.mode, generator: m.capture.generator,
+          system: m.system, tokens: m.tokens, sheetsTree: m.sheets, nodes: m.nodes
+        }));
+        return m;
+      } finally {
+        cap.cleanup();
       }
-      return {
-        version: 1,
-        kind: 'sunnyside/figma-manifest',
-        brand: tokens.brand || document.title.split(' ')[0],
-        slug: tokens.slug || '',
-        source: window.location.href,
-        viewport: window.innerWidth,
-        tokens: tokens,
-        sheets: sheets,
-        nodes: count
-      };
     }
 
     function toggleAutoLayoutMode(forceState) {
@@ -3178,9 +3372,9 @@ export function generateFigmaHtml({ slug, root = '.', outPath = null, tokensPath
       showToast((on ? 'Auto Layout inspector on' : 'Auto Layout inspector off') + ' · ' + flow + ' flow containers · ' + flagged + ' to review');
     }
 
-    function copyFigmaManifest() {
-      var m = buildFigmaManifest();
-      copyToClipboard(JSON.stringify(m), 'Copied Figma manifest · ' + m.sheets.length + ' sheets · ' + m.nodes + ' nodes');
+    async function copyFigmaManifest() {
+      var m = await buildFigmaManifest();
+      copyToClipboard(JSON.stringify(m), 'Copied Figma manifest · ' + m.sheets.length + ' sheets · ' + m.nodes + ' nodes · ' + m.capture.checksum);
       return m;
     }
 

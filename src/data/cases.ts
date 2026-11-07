@@ -38,6 +38,7 @@ export type DesignCase = {
     | 'mullion'
     | 'serenica'
     | 'setout'
+    | 'gloaming'
 }
 
 export const SUNNYSIDE_URL =
@@ -52,6 +53,23 @@ export const SUNNYSIDE_URL =
  * `number` is the case's permanent identity (its own brand docs and tokens quote it).
  */
 export const DESIGN_CASES: readonly DesignCase[] = [
+  {
+    slug: 'gloaming',
+    number: '25',
+    name: 'Gloaming',
+    href: '/design-system/gloaming',
+    tagline: 'The last light is a reading, not a mood.',
+    description:
+      'A rangeland stewardship cooperative\'s field instrument, derived entirely from one supplied blue-hour painting: eleven measured sky-to-meadow strips, 2,436 sampled lupine pixels and nine generated plates. Built as #19 Liquid glass — one 26px refracting pane, 1px mullions, a 22px squircle and solid oat reading plates — with a horizon bar carrying two hill panes split by a 4-unit mullion, a 5×7 stencil wordmark with a 7-unit horizon channel, six meadow cast marks, Gloock display over Hanken Grotesk and Martian Mono, a day and night scope over twelve shared primitives, a dimensional S#/H#/R# anatomy sheet, and a contrast ledger that publishes the three pairs it fails.',
+    status: 'Shipped · 2026',
+    role: 'Identity · design system · parametric mark · liquid-glass surfaces · image-derived plates · docs',
+    material: 'Blue-hour plate + 26px pane + solid oat reading plates',
+    cover: '/brand/gloaming/gloaming-brandkit.png',
+    coverAlt:
+      'The Gloaming 6-panel brand board: the blue-hour pastoral plate under a refracting pane with the reverse lockup and the headline, the hill-and-horizon mark at five sizes, twelve sampled primitives, three type voices, six meadow cast marks, and the four architectural laws.',
+    tags: ['Liquid glass', 'Blue hour', 'Rangeland', 'Image-sampled'],
+    tone: 'gloaming',
+  },
   {
     slug: 'setout',
     number: '24',

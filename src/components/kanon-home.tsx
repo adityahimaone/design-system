@@ -486,7 +486,7 @@ export function KanonHome({ facts }: { facts: SystemFacts }) {
           <div className="kn-wrap">
             <div className="kn-head">
               <span className="kn-head__num">02 · The canon</span>
-              <h2 id="kn-shelf-title">Twenty-four systems, one method.</h2>
+              <h2 id="kn-shelf-title">Twenty-five systems, one method.</h2>
               <p className="kn-head__note">
                 Search a material or a hue, or narrow by what the brand is made of. Every cover is
                 the case's own board — <b>nothing is restyled</b> to match the shelf.
@@ -598,7 +598,7 @@ export function KanonHome({ facts }: { facts: SystemFacts }) {
             <div className="kn-method">
               <div className="kn-method__col">
                 <span className="kn-method__num">01</span>
-                <h3>The shelf is 23 runs, not 23 drawings</h3>
+                <h3>The shelf is 25 runs, not 25 drawings</h3>
                 <p>
                   Every cover on this page is the case&rsquo;s own 1500×1125 board — the panel the
                   brand skill prints. Nothing was drawn for the shelf, which is why the band can

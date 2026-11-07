@@ -1,0 +1,180 @@
+{
+  "master": "brand/gloaming/blue-hour-master.jpg",
+  "size": [
+    1511,
+    851
+  ],
+  "strips": [
+    {
+      "name": "zenith",
+      "y": [
+        0.0,
+        0.08
+      ],
+      "hex": "#3C527B"
+    },
+    {
+      "name": "sky high",
+      "y": [
+        0.14,
+        0.22
+      ],
+      "hex": "#465782"
+    },
+    {
+      "name": "sky mid",
+      "y": [
+        0.3,
+        0.38
+      ],
+      "hex": "#5B678F"
+    },
+    {
+      "name": "sky low",
+      "y": [
+        0.42,
+        0.48
+      ],
+      "hex": "#7A7796"
+    },
+    {
+      "name": "glow",
+      "y": [
+        0.48,
+        0.53
+      ],
+      "hex": "#8F8097"
+    },
+    {
+      "name": "warm band",
+      "y": [
+        0.53,
+        0.575
+      ],
+      "hex": "#A48796"
+    },
+    {
+      "name": "far ridge",
+      "y": [
+        0.6,
+        0.65
+      ],
+      "hex": "#75769C"
+    },
+    {
+      "name": "hills",
+      "y": [
+        0.66,
+        0.73
+      ],
+      "hex": "#6A635E"
+    },
+    {
+      "name": "herd line",
+      "y": [
+        0.74,
+        0.79
+      ],
+      "hex": "#A08571"
+    },
+    {
+      "name": "meadow",
+      "y": [
+        0.82,
+        0.9
+      ],
+      "hex": "#AC8A61"
+    },
+    {
+      "name": "foreground",
+      "y": [
+        0.92,
+        1.0
+      ],
+      "hex": "#5D513C"
+    }
+  ],
+  "globalPalette": [
+    {
+      "hex": "#3D3A2A",
+      "share": 11.23
+    },
+    {
+      "hex": "#897C94",
+      "share": 10.03
+    },
+    {
+      "hex": "#5F688D",
+      "share": 9.94
+    },
+    {
+      "hex": "#42557F",
+      "share": 8.31
+    },
+    {
+      "hex": "#72708B",
+      "share": 8.23
+    },
+    {
+      "hex": "#675B4D",
+      "share": 8.19
+    },
+    {
+      "hex": "#505E86",
+      "share": 7.47
+    },
+    {
+      "hex": "#384D76",
+      "share": 7.06
+    },
+    {
+      "hex": "#485984",
+      "share": 6.54
+    },
+    {
+      "hex": "#D8A57C",
+      "share": 6.49
+    },
+    {
+      "hex": "#BB9381",
+      "share": 5.88
+    },
+    {
+      "hex": "#867062",
+      "share": 4.25
+    },
+    {
+      "hex": "#A68473",
+      "share": 3.46
+    },
+    {
+      "hex": "#4D4F56",
+      "share": 2.92
+    }
+  ],
+  "lupine": {
+    "sampleCount": 2436,
+    "mean": "#776D89",
+    "top": [
+      "#675D71",
+      "#5E5873",
+      "#6F677B",
+      "#484658",
+      "#625A68",
+      "#575462",
+      "#8E879C",
+      "#A692B1"
+    ]
+  },
+  "plates": [
+    "plate-horizon.jpg",
+    "plate-ridge.jpg",
+    "plate-oaks.jpg",
+    "plate-meadow.jpg",
+    "plate-meadow-detail.jpg",
+    "blue-hour.jpg",
+    "plate-night.jpg",
+    "field-lupine.svg",
+    "horizon-ramp.svg"
+  ]
+}

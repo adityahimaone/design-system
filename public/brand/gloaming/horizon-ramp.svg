@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 640" width="240" height="640" role="img" aria-label="Eleven measured colour strips from the blue-hour plate">
+  <defs><linearGradient id="gl-ramp" x1="0" y1="0" x2="0" y2="1"><stop offset="0.0%" stop-color="#3C527B"/><stop offset="10.0%" stop-color="#465782"/><stop offset="20.0%" stop-color="#5B678F"/><stop offset="30.0%" stop-color="#7A7796"/><stop offset="40.0%" stop-color="#8F8097"/><stop offset="50.0%" stop-color="#A48796"/><stop offset="60.0%" stop-color="#75769C"/><stop offset="70.0%" stop-color="#6A635E"/><stop offset="80.0%" stop-color="#A08571"/><stop offset="90.0%" stop-color="#AC8A61"/><stop offset="100.0%" stop-color="#5D513C"/></linearGradient></defs>
+  <rect width="240" height="640" fill="url(#gl-ramp)"/>
+  <line x1="0" y1="0.0" x2="240" y2="0.0" stroke="#FFFFFF" stroke-opacity=".28"/>
+  <line x1="0" y1="58.2" x2="240" y2="58.2" stroke="#FFFFFF" stroke-opacity=".28"/>
+  <line x1="0" y1="116.4" x2="240" y2="116.4" stroke="#FFFFFF" stroke-opacity=".28"/>
+  <line x1="0" y1="174.5" x2="240" y2="174.5" stroke="#FFFFFF" stroke-opacity=".28"/>
+  <line x1="0" y1="232.7" x2="240" y2="232.7" stroke="#FFFFFF" stroke-opacity=".28"/>
+  <line x1="0" y1="290.9" x2="240" y2="290.9" stroke="#FFFFFF" stroke-opacity=".28"/>
+  <line x1="0" y1="349.1" x2="240" y2="349.1" stroke="#FFFFFF" stroke-opacity=".28"/>
+  <line x1="0" y1="407.3" x2="240" y2="407.3" stroke="#FFFFFF" stroke-opacity=".28"/>
+  <line x1="0" y1="465.5" x2="240" y2="465.5" stroke="#FFFFFF" stroke-opacity=".28"/>
+  <line x1="0" y1="523.6" x2="240" y2="523.6" stroke="#FFFFFF" stroke-opacity=".28"/>
+  <line x1="0" y1="581.8" x2="240" y2="581.8" stroke="#FFFFFF" stroke-opacity=".28"/>
+  <line x1="0" y1="640.0" x2="240" y2="640.0" stroke="#FFFFFF" stroke-opacity=".28"/>
+</svg>

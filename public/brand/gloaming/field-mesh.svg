@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Gloaming mesh field">
+  <defs>
+    <radialGradient id="gloaming-mesh-a" cx="78%" cy="22%" r="62%">
+      <stop offset="0%" stop-color="#E2A38C" stop-opacity="0.28"/>
+      <stop offset="52%" stop-color="#535371" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#2B3D69" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gloaming-mesh-b" cx="18%" cy="82%" r="68%">
+      <stop offset="0%" stop-color="#75769C" stop-opacity="0.65"/>
+      <stop offset="60%" stop-color="#293961" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#2B3D69" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gloaming-mesh-base" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#465782"/>
+      <stop offset="55%" stop-color="#2B3D69"/>
+      <stop offset="100%" stop-color="#75769C"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#gloaming-mesh-base)"/>
+  <rect width="1600" height="1000" fill="url(#gloaming-mesh-b)"/>
+  <rect width="1600" height="1000" fill="url(#gloaming-mesh-a)"/>
+</svg>

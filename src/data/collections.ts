@@ -16,7 +16,11 @@ export const COLLECTIONS: readonly Collection[] = [
     label: 'Print & ink',
     cases: ['sunnyside', 'riso', 'vesper', 'huginn', 'arete', 'daybook', 'serenica'],
   },
-  { name: 'glass', label: 'Glass & light', cases: ['vitrine', 'cove', 'wildflower-wind', 'halation', 'mullion'] },
+  {
+    name: 'glass',
+    label: 'Glass & light',
+    cases: ['vitrine', 'cove', 'wildflower-wind', 'halation', 'mullion', 'gloaming'],
+  },
   { name: 'survey', label: 'Chart & sea', cases: ['hachure', 'bluewater'] },
   { name: 'stone', label: 'Stone & earth', cases: ['porphyry', 'strand', 'clearing', 'quieta', 'tavola'] },
   { name: 'system', label: 'Grids & cities', cases: ['setout', 'ledger', 'jakarta'] },

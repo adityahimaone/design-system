@@ -1,0 +1,78 @@
+/* Gloaming — case 25. Surface: #19 Liquid glass over one blue-hour plate.
+   Layer 1 primitives are sampled from the painting and NEVER flip.
+   Layer 2 is one day scope plus one night scope over those same primitives.
+   Layer 3 is purpose-first: the only layer that knows a control exists. */
+.gl-scope {
+  --gl-zenith: #2B3D69; /* oklch(0.368 0.080 265.8) */
+  --gl-bluehour: #465782; /* oklch(0.462 0.074 267.1) */
+  --gl-periwinkle: #7A7796; /* oklch(0.583 0.047 289.3) */
+  --gl-mauve: #8F8097; /* oklch(0.621 0.038 314.0) */
+  --gl-ridge: #75769C; /* oklch(0.579 0.058 283.3) */
+  --gl-ochre: #B3823E; /* oklch(0.642 0.104 72.9) */
+  --gl-hay: #D8A57C; /* oklch(0.760 0.082 59.9) */
+  --gl-lupine: #9A84A2; /* oklch(0.643 0.051 317.0) */
+  --gl-oak: #3D3A2A; /* oklch(0.347 0.027 98.7) */
+  --gl-oat: #F6F0E5; /* oklch(0.957 0.016 82.8) */
+  --gl-ink: #1B2030; /* oklch(0.246 0.031 270.6) */
+  --gl-apricot: #E2A38C; /* oklch(0.770 0.082 40.9) */
+
+  /* 2 · semantic DAY scope — the sky still holds the warm horizon */
+  --gl-surface-page: var(--gl-bluehour);
+  --gl-surface-plate: var(--gl-oat);
+  --gl-surface-invert: var(--gl-zenith);
+  --gl-text-primary: var(--gl-ink);
+  --gl-text-secondary: color-mix(in oklab, var(--gl-ink) 72%, var(--gl-oat));
+  --gl-text-on-glass: var(--gl-oat);
+  --gl-signal: var(--gl-apricot);
+  --gl-line-strong: color-mix(in srgb, var(--gl-oat) 26%, transparent);
+  --gl-line-subtle: color-mix(in srgb, var(--gl-oat) 14%, transparent);
+  --gl-pane-bg: rgba(255, 255, 255, .16);
+  --gl-pane-rim: rgba(255, 255, 255, .42);
+  --gl-mullion: rgba(255, 255, 255, .18);
+  --gl-field-day: linear-gradient(180deg, #2B3D69 0%, #465782 25%, #7A7796 48%, #8F8097 61%, #E2A38C 76%, #D8A57C 100%);
+
+  /* 3 · component tokens — the only layer that knows a recipe */
+  --gl-btn-bg: var(--gl-apricot);
+  --gl-btn-text: var(--gl-ink);
+  --gl-field-bg: var(--gl-oat);
+  --gl-field-border: color-mix(in srgb, var(--gl-ink) 22%, transparent);
+  --gl-row-active: color-mix(in srgb, var(--gl-apricot) 30%, transparent);
+  --gl-status-shape: 6px;
+
+  /* type aliases */
+  --gl-font-display: 'Gloock', 'Times New Roman', serif;
+  --gl-font-reading: 'Hanken Grotesk', system-ui, sans-serif;
+  --gl-font-mono: 'Martian Mono', ui-monospace, monospace;
+  --font-gloock: 'Gloock', 'Times New Roman', serif;
+  --font-hanken-grotesk: 'Hanken Grotesk', system-ui, sans-serif;
+  --font-martian-mono: 'Martian Mono', ui-monospace, monospace;
+
+  /* physics */
+  --gl-radius-pane: 22px;
+  --gl-radius-inner: 18px;
+  --gl-radius-control: 10px;
+  --gl-pane-blur: 26px;
+  --gl-hair: 1px;
+  --gl-dur: 180ms;
+  --gl-ease: cubic-bezier(.2,.7,.2,1);
+  --gl-wrap: 1280px;
+  --gl-rail: 176px;
+  --gl-measure: 64ch;
+  --gl-gutter: clamp(20px, 4vw, 56px);
+}
+
+/* 2 · semantic NIGHT scope — the warm band has gone, the printed plate has not.
+   Primitives stay put. Only the glass field, the pane tint and the rim change. */
+.gl-scope[data-gl-scope='night'] {
+  --gl-surface-page: var(--gl-zenith);
+  --gl-surface-plate: var(--gl-oat);
+  --gl-text-primary: var(--gl-ink);
+  --gl-text-secondary: color-mix(in oklab, var(--gl-ink) 78%, var(--gl-oat));
+  --gl-text-on-glass: var(--gl-oat);
+  --gl-line-strong: color-mix(in srgb, var(--gl-oat) 34%, transparent);
+  --gl-line-subtle: color-mix(in srgb, var(--gl-oat) 18%, transparent);
+  --gl-pane-bg: rgba(255, 255, 255, .09);
+  --gl-pane-rim: rgba(255, 255, 255, .58);
+  --gl-mullion: rgba(255, 255, 255, .26);
+  --gl-field-day: linear-gradient(180deg, #1B2030 0%, #2B3D69 44%, #465782 72%, #3D3A2A 100%);
+}

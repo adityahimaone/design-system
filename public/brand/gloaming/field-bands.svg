@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Gloaming stepped bands field">
+  <rect width="1600" height="1000" fill="#2B3D69"/>
+  <g transform="rotate(-22 800 500)">
+    <rect x="-300" y="-300" width="222" height="1600" fill="#1c2235"/>
+    <rect x="-80" y="-300" width="222" height="1600" fill="#473d44"/>
+    <rect x="140" y="-300" width="222" height="1600" fill="#6f5757"/>
+    <rect x="360" y="-300" width="222" height="1600" fill="#9c756c"/>
+    <rect x="580" y="-300" width="222" height="1600" fill="#E2A38C"/>
+    <rect x="800" y="-300" width="222" height="1600" fill="#bb908a"/>
+    <rect x="1020" y="-300" width="222" height="1600" fill="#ae8d94"/>
+    <rect x="1240" y="-300" width="222" height="1600" fill="#75769C"/>
+    <rect x="1460" y="-300" width="222" height="1600" fill="#505a83"/>
+    <rect x="1680" y="-300" width="222" height="1600" fill="#2B3D69"/>
+  </g>
+</svg>

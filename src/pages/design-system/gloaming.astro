@@ -1,0 +1,678 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import tokens from '@/features/gloaming/tokens.json'
+import { CAST, GLYPH_PATH, MARK_PATH, COMPACT_PATH, WORDMARK_PATH, WORDMARK_VIEWBOX } from '@/features/gloaming/gloaming-data'
+import '@/features/gloaming/gloaming-tokens.css'
+import '@/features/gloaming/gloaming-page.css'
+
+const B = '/brand/gloaming'
+const primitives = tokens.primitives
+const contrast = tokens.contrast
+const fails = contrast.filter((c) => !c.pass)
+const pass = contrast.filter((c) => c.pass)
+const meta = tokens.meta
+const strips = meta.sampledStrips
+
+/* Navbar links carry zero numbers. Numbers live in the 176px rail only. */
+const NAV = [
+  ['idea', 'Idea'],
+  ['mark', 'Mark'],
+  ['colour', 'Colour'],
+  ['surfaces', 'Surfaces'],
+  ['type', 'Type'],
+  ['kit', 'Kit'],
+  ['tokens', 'Tokens'],
+] as const
+
+const BENCH = [
+  ['11', 'Measured strips off one blue-hour plate'],
+  ['1,760', 'Dots sampled from the lupine field'],
+  ['12', 'Primitives — none invented'],
+  ['3', 'Contrast failures, published'],
+  ['22', 'px refracting pane radius'],
+] as const
+
+const PREMISE = [
+  { k: 'Belief', v: 'The last hour of light is when a working landscape becomes legible. Ridge, oak, lupine and herd separate from the grass at exactly the moment the sky stops being blue.' },
+  { k: 'Enemy', v: 'The pastoral wallpaper. A meadow used as decoration, with the cattle removed, the colours lifted to pastel and no one accountable for what the land is doing.' },
+  { k: 'Material', v: 'One 1511×851 painting, measured into eleven horizontal strips and reduced to twelve primitives. #19 liquid glass: a 26px refracting pane, 1px mullions, one lit top edge, and solid oat plates for everything that must be read.' },
+  { k: 'Reject it when', v: 'The job is a city tower or a seed house. Mullion already owns the glass floor and Wildflower Wind owns the meadow under frost; this pane belongs over land that is being worked.' },
+]
+
+const DECISIONS = [
+  {
+    title: 'One measured ground, never a stack',
+    decision: 'The page ground is a single 180° gradient built from the eleven median colours of the source plate, from zenith #2C3F6C through the apricot band to hay. Nothing is layered on it.',
+    because: 'The painting already contains the whole chromatic argument. Adding a mesh, a second wash or a vignette would invent light the photograph never had.',
+    notWhen: 'A surface that must hold a photograph with its own bright sky. Then the scrim follows the image luminance instead of the sampled ramp.',
+    breaksNext: 'Putting a translucent card over the gradient and calling it a second material. The gradient is the glass, not a background for glass.',
+  },
+  {
+    title: 'The pane refracts; the plate reads',
+    decision: 'Only navbar chrome and the pane specimen use backdrop-filter. Every heading, paragraph, table and control sits on a solid oat plate at 14.29:1 with ink.',
+    because: 'Periwinkle on zenith measures 2.49:1. A pane has no contrast of its own, so the 1px mullion separates it and the oat plate does the reading.',
+    notWhen: 'A purely decorative label with no semantic content. A stamp can sit on the pane; a sentence never can.',
+    breaksNext: 'Blurring behind body copy to make it feel glassy. That imports the frosted #15 contract, which is a different brand.',
+  },
+  {
+    title: 'The refraction step is one geometry',
+    decision: 'The 4-unit horizon bar carries two hill panes split by a 4-unit mullion, and the right crest sits four units higher. The outlined wordmark repeats that step as a 7-unit horizon channel and a 2-unit lateral shift.',
+    because: 'A mark, a wordmark and a surface that share one cut read as one system. Three unrelated ideas would read as a mood board.',
+    notWhen: 'Below 24px. The compact drawing widens the channel to 8 units and fattens the bar so the step survives a 16-pixel raster.',
+    breaksNext: 'Adding a third pane, a stroke, or a gradient inside the mark. The mark is fill only.',
+  },
+  {
+    title: 'Night removes the warm band, not the paper',
+    decision: 'Both scopes share the same twelve primitives. Night deepens the glass field, brightens the rim and mullion, and swaps the hero to the same frame graded forty minutes later. The oat plate does not change.',
+    because: 'A printed sheet is still the same sheet after dark. Flipping the primitives would make the contrast ledger a different document in each scope.',
+    notWhen: 'A true dark-mode product surface with long reading sessions. That needs a second plate, a second ledger and a second audit.',
+    breaksNext: 'Inverting the plates to dark with white type. Then ink-on-oat stops being the measured pair the button depends on.',
+  },
+]
+
+type SurfaceCard = { id: string; title: string; verdict: string; note: string; demo: string; rejected?: boolean }
+const SURFACES: SurfaceCard[] = [
+  { id: 'pane', title: '26px refracting pane', verdict: 'Shipped — the one glass', note: '16% white, 26px blur, 22px squircle, one 1px inset rim and one lit top edge. Holds a stamp, never a sentence.', demo: 'pane' },
+  { id: 'plate', title: 'Solid oat reading plate', verdict: 'Shipped — every section', note: 'The only surface allowed to carry type. Ink on oat is 14.29:1, measured from the same hex the CSS loads.', demo: 'plate' },
+  { id: 'field', title: 'Image-sampled lupine field', verdict: 'Shipped — the halftone', note: '1,760 dots whose colour, radius and opacity come from the corresponding point of the meadow. A derived surface, not a crop.', demo: 'field' },
+  { id: 'mullion', title: '1px mullion grid', verdict: 'Shipped — dividers, not gaps', note: 'Cells are adjacent and separated by a 1px outset rule. A gap between panes would break #19.', demo: 'mullion' },
+  { id: 'frost', title: 'Frosted glass', verdict: 'Rejected', note: 'An 18px blur, 16px radius and 8–12% white is contract #15, not #19. Two blur radii in one system is two brands.', demo: 'frost', rejected: true },
+  { id: 'mesh', title: 'Aurora mesh', verdict: 'Rejected', note: 'Breaks the one-gradient rule and would put a coloured bloom behind the heading. No measured contrast pair could be published for it.', demo: 'mesh', rejected: true },
+]
+
+const TYPE_SCALE = [
+  { role: 'Display / 01', face: 'Gloock 400', size: 'clamp(42–92)', lead: '0.99', track: '-0.038em', sample: 'The last light', font: 'var(--gl-font-display)', px: 68 },
+  { role: 'Display / 02', face: 'Gloock 400', size: 'clamp(30–50)', lead: '1.06', track: '-0.032em', sample: 'One pane, one horizon', font: 'var(--gl-font-display)', px: 38 },
+  { role: 'Display / 03', face: 'Gloock 400', size: '21px', lead: '1.20', track: '-0.02em', sample: 'A heading inside a plate', font: 'var(--gl-font-display)', px: 21 },
+  { role: 'Reading / 01', face: 'Hanken Grotesk 400', size: '16.5px', lead: '1.66', track: '0', sample: 'The pane refracts the sky; the plate holds the numbers.', font: 'var(--gl-font-reading)', px: 16.5 },
+  { role: 'Reading / 02', face: 'Hanken Grotesk 400', size: '13.5px', lead: '1.60', track: '0', sample: 'Eleven strips, one gradient, zero stacked washes.', font: 'var(--gl-font-reading)', px: 13.5 },
+  { role: 'Figures / 01', face: 'Martian Mono 400', size: '10.5px', lead: '1.70', track: '0', sample: 'GL-25 · R22 / R18 · S8 · PANE 26', font: 'var(--gl-font-mono)', px: 10.5 },
+]
+
+const ROWS = [
+  ['GL-25', 'NORTH', '18', 'Grazed'],
+  ['GL-26', 'OAK', '12', 'Resting'],
+  ['GL-27', 'RIDGE', '24', 'Grazed'],
+  ['GL-28', 'LUPINE', '09', 'Held'],
+]
+
+const FOOT_BENCH = [
+  ['01', 'One measured ground'],
+  ['02', 'Glass carries no type'],
+  ['03', 'One accent, on the action'],
+  ['04', 'The plate never changes'],
+  ['05', 'Nine plates from one frame'],
+] as const
+
+const GAPS = [
+  { k: 'Verified', v: `${contrast.length} contrast pairs recomputed from the same hex the CSS loads; ${fails.length} published failures with restricted jobs; ${primitives.length} sampled primitives; deuteranopia/protanopia minimum ΔE_OK ${meta.cvd.minDeltaOk.toFixed(3)} against ${meta.cvd.threshold}.` },
+  { k: 'Verified', v: 'Dual scope: a day block, a night block, a navbar toggle, a Day sheet, a Night sheet and a graded night plate. Primitives never flip; the oat plate is the same sheet in both.' },
+  { k: 'Not verified', v: 'Browser frame measurements were skipped because "Skip browser tests" was selected. The 1440 / 1024 / 390 widths and scrollWidth === clientWidth were not checked in a headless browser; contrast and CVD are computed statically.' },
+  { k: 'Known gap', v: 'Tritanopia is not simulated — the common single-matrix shortcut clips to magenta and would report a false pass. Every status in the kit also ships a word and a shape, so no state relies on colour alone.' },
+  { k: 'Known gap', v: 'A detach check against eight sibling systems scores 91–75 for seven of them and 63/100 against Case 24 Setout. Its hi-vis orange and this plate\'s apricot sit 2° apart in OKLCH hue. They differ in chroma (0.061 vs 0.113), in role (horizon light vs safety vest) and in every material choice; the colour was kept because it is sampled from the painting, not chosen from a ramp.' },
+]
+
+const DTCG = `{
+  "$type": "color",
+  "zenith":    { "$value": "#2B3D69" },
+  "bluehour":  { "$value": "#465782" },
+  "periwinkle":{ "$value": "#7A7796" },
+  "mauve":     { "$value": "#8F8097" },
+  "ridge":     { "$value": "#75769C" },
+  "ochre":     { "$value": "#B3823E" },
+  "hay":       { "$value": "#D8A57C" },
+  "lupine":    { "$value": "#9A84A2" },
+  "oak":       { "$value": "#3D3A2A" },
+  "oat":       { "$value": "#F6F0E5" },
+  "ink":       { "$value": "#1B2030" },
+  "apricot":   { "$value": "#E2A38C" }
+}`
+const TOKENS_PRIM = `/* 1 · primitives — sampled, never flipped */
+.gl-scope {
+${primitives.map((p) => `  --gl-${p.name}: ${p.value};  /* ${p.oklch} */`).join('\n')}
+}`
+const TOKENS_DAY = `/* 2 · DAY scope — the warm band is still lit */
+.gl-scope {
+  --gl-surface-page:    var(--gl-bluehour);
+  --gl-surface-plate:   var(--gl-oat);
+  --gl-text-primary:    var(--gl-ink);
+  --gl-text-on-glass:   var(--gl-oat);
+  --gl-pane-bg:         rgba(255 255 255 / .16);
+  --gl-pane-rim:        rgba(255 255 255 / .42);
+  --gl-field-day:       linear-gradient(180deg,
+    #2B3D69 0%, #465782 25%, #7A7796 48%,
+    #8F8097 61%, #E2A38C 76%, #D8A57C 100%);
+}`
+const TOKENS_NIGHT = `/* 3 · NIGHT scope — same primitives, no warm band */
+.gl-scope[data-gl-scope='night'] {
+  --gl-surface-page:    var(--gl-zenith);
+  --gl-surface-plate:   var(--gl-oat);   /* paper stays */
+  --gl-text-primary:    var(--gl-ink);   /* ledger stays */
+  --gl-pane-bg:         rgba(255 255 255 / .09);
+  --gl-pane-rim:        rgba(255 255 255 / .58);
+  --gl-mullion:         rgba(255 255 255 / .26);
+  --gl-field-day:       linear-gradient(180deg,
+    #1B2030 0%, #2B3D69 44%, #465782 72%, #3D3A2A 100%);
+}`
+const TOKENS_COMP = `/* 4 · component tokens — the only layer that knows a control */
+--gl-btn-bg:        var(--gl-apricot);
+--gl-btn-text:      var(--gl-ink);      /* 7.60:1 */
+--gl-field-bg:      var(--gl-oat);
+--gl-field-border:  color-mix(in srgb, var(--gl-ink) 22%, transparent);
+--gl-row-active:    color-mix(in srgb, var(--gl-apricot) 30%, transparent);
+--gl-status-shape:  6px;              /* shape, not just colour */`
+const TOKENS_PHYS = `/* 5 · physics — closed chains */
+--gl-radius-pane:     22px;
+--gl-radius-inner:    18px;  /* R1 - 4 */
+--gl-radius-control:  10px;  /* R2 - 8 */
+--gl-pane-blur:       26px;
+--gl-mullion:         1px;
+--gl-hair:            1px;
+--gl-dur:             180ms;
+--gl-ease:            cubic-bezier(.2,.7,.2,1);
+--gl-rail:            176px;
+--gl-measure:         64ch;`
+const TOKENS_STRIPS = `/* 6 · provenance — plate-source.json, 11 median strips */
+${strips.map((s, i) => `/* ${String(i + 1).padStart(2, '0')}  ${s.name.padEnd(12)} ${s.hex} */`).join('\n')}
+/* 2,436 violet pixels → mean ${meta.lupine.mean}
+   1,760 dots → field-lupine.svg */`
+const SHEETS: [string, string][] = [
+  ['1 · DTCG colour tokens', DTCG],
+  ['2 · Primitives', TOKENS_PRIM],
+  ['3 · Day scope', TOKENS_DAY],
+  ['4 · Night scope', TOKENS_NIGHT],
+  ['5 · Component tokens', TOKENS_COMP],
+  ['6 · Physics & provenance', TOKENS_PHYS + '\n' + TOKENS_STRIPS],
+]
+
+const title = 'Gloaming — Case 25 | Blue-hour liquid glass rangeland design system'
+const description =
+  'Gloaming turns one blue-hour pastoral painting into a #19 Liquid glass design system: eleven measured colour strips, twelve sampled primitives, a 26px refracting pane with 1px mullions, solid oat reading plates, a horizon-bar mark with two refracted hill panes, six meadow cast marks, a day and night scope, and three published contrast failures.'
+---
+
+<Layout title={title} description={description} canonical="/design-system/gloaming" image={`${B}/gloaming-brandkit.png`}>
+  <link rel="icon" type="image/svg+xml" href={`${B}/icon.svg`} />
+  <link rel="apple-touch-icon" href={`${B}/icon.svg`} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gloock&family=Hanken+Grotesk:wght@300..700&family=Martian+Mono:wght@300..700&display=swap" rel="stylesheet" />
+
+  <div class="gl-root gl-scope" id="top" data-gl-scope="day">
+    <a class="gl-skip" href="#main">Skip to the system</a>
+
+    <header class="gl-top">
+      <div class="gl-shell gl-top__in">
+        <a class="gl-top__brand" href="#top" aria-label="Gloaming — top">
+          <img src={`${B}/lockup-reverse.svg`} alt="" width="268" height="64" />
+        </a>
+        <nav class="gl-top__nav" aria-label="Sections">
+          {NAV.map(([id, label]) => <a href={`#${id}`}>{label}</a>)}
+        </nav>
+        <div class="gl-toggle" role="group" aria-label="Colour scope">
+          <button class="gl-toggle__opt" type="button" data-scope="day" aria-pressed="true">Day</button>
+          <button class="gl-toggle__opt" type="button" data-scope="night" aria-pressed="false">Night</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      {/* HERO A · relation below · a wide banner, five number cells overlapping
+          its bottom edge, then the headline. No eyebrow, no mono, no stat boxes. */}
+      <section class="gl-hero" aria-label="Introduction">
+        <div class="gl-hero__banner">
+          <img class="gl-hero__img gl-hero__img--day" src={`${B}/blue-hour.jpg`} alt="At blue hour, cattle graze in a meadow of lavender lupine below golden oak-dotted hills; a deep indigo sky falls to a warm apricot horizon above violet ridges." width="1511" height="851" fetchpriority="high" />
+          <img class="gl-hero__img gl-hero__img--night" src={`${B}/plate-night.jpg`} alt="" width="1511" height="851" aria-hidden="true" />
+          <div class="gl-hero__mullion" aria-hidden="true"></div>
+          <span class="gl-hero__stamp">Plate 01 · one frame, 1511 × 851 · sampled eleven times</span>
+        </div>
+
+        <div class="gl-shell">
+          <dl class="gl-bench">
+            {BENCH.map(([n, l]) => (
+              <div class="gl-bench__cell"><dt class="gl-bench__n">{n}</dt><dd class="gl-bench__l">{l}</dd></div>
+            ))}
+          </dl>
+
+          <div class="gl-hero__plate">
+          <div class="gl-hero__copy">
+            <h1 class="gl-hero__h1">The last light is<br />a reading, not a mood.</h1>
+            <p class="gl-hero__lede">
+              Gloaming is a rangeland stewardship cooperative's field instrument. One hour of low
+              light over a working meadow becomes a record a steward can check: ridge, oak, lupine,
+              herd, horizon. The pane refracts the sky; the plate holds the numbers.
+            </p>
+            <div class="gl-acts">
+              <a class="gl-btn" href="#surfaces"><i aria-hidden="true"></i>See the pane</a>
+              <a class="gl-link" href="#mark">See the mark →</a>
+              <a class="gl-link" href={`${B}/anatomy-sheet.svg`}>Anatomy sheet ↗</a>
+              <a class="gl-link" href={`${B}/gloaming-brandkit.png`}>Brand kit ↗</a>
+            </div>
+            <div class="gl-hero__foot">
+              <span>Case 25 · #19 Liquid glass</span>
+              <span>Rail A · Hero A · Footer F1</span>
+              <span>Day + night over shared primitives</span>
+            </div>
+          </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 01 · Premise */}
+      <section class="gl-sec" id="idea">
+        <div class="gl-shell gl-sec__wrap">
+          <div class="gl-rail"><span class="gl-rail__n">01</span><span class="gl-rail__lbl">Premise</span><span class="gl-rail__note">One plate, measured eleven times</span></div>
+          <div class="gl-body">
+            <div class="gl-plate">
+              <div class="gl-plate__pad">
+                <p class="gl-tagline">The idea</p>
+                <h2 class="gl-h2">A landscape is a record, not a wallpaper.</h2>
+                <p class="gl-big">
+                  The supplied painting is not a mood reference here — it is the source data. Eleven
+                  horizontal strips were measured, fourteen dominant colours reduced, and 2,436
+                  violet pixels isolated from the meadow. Every swatch, dot and gradient stop on this
+                  page traces back to that one 1511 × 851 frame.
+                </p>
+                <dl class="gl-prem">
+                  {PREMISE.map((p) => <div><dt>{p.k}</dt><dd>{p.v}</dd></div>)}
+                </dl>
+              </div>
+              <div class="gl-plate__rule"></div>
+              <div class="gl-plate__pad">
+                <p class="gl-tagline">Four decisions, each with a breaking point</p>
+                <div class="gl-decs">
+                  {DECISIONS.map((d) => (
+                    <article class="gl-dec">
+                      <h3>{d.title}</h3>
+                      <dl>
+                        <dt>Decision</dt><dd>{d.decision}</dd>
+                        <dt>Because</dt><dd>{d.because}</dd>
+                        <dt>Not when</dt><dd>{d.notWhen}</dd>
+                        <dt>Breaks next</dt><dd>{d.breaksNext}</dd>
+                      </dl>
+                    </article>
+                  ))}
+                </div>
+                <figure class="gl-figure">
+                  <div class="gl-figure__img">
+                    <img src={`${B}/plate-horizon.jpg`} alt="A crop of the source plate: the deep blue sky falling through mauve into a warm apricot band above the first violet ridges." width="1511" height="221" loading="lazy" />
+                  </div>
+                  <figcaption><b>Plate 02 · the horizon, measured</b><span>Strips 04–07 of eleven · no colour correction</span></figcaption>
+                </figure>
+              </div>
+            </div>
+            <p class="gl-body__cap">The master plate is kept at <code>brand/gloaming/blue-hour-master.jpg</code>; the nine derivatives are generated by <code>scripts/build-gloaming-plates.py</code>.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 02 · The Mark — cast is content, inside this section under the scale strip */}
+      <section class="gl-sec" id="mark">
+        <div class="gl-shell gl-sec__wrap">
+          <div class="gl-rail"><span class="gl-rail__n">02</span><span class="gl-rail__lbl">Mark</span><span class="gl-rail__note">One bar, two hill panes, one step</span></div>
+          <div class="gl-body">
+            <div class="gl-plate">
+              <div class="gl-plate__pad">
+                <p class="gl-tagline">The mark</p>
+                <h2 class="gl-h2">The horizon is a cut, not a line.</h2>
+                <p class="gl-big">
+                  A 52 × 4-unit bar at y46 carries two hill panes split by a 4-unit mullion at
+                  x29–33. The right crest sits four units higher than the left — that vertical step
+                  is the refraction. Fill only: no stroke, no third pane, no gradient. The compact
+                  and glyph are separate, heavier drawings.
+                </p>
+
+                <div class="gl-marks">
+                  <div class="gl-mark gl-mark--dark"><span>Primary · on zenith</span><svg viewBox="0 0 64 64" fill="currentColor" aria-label="Gloaming primary mark"><Fragment set:html={MARK_PATH} /></svg></div>
+                  <div class="gl-mark gl-mark--light"><span>Reverse · on oat</span><img src={`${B}/mark.svg`} alt="Gloaming mark in ink on oat" width="72" height="72" /></div>
+                  <div class="gl-mark gl-mark--dark"><span>Compact · 16–24px</span><svg viewBox="0 0 64 64" fill="currentColor" aria-label="Gloaming compact mark"><Fragment set:html={COMPACT_PATH} /></svg></div>
+                  <div class="gl-mark gl-mark--dark"><span>Glyph · favicon</span><svg viewBox="0 0 64 64" fill="currentColor" aria-label="Gloaming glyph"><Fragment set:html={GLYPH_PATH} /></svg></div>
+                </div>
+
+                <div class="gl-wm">
+                  <div class="gl-wm__row"><img src={`${B}/wordmark.svg`} alt="Gloaming outlined wordmark in ink" width="420" height="79" /><span>Outlined 5×7 path · zero live text · 7-unit horizon channel · 2-unit refraction shift</span></div>
+                  <div class="gl-wm__row gl-wm__row--dark"><img src={`${B}/wordmark-reverse.svg`} alt="Gloaming outlined wordmark on zenith" width="420" height="79" /><span>Reverse · the one drawing used over the glass</span></div>
+                </div>
+
+                <div class="gl-scale">
+                  {[96, 64, 40, 24, 16].map((s) => (
+                    <figure>
+                      <svg viewBox="0 0 64 64" width={s} height={s} fill="currentColor" aria-label={`Mark at ${s} pixels`}><Fragment set:html={s <= 16 ? COMPACT_PATH : MARK_PATH} /></svg>
+                      <figcaption>{s}px{s <= 16 ? ' · compact' : ''}</figcaption>
+                    </figure>
+                  ))}
+                  <figure>
+                    <svg viewBox={WORDMARK_VIEWBOX} width="150" height="28" fill="currentColor" aria-label="Wordmark at small size"><Fragment set:html={WORDMARK_PATH} /></svg>
+                    <figcaption>wordmark</figcaption>
+                  </figure>
+                </div>
+
+                <div class="gl-cast">
+                  <div class="gl-cast__head"><b>The cast · six nouns off the meadow</b><span>64-unit grid · one cut weight · fill only</span></div>
+                  <div class="gl-cast__grid">
+                    {CAST.map((c) => (
+                      <div class="gl-cast__cell">
+                        <svg viewBox="0 0 64 64" fill="currentColor" aria-hidden="true"><Fragment set:html={c.path} /></svg>
+                        <b>{c.name}</b>
+                        <span>{c.note}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <dl class="gl-dl">
+                  <div><dt>Clear space</dt><dd>Four units on all sides, measured from the outer bar. The 4-unit mullion inside is not clear space.</dd></div>
+                  <div><dt>Never</dt><dd>No third pane, no stroke, no perspective, no gradient behind the mark, and never two crests at the same height.</dd></div>
+                  <div><dt>Below 24px</dt><dd>Swap to the compact: an 8-unit channel and a 8-unit bar keep the refraction step alive at 16 pixels.</dd></div>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 03 · Colour */}
+      <section class="gl-sec" id="colour">
+        <div class="gl-shell gl-sec__wrap">
+          <div class="gl-rail"><span class="gl-rail__n">03</span><span class="gl-rail__lbl">Colour</span><span class="gl-rail__note">{primitives.length} sampled · {fails.length} published failures</span></div>
+          <div class="gl-body">
+            <div class="gl-plate">
+              <div class="gl-plate__pad">
+                <p class="gl-tagline">Colour</p>
+                <h2 class="gl-h2">Twelve colours. Three of them admit what they cannot do.</h2>
+                <p class="gl-big">
+                  Not one hex was invented: the twelve primitives are sampled from the source plate,
+                  with the reading plate lifted from hay and the ink cooled from oak. {contrast.length}
+                  pairs are computed from the same hex the CSS loads. {fails.length} fail and are
+                  published with the job each is still allowed to do. Deuteranopia and protanopia
+                  were simulated; the minimum ΔE_OK is {meta.cvd.minDeltaOk.toFixed(3)} against a
+                  threshold of {meta.cvd.threshold}.
+                </p>
+
+                <div class="gl-colour">
+                  <div class="gl-sw">
+                    {primitives.map((p) => (
+                      <button class="gl-sw__b" type="button" data-copy={`--gl-${p.name}: ${p.value};`} title={`${p.name} — ${p.role}`}>
+                        <span class="gl-sw__chip" style={`background:${p.value}`}></span>
+                        <span class="gl-sw__meta"><span class="gl-sw__name">{p.name}</span><span class="gl-sw__hex">{p.value}</span></span>
+                      </button>
+                    ))}
+                  </div>
+                  <div class="gl-ramp"><img src={`${B}/horizon-ramp.svg`} alt="Eleven measured colour strips from the source plate, zenith to foreground" width="240" height="640" loading="lazy" /></div>
+                </div>
+
+                <div class="gl-pairs">
+                  {contrast.map((c) => {
+                    const a = primitives.find((p) => p.name === c.a)!
+                    const b = primitives.find((p) => p.name === c.b)!
+                    return (
+                      <div class:list={['gl-pair', !c.pass && 'gl-pair--fail']}>
+                        <span class="gl-pair__chips"><i style={`background:${a.value}`}></i><i style={`background:${b.value}`}></i></span>
+                        <span class="gl-pair__name">{c.a} on {c.b}<small>{c.note}</small></span>
+                        <span class="gl-pair__ratio">{c.ratio}:1{c.pass ? '' : ' · fail'}</span>
+                        <span class="gl-pair__job">{c.job}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+                <p class="gl-sub">
+                  {pass.length} pairs pass, {fails.length} fail and are published rather than
+                  corrected. Oat on apricot at 1.88:1 is why the button uses ink on apricot at
+                  7.60:1; lupine at 2.99:1 stays a halftone dot; and periwinkle on zenith at 2.49:1
+                  is why a 1px mullion always separates the pane from the ground.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 04 · Surfaces */}
+      <section class="gl-sec" id="surfaces">
+        <div class="gl-shell gl-sec__wrap">
+          <div class="gl-rail"><span class="gl-rail__n">04</span><span class="gl-rail__lbl">Surfaces</span><span class="gl-rail__note">Six tried, four shipped</span></div>
+          <div class="gl-body">
+            <div class="gl-plate">
+              <div class="gl-plate__pad">
+                <p class="gl-tagline">Surfaces</p>
+                <h2 class="gl-h2">Six surfaces were tried. Four survived.</h2>
+                <p class="gl-big">
+                  Liquid glass is a material with rules, not a filter. Each surface had to do a real
+                  job on this page: refract the sky, hold a sentence, carry the flower field, or
+                  divide two panes. The two rejected idioms failed the contract, not the brief.
+                </p>
+                <div class="gl-surf">
+                  {SURFACES.map((s) => (
+                    <article class:list={['gl-sc', s.rejected && 'gl-sc--rej']}>
+                      <div class:list={['gl-sc__demo', `gl-demo--${s.demo}`]}>
+                        {s.demo === 'pane' && <><i aria-hidden="true"></i><span class="pane">26px pane · 1px rim · one lit edge</span></>}
+                        {s.demo === 'plate' && <span class="solid">Every heading, paragraph and table sits here. Ink on oat = 14.29:1.</span>}
+                        {s.demo === 'field' && <span class="tag">1,760 dots · sampled</span>}
+                        {s.demo === 'mullion' && <><i></i><i></i><i></i></>}
+                        {s.demo === 'frost' && <span>8–12% white · 18px blur · 16px radius = #15</span>}
+                        {s.demo === 'mesh' && <b>Stacked coloured bloom · rejected</b>}
+                      </div>
+                      <div class="gl-sc__txt">
+                        <div class="gl-sc__head"><b>{s.title}</b><span class="gl-sc__verdict">{s.verdict}</span></div>
+                        <p>{s.note}</p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 05 · Type */}
+      <section class="gl-sec" id="type">
+        <div class="gl-shell gl-sec__wrap">
+          <div class="gl-rail"><span class="gl-rail__n">05</span><span class="gl-rail__lbl">Type</span><span class="gl-rail__note">Three voices, one 64ch measure</span></div>
+          <div class="gl-body">
+            <div class="gl-plate">
+              <div class="gl-plate__pad">
+                <p class="gl-tagline">Type</p>
+                <h2 class="gl-h2">A literary display, a working reader, an instrument for figures.</h2>
+                <p class="gl-big">
+                  Gloock's high-contrast serifs cut like a glass edge and carry the landscape.
+                  Hanken Grotesk carries reading on a 64-character measure. Martian Mono carries
+                  every figure: strip counts, radii, ratios and plate stamps. None of the three is
+                  Inter, Roboto or Arial, and none is shared with a sibling case.
+                </p>
+
+                <div class="gl-tscale">
+                  {TYPE_SCALE.map((t) => (
+                    <div class="gl-tscale__row">
+                      <div class="gl-tscale__meta"><b>{t.role}</b>{t.face}<br />{t.size} / {t.lead}<br />{t.track}</div>
+                      <div class="gl-tscale__sample" style={`font-family:${t.font};font-size:${t.px}px;line-height:${t.lead};letter-spacing:${t.track}`}>{t.sample}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div class="gl-specs">
+                  <div class="gl-spec"><h3>Display</h3><p style="font-family:var(--gl-font-display);font-size:27px;line-height:1.06;letter-spacing:-.03em">One pane,<br />one horizon.</p></div>
+                  <div class="gl-spec"><h3>Reading · 64ch</h3><p>The pane refracts the last light. The plate holds the ridge, the oak, the lupine and the herd — a record a steward can check before the light goes.</p></div>
+                  <div class="gl-spec"><h3>Figures</h3><table><thead><tr><th>Ref</th><th>Bay</th><th>Ha</th></tr></thead><tbody><tr><td>25</td><td>NORTH</td><td>18</td></tr><tr><td>26</td><td>OAK</td><td>12</td></tr><tr><td>27</td><td>RIDGE</td><td>24</td></tr></tbody></table></div>
+                  <div class="gl-spec"><h3>Labels</h3><p style="font-family:var(--gl-font-mono);font-size:9.5px;line-height:2">GL-25 · R22 / R18<br />PLATE 02 · HORIZON<br />PANE 26 · MULLION 1<br />ΔE_OK 0.056</p></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 06 · The Kit + anatomy sheet */}
+      <section class="gl-sec" id="kit">
+        <div class="gl-shell gl-sec__wrap">
+          <div class="gl-rail"><span class="gl-rail__n">06</span><span class="gl-rail__lbl">Kit</span><span class="gl-rail__note">Eight states, one rule</span></div>
+          <div class="gl-body">
+            <div class="gl-plate">
+              <div class="gl-plate__pad">
+                <p class="gl-tagline">The kit</p>
+                <h2 class="gl-h2">Four controls, every state visible without colour alone.</h2>
+                <p class="gl-big">
+                  Solid plates, 1px rules, concentric 22 / 18 / 10px radii and one apricot action.
+                  Status always ships a word and a shape, so the CVD gate never has to carry the
+                  meaning by hue.
+                </p>
+
+                <div class="gl-kit">
+                  <div>
+                    <h3>Buttons · 4 states</h3>
+                    <div class="gl-btns">
+                      <button class="gl-btn" type="button"><i aria-hidden="true"></i>Read the field</button>
+                      <button class="gl-btn gl-btn--ghost" type="button">Download strips</button>
+                      <button class="gl-btn gl-btn--ghost gl-btn--sm" type="button">Copy GL-25</button>
+                      <button class="gl-btn" type="button" aria-disabled="true">Bay LUPINE · held</button>
+                    </div>
+                    <p class="gl-kitnote">One accent-filled control, and it is the action. Disabled keeps its label and its value; nothing disappears.</p>
+                  </div>
+                  <div>
+                    <h3>Status · word + shape</h3>
+                    <div class="gl-tags">
+                      <span class="gl-tag gl-tag--live"><i aria-hidden="true"></i>Grazed</span>
+                      <span class="gl-tag gl-tag--done"><i aria-hidden="true"></i>Resting</span>
+                      <span class="gl-tag gl-tag--held"><i aria-hidden="true"></i>Held</span>
+                    </div>
+                    <p class="gl-kitnote">Disc, diamond and square. The three states remain distinct under deuteranopia and protanopia without relying on the palette.</p>
+                  </div>
+                  <div>
+                    <h3>Field · invalid + help</h3>
+                    <div class="gl-fieldset">
+                      <label class="gl-label" for="gl-ref">Paddock reference</label>
+                      <input class="gl-input" id="gl-ref" value="GL-2" aria-invalid="true" aria-describedby="gl-err" />
+                      <div class="gl-err" id="gl-err" role="alert"><b>2 problems</b><span>Reference must be four characters after the dash.</span><span>A bay is required before the sheet can be issued.</span></div>
+                    </div>
+                    <p class="gl-kitnote">The border stays visible in every state; the error carries text and a count, not colour alone.</p>
+                  </div>
+                  <div>
+                    <h3>Grazing rows · tabular</h3>
+                    <table class="gl-rows">
+                      <caption>Four paddocks, one selected. Rows are keyboard reachable and carry aria-selected.</caption>
+                      <thead><tr><th scope="col">Ref</th><th scope="col">Bay</th><th scope="col">Ha</th><th scope="col">State</th></tr></thead>
+                      <tbody>
+                        {ROWS.map((r, i) => <tr tabindex="0" aria-selected={i === 0 ? 'true' : 'false'} data-row>{r.map((cell) => <td>{cell}</td>)}</tr>)}
+                      </tbody>
+                    </table>
+                    <p class="gl-kitnote">Tabular figures, 1px row rules, one selected row. No hairline boxes around the table.</p>
+                  </div>
+                </div>
+
+                <figure class="gl-anatomy">
+                  <img src={`${B}/anatomy-sheet.svg`} alt="Monochrome dimensional anatomy sheet: concentric radii R1–R3, spacing chain S1–S6, height chain H1–H5, and a four-plate exploded axonometric layer stack." width="1400" height="980" loading="lazy" />
+                  <figcaption class="gl-cap" style="margin-top:10px">Dimensional anatomy · S#/H#/R# redline · <code>R_inner = R_outer − 4</code> · <code>S_n = 8n</code> · generated from the same tokens</figcaption>
+                </figure>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 07 · Tokens — Day sheet AND Night sheet, both present */}
+      <section class="gl-sec" id="tokens">
+        <div class="gl-shell gl-sec__wrap">
+          <div class="gl-rail"><span class="gl-rail__n">07</span><span class="gl-rail__lbl">Tokens</span><span class="gl-rail__note">Six sheets, two scopes</span></div>
+          <div class="gl-body">
+            <div class="gl-plate">
+              <div class="gl-plate__pad">
+                <p class="gl-tagline">Tokens &amp; audit</p>
+                <h2 class="gl-h2">One set of primitives. Two honest scopes.</h2>
+                <p class="gl-big">
+                  Primitives are named once for the material and never flip. The day scope keeps the
+                  warm apricot horizon; the night scope removes it, brightens the rim and mullion,
+                  and leaves the printed oat plate alone. Component tokens are the only layer that
+                  knows a button exists.
+                </p>
+
+                <div class="gl-sheets">
+                  {SHEETS.map(([label, code]) => (
+                    <div class="gl-sheet">
+                      <div class="gl-sheet__h"><span>{label}</span><button class="gl-copy" type="button" data-copy={code}>Copy</button></div>
+                      <pre><code>{code}</code></pre>
+                    </div>
+                  ))}
+                </div>
+
+                <dl class="gl-gaps">
+                  {GAPS.map((g) => <div class="gl-gap"><dt>{g.k}</dt><dd>{g.v}</dd></div>)}
+                </dl>
+              </div>
+            </div>
+            <p class="gl-body__cap">Generated by <code>scripts/build-gloaming.mjs</code> from <code>brand/gloaming.brand.json</code>. Full spec: <code>src/features/gloaming/DESIGN.md</code>.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    {/* FOOTER F1 · bench echo — the night plate above a mirrored five-cell bench */}
+    <footer class="gl-foot">
+      <div class="gl-foot__art">
+        <img class="gl-foot__img" src={`${B}/plate-night.jpg`} alt="The same meadow forty minutes later, the warm horizon gone and the ridges held in deep blue." width="1511" height="851" loading="lazy" />
+        <div class="gl-foot__scrim" aria-hidden="true"></div>
+        <img class="gl-foot__lock" src={`${B}/lockup-reverse.svg`} alt="Gloaming lockup" width="268" height="64" loading="lazy" />
+        <span class="gl-foot__cap">Plate 09 · the same frame, graded forty minutes later</span>
+      </div>
+
+      <div class="gl-shell">
+        <div class="gl-foot__bench">
+          {FOOT_BENCH.map(([n, l]) => <div class="gl-foot__cell"><b>{n}</b>{l}</div>)}
+        </div>
+
+        <div class="gl-foot__say">
+          <div>
+            <p class="gl-foot__sign">The light goes. The record stays.</p>
+            <p class="gl-foot__sub">
+              Seasons change, herds move and the warm band falls out of the sky. The eleven measured
+              strips, the 26px pane, the 1px mullion and the solid oat plate are the parts that are
+              still checkable after dusk.
+            </p>
+            <nav class="gl-foot__links" aria-label="Footer">
+              <a href="#mark">The mark</a><a href="#colour">Contrast ledger</a><a href={`${B}/anatomy-sheet.svg`}>Anatomy sheet</a><a href={`${B}/gloaming-brandkit.png`}>Brand kit</a><a href={`${B}/gloaming-figma.html`}>Figma HTML sheet</a><a href="/">All cases</a>
+            </nav>
+          </div>
+        </div>
+        <div class="gl-foot__prov"><span>Gloaming · 2026 · case 25 · day + night · {fails.length} published failures</span><span><a href="#top">Back to top ↑</a></span></div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const root = document.querySelector<HTMLElement>('.gl-root')!
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-scope]')
+    const apply = (scope: string, persist: boolean) => {
+      root.dataset.glScope = scope
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.scope === scope)))
+      if (persist) {
+        try { localStorage.setItem('gl-scope', scope) } catch { /* private mode */ }
+      }
+    }
+    let saved = 'day'
+    try { saved = localStorage.getItem('gl-scope') || 'day' } catch { /* private mode */ }
+    apply(saved === 'night' ? 'night' : 'day', false)
+    buttons.forEach((b) => b.addEventListener('click', () => apply(b.dataset.scope || 'day', true)))
+
+    document.querySelectorAll<HTMLElement>('[data-copy]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const text = btn.getAttribute('data-copy') || ''
+        if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {})
+        if (btn.classList.contains('gl-copy')) {
+          const old = btn.textContent
+          btn.textContent = 'Copied'
+          setTimeout(() => { btn.textContent = old }, 1400)
+        }
+      })
+    })
+
+    const rows = document.querySelectorAll<HTMLTableRowElement>('[data-row]')
+    const select = (row: HTMLTableRowElement) => {
+      rows.forEach((r) => r.setAttribute('aria-selected', 'false'))
+      row.setAttribute('aria-selected', 'true')
+    }
+    rows.forEach((row) => {
+      row.addEventListener('click', () => select(row))
+      row.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(row) }
+      })
+    })
+  </script>
+</Layout>

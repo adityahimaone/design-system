@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Gloaming technical dimensional grid and crosshair registration field">
+  <defs>
+    <pattern id="gloaming-tech-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#1B2030" stroke-width="0.55" stroke-opacity="0.08"/>
+      <circle cx="0" cy="0" r="0.75" fill="#E2A38C" fill-opacity="0.45"/>
+    </pattern>
+    <pattern id="gloaming-tech-major" width="160" height="160" patternUnits="userSpaceOnUse">
+      <rect width="160" height="160" fill="url(#gloaming-tech-grid)"/>
+      <path d="M 160 0 L 0 0 0 160" fill="none" stroke="#1B2030" stroke-width="0.85" stroke-opacity="0.18"/>
+      <path d="M -8 0 L 8 0 M 0 -8 L 0 8" fill="none" stroke="#E2A38C" stroke-width="1.2" stroke-opacity="0.6"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="1000" fill="#2B3D69"/>
+  <rect width="1600" height="1000" fill="url(#gloaming-tech-major)"/>
+  <line x1="80" y1="0" x2="80" y2="1000" stroke="#E2A38C" stroke-width="0.55" stroke-dasharray="4 4" stroke-opacity="0.4"/>
+  <line x1="1520" y1="0" x2="1520" y2="1000" stroke="#E2A38C" stroke-width="0.55" stroke-dasharray="4 4" stroke-opacity="0.4"/>
+  <line x1="0" y1="120" x2="1600" y2="120" stroke="#E2A38C" stroke-width="0.55" stroke-dasharray="4 4" stroke-opacity="0.4"/>
+  <line x1="0" y1="880" x2="1600" y2="880" stroke="#E2A38C" stroke-width="0.55" stroke-dasharray="4 4" stroke-opacity="0.4"/>
+</svg>

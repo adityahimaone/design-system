@@ -1,0 +1,98 @@
+{
+  "name": "Gloaming",
+  "slug": "gloaming",
+  "namespace": "--gl-",
+  "polarity": "light-dark",
+  "case": "25",
+  "version": "V1.0",
+  "synthesis": {
+    "essence": "The last light is a reading, not a mood.",
+    "oneSentence": "A rangeland stewardship cooperative's field instrument, built from one blue-hour plate: a pane of optical glass laid across the horizon, with everything that must be read printed solid underneath it.",
+    "promise": "Gloaming turns one hour of low light over a working meadow into a record a land steward can check: ridge, oak, lupine, herd, horizon. The pane refracts the sky; the plate holds the numbers.",
+    "track": "CONSTRUCTED",
+    "family": "Kuwayama parametric vector discipline · 64-unit grid",
+    "surface": "#19 Liquid glass",
+    "material": "one hazy blue-hour plate + a 26px refracting pane + solid oat reading plates",
+    "edge": "22px squircle, 1px inset rim, 1px mullions, one lit top edge",
+    "density": "editorial balanced, 64ch measure",
+    "fieldRecipe": "optical-glass + atmospheric-scrim + image-sampled lupine halftone",
+    "mechanism": "A horizon cut through one pane of optical glass: above the cut the last light refracts, below it the land prints solid, and the cut itself is the 4-unit bar of the mark.",
+    "archetype": "Blue-hour rangeland x optical instrument",
+    "rail": "A · 176px per-section rail",
+    "hero": "A · banner, then a number row · relation below",
+    "footer": "F1 · bench echo",
+    "styleReason": "Q1 was an explicit named pick of #19 Liquid glass. The supplied plate is a photograph-like hazy gradient with a hard warm horizon, which is exactly the single ground #19 calls for. Mullion (22) already owns urban glass massing and Wildflower Wind (13) owns a frosted seed-house meadow, so this case takes the glass to a working landscape and keeps the accent apricot, not red or violet.",
+    "sourceAsset": "brand/gloaming/blue-hour-master.jpg · 1511x851 · one supplied painting"
+  },
+  "fonts": {
+    "display": "Gloock",
+    "reading": "Hanken Grotesk",
+    "mono": "Martian Mono"
+  },
+  "primitives": [
+    { "name": "zenith", "value": "#2B3D69", "role": "Night page ground and the glass underlay; deepened from the sampled #3C527B zenith" },
+    { "name": "bluehour", "value": "#465782", "role": "Sky high, sampled — the refracting field behind the pane" },
+    { "name": "periwinkle", "value": "#7A7796", "role": "Sky low, sampled — pane tint and mullion legend, never type" },
+    { "name": "mauve", "value": "#8F8097", "role": "Horizon glow, sampled — graphic wash only" },
+    { "name": "ridge", "value": "#75769C", "role": "Far violet ridge, sampled — rules and fills" },
+    { "name": "ochre", "value": "#B3823E", "role": "Sunlit hill, sampled — the gold in the field" },
+    { "name": "hay", "value": "#D8A57C", "role": "Meadow gold, sampled — the warm day plate" },
+    { "name": "lupine", "value": "#9A84A2", "role": "Lupine flower, sampled from 2436 violet pixels — halftone dots only" },
+    { "name": "oak", "value": "#3D3A2A", "role": "Oak shade and the grazing herd, 11.2% of the painting — the dark solid" },
+    { "name": "oat", "value": "#F6F0E5", "role": "Solid reading plate, hay lifted to paper — every surface that carries type" },
+    { "name": "ink", "value": "#1B2030", "role": "Near-black ink on solid plates, oak cooled and deepened" },
+    { "name": "apricot", "value": "#E2A38C", "role": "The one accent, sampled from the warm horizon band — the primary action only" }
+  ],
+  "contrastPairs": [
+    ["ink", "oat", "Body and headings on the solid oat plate", "text"],
+    ["oak", "oat", "Secondary ink on the reading plate", "text"],
+    ["zenith", "oat", "The night ground used as a label ink", "text"],
+    ["bluehour", "oat", "Captions and figure labels", "text"],
+    ["ink", "apricot", "Button ink on the one accent action", "text"],
+    ["oat", "zenith", "Night scope: reverse type on the glass ground", "text"],
+    ["hay", "zenith", "Night scope: warm captions on the glass ground", "text"],
+    ["apricot", "zenith", "Night scope: the accent as a measured link", "text"],
+    ["oat", "oak", "Reverse type on the oak plate", "text"],
+    ["oak", "apricot", "A dark chip sitting on the accent", "text"],
+    ["oat", "apricot", "Oat type on the apricot accent — a failing pair", "text"],
+    ["lupine", "oat", "Lupine violet on the reading plate — a failing pair", "text"],
+    ["periwinkle", "zenith", "The pane tint on the night ground — a failing pair", "text"],
+    ["ridge", "oat", "Far-ridge rules and fills", "graphic"],
+    ["mauve", "oat", "Horizon glow wash", "graphic"],
+    ["periwinkle", "oat", "Pane legend rules", "graphic"],
+    ["lupine", "zenith", "Night-scope halftone dots on the glass ground", "graphic"]
+  ],
+  "restrictedJobs": {
+    "oat on apricot": "Action fill only — never white type; the button uses ink on apricot at 7.60:1",
+    "lupine on oat": "Flower field / halftone dots / graphic only — never type",
+    "periwinkle on zenith": "Refracting pane fill and 1px mullion only — never type"
+  },
+  "mark": {
+    "d": "M6 46H58V50H6Z M8 46V37C8 31 13 26 20 26C25 26 28 30 29 33V46Z M33 46V31C34 27 39 22 45 22C51 22 56 27 56 32V46Z",
+    "compactD": "M4 48H60V56H4Z M6 48V34C6 28 12 24 19 24C24 24 27 28 28 32V48Z M36 48V28C37 23 42 19 48 19C54 19 58 24 58 29V48Z",
+    "glyphD": "M2 50H62V58H2Z M4 50V32C4 25 11 20 19 20C25 20 28 24 29 28V50Z M35 50V26C36 20 42 15 49 15C56 15 60 21 60 26V50Z",
+    "wordmark": "GLOAMING",
+    "geometry": "A 4-unit horizon bar at y46-50 carrying two hill panes split by a 4-unit mullion at x29-33. The right crest sits 4 units higher than the left: that step is the refraction, and it is the one ownable cut carried into the wordmark."
+  },
+  "cast": [
+    { "id": "ridge", "name": "Ridge", "note": "Three angular crests on one ground bar", "d": "M6 46H58V50H6Z M8 46V36L18 27L28 36L38 24L48 34L56 29V46Z" },
+    { "id": "oak", "name": "Oak", "note": "One canopy, one trunk, one ground", "d": "M6 50H58V54H6Z M28 40H36V50H28Z M14 38C14 26 22 18 32 18C42 18 50 26 50 38C50 41 47 42 44 42H20C17 42 14 41 14 38Z" },
+    { "id": "lupine", "name": "Lupine", "note": "A tapering spire of four florets", "d": "M28 50H36V56H28Z M32 8L38 16L32 22L26 16Z M32 18L40 27L32 35L24 27Z M32 32L42 41L32 50L22 41Z" },
+    { "id": "herd", "name": "Herd", "note": "Three dark masses on the grazing line", "d": "M6 48H58V51H6Z M10 36H26V45H10Z M12 32H18V36H12Z M30 39H42V45H30Z M46 37H56V45H46Z" },
+    { "id": "pane", "name": "Pane", "note": "A framed light with one mullion", "d": "M8 10H56V14H8Z M8 50H56V54H8Z M8 10H12V54H8Z M52 10H56V54H52Z M30 14H34V50H30Z" },
+    { "id": "horizon", "name": "Horizon", "note": "Three bands, the last light passing", "d": "M6 46H58V50H6Z M14 30H50V36H14Z M22 20H42V24H22Z" }
+  ],
+  "radius": { "pane": "22px", "inner": "18px", "control": "10px", "pill": "999px" },
+  "space": [4, 8, 12, 16, 24, 32, 48, 64, 96],
+  "assets": [
+    "blue-hour.jpg",
+    "plate-horizon.jpg",
+    "plate-ridge.jpg",
+    "plate-oaks.jpg",
+    "plate-meadow.jpg",
+    "plate-meadow-detail.jpg",
+    "plate-night.jpg",
+    "field-lupine.svg",
+    "horizon-ramp.svg"
+  ]
+}

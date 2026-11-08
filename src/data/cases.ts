@@ -13,6 +13,8 @@ export type DesignCase = {
   cover: string
   coverAlt: string
   tags: readonly string[]
+  /** Optional post-brand landing page built from this case's approved kit. */
+  landingHref?: string
   tone:
     | 'sunnyside'
     | 'vitrine'
@@ -67,8 +69,9 @@ export const DESIGN_CASES: readonly DesignCase[] = [
     cover: '/brand/gloaming/gloaming-brandkit.png',
     coverAlt:
       'The Gloaming 6-panel brand board: the blue-hour pastoral plate under a refracting pane with the reverse lockup and the headline, the hill-and-horizon mark at five sizes, twelve sampled primitives, three type voices, six meadow cast marks, and the four architectural laws.',
-    tags: ['Liquid glass', 'Blue hour', 'Rangeland', 'Image-sampled'],
-    tone: 'gloaming',
+  tags: ['Liquid glass', 'Blue hour', 'Rangeland', 'Image-sampled'],
+  landingHref: '/landing-page/gloaming',
+  tone: 'gloaming',
   },
   {
     slug: 'setout',

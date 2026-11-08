@@ -58,6 +58,21 @@ stylesheet.
 
 - `GET /api/cases.json` returns structured metadata, cover thumbnails, tags, and links for all 15 cases.
 
+## Field Landing Pages
+
+Post-brand landing pages built with the `sunnyside-taste-ui` skill live under `/landing-page/`:
+
+- `/landing-page/` — the directory index, derived from `DESIGN_CASES`.
+- `/landing-page/gloaming` — the Gloaming co-operative's field landing page. It ingests
+  `src/features/gloaming/gloaming-tokens.css` directly (zero raw hex, no second token schema),
+  keeps the #19 Liquid glass contract, and ships a living field-book stage, an asymmetric bento
+  wall, an exposed spec ledger, and three scroll-choreographed readings with a reduced-motion
+  static payoff. Styles live in `src/features/gloaming/gloaming-landing.css`.
+
+To register another one, add `landingHref: '/landing-page/<slug>'` to that case in
+`src/data/cases.ts`. The directory index, the case card link and `/api/cases.json` then pick it up
+automatically; the case's main `href` still points at its design-system page.
+
 ## Development
 
 ```bash

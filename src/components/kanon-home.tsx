@@ -176,6 +176,16 @@ function CaseCard({ c }: { c: DesignCase }) {
             >
               Figma HTML ↗
             </a>
+            {c.landingHref && (
+              <a
+                href={c.landingHref}
+                className="kn-case__col"
+                style={{ textDecoration: 'none' }}
+                title={`Open the ${c.name} field landing page`}
+              >
+                Field landing ↗
+              </a>
+            )}
             {col && <span className="kn-case__col">{col.label}</span>}
           </span>
         </div>

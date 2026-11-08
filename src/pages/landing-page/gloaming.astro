@@ -1,0 +1,442 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import tokens from '@/features/gloaming/tokens.json'
+import '@/features/gloaming/gloaming-tokens.css'
+import '@/features/gloaming/gloaming-landing.css'
+
+/* Zero-drift ingestion: identity, measurements and physics come straight from
+   the approved kit. Nothing here invents a colour, a number or a font. */
+const B = '/brand/gloaming'
+const meta = tokens.meta
+const primitives = tokens.primitives
+const strips = meta.sampledStrips
+
+const title = 'Gloaming — the last light, kept as a record'
+const description =
+  'Gloaming is a rangeland stewardship cooperative on the north ridge. We keep one field book of the meadow — eleven measured strips of sky, 2,436 lupine plants and every herd move — and open it to members at dusk.'
+
+/* The living faux-UI stage: real domain strings, drawn from the kit's own
+   measurements rather than placeholder bars or invented chart widgets. */
+const BENCH = [
+  ['11', 'measured sky strips'],
+  ['2,436', 'lupine plants counted'],
+  ['14', 'head moved at dusk'],
+] as const
+
+const FIELD_ROWS = [
+  ['Ridge', 'North ridge · paddock 04', '17:10', 1],
+  ['Oak', '18 stands · 3 in new leaf', '17:26', 1],
+  ['Lupine', '2,436 plants · 68% bloom', '18:02', 2],
+  ['Herd', '14 head · east ridge', '18:19', 2],
+  ['Horizon', 'Strip 11 of 11 · last light', '18:42', 3],
+  ['Pane', '26px refraction · 1px rim', '18:42', 3],
+] as const
+
+const STEPS = [
+  {
+    n: '01',
+    heading: 'Before the warm band',
+    copy: 'The ridge is still blue. Five sky strips are logged from zenith to the low violet, and the oak stands are counted on the west line.',
+    stamp: '17:10 · STRIPS 01–05',
+    plate: 'plate-ridge.jpg',
+    alt: 'The violet far ridge above the meadow, before the warm horizon arrives.',
+  },
+  {
+    n: '02',
+    heading: 'At the cut',
+    copy: 'The apricot band arrives at the horizon. Lupine bloom and the herd move are written down while the pane refracts the last of the light.',
+    stamp: '18:42 · STRIPS 06–09',
+    plate: 'plate-horizon.jpg',
+    alt: 'The warm apricot horizon band cutting across the blue-hour plate.',
+  },
+  {
+    n: '03',
+    heading: 'After dusk',
+    copy: 'Forty minutes later the same frame is graded again. The printed oat plate does not change — a sheet of paper is still the same sheet after dark.',
+    stamp: '19:24 · STRIPS 10–11',
+    plate: 'plate-night.jpg',
+    alt: 'The same meadow forty minutes later with the warm horizon gone.',
+  },
+] as const
+
+const LEDGER = [
+  ['Sky strips', '11', '18:42', 'horizon-ramp.svg'],
+  ['Lupine bloom', '2,436', '18:02', 'plate-meadow.jpg'],
+  ['Oak stands', '18', '17:26', 'plate-oaks.jpg'],
+  ['Herd', '14 head', '18:19', 'cast/herd.svg'],
+  ['Last light', '18:42', '18:42', 'plate-horizon.jpg'],
+  ['Dusk grade', '19:24', '19:24', 'plate-night.jpg'],
+] as const
+
+const RECEIPT = [
+  ['Co-operative', 'Gloaming · north ridge'],
+  ['Visit', 'Dusk walk, lower meadow'],
+  ['Date', '21 November'],
+  ['Hours', '17:10 – 19:24'],
+  ['Party', '2 · member'],
+  ['Strip', '11 of 11 will be read'],
+] as const
+---
+
+<Layout title={title} description={description} canonical="/landing-page/gloaming" image={`${B}/plate-horizon.jpg`}>
+  <link rel="icon" type="image/svg+xml" href={`${B}/icon.svg`} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gloock&family=Hanken+Grotesk:wght@300..700&family=Martian+Mono:wght@300..700&display=swap" rel="stylesheet" />
+
+  <div class="glp-root gl-scope" id="top" data-gl-scope="day">
+    <a class="glp-skip" href="#main">Skip to the field book</a>
+
+    <header class="glp-top">
+      <div class="glp-shell glp-top__in">
+        <a class="glp-top__brand" href="#top" aria-label="Gloaming, back to top">
+          <img src={`${B}/lockup-reverse.svg`} alt="Gloaming" width="268" height="64" />
+        </a>
+        <nav class="glp-top__nav" aria-label="Primary">
+          <a href="#season">The season</a>
+          <a href="#field-book">Field book</a>
+          <a href="#ledger">The ledger</a>
+          <a href="#visit">Visit</a>
+        </nav>
+        <div class="glp-toggle" role="group" aria-label="Colour scope">
+          <button class="glp-toggle__opt" type="button" data-scope="day" aria-pressed="true">Day</button>
+          <button class="glp-toggle__opt" type="button" data-scope="night" aria-pressed="false">Night</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+
+      {/* 01 · THE PLACE — one focal actor: a single cropped pane holding the book */}
+      <section class="glp-hero" id="place" aria-labelledby="glp-h1">
+        <div class="glp-hero__art" aria-hidden="true">
+          <img class="glp-hero__img glp-hero__img--day" src={`${B}/blue-hour.jpg`} alt="" width="1511" height="851" fetchpriority="high" />
+          <img class="glp-hero__img glp-hero__img--night" src={`${B}/plate-night.jpg`} alt="" width="1511" height="851" />
+          <div class="glp-hero__scrim"></div>
+        </div>
+
+        <div class="glp-shell glp-hero__grid">
+          <div class="glp-stage glp-pane">
+            <div class="glp-stage__plate glp-plate">
+              <h1 class="glp-hero__h1" id="glp-h1">The last light,<br />kept as a record.</h1>
+              <p class="glp-hero__lede">
+                A rangeland stewardship cooperative on the north ridge. We keep one field book of the
+                meadow — the sky in eleven strips, the lupine in bloom, every herd move — and open it
+                to members at dusk.
+              </p>
+              <div class="glp-hero__acts">
+                <a class="glp-btn" href="#visit">Join the co-operative</a>
+                <a class="glp-link" href="#field-book">Read the field book →</a>
+              </div>
+
+              <div class="glp-hero__bench">
+                {BENCH.map(([n, l]) => (
+                  <div class="glp-hero__cell"><b>{n}</b><span>{l}</span></div>
+                ))}
+              </div>
+
+              <div class="glp-stage__top">
+                <span class="glp-stage__title">Field book · North paddock 04</span>
+                <span class="glp-stamp">24 XI · STRIP 11/11</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glp-shell glp-hero__progress" aria-hidden="true">
+          <div class="glp-hero__progress-rail"><span class="glp-hero__progress-bar"></span></div>
+        </div>
+      </section>
+
+      {/* 02 · THE SEASON — one outer plate, unequal spans, one object per cell */}
+      <section class="glp-sec" id="season" aria-labelledby="glp-season-h">
+        <div class="glp-shell">
+          <div class="glp-rail"><span class="glp-rail__n">01</span><span class="glp-rail__rule"></span></div>
+          <div class="glp-sec__head glp-plate">
+            <h2 class="glp-h2" id="glp-season-h">One meadow, four ways of reading it.</h2>
+            <p class="glp-lede">
+              Nothing on this shelf is a stock photograph. Every plate below was measured or generated
+              from the same blue-hour frame, and each number is written down in the field book.
+            </p>
+          </div>
+
+          <div class="glp-bento">
+            <div class="glp-bento__cell">
+              <img class="glp-bento__photo" src={`${B}/plate-meadow.jpg`} alt="The lower meadow under the late light, violet lupine in the foreground." width="1511" height="851" loading="lazy" />
+              <div class="glp-bento__cap">
+                <b>Lower meadow</b>
+                <span>2,436 lupine plants sampled at 18:02 · plate 04</span>
+              </div>
+            </div>
+
+            <div class="glp-bento__cell">
+              <div class="glp-bento__head">
+                <div class="glp-bento__txt">
+                  <div class="glp-bento__b">11</div>
+                  <div class="glp-bento__l">measured strips, zenith to foreground</div>
+                </div>
+                <img class="glp-bento__obj glp-bento__obj--ramp" src={`${B}/horizon-ramp.svg`} alt="" width="240" height="640" loading="lazy" />
+              </div>
+              <span class="glp-bento__stamp glp-stamp">PLATE 01 · HORIZON RAMP</span>
+            </div>
+
+            <div class="glp-bento__cell glp-bento__dark">
+              <div class="glp-bento__head">
+                <div class="glp-bento__txt">
+                  <div class="glp-bento__b">18</div>
+                  <div class="glp-bento__l">oak stands, three in new leaf on the west line</div>
+                </div>
+                <img class="glp-bento__obj" src={`${B}/cast/oak.svg`} alt="" width="64" height="64" loading="lazy" />
+              </div>
+              <span class="glp-bento__stamp glp-stamp">17:26 · CAST OAK</span>
+            </div>
+
+            <div class="glp-bento__cell">
+              <div class="glp-bento__head">
+                <div class="glp-bento__txt">
+                  <div class="glp-bento__b">1,760</div>
+                  <div class="glp-bento__l">halftone dots, each sampled from the meadow</div>
+                </div>
+                <img class="glp-bento__obj glp-bento__obj--field" src={`${B}/field-lupine.svg`} alt="" width="960" height="264" loading="lazy" />
+              </div>
+              <span class="glp-bento__stamp glp-stamp">PROCEDURAL FIELD</span>
+            </div>
+
+            <div class="glp-bento__cell glp-bento__dark">
+              <div class="glp-bento__head">
+                <div class="glp-bento__txt">
+                  <div class="glp-bento__b">14</div>
+                  <div class="glp-bento__l">head, moved to the east ridge</div>
+                </div>
+                <img class="glp-bento__obj" src={`${B}/cast/herd.svg`} alt="" width="64" height="64" loading="lazy" />
+              </div>
+              <span class="glp-bento__stamp glp-stamp">18:19 · CAST HERD</span>
+            </div>
+
+            <div class="glp-bento__cell">
+              <div class="glp-bento__head">
+                <div class="glp-bento__txt">
+                  <div class="glp-bento__b">19:24</div>
+                  <div class="glp-bento__l">the same frame, graded forty minutes later</div>
+                </div>
+              </div>
+              <span class="glp-bento__stamp glp-stamp">PLATE 09 · NIGHT</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 03 · THE FIELD BOOK — pinned stage, three scroll-choreographed readings */}
+      <section class="glp-sec" id="field-book" aria-labelledby="glp-book-h">
+        <div class="glp-shell">
+          <div class="glp-rail"><span class="glp-rail__n">02</span><span class="glp-rail__rule"></span></div>
+          <div class="glp-sec__head glp-plate">
+            <h2 class="glp-h2" id="glp-book-h">The book is written three times a day.</h2>
+            <p class="glp-lede">
+              Six readings, one oat sheet. The pane refracts the sky and the plate holds the numbers —
+              the whole mechanism of this place in a single window.
+            </p>
+          </div>
+
+          <div class="glp-book">
+            <div class="glp-book__steps glp-plate">
+              {STEPS.map((s) => (
+                <div class="glp-book__step" data-step={s.n} data-live="true">
+                  <h3>{s.heading}</h3>
+                  <p>{s.copy}</p>
+                  <span class="glp-stamp">{s.stamp}</span>
+                </div>
+              ))}
+            </div>
+
+            <div class="glp-book__stage">
+              <div class="glp-book__window glp-pane" data-step="1">
+                <div class="glp-book__frame glp-plate">
+                  <div class="glp-book__head">
+                    <b>Field book · north paddock</b>
+                    <span class="glp-stamp">DAY SHEET</span>
+                  </div>
+
+                  <div class="glp-book__rows">
+                    {FIELD_ROWS.map(([name, value, time, pair]) => (
+                      <div class="glp-book__row" data-pair={pair} data-active={pair === 1 ? 'true' : 'false'}>
+                        <span>{name}</span>
+                        <span class="glp-mono">{value}</span>
+                        <span class="glp-mono">{time}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div class="glp-book__foot">
+                    <span class="glp-mono">11 / 11 STRIPS RECORDED</span>
+                    <span class="glp-mono">{primitives.length} PRIMITIVES · NO INVENTED HEX</span>
+                  </div>
+                </div>
+
+                <div class="glp-book__specimens">
+                  {STEPS.map((s) => (
+                    <figure class="glp-book__specimen">
+                      <img src={`${B}/${s.plate}`} alt={s.alt} width="640" height="480" loading="lazy" />
+                      <figcaption>{s.stamp}</figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 04 · THE LEDGER — exposed tabular spec ledger + a printed field receipt */}
+      <section class="glp-sec" id="ledger" aria-labelledby="glp-ledger-h">
+        <div class="glp-shell">
+          <div class="glp-rail"><span class="glp-rail__n">03</span><span class="glp-rail__rule"></span></div>
+          <div class="glp-sec__head glp-plate">
+            <h2 class="glp-h2" id="glp-ledger-h">Everything we claim, written down.</h2>
+            <p class="glp-lede">
+              No dashboard, no chart, no number we cannot point at. Each reading names the plate it
+              came from. The three contrast failures live in the design system, published not hidden.
+            </p>
+          </div>
+
+          <div class="glp-ledger">
+            <div class="glp-plate" style="padding: clamp(18px, 2.4vw, 30px);">
+              <table class="glp-ledger__table">
+                <caption>Season ledger · north ridge</caption>
+                <thead>
+                  <tr><th scope="col">Reading</th><th scope="col">Value</th><th scope="col">Taken</th><th scope="col">Plate</th></tr>
+                </thead>
+                <tbody>
+                  {LEDGER.map(([r, v, t, p]) => (
+                    <tr>
+                      <td>{r}</td>
+                      <td class="glp-mono">{v}</td>
+                      <td class="glp-mono">{t}</td>
+                      <td class="glp-mono">{p}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <aside class="glp-receipt" aria-label="Field visit receipt">
+              <span class="glp-stamp">GLOAMING · FIELD VISIT</span>
+              <h3>A dusk walk</h3>
+              <dl>
+                {RECEIPT.map(([k, v]) => (
+                  <div><dt>{k}</dt><dd>{v}</dd></div>
+                ))}
+              </dl>
+              <div class="glp-receipt__total"><span>Due</span><span>a warm coat</span></div>
+              <p class="glp-receipt__note">
+                Members walk the lower meadow with the steward. The eleventh strip is read aloud at
+                last light, whatever the weather.
+              </p>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      {/* 05 · VISIT — one primary action against the night plate */}
+      <section class="glp-visit" id="visit" aria-labelledby="glp-visit-h">
+        <div class="glp-visit__art" aria-hidden="true">
+          <img class="glp-visit__img" src={`${B}/plate-night.jpg`} alt="" width="1511" height="851" loading="lazy" />
+          <div class="glp-visit__scrim"></div>
+        </div>
+        <div class="glp-shell glp-visit__in">
+          <div class="glp-visit__plate">
+            <h2 class="glp-h2" id="glp-visit-h">Come and read the eleventh strip.</h2>
+            <p class="glp-lede">
+              Membership is a name in the field book and a walk at dusk. The meadow does the rest.
+            </p>
+            <div class="glp-visit__acts">
+              <a class="glp-btn" href="mailto:steward@gloaming.example?subject=Field%20membership">Join the co-operative</a>
+              <a class="glp-link" href="/design-system/gloaming">See the design system →</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="glp-foot">
+      <div class="glp-shell">
+        <div class="glp-foot__in">
+          <img class="glp-foot__lock" src={`${B}/lockup-reverse.svg`} alt="Gloaming" width="268" height="64" loading="lazy" />
+          <nav class="glp-foot__links" aria-label="Footer">
+            <a href="/landing-page/">Landing pages</a>
+            <a href="/design-system/gloaming">Design system</a>
+            <a href={`${B}/gloaming-brandkit.png`}>Brand kit</a>
+            <a href="/">All cases</a>
+            <a href="#top">Back to top ↑</a>
+          </nav>
+        </div>
+        <div class="glp-foot__prov">
+          <span>Gloaming · 2026 · case 25 · day + night · {tokens.contrast.filter((c) => !c.pass).length} published failures</span>
+          <span>{strips.length} measured strips off one blue-hour plate</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const root = document.querySelector<HTMLElement>('.glp-root')!
+
+    /* Day / night over the SAME twelve primitives — shared with the system page. */
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-scope]')
+    const applyScope = (scope: string, persist: boolean) => {
+      root.dataset.glScope = scope
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.scope === scope)))
+      if (persist) {
+        try { localStorage.setItem('gl-scope', scope) } catch { /* private mode */ }
+      }
+    }
+    let saved = 'day'
+    try { saved = localStorage.getItem('gl-scope') || 'day' } catch { /* private mode */ }
+    applyScope(saved === 'night' ? 'night' : 'day', false)
+    buttons.forEach((b) => b.addEventListener('click', () => applyScope(b.dataset.scope || 'day', true)))
+
+    /* Pinned step choreography. Every row is already populated in the markup;
+       the observer only moves the highlight, so a crawler or a reduced-motion
+       screenshot always captures the completed interface. */
+    const window_ = document.querySelector<HTMLElement>('.glp-book__window')!
+    const steps = Array.from(document.querySelectorAll<HTMLElement>('.glp-book__step'))
+    const rows = Array.from(document.querySelectorAll<HTMLElement>('.glp-book__row'))
+
+    const setStep = (n: number) => {
+      window_.dataset.step = String(n)
+      steps.forEach((s) => { s.dataset.live = String(Number(s.dataset.step) === n) })
+      rows.forEach((r) => { r.dataset.active = String(Number(r.dataset.pair) === n) })
+    }
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (reduce.matches) {
+      /* Freeze on the completed payoff: all six readings recorded. */
+      window_.dataset.step = '3'
+      steps.forEach((s) => { s.dataset.live = 'true' })
+      rows.forEach((r) => { r.dataset.active = 'true' })
+    } else {
+      /* The reading nearest the viewport centre wins. Deterministic, and step
+         03 is always reachable at the end of the pinned section. */
+      const recompute = () => {
+        const centre = window.innerHeight * 0.5
+        let best = 1
+        let bestDist = Infinity
+        steps.forEach((s, i) => {
+          const r = s.getBoundingClientRect()
+          const d = Math.abs((r.top + r.bottom) / 2 - centre)
+          if (d < bestDist) { bestDist = d; best = i + 1 }
+        })
+        setStep(best)
+      }
+      let ticking = false
+      const onScroll = () => {
+        if (ticking) return
+        ticking = true
+        requestAnimationFrame(() => { recompute(); ticking = false })
+      }
+      window.addEventListener('scroll', onScroll, { passive: true })
+      window.addEventListener('resize', onScroll)
+      recompute()
+    }
+  </script>
+</Layout>

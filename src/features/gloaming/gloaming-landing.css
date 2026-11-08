@@ -1,0 +1,493 @@
+/* Gloaming · field landing — Case 25.
+   Zero-drift ingestion: every colour resolves through --gl-* declared in
+   gloaming-tokens.css. No raw hex, no invented primitives, no second schema.
+   Surface #19 Liquid glass: ONE 26px refracting pane with a 1px mullion and
+   one lit top edge; every surface carrying type is a solid oat plate.
+   Physics: concentric R_inner = R_outer - 4, tabular figures, 0.97 press. */
+
+.glp-root {
+  --glp-outer: var(--gl-radius-pane);
+  --glp-inner: calc(var(--glp-outer) - 4px);
+  --glp-control: calc(var(--glp-inner) - 8px);
+  --glp-press: 140ms cubic-bezier(.22, 1, .36, 1);
+  --glp-rule: color-mix(in srgb, var(--gl-ink) 22%, transparent);
+  --glp-rule-soft: color-mix(in srgb, var(--gl-ink) 11%, transparent);
+  --glp-scrim: linear-gradient(90deg,
+    color-mix(in oklab, var(--gl-zenith) 76%, transparent) 0%,
+    color-mix(in oklab, var(--gl-bluehour) 40%, transparent) 48%,
+    transparent 94%);
+  --glp-focus: var(--gl-oat);
+  --glp-bleed: calc(-1 * var(--gl-gutter) - 28px);
+
+  min-height: 100svh;
+  overflow-x: clip;
+  background: var(--gl-field-day) fixed;
+  color: var(--gl-text-on-glass);
+  font-family: var(--gl-font-reading);
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 320ms var(--gl-ease);
+}
+.glp-root *, .glp-root *::before, .glp-root *::after { box-sizing: border-box; }
+.glp-root a { color: inherit; }
+.glp-root img, .glp-root svg { display: block; max-width: 100%; }
+.glp-root button { font: inherit; }
+.glp-root :focus-visible {
+  outline: 2px solid var(--glp-focus);
+  outline-offset: 3px;
+}
+
+/* Equal edge margins at every width (Floor 8). */
+.glp-shell {
+  width: 100%;
+  max-width: calc(var(--gl-wrap) + 2 * var(--gl-gutter));
+  margin-inline: auto;
+  padding-inline: var(--gl-gutter);
+}
+
+.glp-skip {
+  position: absolute; left: -9999px; top: 0; z-index: 200;
+  background: var(--gl-oat); color: var(--gl-ink);
+  padding: 12px 18px; border-radius: var(--glp-control);
+}
+.glp-skip:focus { left: 16px; top: 16px; }
+
+/* ── shared objects ───────────────────────────────────────────────────────── */
+/* The pane refracts. It never carries reading copy. */
+.glp-pane {
+  position: relative;
+  background: var(--gl-pane-bg);
+  backdrop-filter: blur(var(--gl-pane-blur)) saturate(1.25);
+  -webkit-backdrop-filter: blur(var(--gl-pane-blur)) saturate(1.25);
+  border: 1px solid var(--gl-pane-rim);
+  border-radius: var(--glp-outer);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--gl-oat) 62%, transparent),
+              inset 0 0 0 1px var(--gl-mullion);
+}
+/* The plate is borderless: a solid tone step, never a nested card (Floor 5). */
+.glp-plate {
+  --glp-focus: var(--gl-ink);
+  background: var(--gl-surface-plate);
+  color: var(--gl-text-primary);
+  border-radius: var(--glp-inner);
+}
+.glp-plate p { color: var(--gl-text-secondary); }
+.glp-mono {
+  font-family: var(--gl-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+.glp-stamp {
+  font-family: var(--gl-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase;
+  opacity: .76;
+}
+.glp-rail {
+  display: flex; align-items: baseline; gap: 14px;
+  margin-bottom: 22px;
+}
+.glp-rail__n {
+  font-family: var(--gl-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 11px; letter-spacing: .08em;
+  opacity: .66;
+}
+.glp-rail__rule { flex: 1; height: 1px; background: var(--gl-line-strong); }
+.glp-h2 {
+  font-family: var(--gl-font-display); font-weight: 400;
+  font-size: clamp(30px, 3.6vw, 50px); line-height: 1.08;
+  letter-spacing: -.025em; margin: 0; max-width: 20ch;
+}
+.glp-lede {
+  font-size: clamp(15px, 1.2vw, 17px); line-height: 1.62;
+  max-width: 46ch; margin: 16px 0 0;
+}
+
+/* Exactly one accent-filled action per viewport (Floor 4). */
+.glp-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 46px; padding: 12px 22px;
+  background: var(--gl-btn-bg); color: var(--gl-btn-text);
+  border: 1px solid color-mix(in srgb, var(--gl-ink) 24%, transparent);
+  border-radius: var(--glp-control);
+  font-size: 14px; font-weight: 600; text-decoration: none;
+  transition: transform var(--glp-press), background-color 180ms var(--gl-ease);
+}
+.glp-btn:hover { background-color: color-mix(in srgb, var(--gl-apricot) 84%, var(--gl-oat)); }
+.glp-btn:active { transform: scale(.97); }
+.glp-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 14px; font-weight: 600; text-decoration: none;
+  border-bottom: 1px solid var(--glp-rule);
+  padding-bottom: 3px;
+  transition: opacity 180ms var(--gl-ease), background-color 180ms var(--gl-ease);
+}
+.glp-link:hover { opacity: .68; }
+.glp-link:active { transform: scale(.97); }
+
+/* ── nav · glass chrome only ──────────────────────────────────────────────── */
+.glp-top {
+  position: sticky; top: 0; z-index: 60;
+  /* A measured dark tint under the refraction: oat nav type stays legible
+     even when a solid oat plate scrolls behind the sticky chrome. */
+  background: color-mix(in srgb, var(--gl-zenith) 76%, transparent);
+  backdrop-filter: blur(var(--gl-pane-blur)) saturate(1.25);
+  -webkit-backdrop-filter: blur(var(--gl-pane-blur)) saturate(1.25);
+  border-bottom: 1px solid var(--gl-line-strong);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--gl-oat) 32%, transparent);
+}
+.glp-top__in {
+  display: flex; align-items: center; gap: clamp(14px, 2.6vw, 38px);
+  min-height: 70px;
+}
+.glp-top__brand { flex: 0 0 auto; display: block; }
+.glp-top__brand img { width: clamp(132px, 12vw, 172px); height: auto; }
+.glp-top__nav { display: flex; gap: clamp(12px, 1.7vw, 26px); margin-left: auto; flex-wrap: wrap; }
+.glp-top__nav a {
+  text-decoration: none; font-size: 13px; font-weight: 500; opacity: .84;
+  padding-block: 6px; border-bottom: 1px solid transparent;
+  transition: opacity 160ms var(--gl-ease), border-color 160ms var(--gl-ease);
+}
+.glp-top__nav a:hover, .glp-top__nav a:focus-visible { opacity: 1; border-bottom-color: currentColor; }
+.glp-toggle {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 2px;
+  border: 1px solid var(--gl-line-strong);
+  border-radius: var(--glp-control); padding: 3px;
+  background: color-mix(in srgb, var(--gl-oat) 6%, transparent);
+}
+.glp-toggle__opt {
+  appearance: none; border: 0; background: transparent; cursor: pointer;
+  color: inherit; font-size: 11.5px; font-weight: 600;
+  padding: 7px 12px; border-radius: calc(var(--glp-control) - 4px); opacity: .82;
+  transition: background-color 180ms var(--gl-ease), opacity 180ms var(--gl-ease);
+}
+.glp-toggle__opt[aria-pressed='true'] {
+  background: var(--gl-oat); color: var(--gl-ink); opacity: 1;
+}
+
+/* ── 01 · hero stage ──────────────────────────────────────────────────────── */
+/* One focal actor: a single cropped pane holding the field book. */
+.glp-hero { position: relative; padding-block: clamp(48px, 7vw, 96px) clamp(64px, 8vw, 112px); }
+.glp-hero__art { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.glp-hero__img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 56%;
+  transition: opacity 420ms var(--gl-ease);
+}
+.glp-hero__img--night { opacity: 0; }
+.glp-root[data-gl-scope='night'] .glp-hero__img--day { opacity: 0; }
+.glp-root[data-gl-scope='night'] .glp-hero__img--night { opacity: 1; }
+/* Directional scrim matched to the ground's luminance, falling to the right. */
+.glp-hero__scrim { position: absolute; inset: 0; background: var(--glp-scrim); }
+.glp-hero__grid { position: relative; z-index: 1; display: flex; justify-content: flex-end; }
+
+/* The stage bleeds off one edge. Its inner solid plate carries every word. */
+.glp-stage {
+  width: min(100%, 760px);
+  margin-right: var(--glp-bleed);
+  padding: 10px;
+}
+.glp-stage__plate { padding: clamp(22px, 3vw, 40px); }
+/* Sits BELOW the headline: a document footer line, never an eyebrow. */
+.glp-stage__top {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 16px; flex-wrap: wrap;
+  margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--glp-rule);
+}
+.glp-stage__title { font-size: 13px; font-weight: 600; letter-spacing: .01em; }
+.glp-hero__h1 {
+  font-family: var(--gl-font-display); font-weight: 400;
+  font-size: clamp(31px, 3.9vw, 54px); line-height: 1.07;
+  letter-spacing: -.032em; margin: clamp(20px, 2.6vw, 34px) 0 0;
+  max-width: 18ch;
+}
+.glp-hero__lede { margin-top: 16px; max-width: 44ch; font-size: clamp(14px, 1.15vw, 16px); line-height: 1.62; }
+.glp-hero__acts { display: flex; align-items: center; gap: clamp(16px, 2vw, 28px); flex-wrap: wrap; margin-top: 26px; }
+.glp-hero__bench {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  margin-top: clamp(24px, 3vw, 36px);
+  border-top: 1px solid var(--glp-rule); border-bottom: 1px solid var(--glp-rule);
+}
+.glp-hero__cell { padding: 14px 16px 15px; border-right: 1px solid var(--glp-rule); }
+.glp-hero__cell:first-child { padding-left: 0; }
+.glp-hero__cell:last-child { border-right: 0; }
+.glp-hero__cell b {
+  display: block; font-family: var(--gl-font-display); font-weight: 400;
+  font-size: clamp(24px, 2.4vw, 34px); line-height: 1.1;
+  font-variant-numeric: tabular-nums; font-feature-settings: 'tnum';
+}
+.glp-hero__cell span { display: block; margin-top: 4px; font-size: 11.5px; opacity: .78; max-width: 16ch; }
+.glp-stage__stamp {
+  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  margin-top: 14px; color: var(--gl-text-secondary);
+}
+.glp-hero__progress { position: relative; z-index: 1; margin-top: clamp(28px, 4vw, 52px); }
+.glp-hero__progress-rail { height: 1px; background: var(--gl-line-strong); position: relative; }
+.glp-hero__progress-bar {
+  position: absolute; inset: 0; background: var(--gl-oat);
+  transform: scaleX(0); transform-origin: left center;
+}
+
+/* ── section rhythm ───────────────────────────────────────────────────────── */
+.glp-sec { padding-block: clamp(72px, 9vw, 120px); }
+/* The kit is explicit: every surface carrying type is a SOLID oat plate.
+   A fixed gradient changes luminance down the viewport, so oat type set
+   straight onto it would go invisible in the lower half. Plates solve that. */
+.glp-sec__head { display: flex; justify-content: space-between; align-items: end; gap: 32px; flex-wrap: wrap; margin-bottom: clamp(32px, 4vw, 56px); }
+.glp-sec__head.glp-plate { padding: clamp(22px, 2.8vw, 38px); border-radius: var(--glp-outer); }
+.glp-sec__head .glp-lede { margin-top: 0; }
+.glp-plate .glp-rail__rule { background: var(--glp-rule); }
+.glp-plate .glp-rail__n { opacity: .62; }
+.glp-sec__head .glp-h2 { color: var(--gl-text-primary); }
+
+/* ── 02 · asymmetric bento wall ──────────────────────────────────────────── */
+/* One outer plate, unequal spans, 1px hairline dividers, never equal spans. */
+.glp-bento {
+  display: grid; grid-template-columns: repeat(12, 1fr);
+  border-radius: var(--glp-outer); overflow: hidden;
+  border: 1px solid var(--glp-rule);
+  background: var(--gl-surface-plate);
+  color: var(--gl-text-primary);
+}
+.glp-bento__cell {
+  position: relative; min-height: 176px; padding: clamp(18px, 2vw, 28px);
+  border-right: 1px solid var(--glp-rule); border-bottom: 1px solid var(--glp-rule);
+  display: flex; flex-direction: column; justify-content: space-between;
+  overflow: hidden;
+  transition: background-color 220ms var(--gl-ease);
+}
+.glp-bento__cell:hover { background-color: color-mix(in srgb, var(--gl-oat) 92%, var(--gl-apricot)); }
+/* Row 1: 7 + 5 · Row 2: 7 (carried) + 5 · Row 3: 5 + 4 + 3 — never equal. */
+.glp-bento__cell:nth-child(1) { grid-column: span 7; grid-row: span 2; min-height: 400px; padding: 0; }
+.glp-bento__cell:nth-child(2) { grid-column: span 5; border-right: 0; }
+.glp-bento__cell:nth-child(3) { grid-column: span 5; border-right: 0; }
+.glp-bento__cell:nth-child(4) { grid-column: span 5; border-bottom: 0; }
+.glp-bento__cell:nth-child(5) { grid-column: span 4; border-bottom: 0; }
+.glp-bento__cell:nth-child(6) { grid-column: span 3; border-right: 0; border-bottom: 0; }
+.glp-bento__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; }
+.glp-bento__cap {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 18px clamp(18px, 2vw, 28px);
+  background: var(--gl-surface-plate);
+  border-top: 1px solid var(--glp-rule);
+}
+.glp-bento__cap b { display: block; font-family: var(--gl-font-display); font-weight: 400; font-size: 22px; }
+.glp-bento__cap span { display: block; margin-top: 3px; font-size: 12px; opacity: .8; }
+/* The object gets its OWN column. Absolutely-positioned decorations used to
+   sit on top of the number and label at narrow widths; a real flex row means
+   the text can never run under an object, at any breakpoint. */
+.glp-bento__head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: clamp(10px, 1.2vw, 20px); min-width: 0;
+}
+.glp-bento__txt { min-width: 0; flex: 1 1 auto; }
+.glp-bento__stamp { display: block; }
+.glp-bento__obj {
+  position: static; flex: 0 0 auto;
+  width: clamp(56px, 7vw, 96px); height: auto; opacity: .92;
+}
+.glp-bento__obj--ramp { width: auto; height: clamp(84px, 10vw, 122px); }
+.glp-bento__obj--field {
+  width: clamp(96px, 12vw, 156px); height: 62px; object-fit: cover;
+  border-radius: var(--gl-radius-control); opacity: .92;
+}
+.glp-bento__b { font-family: var(--gl-font-display); font-weight: 400; font-size: clamp(24px, 2.3vw, 34px); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.glp-bento__l { font-size: 12px; opacity: .8; max-width: 24ch; }
+.glp-bento__dark { background: var(--gl-zenith); color: var(--gl-oat); }
+.glp-bento__dark:hover { background-color: color-mix(in srgb, var(--gl-zenith) 90%, var(--gl-periwinkle)); }
+.glp-bento__dark .glp-bento__l { color: var(--gl-oat); opacity: .86; }
+
+/* ── 03 · pinned field book · scroll-choreographed steps ─────────────────── */
+.glp-book { display: grid; grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr); gap: clamp(28px, 5vw, 76px); align-items: start; }
+/* One oat sheet divided into three readings by 1px mullions — the kit's tile
+   law, not three floating cards. */
+.glp-book__steps.glp-plate {
+  display: flex; flex-direction: column;
+  border-radius: var(--glp-outer); overflow: hidden;
+  padding: clamp(18px, 2.2vw, 30px);
+}
+.glp-book__step {
+  min-height: min(58vh, 440px); display: flex; flex-direction: column; justify-content: center;
+  gap: 12px; padding-block: 32px; border-top: 1px solid var(--glp-rule);
+  opacity: .5; transition: opacity 320ms var(--gl-ease);
+}
+.glp-book__step:first-child { border-top: 0; }
+.glp-book__step[data-live='true'] { opacity: 1; }
+.glp-book__step h3 { font-family: var(--gl-font-display); font-weight: 400; font-size: clamp(26px, 2.8vw, 38px); margin: 0; line-height: 1.12; color: var(--gl-text-primary); }
+.glp-book__step p { margin: 0; max-width: 34ch; font-size: 14px; line-height: 1.62; }
+.glp-book__step .glp-stamp { color: var(--gl-text-primary); opacity: .62; }
+.glp-book__stage { position: sticky; top: 94px; }
+.glp-book__window { padding: 10px; background: var(--gl-pane-bg); backdrop-filter: blur(var(--gl-pane-blur)); -webkit-backdrop-filter: blur(var(--gl-pane-blur)); border: 1px solid var(--gl-pane-rim); border-radius: var(--glp-outer); box-shadow: inset 0 1px 0 color-mix(in srgb, var(--gl-oat) 50%, transparent); }
+.glp-book__frame { padding: clamp(18px, 2.2vw, 28px); }
+.glp-book__head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; padding-bottom: 12px; border-bottom: 1px solid var(--glp-rule); }
+.glp-book__head b { font-family: var(--gl-font-display); font-weight: 400; font-size: 20px; }
+.glp-book__rows { margin-top: 6px; }
+.glp-book__row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 12px; align-items: baseline;
+  padding: 11px 8px; border-bottom: 1px solid var(--glp-rule-soft);
+  font-size: 13px;
+  transition: background-color 260ms var(--gl-ease);
+}
+.glp-book__row:last-child { border-bottom: 0; }
+.glp-book__row[data-active='true'] { background-color: var(--gl-row-active); }
+.glp-book__row span:first-child { font-weight: 600; }
+.glp-book__row .glp-mono { font-size: 11.5px; opacity: .8; white-space: nowrap; }
+.glp-book__foot { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--glp-rule); font-size: 11.5px; color: var(--gl-text-secondary); }
+.glp-book__specimens { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.glp-book__specimen { position: relative; overflow: hidden; border-radius: var(--glp-control); aspect-ratio: 4 / 3; }
+.glp-book__specimen img { width: 100%; height: 100%; object-fit: cover; }
+.glp-book__specimen figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 5px 7px; font-family: var(--gl-font-mono); font-size: 9px;
+  font-variant-numeric: tabular-nums; letter-spacing: .04em;
+  background: color-mix(in oklab, var(--gl-ink) 78%, transparent); color: var(--gl-oat);
+  opacity: .42; transition: opacity 300ms var(--gl-ease);
+}
+.glp-book__window[data-step='1'] .glp-book__specimen:nth-child(1) figcaption,
+.glp-book__window[data-step='2'] .glp-book__specimen:nth-child(2) figcaption,
+.glp-book__window[data-step='3'] .glp-book__specimen:nth-child(3) figcaption { opacity: 1; }
+
+/* ── 04 · exposed spec ledger + field receipt ────────────────────────────── */
+.glp-ledger { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, .7fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+.glp-ledger__table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.glp-ledger__table caption { text-align: left; font-family: var(--gl-font-display); font-size: 24px; padding-bottom: 14px; }
+.glp-ledger__table th {
+  text-align: left; font-weight: 600; font-size: 11px; letter-spacing: .04em;
+  text-transform: uppercase; opacity: .7; padding: 0 12px 10px 0;
+  border-bottom: 1px solid var(--glp-rule);
+}
+.glp-ledger__table td { padding: 13px 12px 13px 0; border-bottom: 1px solid var(--glp-rule-soft); vertical-align: baseline; }
+.glp-ledger__table td:last-child, .glp-ledger__table th:last-child { padding-right: 0; text-align: right; }
+.glp-ledger__table tbody tr { transition: background-color 200ms var(--gl-ease); }
+.glp-ledger__table tbody tr:hover { background-color: var(--gl-row-active); }
+.glp-ledger__table .glp-mono { font-size: 12px; white-space: nowrap; }
+.glp-receipt {
+  --glp-focus: var(--gl-ink);
+  background: var(--gl-surface-plate); color: var(--gl-text-primary);
+  border-radius: var(--glp-outer); padding: clamp(20px, 2.4vw, 30px);
+  position: relative;
+}
+.glp-receipt::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 8px;
+  background: repeating-linear-gradient(90deg, var(--gl-apricot) 0 6px, transparent 6px 12px);
+  opacity: .6; border-radius: var(--glp-outer) var(--glp-outer) 0 0;
+}
+.glp-receipt h3 { font-family: var(--gl-font-display); font-weight: 400; font-size: 24px; margin: 14px 0 4px; }
+.glp-receipt dl { margin: 18px 0 0; display: grid; gap: 10px; font-size: 12.5px; }
+.glp-receipt dl > div { display: flex; justify-content: space-between; gap: 14px; border-bottom: 1px dashed var(--glp-rule); padding-bottom: 9px; }
+.glp-receipt dt { opacity: .72; }
+.glp-receipt dd { margin: 0; font-weight: 600; text-align: right; }
+.glp-receipt__total { display: flex; justify-content: space-between; gap: 12px; margin-top: 18px; font-family: var(--gl-font-display); font-size: 20px; }
+.glp-receipt__note { margin: 16px 0 0; font-size: 11px; line-height: 1.55; }
+
+/* ── 05 · visit / closing ────────────────────────────────────────────────── */
+.glp-visit { position: relative; padding-block: clamp(80px, 10vw, 140px); }
+.glp-visit__art { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.glp-visit__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 48%; }
+.glp-visit__scrim { position: absolute; inset: 0; background: linear-gradient(90deg, color-mix(in oklab, var(--gl-zenith) 88%, transparent) 0%, color-mix(in oklab, var(--gl-zenith) 62%, transparent) 58%, color-mix(in oklab, var(--gl-zenith) 30%, transparent) 100%); }
+.glp-visit__in { position: relative; z-index: 1; display: flex; justify-content: flex-start; }
+.glp-visit__plate { --glp-focus: var(--gl-ink); width: min(100%, 600px); background: var(--gl-surface-plate); color: var(--gl-text-primary); border-radius: var(--glp-outer); padding: clamp(26px, 3.4vw, 46px); }
+.glp-visit__plate .glp-h2 { font-size: clamp(30px, 3.5vw, 48px); }
+.glp-visit__acts { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin-top: 28px; }
+.glp-visit__plate .glp-link { border-bottom-color: var(--glp-rule); }
+
+/* ── footer ──────────────────────────────────────────────────────────────── */
+/* Solid dark plate: oat type stays legible even at the gradient's light end. */
+.glp-foot { background: var(--gl-surface-invert); border-top: 1px solid var(--gl-line-strong); padding-block: 34px 40px; }
+.glp-foot__in { display: flex; justify-content: space-between; align-items: end; gap: 28px; flex-wrap: wrap; }
+.glp-foot__lock { width: 190px; height: auto; }
+.glp-foot__links { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12.5px; }
+.glp-foot__links a { text-decoration: none; border-bottom: 1px solid var(--gl-line-strong); padding-bottom: 2px; }
+.glp-foot__links a:hover { border-bottom-color: currentColor; }
+.glp-foot__prov { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 32px; padding-top: 14px; border-top: 1px solid var(--gl-line-strong); font-size: 11px; opacity: .78; }
+
+/* ── night scope · same primitives, only glass and ground change ─────────── */
+.glp-root[data-gl-scope='night'] { --glp-focus: var(--gl-oat); }
+.glp-root[data-gl-scope='night'] .glp-bento__dark { background: var(--gl-ink); }
+
+/* ── scroll-linked motion · transform / opacity only ─────────────────────── */
+@supports (animation-timeline: view()) {
+  .glp-hero__img {
+    animation: glp-drift linear both;
+    animation-timeline: view();
+    animation-range: cover 0% cover 100%;
+  }
+  @keyframes glp-drift {
+    from { transform: translateY(0) scale(1.02); }
+    to   { transform: translateY(-2.5%) scale(1.07); }
+  }
+  .glp-hero__progress-bar {
+    animation: glp-fill linear both;
+    animation-timeline: view();
+    animation-range: entry 0% exit 100%;
+  }
+  @keyframes glp-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .glp-bento__photo { animation: glp-parallax linear both; animation-timeline: view(); animation-range: cover 0% cover 100%; }
+  @keyframes glp-parallax { from { transform: scale(1.04); } to { transform: scale(1.11); } }
+}
+
+/* Static payoff: no motion, all three specimen frames fully visible,
+   every register row populated — the screenshot is the completed state. */
+@media (prefers-reduced-motion: reduce) {
+  .glp-root *, .glp-root *::before, .glp-root *::after {
+    animation: none !important;
+    transition-duration: 0ms !important;
+  }
+  .glp-hero__progress-bar { transform: scaleX(1); }
+  .glp-book__step { opacity: 1; }
+  .glp-book__row { background-color: var(--gl-row-active); }
+  .glp-book__specimen figcaption { opacity: 1; }
+}
+
+/* ── responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .glp-book { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 32px; }
+  .glp-ledger { grid-template-columns: minmax(0, 1fr) minmax(0, .8fr); gap: 28px; }
+  .glp-bento__cell:nth-child(1) { grid-column: span 7; }
+  .glp-bento__cell:nth-child(3) { grid-column: span 5; }
+}
+@media (max-width: 768px) {
+  .glp-top__nav { display: none; }
+  .glp-top__in { min-height: 62px; }
+  .glp-sec__head { align-items: start; }
+  .glp-book { grid-template-columns: 1fr; }
+  .glp-book__step { min-height: 0; padding-block: 28px; }
+  .glp-book__stage { position: relative; top: 0; order: -1; }
+  .glp-ledger { grid-template-columns: 1fr; }
+  .glp-bento { grid-template-columns: repeat(6, 1fr); }
+  .glp-bento__cell:nth-child(n) { grid-row: span 1; border-right: 1px solid var(--glp-rule); border-bottom: 1px solid var(--glp-rule); }
+  .glp-bento__cell:nth-child(1) { grid-column: span 6; min-height: 280px; border-right: 0; }
+  .glp-bento__cell:nth-child(2) { grid-column: span 6; border-right: 0; }
+  .glp-bento__cell:nth-child(3) { grid-column: span 3; }
+  .glp-bento__cell:nth-child(4) { grid-column: span 3; border-right: 0; }
+  .glp-bento__cell:nth-child(5) { grid-column: span 3; border-bottom: 0; }
+  .glp-bento__cell:nth-child(6) { grid-column: span 3; border-right: 0; border-bottom: 0; }
+}
+@media (max-width: 560px) {
+  .glp-hero { padding-block: 36px 56px; }
+  .glp-stage { margin-right: calc(-1 * var(--gl-gutter) - 12px); padding: 7px; }
+  .glp-hero__bench { grid-template-columns: repeat(3, 1fr); }
+  .glp-hero__cell { padding: 11px 8px; }
+  .glp-hero__cell:first-child { padding-left: 0; }
+  .glp-hero__cell span { font-size: 10px; }
+  .glp-hero__acts { gap: 16px; }
+  .glp-book__row { grid-template-columns: 1fr auto; }
+  .glp-book__row .glp-mono:last-child { display: none; }
+  .glp-bento { grid-template-columns: repeat(2, 1fr); }
+  .glp-bento__cell:nth-child(n) { grid-column: span 1; grid-row: span 1; min-height: 180px; border-right: 1px solid var(--glp-rule); border-bottom: 1px solid var(--glp-rule); }
+  .glp-bento__cell:nth-child(1) { grid-column: span 2; min-height: 230px; border-right: 0; }
+  .glp-bento__obj { width: clamp(40px, 11vw, 56px); }
+  .glp-bento__obj--ramp { width: auto; height: clamp(70px, 19vw, 88px); }
+  .glp-bento__obj--field { width: clamp(44px, 12vw, 62px); height: 46px; }
+  .glp-bento__b { font-size: 22px; }
+  .glp-bento__l { font-size: 11px; }
+  .glp-bento__head { gap: 10px; }
+  .glp-bento__cell:nth-child(2) { grid-column: span 2; border-right: 0; }
+  .glp-bento__cell:nth-child(2n) { border-right: 0; }
+  .glp-bento__cell:nth-child(5), .glp-bento__cell:nth-child(6) { border-bottom: 0; }
+  .glp-ledger__table { font-size: 12px; }
+  .glp-ledger__table th, .glp-ledger__table td { padding-right: 6px; }
+  .glp-foot__in { align-items: start; }
+}
